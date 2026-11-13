@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createAttemptDir, overallScore, saveAttempt } from "@/lib/attempts";
-import { runClaude } from "@/lib/claude";
+import { runModel } from "@/lib/model";
 import type { Kata } from "@/lib/katas";
 import { findKata } from "@/lib/library";
 import { reviewSchema, reviewerSystemPrompt, type Review } from "@/lib/rubric";
@@ -18,11 +18,11 @@ type Submission = {
 
 function buildPrompt(kata: Kata, submission: Submission): string {
   const list = (items: string[]) => items.map((item) => `- ${item}`).join("\n");
-  return `Review this architecture kata attempt. Read diagram.png in the current directory first.
+  return `Review this architecture kata attempt.
 
 <kata>
 Title: ${kata.title}
-Context: ${kata.context}
+Context: ${[kata.context, ...(kata.details ?? [])].join("\n")}
 Users: ${kata.users || "(not stated)"}
 Requirements:
 ${list(kata.requirements) || "(not stated)"}
@@ -62,12 +62,13 @@ export async function POST(request: Request) {
   await writeFile(path.join(dir, "scene.json"), JSON.stringify(submission.elements));
 
   try {
-    const review = (await runClaude({
-      cwd: dir,
+    const { output, model } = await runModel({
       prompt: buildPrompt(kata, submission),
       systemPrompt: reviewerSystemPrompt,
       schema: reviewSchema,
-    })) as Review;
+      imagePath: path.join(dir, "diagram.png"),
+    });
+    const review = output as Review;
     await saveAttempt({
       id,
       kataId: kata.id,
@@ -77,6 +78,7 @@ export async function POST(request: Request) {
       rationale: submission.rationale,
       review,
       overall: overallScore(review),
+      reviewer: model,
     });
     return Response.json({ id });
   } catch (error) {

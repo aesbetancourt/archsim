@@ -7,11 +7,12 @@ type ClaudeCall = {
   prompt: string;
   systemPrompt: string;
   schema: object;
+  model?: string;
 };
 
 // Start a headless Claude Code process and return its structured output.
 // The process uses the local Claude Code login. It can only read files in cwd.
-export function runClaude({ cwd, prompt, systemPrompt, schema }: ClaudeCall): Promise<unknown> {
+export function runClaude({ cwd, prompt, systemPrompt, schema, model }: ClaudeCall): Promise<unknown> {
   const args = [
     "-p",
     prompt,
@@ -29,8 +30,8 @@ export function runClaude({ cwd, prompt, systemPrompt, schema }: ClaudeCall): Pr
     "--json-schema",
     JSON.stringify(schema),
   ];
-  if (process.env.ARCHSIM_MODEL) {
-    args.push("--model", process.env.ARCHSIM_MODEL);
+  if (model) {
+    args.push("--model", model);
   }
 
   return new Promise((resolve, reject) => {

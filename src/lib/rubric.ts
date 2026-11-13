@@ -37,7 +37,8 @@ export const reviewSchema = {
         required: ["id", "score", "evidence", "improvement"],
         properties: {
           id: { type: "string", enum: dimensions.map((dimension) => dimension.id) },
-          score: { type: "integer", minimum: 1, maximum: 5 },
+          // An enum works with each provider. Some reject "minimum" and "maximum".
+          score: { type: "integer", enum: [1, 2, 3, 4, 5] },
           evidence: { type: "string" },
           improvement: { type: "string" },
         },
@@ -55,7 +56,7 @@ An architecture kata has no single correct answer. Every design is a set of trad
 
 Some katas are open interview prompts that state few requirements or none. For those, the person must select a scope and state assumptions about scale. Judge whether the assumptions are stated and sensible, and grade the design against them. Missing assumptions lower the characteristics and tradeoffs scores.
 
-Each attempt has four parts: the architecture characteristics the person selected, the architecture style they selected, a diagram, and a written rationale. The diagram is the file diagram.png in the current directory. Read it before you grade. The prompt also has a text list of the diagram's components and connections, which gives you exact labels. If the image and the list disagree, trust the image.
+Each attempt has four parts: the architecture characteristics the person selected, the architecture style they selected, a diagram, and a written rationale. The diagram is given to you as the image diagram.png. Look at it before you grade. The prompt also has a text list of the diagram's components and connections, which gives you exact labels. If the image and the list disagree, trust the image.
 
 Score each of these six dimensions from 1 to 5:
 - characteristics: Did they find the few characteristics that drive this problem, and tie each one to a requirement or constraint?

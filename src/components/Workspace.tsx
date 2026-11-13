@@ -94,7 +94,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
       const { exportToBlob } = await import("@excalidraw/excalidraw");
       const blob = await exportToBlob({
         elements,
-        appState: { exportBackground: true, viewBackgroundColor: "#ffffff" },
+        // Always export in the light theme. The reviewer reads this image.
+        appState: { exportBackground: true, viewBackgroundColor: "#ffffff", exportWithDarkMode: false },
         files: api.current!.getFiles(),
         mimeType: "image/png",
       });
@@ -122,17 +123,19 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   }
 
   return (
-    <main className="flex h-[calc(100dvh-3.5rem)]">
+    <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
       <aside className="flex w-[27rem] shrink-0 flex-col border-r bg-card text-sm leading-relaxed">
-        <div className="flex-1 space-y-6 overflow-y-auto p-6">
+        {/* "relative" keeps hidden labels inside this scroll area. Without it, they make the page scroll. */}
+        <div className="relative flex-1 space-y-6 overflow-y-auto p-6">
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h1 className="text-xl font-semibold tracking-tight">{kata.title}</h1>
-              <Badge variant={kata.interview ? "outline" : "secondary"}>
-                {kata.interview ? "interview question" : kata.difficulty}
+              <Badge variant={kata.interview || kata.source ? "outline" : "secondary"}>
+                {kata.source ? "community kata" : kata.interview ? "interview question" : kata.difficulty}
               </Badge>
             </div>
             <p>{kata.context}</p>
+            {kata.details?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             {kata.users && (
               <p>
                 <span className="font-medium">Users:</span> {kata.users}
@@ -159,8 +162,14 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               </div>
             )}
             {kata.note && <p className="border-l-2 border-primary pl-3 text-muted-foreground">{kata.note}</p>}
+            {kata.source && (
+              <p className="text-muted-foreground">
+                From <LessonLink href={kata.source.url}>{kata.source.name}</LessonLink>
+                {kata.source.credit && `, by ${kata.source.credit}`}
+              </p>
+            )}
             <p className="flex flex-wrap gap-x-4 gap-y-1 rounded-md bg-muted p-3">
-              <LessonLink href="/learn#method">How to do a kata</LessonLink>
+              <LessonLink href="/learn/method">How to do a kata</LessonLink>
               {hasExample && (
                 <LessonLink href={`/learn/examples/${kata.id}`}>A finished answer to this kata</LessonLink>
               )}
@@ -278,7 +287,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               </div>
             )}
             <div className="flex flex-wrap gap-x-4 gap-y-1">
-              <LessonLink href="/learn#styles">Compare the styles</LessonLink>
+              <LessonLink href="/learn/styles">Compare the styles</LessonLink>
               <LessonLink href="/glossary">Glossary</LessonLink>
             </div>
           </section>
@@ -317,7 +326,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           )}
           <Button onClick={submit} disabled={busy} size="lg" className="w-full">
             {busy && <LoaderCircle className="animate-spin" />}
-            {busy ? "Claude is reviewing. This can take a minute." : "Submit for review"}
+            {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
         </div>
       </aside>

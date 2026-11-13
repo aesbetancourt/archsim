@@ -52,14 +52,14 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="mx-auto block w-full rounded-md border border-stone-200 bg-white"
+      className="mx-auto block w-full rounded-md border bg-card"
       style={{ maxWidth: width }}
       role="img"
       aria-label="Architecture diagram"
     >
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#44403c" />
+          <path d="M0,0 L10,5 L0,10 z" className="fill-foreground/70" />
         </marker>
       </defs>
 
@@ -71,11 +71,10 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
             width={group.width}
             height={group.height}
             rx={10}
-            fill="#f0fdfa"
-            stroke="#0f766e"
+            className="fill-primary/5 stroke-primary"
             strokeWidth={1.5}
           />
-          <text x={group.left + 12} y={group.top + 18} fontSize={12} fontWeight={600} fill="#115e59">
+          <text x={group.left + 12} y={group.top + 18} fontSize={12} fontWeight={600} className="fill-primary">
             {group.label}
           </text>
         </g>
@@ -96,7 +95,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
               y1={start.y}
               x2={end.x}
               y2={end.y}
-              stroke="#44403c"
+              className="stroke-foreground/70"
               strokeWidth={1.5}
               strokeDasharray={edge.async ? "6 4" : undefined}
               markerEnd="url(#arrow)"
@@ -109,8 +108,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
                 fontSize={11}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill="#44403c"
-                stroke="#ffffff"
+                className="fill-foreground/80 stroke-card"
                 strokeWidth={5}
                 paintOrder="stroke"
               >
@@ -132,12 +130,11 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
               width={BOX_W}
               height={BOX_H}
               rx={6}
-              fill={node.external ? "#f5f5f4" : "#ffffff"}
-              stroke="#44403c"
+              className={node.external ? "fill-muted stroke-foreground/70" : "fill-card stroke-foreground/70"}
               strokeWidth={1.5}
               strokeDasharray={node.external ? "3 3" : undefined}
             />
-            <text fontSize={12} textAnchor="middle" fill="#1c1917">
+            <text fontSize={12} textAnchor="middle" className="fill-foreground">
               {lines.map((line, index) => (
                 <tspan
                   key={index}

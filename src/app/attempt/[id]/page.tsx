@@ -22,6 +22,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
         <div>
           <p className="text-muted-foreground">
             Review · {new Date(attempt.createdAt).toLocaleString()}
+            {attempt.reviewer && ` · ${attempt.reviewer}`}
           </p>
           <h1 className="text-3xl font-semibold tracking-tight">{kata?.title ?? attempt.kataId}</h1>
         </div>

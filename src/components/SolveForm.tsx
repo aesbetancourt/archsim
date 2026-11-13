@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function SolveForm() {
+export default function SolveForm({ initialText }: { initialText: string }) {
   const router = useRouter();
-  const [text, setText] = useState("");
+  const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState<"study" | "practice" | null>(null);
   const [error, setError] = useState("");
 
@@ -66,7 +66,7 @@ export default function SolveForm() {
         </Button>
       </div>
       {busy && (
-        <p className="text-muted-foreground">Claude is writing the answer. This can take two minutes.</p>
+        <p className="text-muted-foreground">The model is writing the answer. This can take two minutes.</p>
       )}
     </div>
   );

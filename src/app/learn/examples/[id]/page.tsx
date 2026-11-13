@@ -56,7 +56,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <Badge>Worked example</Badge>
           <Badge variant="secondary">{kata.difficulty}</Badge>
           {kata.interview && <Badge variant="outline">interview question</Badge>}
-          {kata.custom && <Badge variant="outline">your problem · answer written by Claude</Badge>}
+          {kata.custom && <Badge variant="outline">your problem · answer written by {example.author ?? "Claude"}</Badge>}
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">{kata.title}</h1>
         <Alert>
@@ -156,7 +156,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
             <p>{example.style.why}</p>
             {lesson && (
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/learn#${lesson.id}`}>Read the {lesson.name} lesson</Link>
+                <Link href={`/learn/${lesson.id}`}>Read the {lesson.name} lesson</Link>
               </Button>
             )}
           </CardContent>

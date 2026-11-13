@@ -5,15 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { listAttempts } from "@/lib/attempts";
-import { allExamples, allKatas } from "@/lib/library";
+import { allExamples, allKatas, kataTitles } from "@/lib/library";
 
 // Read the attempt history on each request.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [attempts, katas, examples] = await Promise.all([listAttempts(), allKatas(), allExamples()]);
+  const [attempts, katas, examples, titles] = await Promise.all([
+    listAttempts(),
+    allKatas(),
+    allExamples(),
+    kataTitles(),
+  ]);
   const solved = new Set(examples.map(({ kata }) => kata.id));
-  const titles = new Map(katas.map((kata) => [kata.id, kata.title]));
   const groups = [
     { title: "Your problems", katas: katas.filter((kata) => kata.custom) },
     { title: "Katas", katas: katas.filter((kata) => !kata.custom && !kata.interview) },
@@ -30,7 +34,7 @@ export default async function Home() {
         </p>
         <div className="flex flex-wrap gap-2">
           <Button asChild>
-            <Link href="/learn#examples">
+            <Link href="/learn/examples">
               <BookOpen /> Study a finished kata
             </Link>
           </Button>
@@ -84,6 +88,26 @@ export default async function Home() {
       ))}
 
       <section className="space-y-4">
+        <h2 className="text-lg font-semibold tracking-tight">More katas</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>Architectural Katas, by Ted Neward</CardTitle>
+            <CardDescription>
+              The collection that started the architecture kata. It has about 40 short problems,
+              from pet finders to auction sites. The app reads them from the public repository.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button size="sm" asChild>
+              <Link href="/community">
+                Browse the collection <ArrowRight />
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </section>
+
+      <section className="space-y-4">
         <h2 className="text-lg font-semibold tracking-tight">Your history</h2>
         {attempts.length === 0 ? (
           <p className="text-sm text-muted-foreground">No attempts yet.</p>
@@ -94,6 +118,7 @@ export default async function Home() {
                 <TableRow>
                   <TableHead className="pl-4">Kata</TableHead>
                   <TableHead>Style</TableHead>
+                  <TableHead>Reviewer</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead className="pr-4 text-right">Score</TableHead>
                 </TableRow>
@@ -107,6 +132,7 @@ export default async function Home() {
                       </Link>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{attempt.style || "none"}</TableCell>
+                    <TableCell className="text-muted-foreground">{attempt.reviewer ?? "Claude Code"}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {new Date(attempt.createdAt).toLocaleDateString()}
                     </TableCell>

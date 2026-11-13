@@ -1,5 +1,6 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { cachedCommunity, loadCommunity } from "./community";
 import { getWorkedExample, workedExamples, type WorkedExample } from "./examples";
 import { getKata, katas, type Kata } from "./katas";
 
@@ -37,7 +38,17 @@ export async function saveCustom(entry: CustomEntry): Promise<void> {
 }
 
 export async function findKata(id: string): Promise<Kata | undefined> {
+  if (id.startsWith("ak-")) {
+    const community = await loadCommunity().catch(() => []);
+    return community.find((kata) => kata.id === id);
+  }
   return getKata(id) ?? (await readCustom(id))?.kata;
+}
+
+// Return the title of each kata that the app knows, by ID.
+export async function kataTitles(): Promise<Map<string, string>> {
+  const katas = [...(await allKatas()), ...(await cachedCommunity())];
+  return new Map(katas.map((kata) => [kata.id, kata.title]));
 }
 
 export async function findExample(id: string): Promise<WorkedExample | undefined> {

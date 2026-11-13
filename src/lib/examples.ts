@@ -29,6 +29,8 @@ export type DiagramSpec = { nodes: DiagramNode[]; groups?: DiagramGroup[]; edges
 
 export type WorkedExample = {
   kataId: string;
+  // The model that wrote the answer. Empty for the built-in answers.
+  author?: string;
   hardParts: { quote: string; meaning: string }[];
   // For an open prompt: the scope and numbers the answer assumes.
   assumptions?: string[];

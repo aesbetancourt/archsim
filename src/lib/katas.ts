@@ -10,6 +10,10 @@ export type Kata = {
   constraints: string[];
   // Set for a real interview prompt.
   interview?: boolean;
+  // More paragraphs of the problem text.
+  details?: string[];
+  // Set for a kata from an external collection.
+  source?: { name: string; url: string; credit?: string };
   // Set for a problem that the user added.
   custom?: boolean;
   // Extra guidance for the person and the reviewer.

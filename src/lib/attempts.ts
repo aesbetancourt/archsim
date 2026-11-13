@@ -13,6 +13,8 @@ export type Attempt = {
   rationale: string;
   review: Review;
   overall: number;
+  // The model that wrote the review.
+  reviewer?: string;
 };
 
 // An attempt ID becomes a directory name. Reject all other shapes.

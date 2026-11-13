@@ -1,6 +1,7 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,16 +38,23 @@ export default function GlossaryList() {
                   <div key={entry.id} id={entry.id} className="scroll-mt-6 space-y-1 px-5 py-4 target:bg-accent">
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="font-medium">{entry.term}</h3>
+                      <div className="flex shrink-0 items-center gap-3 text-xs">
+                      {entry.learn && (
+                        <Link href={`/learn/${entry.learn}`} className="text-primary hover:underline">
+                          Lesson
+                        </Link>
+                      )}
                       {entry.wiki && (
                         <a
                           href={wikiUrl(entry.wiki)}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex shrink-0 items-center gap-1 text-xs text-primary hover:underline"
+                          className="inline-flex items-center gap-1 text-primary hover:underline"
                         >
                           Wikipedia <ExternalLink className="size-3" />
                         </a>
                       )}
+                      </div>
                     </div>
                     <p>{entry.definition}</p>
                     <p className="text-muted-foreground">Example: {entry.example}</p>
