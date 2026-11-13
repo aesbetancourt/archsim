@@ -1,10 +1,10 @@
 "use client";
 
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { ChevronDown, ExternalLink, LoaderCircle } from "lucide-react";
+import { ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,12 +20,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { Kata } from "@/lib/katas";
+import { loadNotesHtml, notesText } from "@/lib/notes";
 import { slimElements } from "@/lib/scene";
 import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/learn";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
 const MAX_CHARACTERISTICS = 3;
+
+const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
 
 const styles = [...styleLessons.map((lesson) => lesson.name), "Other (explain in the rationale)"];
 
@@ -65,7 +68,18 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   const router = useRouter();
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
   const [selected, setSelected] = useState<{ name: string; why: string }[]>([]);
+  // The large area shows the notepad or the canvas. A kata starts on the notepad.
+  const [view, setView] = useState<"notes" | "diagram">("notes");
+  const [notes, setNotes] = useState("");
   const [scope, setScope] = useState("");
+
+  // The notes belong to this kata. The editor saves them in this browser.
+  // This page keeps their plain text, for the help chat and for the saved attempt.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNotes(notesText(loadNotesHtml(kata.id)));
+  }, [kata.id]);
+
   const [style, setStyle] = useState("");
   const [rationale, setRationale] = useState("");
   const [busy, setBusy] = useState(false);
@@ -92,7 +106,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   async function submit() {
     const elements = api.current?.getSceneElements() ?? [];
     if (elements.length === 0) {
-      setError("Draw the diagram before you submit.");
+      setError("Draw the diagram before you submit. Open the Diagram tab.");
       return;
     }
     setBusy(true);
@@ -112,6 +126,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         body: JSON.stringify({
           kataId: kata.id,
           scope,
+          notes,
           characteristics: selected
             .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
             .join("\n"),
@@ -330,8 +345,39 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           </Button>
         </div>
       </SidePanel>
-      <div className="min-w-0 flex-1 bg-card">
-        <Canvas onReady={(instance) => (api.current = instance)} />
+      <div className="flex min-w-0 flex-1 flex-col bg-card">
+        <div role="tablist" aria-label="Work area" className="flex items-center gap-2 border-b-2 py-2 pr-3 pl-14">
+          <Button
+            role="tab"
+            aria-selected={view === "notes"}
+            variant={view === "notes" ? "noShadow" : "ghost"}
+            size="sm"
+            onClick={() => setView("notes")}
+          >
+            <NotebookPen /> Notes
+          </Button>
+          <Button
+            role="tab"
+            aria-selected={view === "diagram"}
+            variant={view === "diagram" ? "noShadow" : "ghost"}
+            size="sm"
+            onClick={() => setView("diagram")}
+          >
+            <PenTool /> Diagram
+          </Button>
+          <span className="ml-auto text-xs text-muted-foreground">
+            {view === "notes" ? "Your notes are private. The review does not read them." : "The review reads this diagram."}
+          </span>
+        </div>
+        <div className="relative min-h-0 flex-1">
+          {/* The canvas stays loaded under the notepad, so the drawing is kept. */}
+          <Canvas onReady={(instance) => (api.current = instance)} />
+          {view === "notes" && (
+            <div className="absolute inset-0 z-20 bg-card">
+              <NotesEditor kataId={kata.id} onTextChange={setNotes} />
+            </div>
+          )}
+        </div>
       </div>
       <HelpChat
         intro="Ask about a concept, or check your reasoning. In a kata, the helper gives hints and questions, not the design."
@@ -339,6 +385,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           kind: "kata",
           kataId: kata.id,
           scope,
+          notes,
           characteristics: selected.map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`).join("\n"),
           style,
           rationale,

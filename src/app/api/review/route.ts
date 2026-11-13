@@ -10,6 +10,8 @@ import { describeScene, type SceneElement } from "@/lib/scene";
 type Submission = {
   kataId: string;
   scope: string;
+  // The notes are saved with the attempt. They are not sent to the reviewer.
+  notes?: string;
   characteristics: string;
   style: string;
   rationale: string;
@@ -78,6 +80,7 @@ export async function POST(request: Request) {
       kataId: kata.id,
       createdAt: new Date().toISOString(),
       scope: submission.scope,
+      notes: submission.notes,
       characteristics: submission.characteristics,
       style: submission.style,
       rationale: submission.rationale,

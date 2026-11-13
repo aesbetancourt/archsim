@@ -56,9 +56,9 @@ export default function SidePanel({ widthClass, onToggle, children }: Props) {
       {/* The wrapper sets the position. The button does not move on hover, so it is easy to click. */}
       <div className="absolute top-1/2 -right-10 -translate-y-1/2">
         <Button
-          variant="neutral"
+          variant="noShadow"
           size="icon-xs"
-          className="shadow-none hover:translate-x-0 hover:translate-y-0 hover:bg-main hover:text-main-foreground"
+          className="bg-secondary-background text-foreground hover:bg-main hover:text-main-foreground"
           aria-label={hidden ? "Show the panel" : "Hide the panel"}
           aria-expanded={!hidden}
           title={hidden ? "Show the panel" : "Hide the panel"}

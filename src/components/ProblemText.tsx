@@ -170,16 +170,19 @@ export default function ProblemText({ kata }: { kata: Kata }) {
       </p>
 
       {button && (
-        <Button
-          size="xs"
-          className="fixed z-50 -translate-x-1/2 -translate-y-full hover:translate-x-[-50%] hover:translate-y-[-100%] hover:shadow-shadow"
-          style={{ left: button.x, top: button.y - 6 }}
-          // Keep the selection when the user presses the button.
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={highlight}
-        >
-          <Highlighter /> Highlight
-        </Button>
+        // The wrapper sets the position. The button uses a variant that does not move on hover.
+        <div className="fixed z-50 -translate-x-1/2 -translate-y-full pb-1.5" style={{ left: button.x, top: button.y }}>
+          <Button
+            variant="noShadow"
+            size="xs"
+            className="hover:bg-foreground hover:text-background"
+            // Keep the selection when the user presses the button.
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={highlight}
+          >
+            <Highlighter /> Highlight
+          </Button>
+        </div>
       )}
     </div>
   );

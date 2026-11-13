@@ -10,6 +10,8 @@ export type Attempt = {
   createdAt: string;
   // The core functions and the scope that the person selected. Old attempts do not have it.
   scope?: string;
+  // The private notes of the person. The reviewer does not get them.
+  notes?: string;
   characteristics: string;
   style: string;
   rationale: string;

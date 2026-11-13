@@ -121,6 +121,12 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
             <h3 className="font-medium">Rationale</h3>
             <p className="whitespace-pre-wrap text-muted-foreground">{attempt.rationale || "none"}</p>
           </div>
+          {attempt.notes && (
+            <div>
+              <h3 className="font-medium">Your notes (not reviewed)</h3>
+              <p className="whitespace-pre-wrap text-muted-foreground">{attempt.notes}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

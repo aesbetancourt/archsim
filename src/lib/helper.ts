@@ -6,7 +6,7 @@ export type ChatMessage = { role: "user" | "helper"; text: string };
 
 // What the person works on when they ask a question.
 export type HelperContext =
-  | { kind: "kata"; kataId: string; scope: string; characteristics: string; style: string; rationale: string; elements: SceneElement[] }
+  | { kind: "kata"; kataId: string; scope: string; notes: string; characteristics: string; style: string; rationale: string; elements: SceneElement[] }
   | { kind: "board"; title: string; notes: string; elements: SceneElement[] };
 
 export const helperSchema = {
@@ -60,6 +60,8 @@ ${list(kata?.constraints ?? [])}
 </kata>
 
 <their_work_so_far>
+Private notes they wrote while thinking (rough, not graded):
+${context.notes || "(empty)"}
 Core functions and scope they wrote:
 ${context.scope || "(empty)"}
 Characteristics they selected:
