@@ -1,4 +1,5 @@
-import { ArrowRight, BookOpen, Sparkles, Trash2 } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, History, Library, Lightbulb, MessagesSquare, Sparkles, Target, Trash2, UserPen } from "lucide-react";
+import DifficultyIcon from "@/components/DifficultyIcon";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import ConfirmButton from "@/components/ConfirmButton";
@@ -20,9 +21,9 @@ export default async function Home() {
   ]);
   const solved = new Set(examples.map(({ kata }) => kata.id));
   const groups = [
-    { title: "Your problems", katas: katas.filter((kata) => kata.custom) },
-    { title: "Katas", katas: katas.filter((kata) => !kata.custom && !kata.interview) },
-    { title: "Interview questions", katas: katas.filter((kata) => !kata.custom && kata.interview) },
+    { title: "Your problems", icon: UserPen, katas: katas.filter((kata) => kata.custom) },
+    { title: "Katas", icon: Target, katas: katas.filter((kata) => !kata.custom && !kata.interview) },
+    { title: "Interview questions", icon: MessagesSquare, katas: katas.filter((kata) => !kata.custom && kata.interview) },
   ].filter((group) => group.katas.length > 0);
 
   return (
@@ -37,7 +38,9 @@ export default async function Home() {
           <LinkButton href="/learn/examples">
               <BookOpen /> Study a finished kata
             </LinkButton>
-          <LinkButton variant="neutral" href="/learn">Learn the method and the styles</LinkButton>
+          <LinkButton variant="neutral" href="/learn">
+            <GraduationCap /> Learn the method and the styles
+          </LinkButton>
           <LinkButton variant="neutral" href="/solve">
               <Sparkles /> Solve your own problem
             </LinkButton>
@@ -46,7 +49,9 @@ export default async function Home() {
 
       {groups.map((group) => (
       <section key={group.title} className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">{group.title}</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          <group.icon className="size-5 text-primary" aria-hidden /> {group.title}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {group.katas.map((kata) => (
             <Card key={kata.id}>
@@ -54,10 +59,18 @@ export default async function Home() {
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle>{kata.title}</CardTitle>
                   <div className="flex shrink-0 gap-1">
-                    {kata.interview && <Badge variant="neutral">interview</Badge>}
-                    {kata.custom && <Badge variant="neutral">yours</Badge>}
+                    {kata.interview && (
+                      <Badge variant="neutral">
+                        <MessagesSquare /> interview
+                      </Badge>
+                    )}
+                    {kata.custom && (
+                      <Badge variant="neutral">
+                        <UserPen /> yours
+                      </Badge>
+                    )}
                     <Badge variant={kata.difficulty === "hard" ? "default" : "neutral"}>
-                      {kata.difficulty}
+                      <DifficultyIcon level={kata.difficulty} /> {kata.difficulty}
                     </Badge>
                   </div>
                 </div>
@@ -69,7 +82,9 @@ export default async function Home() {
                     Start <ArrowRight />
                   </LinkButton>
                 {solved.has(kata.id) && (
-                  <LinkButton size="sm" variant="ghost" href={`/learn/examples/${kata.id}`}>See a finished answer</LinkButton>
+                  <LinkButton size="sm" variant="ghost" href={`/learn/examples/${kata.id}`}>
+                    <Lightbulb /> See a finished answer
+                  </LinkButton>
                 )}
               </CardFooter>
             </Card>
@@ -79,7 +94,9 @@ export default async function Home() {
       ))}
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">More katas</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          <Library className="size-5 text-primary" aria-hidden /> More katas
+        </h2>
         <Card>
           <CardHeader>
             <CardTitle>Architectural Katas, by Ted Neward</CardTitle>
@@ -98,10 +115,16 @@ export default async function Home() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold tracking-tight">Your history</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+            <History className="size-5 text-primary" aria-hidden /> Your history
+          </h2>
           {attempts.length > 0 && (
             <ConfirmButton
-              label="Clear history"
+              label={
+                <>
+                  <Trash2 /> Clear history
+                </>
+              }
               title="Clear the full history?"
               description={`This removes all ${attempts.length} attempts, with their diagrams and reviews. You cannot get them back.`}
               confirmLabel="Clear history"

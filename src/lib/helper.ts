@@ -1,3 +1,4 @@
+import { blocksNamed } from "./blocks";
 import type { Kata } from "./katas";
 import { describeScene, type SceneElement } from "./scene";
 import { wikiPages } from "./wiki";
@@ -37,12 +38,21 @@ In a kata:
 - Explain any concept, term, style, or pattern they ask about, as fully as they need.
 - When they ask what to select or how to design this kata, do not give the answer. Give them a way to decide: point to the sentence in the kata that matters, name the question an architect would ask, or compare two options in general terms. Then ask them one question that moves them a step.
 - When they state their own reasoning and ask if it holds, respond to it directly. Say what is sound, and name one thing they did not consider. This is feedback on their thinking, and it is allowed.
+- The context can list standard pieces from their diagram, each with an open question. When it fits the conversation, ask them one of these questions about a piece they used. Do not answer it for them.
 - If they say they are fully stuck, give one small hint, not the full path. There is a worked example for some katas, and they can open it if they want a full answer.`;
 
 const open = `The person is on a free board in the scratchpad. Nothing here is graded. Answer their questions directly, and give a recommendation with its main trade-off when they ask for one.`;
 
 export function helperSystemPrompt(kind: HelperContext["kind"]): string {
   return `${shared}\n\n${kind === "kata" ? tutor : open}`;
+}
+
+// The cost and the open question of each palette piece in the diagram.
+function pieceNotes(elements: SceneElement[]): string {
+  const used = blocksNamed(elements.flatMap((element) => (element.type === "text" && element.text ? [element.text] : [])));
+  if (used.length === 0) return "";
+  const lines = used.map((block) => `- ${block.name}: costs: ${block.cost} Open question: ${block.question}`);
+  return `\nStandard pieces in the diagram, each with its cost and the question a reviewer would ask about it:\n${lines.join("\n")}`;
 }
 
 export function helperPrompt(context: HelperContext, kata: Kata | undefined, messages: ChatMessage[]): string {
@@ -70,14 +80,14 @@ Style they selected: ${context.style || "(none yet)"}
 Rationale they wrote:
 ${context.rationale || "(empty)"}
 Diagram:
-${describeScene(context.elements)}
+${describeScene(context.elements)}${pieceNotes(context.elements)}
 </their_work_so_far>`
       : `<board>
 Title: ${context.title}
 Notes:
 ${context.notes || "(empty)"}
 Diagram:
-${describeScene(context.elements)}
+${describeScene(context.elements)}${pieceNotes(context.elements)}
 </board>`;
 
   const conversation = messages

@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, PencilRuler, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -53,7 +53,7 @@ export default function SolveForm({ initialText }: { initialText: string }) {
       )}
       <div className="flex flex-wrap items-center gap-2">
         <Button onClick={() => submit("study")} disabled={busy !== null || text.trim().length < 40}>
-          {busy === "study" && <LoaderCircle className="animate-spin" />}
+          {busy === "study" ? <LoaderCircle className="animate-spin" /> : <Sparkles />}
           Solve it and show me the answer
         </Button>
         <Button
@@ -61,7 +61,7 @@ export default function SolveForm({ initialText }: { initialText: string }) {
           onClick={() => submit("practice")}
           disabled={busy !== null || text.trim().length < 40}
         >
-          {busy === "practice" && <LoaderCircle className="animate-spin" />}
+          {busy === "practice" ? <LoaderCircle className="animate-spin" /> : <PencilRuler />}
           Solve it, but let me try first
         </Button>
       </div>

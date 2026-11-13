@@ -1,3 +1,4 @@
+import { Sparkles } from "lucide-react";
 import SolveForm from "@/components/SolveForm";
 import type { Kata } from "@/lib/katas";
 import { findKata } from "@/lib/library";
@@ -24,7 +25,10 @@ export default async function SolvePage({ searchParams }: { searchParams: Promis
   return (
     <main className="mx-auto w-full max-w-3xl space-y-6 px-6 py-10 text-sm leading-relaxed">
       <header className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Solve a problem</h1>
+        <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
+          <Sparkles className="size-7 shrink-0 text-primary" aria-hidden />
+          Solve a problem
+        </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
           Paste the text of a design problem, for example an interview question. Claude writes a
           worked answer with the five-step method. The problem is also added to your katas, so you

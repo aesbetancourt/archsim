@@ -1,7 +1,7 @@
 "use client";
 
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool } from "lucide-react";
+import { BookOpen, ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool, Send } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -289,7 +289,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                 </p>
                 <Dialog>
                   <DialogTrigger render={<Button variant="neutral" size="sm" />}>
-                    See the diagram and the full lesson
+                    <BookOpen /> See the diagram and the full lesson
                   </DialogTrigger>
                   <DialogContent className="max-h-[85vh] overflow-y-auto text-sm leading-relaxed sm:max-w-2xl">
                     <DialogHeader>
@@ -340,7 +340,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             </Alert>
           )}
           <Button onClick={submit} disabled={busy} size="lg" className="w-full">
-            {busy && <LoaderCircle className="animate-spin" />}
+            {busy ? <LoaderCircle className="animate-spin" /> : <Send />}
             {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
         </div>

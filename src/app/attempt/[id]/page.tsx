@@ -1,4 +1,4 @@
-import { TriangleAlert } from "lucide-react";
+import { ArrowLeftRight, Component, Crosshair, FileText, ListChecks, type LucideIcon, MessageCircleQuestion, RotateCcw, Scale, Shapes, ThumbsUp, Trash2, TriangleAlert } from "lucide-react";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,6 +9,17 @@ import { Progress } from "@/components/ui/progress";
 import { getAttempt } from "@/lib/attempts";
 import { findKata } from "@/lib/library";
 import { dimensions } from "@/lib/rubric";
+
+// One icon for each dimension of the review.
+const dimensionIcons: Record<string, LucideIcon> = {
+  scope: Crosshair,
+  characteristics: ListChecks,
+  style_fit: Shapes,
+  boundaries: Component,
+  data_communication: ArrowLeftRight,
+  tradeoffs: Scale,
+  risks: TriangleAlert,
+};
 
 export default async function AttemptPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -45,11 +56,14 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
         {dimensions.map(({ id: dimensionId, label }) => {
           const result = review.dimensions.find((dimension) => dimension.id === dimensionId);
           if (!result) return null;
+          const Icon = dimensionIcons[dimensionId];
           return (
             <Card key={dimensionId}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>{label}</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon className="size-4 text-primary" aria-hidden /> {label}
+                  </CardTitle>
                   <span className="tabular-nums text-muted-foreground">{result.score} / 5</span>
                 </div>
                 <Progress value={result.score * 20} />
@@ -69,7 +83,9 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
         {review.strengths.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Strengths</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <ThumbsUp className="size-4 text-primary" aria-hidden /> Strengths
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="list-disc space-y-1 pl-5">
@@ -82,7 +98,9 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
         )}
         <Card>
           <CardHeader>
-            <CardTitle>Questions a review board would ask</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircleQuestion className="size-4 text-primary" aria-hidden /> Questions a review board would ask
+            </CardTitle>
             <CardDescription>Answer them before your next attempt.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -97,7 +115,9 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
 
       <Card>
         <CardHeader>
-          <CardTitle>Your attempt</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="size-4 text-primary" aria-hidden /> Your attempt
+          </CardTitle>
           <CardDescription>Style: {attempt.style || "none"}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -132,10 +152,16 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
 
       <div className="flex flex-wrap items-center gap-3">
         {kata && (
-          <LinkButton href={`/kata/${kata.id}`}>Try this kata again</LinkButton>
+          <LinkButton href={`/kata/${kata.id}`}>
+            <RotateCcw /> Try this kata again
+          </LinkButton>
         )}
         <ConfirmButton
-          label="Remove this attempt"
+          label={
+            <>
+              <Trash2 /> Remove this attempt
+            </>
+          }
           title="Remove this attempt?"
           description="This removes the attempt, with its diagram and review. You cannot get it back."
           confirmLabel="Remove"

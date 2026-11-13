@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { ArrowRight, PencilRuler, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ConfirmButton from "@/components/ConfirmButton";
 import NewBoardButton from "@/components/NewBoardButton";
@@ -16,7 +16,10 @@ export default async function ScratchpadPage() {
     <main className="mx-auto w-full max-w-4xl space-y-8 px-6 py-10 text-sm leading-relaxed">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight">Scratchpad</h1>
+          <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
+          <PencilRuler className="size-7 shrink-0 text-primary" aria-hidden />
+          Scratchpad
+          </h1>
           <p className="max-w-2xl text-base text-muted-foreground">
             A free space to draw diagrams and write notes. A board is not a kata: nothing is
             reviewed, and each change is saved.
@@ -44,7 +47,7 @@ export default async function ScratchpadPage() {
               <CardFooter className="mt-auto items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <LinkButton size="sm" href={`/scratchpad/${board.id}`}>
-                    Open
+                    Open <ArrowRight />
                   </LinkButton>
                   <span className="text-xs text-muted-foreground">
                     {board.scene.elements.length} shapes · changed {new Date(board.updatedAt).toLocaleDateString()}

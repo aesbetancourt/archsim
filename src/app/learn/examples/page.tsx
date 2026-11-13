@@ -1,4 +1,5 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lightbulb } from "lucide-react";
+import DifficultyIcon from "@/components/DifficultyIcon";
 import LinkButton from "@/components/LinkButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +14,10 @@ export default async function ExamplesPage() {
   return (
     <main className="mx-auto w-full max-w-4xl space-y-8 px-6 py-10 text-sm leading-relaxed">
       <header className="space-y-3 border-b pb-4">
-        <h1 className="text-3xl font-semibold tracking-tight">Worked examples</h1>
+        <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
+          <Lightbulb className="size-7 shrink-0 text-primary" aria-hidden />
+          Worked examples
+        </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
           Each example is a finished kata. It shows the five steps of the method, a diagram, and
           the reason for each decision.
@@ -27,7 +31,9 @@ export default async function ExamplesPage() {
                 <CardTitle>{kata.title}</CardTitle>
                 <div className="flex shrink-0 gap-1">
                   {kata.custom && <Badge variant="neutral">yours</Badge>}
-                  <Badge variant="neutral">{kata.difficulty}</Badge>
+                  <Badge variant="neutral">
+                    <DifficultyIcon level={kata.difficulty} /> {kata.difficulty}
+                  </Badge>
                 </div>
               </div>
               <CardDescription className="line-clamp-3">{kata.context}</CardDescription>

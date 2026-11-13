@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, LoaderCircle } from "lucide-react";
+import { CircleCheck, KeyRound, LoaderCircle, type LucideIcon, Plug, PlugZap, Save, Terminal } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -10,25 +10,29 @@ import { Label } from "@/components/ui/label";
 import type { Mode, PublicSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
-const modes: { id: Mode; title: string; description: string }[] = [
+const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[] = [
   {
     id: "claude-code",
     title: "Claude Code",
+    icon: Terminal,
     description: "Uses the Claude Code login on this computer. No API key. This is the default.",
   },
   {
     id: "opencode",
     title: "OpenCode",
+    icon: Terminal,
     description: "Uses the OpenCode login on this computer, in the same way as Claude Code. No API key in this app.",
   },
   {
     id: "anthropic",
     title: "Anthropic API",
+    icon: KeyRound,
     description: "Uses an Anthropic API key. Each review is billed to that key.",
   },
   {
     id: "openai-compatible",
     title: "OpenAI-compatible endpoint",
+    icon: Plug,
     description: "Uses a provider with an endpoint in the OpenAI format: Google Gemini, OpenRouter, OpenAI, or a local model.",
   },
 ];
@@ -125,6 +129,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             )}
           >
             <span className="flex items-center gap-2 font-medium">
+              <item.icon className="size-4" aria-hidden />
               {item.title}
               {mode === item.id && <CircleCheck className="size-4" />}
             </span>
@@ -231,11 +236,11 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
 
       <div className="flex flex-wrap items-center gap-2">
         <Button onClick={onSave} disabled={busy !== null}>
-          {busy === "save" && <LoaderCircle className="animate-spin" />}
+          {busy === "save" ? <LoaderCircle className="animate-spin" /> : <Save />}
           Save
         </Button>
         <Button variant="neutral" onClick={onTest} disabled={busy !== null}>
-          {busy === "test" && <LoaderCircle className="animate-spin" />}
+          {busy === "test" ? <LoaderCircle className="animate-spin" /> : <PlugZap />}
           Save and test the connection
         </Button>
       </div>

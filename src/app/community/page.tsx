@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Library, RefreshCw, Sparkles } from "lucide-react";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -23,7 +23,10 @@ export default async function CommunityPage({
   return (
     <main className="mx-auto w-full max-w-4xl space-y-8 px-6 py-10 text-sm leading-relaxed">
       <header className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight">{COMMUNITY_SOURCE.name}</h1>
+        <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
+          <Library className="size-7 shrink-0 text-primary" aria-hidden />
+          {COMMUNITY_SOURCE.name}
+        </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
           The architecture kata is an idea of {COMMUNITY_SOURCE.owner}. This page shows the katas
           from his public collection. Each kata belongs to its author.
@@ -35,7 +38,9 @@ export default async function CommunityPage({
           <LinkButton variant="neutral" size="sm" href={COMMUNITY_SOURCE.site}>
               The original website <ExternalLink />
             </LinkButton>
-          <LinkButton variant="ghost" size="sm" href="/community?refresh=1">Download the list again</LinkButton>
+          <LinkButton variant="ghost" size="sm" href="/community?refresh=1">
+            <RefreshCw /> Download the list again
+          </LinkButton>
         </div>
       </header>
 
@@ -60,7 +65,9 @@ export default async function CommunityPage({
               <LinkButton size="sm" href={`/kata/${kata.id}`}>
                   Start <ArrowRight />
                 </LinkButton>
-              <LinkButton size="sm" variant="ghost" href={`/solve?kata=${kata.id}`}>Get a worked answer</LinkButton>
+              <LinkButton size="sm" variant="ghost" href={`/solve?kata=${kata.id}`}>
+                <Sparkles /> Get a worked answer
+              </LinkButton>
             </CardFooter>
           </Card>
         ))}

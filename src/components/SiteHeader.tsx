@@ -1,19 +1,20 @@
-import { DraftingCompass, Settings } from "lucide-react";
+import { Blocks, BookA, BookOpen, DraftingCompass, GraduationCap, Library, Lightbulb, PencilRuler, Settings, Sparkles, Target } from "lucide-react";
 import Link from "next/link";
 import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const practice = [
-  { href: "/", title: "Katas", description: "Katas and interview questions, with a review." },
-  { href: "/solve", title: "Solve a problem", description: "Paste a problem and get a worked answer." },
-  { href: "/community", title: "Architectural Katas", description: "The collection of Ted Neward." },
+  { href: "/", title: "Katas", description: "Katas and interview questions, with a review.", icon: <Target /> },
+  { href: "/solve", title: "Solve a problem", description: "Paste a problem and get a worked answer.", icon: <Sparkles /> },
+  { href: "/community", title: "Architectural Katas", description: "The collection of Ted Neward.", icon: <Library /> },
 ];
 
 const learn = [
-  { href: "/learn", title: "Lessons", description: "The knowledge areas of an architect." },
-  { href: "/learn/examples", title: "Worked examples", description: "Finished katas, step by step." },
-  { href: "/glossary", title: "Glossary", description: "Terms in plain words." },
+  { href: "/learn", title: "Lessons", description: "The knowledge areas of an architect.", icon: <BookOpen /> },
+  { href: "/learn/building-blocks", title: "Building blocks", description: "The standard pieces and what each one costs.", icon: <Blocks /> },
+  { href: "/learn/examples", title: "Worked examples", description: "Finished katas, step by step.", icon: <Lightbulb /> },
+  { href: "/glossary", title: "Glossary", description: "Terms in plain words.", icon: <BookA /> },
 ];
 
 export default function SiteHeader() {
@@ -24,10 +25,10 @@ export default function SiteHeader() {
         ArchSim
       </Link>
       <nav className="flex items-center gap-1">
-        <NavMenu label="Practice" items={practice} />
-        <NavMenu label="Learn" items={learn} />
+        <NavMenu label="Practice" icon={<Target />} items={practice} />
+        <NavMenu label="Learn" icon={<GraduationCap />} items={learn} />
         <LinkButton variant="ghost" size="sm" href="/scratchpad">
-          Scratchpad
+          <PencilRuler /> Scratchpad
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">

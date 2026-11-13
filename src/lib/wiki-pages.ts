@@ -5,7 +5,7 @@ export type WikiPage = {
   title: string;
   summary: string;
   // A custom page is drawn by a component. An article is a Markdown file in content/learn.
-  kind: "article" | "method" | "characteristics" | "styles" | "style";
+  kind: "article" | "method" | "characteristics" | "styles" | "style" | "blocks";
   related?: string[];
 };
 
@@ -47,6 +47,7 @@ export const wikiSections: WikiSection[] = [
       ...styleLessons.map(
         (lesson): WikiPage => ({ slug: lesson.id, title: lesson.name, summary: lesson.idea, kind: "style", related: ["styles"] }),
       ),
+      { slug: "building-blocks", title: "Building blocks", summary: "The standard pieces of a design, and what each one costs you.", kind: "blocks", related: ["diagrams", "trade-offs", "data-stores", "messaging"] },
     ],
   },
   {

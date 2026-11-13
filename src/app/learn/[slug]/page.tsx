@@ -1,11 +1,13 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, CircleCheck, CircleHelp, Scale } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BlockIcon from "@/components/BlockIcon";
 import Prose from "@/components/Prose";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { blockGroups, blocksIn } from "@/lib/blocks";
 import { characteristics, kataSteps, styleLessons } from "@/lib/learn";
 import { getWikiPage, headingId, headings, neighbors, readArticle } from "@/lib/wiki";
 
@@ -116,6 +118,92 @@ function Styles() {
   );
 }
 
+function Blocks() {
+  return (
+    <div className="space-y-8">
+      <div className="max-w-2xl space-y-2">
+        <p>
+          Most designs use the same set of pieces. An architect knows what each piece does
+          and, more important, what it costs. No piece is free: each one adds a part that can fail
+          and a decision that you must defend.
+        </p>
+        <p>
+          The same pieces are above the canvas in each kata and in the Scratchpad. Drag a piece to
+          the canvas, or click it. Add a piece only when you can say which sentence of the problem
+          needs it. The last three groups are not components: they are the arrows between pieces,
+          the frames around them, and small patterns. A pattern is a start that you change, not an
+          answer.
+        </p>
+      </div>
+      <nav aria-label="Groups" className="inline-block rounded-base border-2 bg-card px-4 py-3">
+        <h2 className="font-medium">Groups</h2>
+        <ul>
+          {blockGroups.map((group) => (
+            <li key={group.id} className="flex items-center gap-2">
+              <span style={{ backgroundColor: group.color }} className="size-2.5 rounded-full border border-border" />
+              <a href={`#${group.id}`} className="text-primary hover:underline">
+                {group.title}
+              </a>
+              <span className="text-muted-foreground">{blocksIn(group.id).length} pieces</span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {blockGroups.map((group) => (
+        <section key={group.id} className="space-y-3">
+          <div className="border-b pb-1">
+            <h2 id={group.id} className="scroll-mt-20 text-xl font-semibold tracking-tight">
+              {group.title}
+            </h2>
+            <p className="text-muted-foreground">{group.summary}</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {blocksIn(group.id).map((block) => (
+              <Card key={block.id} id={block.id} className="gap-3 py-4">
+                <CardContent className="space-y-2 px-4">
+                  <span
+                    style={{ backgroundColor: group.color }}
+                    className={`inline-flex items-center gap-1 border-2 border-border px-2 py-0.5 font-medium text-black ${
+                      block.shape === "actor" || block.shape === "person" ? "rounded-full" : block.shape === "module" ? "rounded-none" : "rounded-base"
+                    } ${block.shape === "external" || block.shape === "boundary" ? "border-dashed" : ""}`}
+                  >
+                    <BlockIcon shape={block.shape} />
+                    {block.name}
+                  </span>
+                  <p>{block.does}</p>
+                  <dl className="space-y-1.5">
+                    <div>
+                      <dt className="flex items-center gap-1.5 font-medium">
+                        <Scale className="size-3.5 text-primary" aria-hidden /> It costs you
+                      </dt>
+                      <dd className="text-muted-foreground">{block.cost}</dd>
+                    </div>
+                    <div>
+                      <dt className="flex items-center gap-1.5 font-medium">
+                        <CircleCheck className="size-3.5 text-primary" aria-hidden /> Use it when
+                      </dt>
+                      <dd className="text-muted-foreground">{block.useWhen}</dd>
+                    </div>
+                    <div>
+                      <dt className="flex items-center gap-1.5 font-medium">
+                        <CircleHelp className="size-3.5 text-primary" aria-hidden /> Answer this in your trade-offs
+                      </dt>
+                      <dd className="text-muted-foreground">{block.question}</dd>
+                    </div>
+                  </dl>
+                  <Link href={`/learn/${block.learn}`} className="text-primary hover:underline">
+                    Read the lesson <ArrowRight className="inline size-3.5" aria-hidden />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export default async function WikiArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const page = getWikiPage(slug);
@@ -154,6 +242,7 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
       {page.kind === "method" && <Method />}
       {page.kind === "characteristics" && <Characteristics />}
       {page.kind === "styles" && <Styles />}
+      {page.kind === "blocks" && <Blocks />}
       {lesson && <StyleLessonBody lesson={lesson} />}
 
       {related.length > 0 && (
