@@ -23,7 +23,7 @@ export type Review = {
   defense_questions: string[];
 };
 
-// Claude Code validates the reviewer output against this schema.
+// The output of the reviewer must match this schema, with each provider.
 export const reviewSchema = {
   type: "object",
   additionalProperties: false,

@@ -30,7 +30,7 @@ export default async function SolvePage({ searchParams }: { searchParams: Promis
           Solve a problem
         </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
-          Paste the text of a design problem, for example an interview question. Claude writes a
+          Paste the text of a design problem, for example an interview question. The model writes a
           worked answer with the five-step method. The problem is also added to your katas, so you
           can try it with your own design.
         </p>

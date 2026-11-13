@@ -56,7 +56,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <Badge>Worked example</Badge>
           <Badge variant="neutral">{kata.difficulty}</Badge>
           {kata.interview && <Badge variant="neutral">interview question</Badge>}
-          {kata.custom && <Badge variant="neutral">your problem · answer written by {example.author ?? "Claude"}</Badge>}
+          {kata.custom && <Badge variant="neutral">your problem · answer written by {example.author ?? "an AI model"}</Badge>}
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">{kata.title}</h1>
         <Alert>

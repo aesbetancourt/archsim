@@ -33,7 +33,7 @@ export default async function Home() {
         <h1 className="text-3xl font-semibold tracking-tight">Challenge your software architecture knowledge</h1>
         <p className="max-w-2xl text-muted-foreground">
           Each kata is a short business problem. Draw a design, explain your decisions, and get a
-          review from Claude. If the concepts are new to you, start with a finished example.
+          review from an AI model. If the concepts are new to you, start with a finished example.
         </p>
         <div className="flex flex-wrap gap-2">
           <LinkButton href="/learn/examples">

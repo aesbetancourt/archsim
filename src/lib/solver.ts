@@ -11,7 +11,7 @@ const object = (properties: Record<string, object>, optional: string[] = []) => 
   properties,
 });
 
-// Claude Code validates the solver output against this schema.
+// The output of the solver must match this schema, with each provider.
 export const solutionSchema = object({
   kata: object(
     {
