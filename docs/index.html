@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArchSim: practice software architecture</title>
+  <meta name="description" content="Practice software architecture with katas and an AI reviewer that grades your reasoning. Works with Claude Code, OpenCode, the Anthropic API, and any OpenAI-compatible provider.">
+  <meta property="og:title" content="ArchSim: practice software architecture">
+  <meta property="og:description" content="Take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute.">
+  <meta property="og:image" content="screenshots/home.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: hsl(214, 95%, 93%);
+      --panel: #ffffff;
+      --ink: #000000;
+      --soft: #3d4658;
+      --main: hsl(217, 100%, 66%);
+      --mark: #ffe45c;
+      --border: #000000;
+      --shadow: 4px 4px 0 0 var(--border);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #171f38;
+        --panel: #14161d;
+        --ink: #eef0f4;
+        --soft: #b5bdcc;
+        --border: #000000;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Geist", system-ui, sans-serif;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.25rem; }
+    h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+    h1 { font-size: clamp(2.4rem, 6.5vw, 4.6rem); text-wrap: balance; }
+    h2 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); text-wrap: balance; }
+    h3 { font-size: 1.15rem; }
+    p { margin: 0; }
+    .soft { color: var(--soft); }
+
+    /* Shared pieces */
+    .box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      border: 2px solid var(--border); border-radius: 6px;
+      background: var(--main); color: #000;
+      font-weight: 700; text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .btn:hover { transform: translate(4px, 4px); box-shadow: none; }
+    .btn.plain { background: var(--panel); color: var(--ink); }
+    .btn:focus-visible, a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    mark { background: var(--mark); color: #000; padding: 0 0.2em; border-radius: 2px; }
+    .tag {
+      display: inline-block; padding: 0.15rem 0.6rem;
+      border: 2px solid var(--border); border-radius: 6px;
+      background: var(--panel); font-size: 0.8rem; font-weight: 700;
+    }
+
+    /* Top bar */
+    header.bar { border-bottom: 2px solid var(--border); background: var(--panel); }
+    header.bar .wrap { display: flex; align-items: center; justify-content: space-between; height: 3.5rem; }
+    .logo { font-weight: 800; font-size: 1.1rem; text-decoration: none; }
+    .logo span { color: var(--main); }
+    nav a { margin-left: 1.25rem; text-decoration: none; font-size: 0.95rem; }
+    nav a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+
+    /* Hero */
+    .hero { padding: 4.5rem 0 3rem; }
+    .hero p.lead { font-size: clamp(1.05rem, 2vw, 1.3rem); max-width: 40rem; margin-top: 1.25rem; color: var(--soft); }
+    .hero .actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
+    .shot { margin-top: 3rem; overflow: hidden; }
+    .shot img { display: block; width: 100%; height: auto; }
+
+    section { padding: 3.5rem 0; }
+    .intro { max-width: 44rem; }
+    .intro p { margin-top: 0.9rem; color: var(--soft); font-size: 1.05rem; }
+
+    /* Steps */
+    .steps { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin-top: 2rem; padding: 0; list-style: none; counter-reset: step; }
+    .steps li { padding: 1.1rem; counter-increment: step; }
+    .steps li::before {
+      content: counter(step);
+      display: flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; margin-bottom: 0.8rem;
+      border: 2px solid var(--border); border-radius: 50%;
+      background: var(--main); color: #000; font-weight: 800;
+    }
+    .steps p { margin-top: 0.35rem; font-size: 0.93rem; color: var(--soft); }
+
+    /* Feature grid */
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 2rem; }
+    .grid .box { padding: 1.25rem; }
+    .grid p { margin-top: 0.4rem; font-size: 0.95rem; color: var(--soft); }
+
+    /* Two column blocks */
+    .split { display: grid; gap: 2rem; align-items: center; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); }
+    .split ul { margin: 1rem 0 0; padding-left: 1.2rem; color: var(--soft); }
+    .split li + li { margin-top: 0.4rem; }
+
+    /* Providers */
+    .table { margin-top: 2rem; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 0.8rem 1rem; border-bottom: 2px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    th { background: var(--main); color: #000; font-weight: 800; }
+
+    /* Run */
+    pre {
+      margin: 1.25rem 0 0; padding: 1.1rem 1.25rem; overflow-x: auto;
+      background: #0d1017; color: #e8ecf3;
+      border: 2px solid var(--border); border-radius: 6px; box-shadow: var(--shadow);
+      font-family: "Geist Mono", ui-monospace, monospace; font-size: 0.92rem; line-height: 1.7;
+    }
+
+    footer { border-top: 2px solid var(--border); background: var(--panel); padding: 2.5rem 0; font-size: 0.93rem; }
+    footer p + p { margin-top: 0.6rem; }
+    footer a { text-decoration-thickness: 2px; }
+
+    @media (max-width: 40rem) {
+      nav a:not(.keep) { display: none; }
+      .hero { padding-top: 3rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="wrap">
+      <a class="logo" href="#top">Arch<span>Sim</span></a>
+      <nav>
+        <a href="#how">How it works</a>
+        <a href="#learn">Learn</a>
+        <a href="#providers">Providers</a>
+        <a href="#run">Run it</a>
+        <a class="keep" href="https://github.com/aesbetancourt/archsim">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="wrap">
+      <section class="hero">
+        <span class="tag">Open source · runs on your computer</span>
+        <h1 style="margin-top: 1.1rem">Practice software architecture, and get your <mark>reasoning</mark> reviewed.</h1>
+        <p class="lead">
+          Take a short business problem, draw a design, and explain your trade-offs. An AI reviewer
+          reads your diagram and grades how well you reasoned, in about a minute.
+        </p>
+        <div class="actions">
+          <a class="btn" href="https://github.com/aesbetancourt/archsim">Get it on GitHub</a>
+          <a class="btn plain" href="#how">See how it works</a>
+        </div>
+        <div class="box shot">
+          <img src="screenshots/home.png" alt="The ArchSim home page with a list of architecture katas" width="1400" height="900">
+        </div>
+      </section>
+
+      <section class="intro">
+        <h2>The code is getting cheaper. The decisions are not.</h2>
+        <p>
+          AI tools now write a large part of the code. The decisions that stay with people are the
+          expensive ones: how a system is divided, where its data lives, how its parts talk, and
+          which qualities it must have.
+        </p>
+        <p>
+          Those decisions are architecture, and they are hard to practice. You can attempt a design
+          alone, but nobody tells you where your reasoning is weak. ArchSim does.
+        </p>
+      </section>
+
+      <section id="how">
+        <h2>One kata, five steps, one review</h2>
+        <ol class="steps">
+          <li class="box"><h3>Set the scope</h3><p>Name the few functions that shape the design, and what you leave out.</p></li>
+          <li class="box"><h3>Select the characteristics</h3><p>Pick the three qualities that drive this problem, and tie each one to the text.</p></li>
+          <li class="box"><h3>Select a style</h3><p>Choose the simplest architecture style that supports them.</p></li>
+          <li class="box"><h3>Draw the diagram</h3><p>Use the built-in Excalidraw canvas, as in a real interview.</p></li>
+          <li class="box"><h3>State the trade-offs</h3><p>Say what your design gives up, and where it fails first.</p></li>
+        </ol>
+        <div class="box shot">
+          <img src="screenshots/kata.png" alt="A kata page with the problem text, the five steps, and the work area" width="1400" height="900" loading="lazy">
+        </div>
+      </section>
+
+      <section>
+        <div class="split">
+          <div>
+            <h2>A review that shows its evidence</h2>
+            <ul>
+              <li>Seven dimensions, each scored from 1 to 5.</li>
+              <li>A quote from your own diagram or text for each score.</li>
+              <li>One concrete change to make next time, for each dimension.</li>
+              <li>The top risk in your design.</li>
+              <li>The questions a review board would ask you.</li>
+            </ul>
+          </div>
+          <div class="box" style="padding: 1.25rem">
+            <h3>No single correct answer</h3>
+            <p class="soft" style="margin-top: 0.5rem">
+              Every architecture is a set of trade-offs. The reviewer grades the quality of your
+              reasoning against the problem. It does not compare your design with a reference
+              solution.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Built for practice</h2>
+        <div class="grid">
+          <div class="box"><h3>Katas and interview questions</h3><p>From a sandwich chain to a ticket seller with two million buyers, plus the classic system design questions.</p></div>
+          <div class="box"><h3>A tutor, not an answer key</h3><p>A help chat next to the canvas explains concepts and gives hints. In a kata, it does not hand you the design.</p></div>
+          <div class="box"><h3>Highlights and a notepad</h3><p>Mark the sentences that matter and think in a private notepad, as with pen and paper.</p></div>
+          <div class="box"><h3>Solve your own problem</h3><p>Paste any problem, for example an interview question you had, and get a worked answer with a diagram.</p></div>
+          <div class="box"><h3>Scratchpad</h3><p>Free boards with a canvas and notes, saved automatically, for designs that are not katas.</p></div>
+          <div class="box"><h3>Your data stays local</h3><p>No account and no database. Attempts and boards are plain files on your computer.</p></div>
+        </div>
+      </section>
+
+      <section id="learn">
+        <div class="split">
+          <div>
+            <h2>A wiki for the concepts you meet</h2>
+            <ul>
+              <li><strong>42 pages</strong> on trade-offs, modularity, styles, data, messaging, resilience, security, and teams.</li>
+              <li><strong>Design inside one application:</strong> hexagonal, clean, vertical slices, domain models, CQRS.</li>
+              <li><strong>Worked examples</strong> that show which sentence in the problem caused each decision.</li>
+              <li><strong>A glossary</strong> of more than 120 terms in plain words.</li>
+            </ul>
+          </div>
+          <div class="box shot" style="margin-top: 0">
+            <img src="screenshots/learn.png" alt="A lesson page about hexagonal architecture, in the dark theme" width="1400" height="900" loading="lazy">
+          </div>
+        </div>
+      </section>
+
+      <section id="providers">
+        <h2>Works with the AI provider you already have</h2>
+        <p class="soft" style="margin-top: 0.9rem; max-width: 44rem">
+          The reviewer, the tutor chat, and the worked answers use one connection that you select in
+          Settings. No provider is required by the design.
+        </p>
+        <div class="box table">
+          <table>
+            <thead><tr><th>Mode</th><th>What it uses</th><th>API key in the app</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Claude Code</strong></td><td>The <code>claude</code> command and its login on your computer</td><td>No</td></tr>
+              <tr><td><strong>OpenCode</strong></td><td>The <code>opencode</code> command and its login on your computer</td><td>No</td></tr>
+              <tr><td><strong>Anthropic API</strong></td><td>An Anthropic API key</td><td>Yes</td></tr>
+              <tr><td><strong>OpenAI-compatible endpoint</strong></td><td>Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with this API format</td><td>Yes, except for local models</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="run">
+        <h2>Run it</h2>
+        <p class="soft" style="margin-top: 0.9rem; max-width: 44rem">
+          ArchSim runs on your computer. You need Node.js 20.9 or later, pnpm, and one of the four
+          connections above.
+        </p>
+<pre>git clone https://github.com/aesbetancourt/archsim.git
+cd archsim
+pnpm install
+pnpm dev</pre>
+        <div class="hero actions" style="padding: 0">
+          <a class="btn" href="https://github.com/aesbetancourt/archsim">Open the repository</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>
+        <strong>Credits.</strong> The architecture kata is an idea of
+        <a href="https://github.com/tedneward/ArchKatas">Ted Neward</a>. The method is inspired by the book
+        <em>Fundamentals of Software Architecture</em> by Mark Richards and Neal Ford.
+      </p>
+      <p class="soft">
+        ArchSim is a personal project by Alejandro Sanchez. It is not affiliated with these authors or
+        with any AI provider. The lessons and worked examples are written with AI and are not reviewed
+        by an expert.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
