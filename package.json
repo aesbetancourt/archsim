@@ -2,6 +2,7 @@
   "name": "archsim",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev",

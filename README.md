@@ -25,7 +25,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Practice
 
-- **Katas and interview questions.** Original katas from starter to hard, classic system design interview questions (link shortener, chat, news feed, video streaming, notifications, payments), and two real interview prompts.
+- **Katas and interview questions.** Original katas from starter to hard, classic system design interview questions (link shortener, chat, news feed, video streaming, notifications, payments), and two open interview prompts.
 - **A drawing canvas.** An embedded [Excalidraw](https://excalidraw.com) canvas, the same kind of tool used in real interviews.
 - **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts and gives hints and questions, and it does not hand you the design.
 - **Solve a problem.** Paste any problem text, for example an interview question you had. The app writes a worked answer with the five-step method and adds the problem to your katas.
@@ -97,6 +97,10 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 
 - **The architecture kata** is an idea of [Ted Neward](https://github.com/tedneward/ArchKatas). The app reads his public collection of katas and shows each kata with its author. The kata texts are not part of this repository.
 - **The method** is inspired by the book *Fundamentals of Software Architecture* by Mark Richards and Neal Ford: architecture characteristics, architecture styles, and the rule that every decision is a trade-off.
+
+## License
+
+[MIT](LICENSE). You can use, copy, and change this code. Keep the copyright notice.
 
 ArchSim is a personal project. It is not affiliated with the authors above or with any AI provider.
 

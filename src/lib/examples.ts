@@ -257,7 +257,7 @@ export const workedExamples: WorkedExample[] = [
     kataId: "tutor-marketplace",
     hardParts: [
       {
-        quote: "How would you design the Preply platform?",
+        quote: "How would you design the platform?",
         meaning:
           "The prompt has no scope and no numbers. The first task is to select the core flows and state assumptions. An answer that designs everything designs nothing well.",
       },

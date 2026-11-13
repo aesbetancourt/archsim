@@ -127,7 +127,7 @@ export const katas: Kata[] = [
     difficulty: "medium",
     interview: true,
     context:
-      "Preply is an online language learning marketplace, connecting tutors to learners all around the globe. Our engine is powered by a machine-learning algorithm that recommends the best tutors for each learner. Having said that, how would you design the Preply platform?",
+      "A company runs an online language learning marketplace, connecting tutors to learners all around the globe. Its engine is powered by a machine-learning algorithm that recommends the best tutors for each learner. How would you design the platform?",
     requirements: [],
     constraints: [],
     note: "This is an open interview prompt. It gives no numbers and no scope. State your assumptions on scale, select the core flows you design for, and say what you leave out.",
