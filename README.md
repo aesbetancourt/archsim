@@ -2,6 +2,8 @@
 
 **A place to practice software architecture, with an AI reviewer that grades your reasoning.**
 
+Website: [aesbetancourt.dev/archsim](https://aesbetancourt.dev/archsim/)
+
 AI tools now write a large part of the code. The decisions that stay with people are the expensive ones: how a system is divided, where its data lives, how its parts talk, and which qualities it must have. Those decisions are architecture, and they are hard to practice. You can attempt a design alone, but nobody tells you where your reasoning is weak.
 
 ArchSim closes that gap. You take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute.
