@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import StyleLessonBody from "@/components/StyleLessonBody";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ const sections = [
   { id: "styles", label: "Styles" },
   { id: "examples", label: "Worked examples" },
 ];
+
 
 const ratingColumns = [
   { key: "simplicity", label: "Simplicity" },
@@ -40,6 +42,9 @@ export default async function LearnPage() {
               <a href={`#${section.id}`}>{section.label}</a>
             </Button>
           ))}
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/glossary">Glossary</Link>
+          </Button>
         </nav>
       </header>
 
@@ -139,43 +144,8 @@ export default async function LearnPage() {
                 <CardTitle className="text-base">{lesson.name}</CardTitle>
                 <CardDescription className="text-base text-foreground">{lesson.idea}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <pre className="overflow-x-auto rounded-md bg-muted p-4 font-mono text-xs leading-5">
-                  {lesson.diagram}
-                </pre>
-                <p>{lesson.how}</p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <h4 className="font-medium">Strengths</h4>
-                    <ul className="list-disc pl-5 text-muted-foreground">
-                      {lesson.strengths.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">Costs</h4>
-                    <ul className="list-disc pl-5 text-muted-foreground">
-                      {lesson.costs.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <dl className="grid gap-2 border-t pt-4">
-                  <div>
-                    <dt className="inline font-medium">Use when: </dt>
-                    <dd className="inline">{lesson.useWhen}</dd>
-                  </div>
-                  <div>
-                    <dt className="inline font-medium">Avoid when: </dt>
-                    <dd className="inline">{lesson.avoidWhen}</dd>
-                  </div>
-                  <div className="text-muted-foreground">
-                    <dt className="inline font-medium text-foreground">Example: </dt>
-                    <dd className="inline">{lesson.example}</dd>
-                  </div>
-                </dl>
+              <CardContent>
+                <StyleLessonBody lesson={lesson} />
               </CardContent>
             </Card>
           ))}

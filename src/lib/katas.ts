@@ -1,3 +1,5 @@
+import { interviewKatas } from "./interview-katas";
+
 export type Kata = {
   id: string;
   title: string;
@@ -147,6 +149,7 @@ export const katas: Kata[] = [
     ],
     note: "This is an interview prompt. In the interview, you sketch the design as you talk.",
   },
+  ...interviewKatas,
 ];
 
 export function getKata(id: string): Kata | undefined {

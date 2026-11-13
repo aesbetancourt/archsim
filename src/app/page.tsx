@@ -14,6 +14,11 @@ export default async function Home() {
   const [attempts, katas, examples] = await Promise.all([listAttempts(), allKatas(), allExamples()]);
   const solved = new Set(examples.map(({ kata }) => kata.id));
   const titles = new Map(katas.map((kata) => [kata.id, kata.title]));
+  const groups = [
+    { title: "Your problems", katas: katas.filter((kata) => kata.custom) },
+    { title: "Katas", katas: katas.filter((kata) => !kata.custom && !kata.interview) },
+    { title: "Interview questions", katas: katas.filter((kata) => !kata.custom && kata.interview) },
+  ].filter((group) => group.katas.length > 0);
 
   return (
     <main className="mx-auto w-full max-w-4xl space-y-12 px-6 py-10">
@@ -40,10 +45,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Katas</h2>
+      {groups.map((group) => (
+      <section key={group.title} className="space-y-4">
+        <h2 className="text-lg font-semibold tracking-tight">{group.title}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          {katas.map((kata) => (
+          {group.katas.map((kata) => (
             <Card key={kata.id}>
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
@@ -75,6 +81,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
+      ))}
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold tracking-tight">Your history</h2>

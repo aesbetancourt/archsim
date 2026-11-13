@@ -52,7 +52,8 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full rounded-md border border-stone-200 bg-white"
+      className="mx-auto block w-full rounded-md border border-stone-200 bg-white"
+      style={{ maxWidth: width }}
       role="img"
       aria-label="Architecture diagram"
     >

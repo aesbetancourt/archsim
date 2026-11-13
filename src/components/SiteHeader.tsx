@@ -22,6 +22,9 @@ export default function SiteHeader() {
         <Button variant="ghost" size="sm" asChild>
           <Link href="/solve">Solve a problem</Link>
         </Button>
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/glossary">Glossary</Link>
+        </Button>
       </nav>
     </header>
   );

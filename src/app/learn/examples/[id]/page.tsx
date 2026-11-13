@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { termsIn } from "@/lib/glossary";
 import { findExample, findKata } from "@/lib/library";
 import { getStyleLesson } from "@/lib/learn";
 
@@ -46,6 +47,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
   const kata = await findKata(id);
   if (!example || !kata) notFound();
   const lesson = getStyleLesson(example.style.name);
+  const terms = termsIn(JSON.stringify([kata, example]));
 
   return (
     <main className="mx-auto w-full max-w-4xl space-y-12 px-6 py-10 text-sm leading-relaxed">
@@ -102,6 +104,21 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           </CardContent>
         )}
       </Card>
+
+      {terms.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="font-medium">Terms used in this answer</h2>
+          <div className="flex flex-wrap gap-1.5">
+            {terms.map((entry) => (
+              <Badge key={entry.id} variant="outline" asChild>
+                <Link href={`/glossary#${entry.id}`} title={entry.definition}>
+                  {entry.term}
+                </Link>
+              </Badge>
+            ))}
+          </div>
+        </section>
+      )}
 
       <Step number={1} title="Read for what is hard">
         <ul className="grid gap-4">

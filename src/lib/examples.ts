@@ -1,3 +1,5 @@
+import { interviewExamples } from "./interview-katas";
+
 export type DiagramNode = {
   id: string;
   label: string;
@@ -484,6 +486,7 @@ export const workedExamples: WorkedExample[] = [
       body: "Remove the webhooks. The scheduler polls each connection every minute and the rest of the design stays the same. This removes subscription renewal, webhook security, and the ingest step, which are a large part of the failure modes. The price is a delay of up to one minute and more provider API calls. For a finance inbox, one minute is probably fine. This is a strong first version, with webhooks added later only for the sources that need speed.",
     },
   },
+  ...interviewExamples,
 ];
 
 export function getWorkedExample(kataId: string): WorkedExample | undefined {

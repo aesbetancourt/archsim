@@ -1,3 +1,5 @@
+import type { DiagramSpec } from "./examples";
+
 type Level = "low" | "medium" | "high";
 
 export type StyleLesson = {
@@ -5,7 +7,7 @@ export type StyleLesson = {
   name: string;
   idea: string;
   how: string;
-  diagram: string;
+  diagram: DiagramSpec;
   strengths: string[];
   costs: string[];
   useWhen: string;
@@ -20,13 +22,19 @@ export const styleLessons: StyleLesson[] = [
     name: "Layered",
     idea: "One application, split into horizontal layers by technical role.",
     how: "Each request goes down through the layers: user interface, business rules, data access, database. A layer talks only to the layer below it. The full application is built and deployed as one unit.",
-    diagram: `[ Presentation ]
-        ↓
-[ Business rules ]
-        ↓
-[ Data access ]
-        ↓
-[ Database ]`,
+    diagram: {
+      nodes: [
+        { id: "ui", label: "Presentation\n(screens, API)", col: 0, row: 0 },
+        { id: "rules", label: "Business rules", col: 0, row: 1 },
+        { id: "access", label: "Data access", col: 0, row: 2 },
+        { id: "db", label: "Database", col: 0, row: 3 },
+      ],
+      edges: [
+        { from: "ui", to: "rules" },
+        { from: "rules", to: "access" },
+        { from: "access", to: "db" },
+      ],
+    },
     strengths: [
       "Simple to understand, build, and deploy.",
       "Low cost. A small team can own all of it.",
@@ -47,10 +55,16 @@ export const styleLessons: StyleLesson[] = [
     name: "Modular monolith",
     idea: "One application, split into modules by business area.",
     how: "Each module owns one business area, such as orders or payments, with its code and its tables. Modules talk through explicit interfaces. The full application is still deployed as one unit.",
-    diagram: `┌───────── one deployment ─────────┐
-│ [Orders]  [Menu]  [Payments]     │
-└────────────────┬─────────────────┘
-            [ Database ]`,
+    diagram: {
+      nodes: [
+        { id: "orders", label: "Orders\n(module)", col: 0, row: 0.4 },
+        { id: "menu", label: "Menu\n(module)", col: 1, row: 0.4 },
+        { id: "payments", label: "Payments\n(module)", col: 2, row: 0.4 },
+        { id: "db", label: "Database", col: 1, row: 1.9 },
+      ],
+      groups: [{ id: "app", label: "One deployment", col: 0, row: 0.4, cols: 3, rows: 1 }],
+      edges: [{ from: "app", to: "db", label: "one database" }],
+    },
     strengths: [
       "A change to one business feature stays in one module.",
       "As simple to deploy and operate as a layered application.",
@@ -71,9 +85,19 @@ export const styleLessons: StyleLesson[] = [
     name: "Microkernel",
     idea: "A small core system, extended by plug-ins.",
     how: "The core has only the minimum logic to run. Each plug-in adds one feature or one variation and connects to the core through a fixed contract. You add or remove plug-ins without a change to the core.",
-    diagram: `[Plug-in]  [Plug-in]  [Plug-in]
-     \\        |        /
-      [  Core system  ]`,
+    diagram: {
+      nodes: [
+        { id: "a", label: "Plug-in A", col: 0, row: 0 },
+        { id: "b", label: "Plug-in B", col: 1, row: 0 },
+        { id: "c", label: "Plug-in C", col: 2, row: 0 },
+        { id: "core", label: "Core system\n(fixed contract)", col: 1, row: 1.3 },
+      ],
+      edges: [
+        { from: "a", to: "core" },
+        { from: "b", to: "core" },
+        { from: "c", to: "core" },
+      ],
+    },
     strengths: [
       "Easy to add custom rules for each customer, country, or device.",
       "The core stays small and stable.",
@@ -94,11 +118,23 @@ export const styleLessons: StyleLesson[] = [
     name: "Service-based",
     idea: "A few large services, one for each business area, that usually share a database.",
     how: "The system has four to twelve coarse services, each deployed separately. A user interface calls them. Most designs keep one shared database, so transactions stay simple.",
-    diagram: `        [ User interface ]
-       /        |         \\
-[Service A] [Service B] [Service C]
-       \\        |         /
-        [ Shared database ]`,
+    diagram: {
+      nodes: [
+        { id: "ui", label: "User interface", col: 1, row: 0 },
+        { id: "a", label: "Service A", col: 0, row: 1.2 },
+        { id: "b", label: "Service B", col: 1, row: 1.2 },
+        { id: "c", label: "Service C", col: 2, row: 1.2 },
+        { id: "db", label: "Shared database", col: 1, row: 2.4 },
+      ],
+      edges: [
+        { from: "ui", to: "a" },
+        { from: "ui", to: "b" },
+        { from: "ui", to: "c" },
+        { from: "a", to: "db" },
+        { from: "b", to: "db" },
+        { from: "c", to: "db" },
+      ],
+    },
     strengths: [
       "Each service deploys, scales, and fails on its own.",
       "Much less operating work than microservices.",
@@ -119,8 +155,19 @@ export const styleLessons: StyleLesson[] = [
     name: "Event-driven",
     idea: "Components react to events and do not call each other directly.",
     how: "A component publishes an event, such as 'order placed', to a broker. Other components subscribe and react in their own time. The publisher does not know who listens, and does not wait for them.",
-    diagram: `[Producer] → (event) → [ Broker ] → [Consumer A]
-                                  → [Consumer B]`,
+    diagram: {
+      nodes: [
+        { id: "producer", label: "Producer", col: 0, row: 0 },
+        { id: "broker", label: "Broker", col: 1, row: 0 },
+        { id: "a", label: "Consumer A", col: 2, row: 0 },
+        { id: "b", label: "Consumer B", col: 2, row: 1.1 },
+      ],
+      edges: [
+        { from: "producer", to: "broker", label: "event", async: true },
+        { from: "broker", to: "a", async: true },
+        { from: "broker", to: "b", async: true },
+      ],
+    },
     strengths: [
       "Absorbs load peaks. The broker holds events until consumers catch up.",
       "Very responsive, because the sender does not wait.",
@@ -141,11 +188,25 @@ export const styleLessons: StyleLesson[] = [
     name: "Microservices",
     idea: "Many small services. Each one does one job and owns its data.",
     how: "Each service covers one narrow business capability and has its own database. No service reads the data of another service directly. Services talk through APIs or events, usually behind an API gateway.",
-    diagram: `          [ API gateway ]
-        /       |        \\
- [Svc A]     [Svc B]     [Svc C]
-    |           |           |
-  [DB A]      [DB B]      [DB C]`,
+    diagram: {
+      nodes: [
+        { id: "gateway", label: "API gateway", col: 1, row: 0 },
+        { id: "a", label: "Service A", col: 0, row: 1.2 },
+        { id: "b", label: "Service B", col: 1, row: 1.2 },
+        { id: "c", label: "Service C", col: 2, row: 1.2 },
+        { id: "da", label: "Database A", col: 0, row: 2.3 },
+        { id: "db", label: "Database B", col: 1, row: 2.3 },
+        { id: "dc", label: "Database C", col: 2, row: 2.3 },
+      ],
+      edges: [
+        { from: "gateway", to: "a" },
+        { from: "gateway", to: "b" },
+        { from: "gateway", to: "c" },
+        { from: "a", to: "da" },
+        { from: "b", to: "db" },
+        { from: "c", to: "dc" },
+      ],
+    },
     strengths: [
       "Each service scales and deploys independently.",
       "One failed service does not have to stop the others.",
@@ -166,11 +227,23 @@ export const styleLessons: StyleLesson[] = [
     name: "Space-based",
     idea: "Keep the data in memory, next to the code, to survive extreme load peaks.",
     how: "Identical processing units each hold the working data in memory and replicate it to each other. Requests do not touch the database. The database is updated in the background. Units start and stop as load changes.",
-    diagram: `         [ Load balancer ]
-        /        |        \\
-[Unit + mem] [Unit + mem] [Unit + mem]
-        \\        |        /
-     (async)  [ Database ]`,
+    diagram: {
+      nodes: [
+        { id: "lb", label: "Load balancer", col: 1, row: 0 },
+        { id: "a", label: "Processing unit\n(data in memory)", col: 0, row: 1.2 },
+        { id: "b", label: "Processing unit\n(data in memory)", col: 1, row: 1.2 },
+        { id: "c", label: "Processing unit\n(data in memory)", col: 2, row: 1.2 },
+        { id: "db", label: "Database", col: 1, row: 2.4 },
+      ],
+      edges: [
+        { from: "lb", to: "a" },
+        { from: "lb", to: "b" },
+        { from: "lb", to: "c" },
+        { from: "a", to: "b", label: "copy", both: true },
+        { from: "b", to: "c", label: "copy", both: true },
+        { from: "b", to: "db", label: "later", async: true },
+      ],
+    },
     strengths: [
       "Handles very high and sudden load, because the database is not in the request path.",
       "Elastic: units are added and removed in seconds.",
@@ -191,7 +264,19 @@ export const styleLessons: StyleLesson[] = [
     name: "Pipeline",
     idea: "Data flows in one direction through a chain of small steps.",
     how: "Each step (filter) does one task: read, clean, transform, or write. A step gets input from the step before it and passes output to the next step (through a pipe). Steps do not know about each other.",
-    diagram: `[Source] → [Filter] → [Filter] → [Filter] → [Sink]`,
+    diagram: {
+      nodes: [
+        { id: "source", label: "Source", col: 0, row: 0 },
+        { id: "f1", label: "Filter\n(check)", col: 1, row: 0 },
+        { id: "f2", label: "Filter\n(convert)", col: 2, row: 0 },
+        { id: "sink", label: "Sink\n(write result)", col: 3, row: 0 },
+      ],
+      edges: [
+        { from: "source", to: "f1" },
+        { from: "f1", to: "f2" },
+        { from: "f2", to: "sink" },
+      ],
+    },
     strengths: [
       "Each step is small, simple, and easy to test.",
       "Easy to add, remove, or reorder steps.",

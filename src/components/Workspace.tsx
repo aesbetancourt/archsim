@@ -8,7 +8,10 @@ import { useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -17,6 +20,8 @@ import type { Kata } from "@/lib/katas";
 import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/learn";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
+
+const MAX_CHARACTERISTICS = 3;
 
 const styles = [...styleLessons.map((lesson) => lesson.name), "Other (explain in the rationale)"];
 
@@ -55,12 +60,27 @@ function StepHeading({ number, title, hint }: { number: number; title: string; h
 export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample: boolean }) {
   const router = useRouter();
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
-  const [characteristics, setCharacteristics] = useState("");
+  const [selected, setSelected] = useState<{ name: string; why: string }[]>([]);
   const [style, setStyle] = useState("");
   const [rationale, setRationale] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const lesson = getStyleLesson(style);
+
+  // Select or remove a characteristic. The limit is three.
+  function toggle(name: string) {
+    setSelected((current) =>
+      current.some((item) => item.name === name)
+        ? current.filter((item) => item.name !== name)
+        : current.length < MAX_CHARACTERISTICS
+          ? [...current, { name, why: "" }]
+          : current,
+    );
+  }
+
+  function setWhy(name: string, why: string) {
+    setSelected((current) => current.map((item) => (item.name === name ? { ...item, why } : item)));
+  }
 
   async function submit() {
     const elements = api.current?.getSceneElements() ?? [];
@@ -83,7 +103,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kataId: kata.id,
-          characteristics,
+          characteristics: selected
+            .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
+            .join("\n"),
           style,
           rationale,
           diagramPng: await blobToDataUrl(blob),
@@ -148,23 +170,50 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           <Separator />
 
           <section className="space-y-2">
-            <Label htmlFor="characteristics" className="sr-only">
-              Driving characteristics
-            </Label>
             <StepHeading
               number={1}
               title="Driving characteristics"
-              hint="Name the top three. Tie each one to a requirement or constraint."
+              hint={`Select the top ${MAX_CHARACTERISTICS}. Then tie each one to a sentence in the kata.`}
             />
-            <Textarea
-              id="characteristics"
-              rows={4}
-              value={characteristics}
-              onChange={(event) => setCharacteristics(event.target.value)}
-            />
+            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Driving characteristics">
+              {glossary.map((item) => {
+                const active = selected.some((entry) => entry.name === item.name);
+                return (
+                  <Button
+                    key={item.name}
+                    type="button"
+                    size="sm"
+                    variant={active ? "default" : "outline"}
+                    aria-pressed={active}
+                    disabled={!active && selected.length >= MAX_CHARACTERISTICS}
+                    title={item.meaning}
+                    onClick={() => toggle(item.name)}
+                  >
+                    {item.name}
+                  </Button>
+                );
+              })}
+            </div>
+            <p className="text-muted-foreground">
+              {selected.length} of {MAX_CHARACTERISTICS} selected
+            </p>
+            {selected.map((item) => (
+              <div key={item.name} className="space-y-1.5 rounded-md border bg-background p-3">
+                <Label htmlFor={`why-${item.name}`}>{item.name}</Label>
+                <p className="text-muted-foreground">
+                  {glossary.find((entry) => entry.name === item.name)?.meaning}
+                </p>
+                <Input
+                  id={`why-${item.name}`}
+                  placeholder="Which sentence in the kata makes this important?"
+                  value={item.why}
+                  onChange={(event) => setWhy(item.name, event.target.value)}
+                />
+              </div>
+            ))}
             <Collapsible>
               <CollapsibleTrigger className="group flex items-center gap-1 text-primary hover:underline">
-                What is a characteristic?
+                What does each characteristic mean?
                 <ChevronDown className="size-3.5 transition-transform group-data-[state=open]:rotate-180" />
               </CollapsibleTrigger>
               <CollapsibleContent className="mt-2 space-y-2 rounded-md border bg-background p-3">
@@ -206,20 +255,32 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             {lesson && (
               <div className="space-y-2 rounded-md border bg-background p-3">
                 <p>{lesson.idea}</p>
-                <pre className="overflow-x-auto rounded bg-muted p-2 font-mono text-[11px] leading-4">
-                  {lesson.diagram}
-                </pre>
                 <p>
                   <span className="font-medium">Use when:</span> {lesson.useWhen}
                 </p>
                 <p>
                   <span className="font-medium">Main cost:</span> {lesson.costs[0]}
                 </p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      See the diagram and the full lesson
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-h-[85vh] overflow-y-auto text-sm leading-relaxed sm:max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>{lesson.name}</DialogTitle>
+                      <DialogDescription>{lesson.idea}</DialogDescription>
+                    </DialogHeader>
+                    <StyleLessonBody lesson={lesson} />
+                  </DialogContent>
+                </Dialog>
               </div>
             )}
-            <LessonLink href={lesson ? `/learn#${lesson.id}` : "/learn#styles"}>
-              {lesson ? `The full ${lesson.name} lesson` : "Compare the styles"}
-            </LessonLink>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              <LessonLink href="/learn#styles">Compare the styles</LessonLink>
+              <LessonLink href="/glossary">Glossary</LessonLink>
+            </div>
           </section>
 
           <section>
