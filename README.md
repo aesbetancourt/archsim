@@ -1,6 +1,6 @@
 # ArchSim
 
-**A place to practice software architecture, with an AI reviewer that grades your reasoning.**
+**Challenge your software architecture knowledge, with an AI reviewer that grades your reasoning.**
 
 Website: [aesbetancourt.dev/archsim](https://aesbetancourt.dev/archsim/)
 
@@ -28,10 +28,11 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 - **Katas and interview questions.** Original katas from starter to hard, classic system design interview questions (link shortener, chat, news feed, video streaming, notifications, payments), and two open interview prompts.
 - **A drawing canvas.** An embedded [Excalidraw](https://excalidraw.com) canvas, the same kind of tool used in real interviews.
 - **Building blocks.** A palette above the canvas with 48 standard components in seven groups, three kinds of connection, five boundaries, and five small patterns. Stored data is a cylinder and a message channel is a pipe, as in the usual notation. Drag a piece to the canvas. A Learn page says what each piece costs you.
+- **Auto-save.** Your answers, notes, and diagram for each kata are saved in the browser as you work. The home page lists the katas in progress.
 - **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts, gives hints, and asks about the pieces you used. It does not hand you the design.
 - **Solve a problem.** Paste any problem text, for example an interview question you had. The app writes a worked answer with the five-step method and adds the problem to your katas.
 - **The Architectural Katas collection.** The app reads Ted Neward's public kata collection, so you can practice on about 40 more problems.
-- **Scratchpad.** Free boards with a canvas and notes, saved automatically, for designs that are not katas.
+- **Scratchpad.** Free boards for designs that are not katas. Each board has the full canvas with the building blocks and the same notepad as a kata, and it is saved automatically.
 
 ![The Building blocks page with a card for each type of database](docs/screenshots/building-blocks.png)
 
