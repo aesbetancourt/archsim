@@ -36,11 +36,14 @@ ${prompt}`;
 
   const args = ["run", "--agent", "plan", "--format", "json"];
   if (model) args.push("--model", model);
-  if (imageName) args.push("--file", imageName);
+  // Use the full path. OpenCode does not find a file by its name alone here.
+  if (imageName) args.push("--file", path.join(cwd, imageName));
   args.push("--", message);
 
   return new Promise((resolve, reject) => {
-    const child = spawn("opencode", args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
+    // OpenCode reads its folder from the PWD variable, not from the real working folder.
+    // Without this, it works in the folder of the app.
+    const child = spawn("opencode", args, { cwd, env: { ...process.env, PWD: cwd }, stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";
     let stderr = "";
     const timer = setTimeout(() => {
