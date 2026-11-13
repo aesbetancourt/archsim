@@ -107,6 +107,12 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
             alt="Your diagram"
             className="w-full rounded-base border-2 bg-white"
           />
+          {attempt.scope && (
+            <div>
+              <h3 className="font-medium">Core functions and scope</h3>
+              <p className="whitespace-pre-wrap text-muted-foreground">{attempt.scope}</p>
+            </div>
+          )}
           <div>
             <h3 className="font-medium">Characteristics</h3>
             <p className="whitespace-pre-wrap text-muted-foreground">{attempt.characteristics || "none"}</p>

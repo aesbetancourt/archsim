@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HelpChat from "@/components/HelpChat";
+import SidePanel from "@/components/SidePanel";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -51,6 +52,9 @@ export default function BoardEditor({ board }: { board: Board }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // A number that changes when the drawing changes.
   const sceneVersion = useRef(-1);
+
+  // The canvas must measure its position again after the panel opens or closes.
+  const refreshCanvas = useCallback(() => api.current?.refresh(), []);
 
   const save = useCallback(async () => {
     timer.current = null;
@@ -111,7 +115,7 @@ export default function BoardEditor({ board }: { board: Board }) {
 
   return (
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
-      <aside className="flex w-[24rem] shrink-0 flex-col border-r-2 bg-card text-sm leading-relaxed">
+      <SidePanel widthClass="w-[24rem]" onToggle={refreshCanvas}>
         <div className="relative flex-1 space-y-5 overflow-y-auto p-5">
           <Link href="/scratchpad" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> All boards
@@ -193,7 +197,7 @@ export default function BoardEditor({ board }: { board: Board }) {
         <p className="border-t-2 px-5 py-3 text-muted-foreground" role="status">
           {statusText[status]}
         </p>
-      </aside>
+      </SidePanel>
       <div className="min-w-0 flex-1 bg-card">
         <Canvas
           onReady={(instance) => (api.current = instance)}

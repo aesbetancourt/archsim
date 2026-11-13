@@ -44,7 +44,7 @@ function Characteristics() {
       <p className="max-w-2xl">
         A characteristic is a quality of the system, not a feature. &quot;Customers pay online&quot;
         is a feature. &quot;Payment works during the lunch peak&quot; is a characteristic
-        (elasticity). The characteristics you select decide the style.
+        (elasticity). The characteristics you select decide the style. Other names for the same thing are non-functional requirements and quality attributes.
       </p>
       <Card className="py-0">
         <Table>

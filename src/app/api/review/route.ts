@@ -9,6 +9,7 @@ import { describeScene, type SceneElement } from "@/lib/scene";
 
 type Submission = {
   kataId: string;
+  scope: string;
   characteristics: string;
   style: string;
   rationale: string;
@@ -31,6 +32,9 @@ ${list(kata.constraints) || "(not stated)"}
 </kata>
 
 <attempt>
+<scope>
+${submission.scope || "(empty)"}
+</scope>
 <characteristics>
 ${submission.characteristics || "(empty)"}
 </characteristics>
@@ -73,6 +77,7 @@ export async function POST(request: Request) {
       id,
       kataId: kata.id,
       createdAt: new Date().toISOString(),
+      scope: submission.scope,
       characteristics: submission.characteristics,
       style: submission.style,
       rationale: submission.rationale,

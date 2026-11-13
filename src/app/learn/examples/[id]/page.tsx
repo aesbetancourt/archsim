@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import Diagram from "@/components/Diagram";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { termsIn } from "@/lib/glossary";
 import { findExample, findKata } from "@/lib/library";

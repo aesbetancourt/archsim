@@ -4,11 +4,13 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { ChevronDown, ExternalLink, LoaderCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import HelpChat from "@/components/HelpChat";
+import ProblemText from "@/components/ProblemText";
+import SidePanel from "@/components/SidePanel";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -63,11 +65,14 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   const router = useRouter();
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
   const [selected, setSelected] = useState<{ name: string; why: string }[]>([]);
+  const [scope, setScope] = useState("");
   const [style, setStyle] = useState("");
   const [rationale, setRationale] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const lesson = getStyleLesson(style);
+  // The canvas must measure its position again after the panel opens or closes.
+  const refreshCanvas = useCallback(() => api.current?.refresh(), []);
 
   // Select or remove a characteristic. The limit is three.
   function toggle(name: string) {
@@ -106,6 +111,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kataId: kata.id,
+          scope,
           characteristics: selected
             .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
             .join("\n"),
@@ -126,7 +132,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
   return (
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
-      <aside className="flex w-[27rem] shrink-0 flex-col border-r-2 bg-card text-sm leading-relaxed">
+      <SidePanel widthClass="w-[27rem]" onToggle={refreshCanvas}>
         {/* "relative" keeps hidden labels inside this scroll area. Without it, they make the page scroll. */}
         <div className="relative flex-1 space-y-6 overflow-y-auto p-6">
           <section className="space-y-3">
@@ -136,33 +142,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                 {kata.source ? "community kata" : kata.interview ? "interview question" : kata.difficulty}
               </Badge>
             </div>
-            <p>{kata.context}</p>
-            {kata.details?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            {kata.users && (
-              <p>
-                <span className="font-medium">Users:</span> {kata.users}
-              </p>
-            )}
-            {kata.requirements.length > 0 && (
-              <div>
-                <h2 className="font-medium">Requirements</h2>
-                <ul className="list-disc pl-5 text-muted-foreground">
-                  {kata.requirements.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {kata.constraints.length > 0 && (
-              <div>
-                <h2 className="font-medium">Constraints</h2>
-                <ul className="list-disc pl-5 text-muted-foreground">
-                  {kata.constraints.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <ProblemText kata={kata} />
             {kata.note && <p className="border-l-2 border-primary pl-3 text-muted-foreground">{kata.note}</p>}
             {kata.source && (
               <p className="text-muted-foreground">
@@ -181,8 +161,28 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           <Separator />
 
           <section className="space-y-2">
+            <Label htmlFor="scope" className="sr-only">
+              Core functions and scope
+            </Label>
             <StepHeading
               number={1}
+              title="Core functions and scope"
+              hint={
+                kata.requirements.length > 0
+                  ? "Select the two or three functions that shape the design. Say what you leave out."
+                  : "The problem gives no list. Write the functions the system must have, your assumptions, and what you leave out."
+              }
+            />
+            <Textarea id="scope" rows={4} value={scope} onChange={(event) => setScope(event.target.value)} />
+            <p className="text-muted-foreground">
+              These are the functional requirements: what the system does. Step 2 is about how well it
+              does it.
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <StepHeading
+              number={2}
               title="Driving characteristics"
               hint={`Select the top ${MAX_CHARACTERISTICS}. Then tie each one to a sentence in the kata.`}
             />
@@ -247,7 +247,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
           <section className="space-y-2">
             <StepHeading
-              number={2}
+              number={3}
               title="Architecture style"
               hint="Select the simplest style that supports your characteristics."
             />
@@ -294,7 +294,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
           <section>
             <StepHeading
-              number={3}
+              number={4}
               title="Diagram"
               hint="Draw on the canvas. Put a label on each shape and attach arrows to shapes."
             />
@@ -305,7 +305,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               Rationale
             </Label>
             <StepHeading
-              number={4}
+              number={5}
               title="Rationale"
               hint="Explain the design, what it gives up, and where it can fail."
             />
@@ -329,7 +329,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
         </div>
-      </aside>
+      </SidePanel>
       <div className="min-w-0 flex-1 bg-card">
         <Canvas onReady={(instance) => (api.current = instance)} />
       </div>
@@ -338,6 +338,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         getContext={() => ({
           kind: "kata",
           kataId: kata.id,
+          scope,
           characteristics: selected.map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`).join("\n"),
           style,
           rationale,

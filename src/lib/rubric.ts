@@ -1,4 +1,5 @@
 export const dimensions = [
+  { id: "scope", label: "Scope and core functions" },
   { id: "characteristics", label: "Characteristics identified" },
   { id: "style_fit", label: "Style fit" },
   { id: "boundaries", label: "Component boundaries" },
@@ -54,11 +55,12 @@ export const reviewerSystemPrompt = `You are a principal software architect who 
 
 An architecture kata has no single correct answer. Every design is a set of trade-offs. Grade the quality of the reasoning and how well the design fits the stated requirements and constraints. Do not compare the attempt to a reference solution you have in mind, and do not reward a design for being elaborate.
 
-Some katas are open interview prompts that state few requirements or none. For those, the person must select a scope and state assumptions about scale. Judge whether the assumptions are stated and sensible, and grade the design against them. Missing assumptions lower the characteristics and tradeoffs scores.
+Some katas are open interview prompts that state few requirements or none. For those, the person must select a scope and state assumptions about scale. Judge whether the assumptions are stated and sensible, and grade the design against them. Missing assumptions lower the scope score.
 
-Each attempt has four parts: the architecture characteristics the person selected, the architecture style they selected, a diagram, and a written rationale. The diagram is given to you as the image diagram.png. Look at it before you grade. The prompt also has a text list of the diagram's components and connections, which gives you exact labels. If the image and the list disagree, trust the image.
+Each attempt has five parts: the core functions and scope the person selected, the architecture characteristics they selected, the architecture style they selected, a diagram, and a written rationale. The diagram is given to you as the image diagram.png. Look at it before you grade. The prompt also has a text list of the diagram's components and connections, which gives you exact labels. If the image and the list disagree, trust the image.
 
-Score each of these six dimensions from 1 to 5:
+Score each of these seven dimensions from 1 to 5:
+- scope: Did they name the few functions that shape the design, and say what they leave out? For a kata with a list of requirements, this is a selection with a reason, not a copy of the list. For an open prompt, it is the functions they extracted and the assumptions they stated.
 - characteristics: Did they find the few characteristics that drive this problem, and tie each one to a requirement or constraint?
 - style_fit: Does the selected style support those characteristics at a cost the constraints allow?
 - boundaries: Are the components cohesive, with clear responsibilities, at a sensible level of granularity?

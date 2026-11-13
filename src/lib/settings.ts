@@ -1,13 +1,14 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export type Mode = "claude-code" | "anthropic" | "openai-compatible";
+export type Mode = "claude-code" | "opencode" | "anthropic" | "openai-compatible";
 
 // The settings file is in the data folder. Git ignores that folder.
 // API keys are in plain text in this file. They must never go to the browser.
 export type Settings = {
   mode: Mode;
   claudeCode: { model: string };
+  openCode: { model: string };
   anthropic: { apiKey: string; model: string };
   openaiCompatible: { baseUrl: string; apiKey: string; model: string };
 };
@@ -17,6 +18,7 @@ const FILE = path.join(process.cwd(), "data", "settings.json");
 export const defaultSettings: Settings = {
   mode: "claude-code",
   claudeCode: { model: "" },
+  openCode: { model: "" },
   anthropic: { apiKey: "", model: "claude-opus-5-5" },
   openaiCompatible: { baseUrl: "", apiKey: "", model: "" },
 };
@@ -27,6 +29,7 @@ export async function readSettings(): Promise<Settings> {
     return {
       mode: saved.mode ?? defaultSettings.mode,
       claudeCode: { ...defaultSettings.claudeCode, ...saved.claudeCode },
+      openCode: { ...defaultSettings.openCode, ...saved.openCode },
       anthropic: { ...defaultSettings.anthropic, ...saved.anthropic },
       openaiCompatible: { ...defaultSettings.openaiCompatible, ...saved.openaiCompatible },
     };
@@ -44,6 +47,7 @@ export async function writeSettings(settings: Settings): Promise<void> {
 export type PublicSettings = {
   mode: Mode;
   claudeCode: { model: string };
+  openCode: { model: string };
   anthropic: { keyHint: string; model: string };
   openaiCompatible: { baseUrl: string; keyHint: string; model: string };
 };
@@ -54,6 +58,7 @@ export function toPublic(settings: Settings): PublicSettings {
   return {
     mode: settings.mode,
     claudeCode: settings.claudeCode,
+    openCode: settings.openCode,
     anthropic: { keyHint: hint(settings.anthropic.apiKey), model: settings.anthropic.model },
     openaiCompatible: {
       baseUrl: settings.openaiCompatible.baseUrl,

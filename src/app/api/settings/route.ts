@@ -1,10 +1,11 @@
 import { readSettings, toPublic, writeSettings, type Mode, type Settings } from "@/lib/settings";
 
-const modes: Mode[] = ["claude-code", "anthropic", "openai-compatible"];
+const modes: Mode[] = ["claude-code", "opencode", "anthropic", "openai-compatible"];
 
 type Update = {
   mode: Mode;
   claudeCode: { model: string };
+  openCode?: { model: string };
   anthropic: { apiKey: string; model: string };
   openaiCompatible: { baseUrl: string; apiKey: string; model: string };
 };
@@ -23,6 +24,7 @@ export async function PUT(request: Request) {
   const next: Settings = {
     mode: update.mode,
     claudeCode: { model: update.claudeCode.model.trim() },
+    openCode: { model: update.openCode?.model.trim() ?? current.openCode.model },
     anthropic: {
       apiKey: update.anthropic.apiKey.trim() || current.anthropic.apiKey,
       model: update.anthropic.model.trim() || current.anthropic.model,

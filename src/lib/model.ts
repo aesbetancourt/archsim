@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import { runClaude } from "./claude";
+import { runOpenCode } from "./opencode";
 import { readSettings, type Settings } from "./settings";
 
 type ModelCall = {
@@ -22,9 +23,11 @@ const FALLBACK_MODELS = ["claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-
 
 // Get JSON from a model answer. Some models put it in a code block.
 function parseJson(text: string): unknown {
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```$/, "").trim();
+  // Keep the part from the first "{" to the last "}". This drops a code block mark and extra words.
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(start >= 0 && end > start ? text.slice(start, end + 1) : text);
   } catch {
     throw new Error("The model did not return valid JSON. Try again, or select a different model.");
   }
@@ -40,6 +43,25 @@ async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<Model
   try {
     const output = await runClaude({ cwd, prompt, systemPrompt: call.systemPrompt, schema: call.schema, model });
     return { output, model: model ? `Claude Code (${model})` : "Claude Code" };
+  } finally {
+    if (!call.imagePath) await rm(cwd, { recursive: true, force: true });
+  }
+}
+
+async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelResult> {
+  // OpenCode reads the image from its working directory.
+  const cwd = call.imagePath ? path.dirname(call.imagePath) : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
+  const model = settings.openCode.model;
+  try {
+    const text = await runOpenCode({
+      cwd,
+      prompt: call.prompt,
+      systemPrompt: call.systemPrompt,
+      schema: call.schema,
+      model,
+      imageName: call.imagePath ? path.basename(call.imagePath) : undefined,
+    });
+    return { output: parseJson(text), model: model ? `OpenCode (${model})` : "OpenCode" };
   } finally {
     if (!call.imagePath) await rm(cwd, { recursive: true, force: true });
   }
@@ -143,6 +165,7 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
 // Send a prompt to the model that is selected in Settings. Return its structured answer.
 export async function runModel(call: ModelCall): Promise<ModelResult> {
   const settings = await readSettings();
+  if (settings.mode === "opencode") return viaOpenCode(call, settings);
   if (settings.mode === "anthropic") return viaAnthropic(call, settings);
   if (settings.mode === "openai-compatible") return viaOpenAICompatible(call, settings);
   return viaClaudeCode(call, settings);

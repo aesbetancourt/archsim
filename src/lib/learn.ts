@@ -365,8 +365,8 @@ export const characteristics: Characteristic[] = [
 
 export const kataSteps = [
   {
-    title: "Read for what is hard",
-    body: "Most requirements are ordinary. Find the two or three sentences that make this problem difficult. They are usually in the user numbers and the constraints.",
+    title: "Read for what is hard, and set the scope",
+    body: "Most requirements are ordinary. Find the two or three sentences that make this problem difficult. They are usually in the user numbers and the constraints. Then write the two or three functions that the design must do well, and what you leave out. These are the functional requirements that matter. If the problem gives no list, extract them from the text.",
   },
   {
     title: "Select the driving characteristics",

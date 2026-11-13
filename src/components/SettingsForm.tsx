@@ -17,6 +17,11 @@ const modes: { id: Mode; title: string; description: string }[] = [
     description: "Uses the Claude Code login on this computer. No API key. This is the default.",
   },
   {
+    id: "opencode",
+    title: "OpenCode",
+    description: "Uses the OpenCode login on this computer, in the same way as Claude Code. No API key in this app.",
+  },
+  {
     id: "anthropic",
     title: "Anthropic API",
     description: "Uses an Anthropic API key. Each review is billed to that key.",
@@ -49,6 +54,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   const [saved, setSaved] = useState(initial);
   const [mode, setMode] = useState(initial.mode);
   const [claudeModel, setClaudeModel] = useState(initial.claudeCode.model);
+  const [openCodeModel, setOpenCodeModel] = useState(initial.openCode.model);
   const [anthropicKey, setAnthropicKey] = useState("");
   const [anthropicModel, setAnthropicModel] = useState(initial.anthropic.model);
   const [baseUrl, setBaseUrl] = useState(initial.openaiCompatible.baseUrl);
@@ -64,6 +70,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
       body: JSON.stringify({
         mode,
         claudeCode: { model: claudeModel },
+        openCode: { model: openCodeModel },
         anthropic: { apiKey: anthropicKey, model: anthropicModel },
         openaiCompatible: { baseUrl, apiKey: openaiKey, model: openaiModel },
       }),
@@ -135,6 +142,27 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           <CardContent>
             <Field id="claude-model" label="Model" hint="Leave empty to use your Claude Code default. Examples: opus, sonnet, fable.">
               <Input id="claude-model" value={claudeModel} onChange={(event) => setClaudeModel(event.target.value)} placeholder="Default" />
+            </Field>
+          </CardContent>
+        </Card>
+      )}
+
+      {mode === "opencode" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>OpenCode</CardTitle>
+            <CardDescription>
+              The app starts the opencode command for each review, with its read-only plan agent. The
+              diagram and your text go to the provider of the model you select.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Field
+              id="opencode-model"
+              label="Model"
+              hint="In the form provider/model, for example anthropic/claude-sonnet-5-5. Leave empty to use your OpenCode default. Run opencode models in a terminal to see the list. Select a model that reads images."
+            >
+              <Input id="opencode-model" value={openCodeModel} onChange={(event) => setOpenCodeModel(event.target.value)} placeholder="Default" />
             </Field>
           </CardContent>
         </Card>

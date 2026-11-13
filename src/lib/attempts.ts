@@ -8,6 +8,8 @@ export type Attempt = {
   id: string;
   kataId: string;
   createdAt: string;
+  // The core functions and the scope that the person selected. Old attempts do not have it.
+  scope?: string;
   characteristics: string;
   style: string;
   rationale: string;

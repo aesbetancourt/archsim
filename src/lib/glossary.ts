@@ -570,7 +570,7 @@ export const glossary: GlossaryTerm[] = [
     id: "architecture-characteristic",
     term: "Architecture characteristic",
     category: "Architecture practice",
-    definition: "A quality that a system must have, such as availability. It is not a feature.",
+    definition: "A quality that a system must have, such as availability. It is not a feature. Also named non-functional requirement or quality attribute.",
     example: "'Payment works during the lunch peak' is elasticity.",
     match: [],
     wiki: "Non-functional_requirement",
@@ -1294,6 +1294,16 @@ export const glossary: GlossaryTerm[] = [
     match: [],
     wiki: "Encryption",
     learn: "security",
+  },
+  {
+    id: "functional-requirement",
+    term: "Functional requirement",
+    category: "Architecture practice",
+    definition: "Something the system must do. It decides which components exist. An architecture characteristic says how well the system must do it.",
+    example: "'A customer pays online' is a functional requirement.",
+    match: [],
+    wiki: "Functional_requirement",
+    learn: "method",
   },
 ];
 
