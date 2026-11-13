@@ -7,9 +7,9 @@ Vertical slice architecture groups files by feature. All the code for "place an 
 ```diagram
 {
   "nodes": [
-    { "id": "a", "label": "Place order\n(endpoint, logic, data)", "col": 0, "row": 0 },
-    { "id": "b", "label": "Cancel order\n(endpoint, logic, data)", "col": 1, "row": 0 },
-    { "id": "c", "label": "List orders\n(endpoint, query)", "col": 2, "row": 0 },
+    { "id": "a", "label": "Place order\n(endpoint, logic, data)", "shape": "module", "col": 0, "row": 0 },
+    { "id": "b", "label": "Cancel order\n(endpoint, logic, data)", "shape": "module", "col": 1, "row": 0 },
+    { "id": "c", "label": "List orders\n(endpoint, query)", "shape": "module", "col": 2, "row": 0 },
     { "id": "db", "label": "Database", "col": 1, "row": 1.2 }
   ],
   "edges": [

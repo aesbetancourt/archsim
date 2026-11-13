@@ -7,13 +7,13 @@ The application core talks to the outside world only through ports. An adapter c
 ```diagram
 {
   "nodes": [
-    { "id": "driving", "label": "Driving adapters\n(HTTP, queue, tests)", "col": 0, "row": 0.5 },
-    { "id": "usecases", "label": "Use cases\n(input ports)", "col": 1, "row": 0.5 },
-    { "id": "domain", "label": "Domain model\n(business rules)", "col": 1, "row": 1.6 },
-    { "id": "ports", "label": "Output ports\n(interfaces)", "col": 2, "row": 0.5 },
-    { "id": "driven", "label": "Driven adapters\n(database, email, APIs)", "col": 3, "row": 0.5 }
+    { "id": "driving", "label": "Driving adapters\n(HTTP, queue, tests)", "shape": "module", "col": 0, "row": 0.5 },
+    { "id": "usecases", "label": "Use cases\n(input ports)", "shape": "module", "col": 1, "row": 0.5 },
+    { "id": "domain", "label": "Domain model\n(business rules)", "shape": "module", "col": 1, "row": 1.6 },
+    { "id": "ports", "label": "Output ports\n(interfaces)", "shape": "module", "col": 2, "row": 0.5 },
+    { "id": "driven", "label": "Driven adapters\n(database, email, APIs)", "shape": "module", "col": 3, "row": 0.5 }
   ],
-  "groups": [{ "id": "core", "label": "Application core", "col": 1, "row": 0.5, "cols": 2, "rows": 2 }],
+  "groups": [{ "id": "core", "label": "Application core", "shape": "module", "col": 1, "row": 0.5, "cols": 2, "rows": 2 }],
   "edges": [
     { "from": "driving", "to": "usecases", "label": "calls" },
     { "from": "usecases", "to": "domain", "label": "uses" },

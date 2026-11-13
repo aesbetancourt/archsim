@@ -9,10 +9,10 @@ If you understand one, you understand all three. In a team or an interview, the 
 ```diagram
 {
   "nodes": [
-    { "id": "frameworks", "label": "Frameworks and drivers\n(web, database, UI)", "col": 0, "row": 0 },
-    { "id": "adapters", "label": "Interface adapters\n(controllers, gateways)", "col": 1, "row": 0 },
-    { "id": "usecases", "label": "Use cases\n(application rules)", "col": 2, "row": 0 },
-    { "id": "entities", "label": "Entities\n(business rules)", "col": 3, "row": 0 }
+    { "id": "frameworks", "label": "Frameworks and drivers\n(web, database, UI)", "shape": "module", "col": 0, "row": 0 },
+    { "id": "adapters", "label": "Interface adapters\n(controllers, gateways)", "shape": "module", "col": 1, "row": 0 },
+    { "id": "usecases", "label": "Use cases\n(application rules)", "shape": "module", "col": 2, "row": 0 },
+    { "id": "entities", "label": "Entities\n(business rules)", "shape": "module", "col": 3, "row": 0 }
   ],
   "edges": [
     { "from": "frameworks", "to": "adapters", "label": "depends on" },

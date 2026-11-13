@@ -24,9 +24,9 @@ export const styleLessons: StyleLesson[] = [
     how: "Each request goes down through the layers: user interface, business rules, data access, database. A layer talks only to the layer below it. The full application is built and deployed as one unit.",
     diagram: {
       nodes: [
-        { id: "ui", label: "Presentation\n(screens, API)", col: 0, row: 0 },
-        { id: "rules", label: "Business rules", col: 0, row: 1 },
-        { id: "access", label: "Data access", col: 0, row: 2 },
+        { id: "ui", label: "Presentation\n(screens, API)", shape: "module", col: 0, row: 0 },
+        { id: "rules", label: "Business rules", shape: "module", col: 0, row: 1 },
+        { id: "access", label: "Data access", shape: "module", col: 0, row: 2 },
         { id: "db", label: "Database", col: 0, row: 3 },
       ],
       edges: [
@@ -90,7 +90,7 @@ export const styleLessons: StyleLesson[] = [
         { id: "a", label: "Plug-in A", col: 0, row: 0 },
         { id: "b", label: "Plug-in B", col: 1, row: 0 },
         { id: "c", label: "Plug-in C", col: 2, row: 0 },
-        { id: "core", label: "Core system\n(fixed contract)", col: 1, row: 1.3 },
+        { id: "core", label: "Core system\n(fixed contract)", shape: "module", col: 1, row: 1.3 },
       ],
       edges: [
         { from: "a", to: "core" },

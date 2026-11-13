@@ -1,3 +1,4 @@
+import { diagramShapes } from "./diagram-shapes";
 import type { DiagramSpec } from "./examples";
 import { characteristics, styleLessons } from "./learn";
 
@@ -37,8 +38,15 @@ export const solutionSchema = object({
         nodes: {
           type: "array",
           items: object(
-            { id: text, label: text, col: { type: "number" }, row: { type: "number" }, external: { type: "boolean" } },
-            ["external"],
+            {
+              id: text,
+              label: text,
+              col: { type: "number" },
+              row: { type: "number" },
+              external: { type: "boolean" },
+              shape: { type: "string", enum: diagramShapes },
+            },
+            ["external", "shape"],
           ),
         },
         edges: {
@@ -91,6 +99,7 @@ Diagram rules. The diagram is drawn on a grid, with straight arrows between box 
 - Lay the main flow out in one direction, left to right or top to bottom. Put external systems at the edges.
 - A node "label" is one or two short lines, split with a newline, at most 24 characters for each line. The first line is the name. Mark data ownership in the second line, for example "(own database)".
 - Set "external": true for systems the design buys or does not own.
+- Set "shape" for each node that is not external. Use "person" for a human role, "actor" for a client app or a browser, "device" for hardware at a site, "store" for a database, a cache, a search index, or file storage, "pipe" for a queue, a topic, or a stream, "module" for a part inside one deployment, and "box" for a service or any other running part.
 - An edge "label" is at most 14 characters, because it must fit in the gap between two boxes. Set "async": true for a message that does not wait for an answer. Leave it out for a call that waits. Set "both": true only for two-way sync.
 
 Writing rules. Use plain, simple English and short sentences. Explain each technical term the first time you use it, in a few words. Be concrete: name the component, the data, the failure. Each list item is one or two sentences. Do not use markdown.

@@ -170,8 +170,11 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
       <Step number={4} title="Draw the components">
         <Diagram spec={example.diagram} />
         <p className="text-muted-foreground">
-          Solid arrow: a call that waits for an answer. Dashed arrow: a message that does not wait.
-          Dashed box: an external system.
+          The forms and the colors are the same as the{" "}
+          <Link href="/learn/building-blocks" className="text-primary hover:underline">
+            building blocks
+          </Link>{" "}
+          above the canvas, so you can draw this design with the same pieces.
         </p>
         <BulletCard title="How to read this diagram" items={example.walkthrough} />
       </Step>

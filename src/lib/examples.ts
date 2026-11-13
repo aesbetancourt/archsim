@@ -1,3 +1,4 @@
+import type { DiagramShape } from "./diagram-shapes";
 import { interviewExamples } from "./interview-katas";
 
 export type DiagramNode = {
@@ -6,6 +7,8 @@ export type DiagramNode = {
   col: number;
   row: number;
   external?: boolean;
+  // The form of the node. Without it, the name decides: see shapeOf.
+  shape?: DiagramShape;
 };
 
 export type DiagramGroup = {
@@ -101,10 +104,10 @@ export const workedExamples: WorkedExample[] = [
         { id: "customer", label: "Customer\nweb app", col: 0, row: 0 },
         { id: "kitchen", label: "Kitchen screen\n+ local order queue", col: 1, row: 0 },
         { id: "admin", label: "Head office\nadmin", col: 2, row: 0 },
-        { id: "orders", label: "Orders", col: 0.5, row: 1.6 },
-        { id: "menu", label: "Menu", col: 2, row: 1.6 },
-        { id: "payments", label: "Payments", col: 0, row: 2.6 },
-        { id: "notifications", label: "Notifications", col: 1, row: 2.6 },
+        { id: "orders", label: "Orders", shape: "module", col: 0.5, row: 1.6 },
+        { id: "menu", label: "Menu", shape: "module", col: 2, row: 1.6 },
+        { id: "payments", label: "Payments", shape: "module", col: 0, row: 2.6 },
+        { id: "notifications", label: "Notifications", shape: "module", col: 1, row: 2.6 },
         { id: "provider", label: "Payment\nprovider", col: 0, row: 3.9, external: true },
         { id: "messages", label: "Message\nprovider", col: 1, row: 3.9, external: true },
         { id: "db", label: "Database\n(tables owned per module)", col: 2, row: 3.9 },

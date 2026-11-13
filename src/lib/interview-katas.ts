@@ -596,8 +596,8 @@ export const interviewExamples: WorkedExample[] = [
       nodes: [
         { id: "products", label: "Product services", col: 0, row: 0 },
         { id: "api", label: "Notification API\n(accept, check key)", col: 1, row: 0 },
-        { id: "core", label: "Core\n(rules, templates, log)", col: 2, row: 0 },
-        { id: "prefs", label: "User choices", col: 3, row: 0 },
+        { id: "core", label: "Core\n(rules, templates, log)", shape: "module", col: 2, row: 0 },
+        { id: "prefs", label: "User choices", shape: "store", col: 3, row: 0 },
         { id: "queues", label: "Queues\n(urgent, bulk)", col: 2, row: 1.2 },
         { id: "pushp", label: "Push plug-in", col: 1, row: 2.4 },
         { id: "smsp", label: "SMS plug-in", col: 2, row: 2.4 },
@@ -700,12 +700,12 @@ export const interviewExamples: WorkedExample[] = [
     },
     diagram: {
       nodes: [
-        { id: "checkout", label: "Checkout\n(order service)", col: 1, row: 0 },
+        { id: "checkout", label: "Checkout\n(order service)", shape: "module", col: 1, row: 0 },
         { id: "ledger", label: "Ledger\n(records only added)", col: 0, row: 1.6 },
-        { id: "payments", label: "Payments\n(states of a payment)", col: 1, row: 1.6 },
+        { id: "payments", label: "Payments\n(states of a payment)", shape: "module", col: 1, row: 1.6 },
         { id: "provider", label: "Card provider", col: 2.3, row: 1.6, external: true },
-        { id: "payouts", label: "Payouts", col: 0, row: 2.6 },
-        { id: "recon", label: "Reconciliation\n(daily comparison)", col: 1, row: 2.6 },
+        { id: "payouts", label: "Payouts", shape: "module", col: 0, row: 2.6 },
+        { id: "recon", label: "Reconciliation\n(daily comparison)", shape: "module", col: 1, row: 2.6 },
         { id: "bank", label: "Bank", col: 0, row: 3.9, external: true },
         { id: "db", label: "Database", col: 1, row: 3.9 },
       ],

@@ -1,9 +1,12 @@
+import BlockIcon from "@/components/BlockIcon";
+import { diagramShapes, type DiagramShape, shapeOf, shapeStyle } from "@/lib/diagram-shapes";
 import type { DiagramSpec } from "@/lib/examples";
 
 const CELL_W = 270;
 const CELL_H = 110;
 const BOX_W = 170;
 const BOX_H = 56;
+const PERSON_H = 76;
 const PAD = 40;
 const GROUP_PAD = 18;
 const GROUP_HEADER = 22;
@@ -23,11 +26,78 @@ function borderPoint(rect: Rect, dx: number, dy: number) {
   return { x: rect.cx + dx * scale, y: rect.cy + dy * scale };
 }
 
-// Draw a box-and-arrow diagram from a grid description.
+// The height of the round end of a cylinder, and the width of the round end of a pipe.
+const END = 8;
+
+// Draw one node in its form. The forms are the same as the pieces of the canvas palette.
+function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
+  const left = rect.cx - rect.hw;
+  const right = rect.cx + rect.hw;
+  const top = rect.cy - rect.hh;
+  const bottom = rect.cy + rect.hh;
+  const paint = { fill: shapeStyle[shape].color, className: "stroke-foreground/70", strokeWidth: 2 };
+
+  if (shape === "store") {
+    // A cylinder: the body with a round bottom, and an ellipse on top.
+    return (
+      <>
+        <path
+          d={`M ${left} ${top + END} L ${left} ${bottom - END} A ${rect.hw} ${END} 0 0 0 ${right} ${bottom - END} L ${right} ${top + END} Z`}
+          {...paint}
+        />
+        <ellipse cx={rect.cx} cy={top + END} rx={rect.hw} ry={END} {...paint} />
+      </>
+    );
+  }
+  if (shape === "pipe") {
+    // A pipe: the same cylinder on its side.
+    return (
+      <>
+        <path
+          d={`M ${right - END} ${top} L ${left + END} ${top} A ${END} ${rect.hh} 0 0 0 ${left + END} ${bottom} L ${right - END} ${bottom} Z`}
+          {...paint}
+        />
+        <ellipse cx={right - END} cy={rect.cy} rx={END} ry={rect.hh} {...paint} />
+      </>
+    );
+  }
+  if (shape === "actor") return <ellipse cx={rect.cx} cy={rect.cy} rx={rect.hw} ry={rect.hh} {...paint} />;
+  if (shape === "person") {
+    // A figure of a person. The name is below it.
+    const head = top + 7;
+    return (
+      <g className="stroke-foreground/70" strokeWidth={2} strokeLinecap="round">
+        <circle cx={rect.cx} cy={head} r={6} fill={shapeStyle.person.color} />
+        <path d={`M ${rect.cx} ${head + 6} V ${head + 20} M ${rect.cx - 10} ${head + 12} H ${rect.cx + 10} M ${rect.cx} ${head + 20} l -8 10 M ${rect.cx} ${head + 20} l 8 10`} fill="none" />
+      </g>
+    );
+  }
+  return (
+    <>
+      <rect
+        x={left}
+        y={top}
+        width={rect.hw * 2}
+        height={rect.hh * 2}
+        rx={shape === "module" ? 0 : 6}
+        strokeDasharray={shape === "external" ? "5 4" : undefined}
+        {...paint}
+      />
+      {shape === "device" && (
+        // A line in the box, like the lower edge of a screen.
+        <line x1={left} y1={bottom - 7} x2={right} y2={bottom - 7} className="stroke-foreground/70" strokeWidth={2} />
+      )}
+    </>
+  );
+}
+
+// Draw a diagram from a grid description, with a legend of the forms it uses.
 export default function Diagram({ spec }: { spec: DiagramSpec }) {
   const rects = new Map<string, Rect>();
   for (const node of spec.nodes) {
-    rects.set(node.id, { ...cellCenter(node.col, node.row), hw: BOX_W / 2, hh: BOX_H / 2 });
+    // A person is taller than a box, because the name is below the figure.
+    const hh = shapeOf(node) === "person" ? PERSON_H / 2 : BOX_H / 2;
+    rects.set(node.id, { ...cellCenter(node.col, node.row), hw: BOX_W / 2, hh });
   }
   const groups = (spec.groups ?? []).map((group) => {
     const first = cellCenter(group.col, group.row);
@@ -49,11 +119,14 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
   const width = Math.max(...all.map((rect) => rect.cx + rect.hw)) + PAD;
   const height = Math.max(...all.map((rect) => rect.cy + rect.hh)) + PAD;
 
+  const used = diagramShapes.filter((shape) => spec.nodes.some((node) => shapeOf(node) === shape));
+  const hasAsync = spec.edges.some((edge) => edge.async);
+
   return (
+    <figure className="mx-auto w-full space-y-2" style={{ maxWidth: width }}>
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="mx-auto block w-full rounded-base border-2 bg-card"
-      style={{ maxWidth: width }}
+      className="block w-full rounded-base border-2 bg-card"
       role="img"
       aria-label="Architecture diagram"
     >
@@ -121,25 +194,25 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
 
       {spec.nodes.map((node) => {
         const rect = rects.get(node.id)!;
+        const shape = shapeOf(node);
         const lines = node.label.split("\n");
+        // The text of a cylinder is below its top. The text of a pipe is left of its round end.
+        const dx = shape === "pipe" ? -END / 2 : 0;
+        const dy = shape === "store" ? END / 2 : shape === "device" ? -3 : 0;
+        // The name of a person starts below the figure.
+        const lineY = (index: number) =>
+          shape === "person"
+            ? rect.cy - rect.hh + 52 + index * 15
+            : rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
         return (
           <g key={node.id}>
-            <rect
-              x={rect.cx - rect.hw}
-              y={rect.cy - rect.hh}
-              width={BOX_W}
-              height={BOX_H}
-              rx={6}
-              className={node.external ? "fill-muted stroke-foreground/70" : "fill-card stroke-foreground/70"}
-              strokeWidth={2}
-              strokeDasharray={node.external ? "3 3" : undefined}
-            />
-            <text fontSize={12} textAnchor="middle" className="fill-foreground">
+            <NodeShape shape={shape} rect={rect} />
+            <text fontSize={12} textAnchor="middle" fill={shape === "person" ? undefined : "#000"} className={shape === "person" ? "fill-foreground" : undefined}>
               {lines.map((line, index) => (
                 <tspan
                   key={index}
-                  x={rect.cx}
-                  y={rect.cy + (index - (lines.length - 1) / 2) * 15 + 4}
+                  x={rect.cx + dx}
+                  y={lineY(index)}
                   fontWeight={index === 0 ? 600 : 400}
                 >
                   {line}
@@ -150,5 +223,29 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
         );
       })}
     </svg>
+      <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        {used.map((shape) => (
+          <span key={shape} className="flex items-center gap-1.5">
+            <span
+              style={{ backgroundColor: shapeStyle[shape].color }}
+              className={`flex h-4 w-5 items-center justify-center border border-foreground/70 text-black ${
+                shape === "actor" ? "rounded-full" : shape === "module" ? "" : "rounded-sm"
+              } ${shape === "external" ? "border-dashed" : ""}`}
+            >
+              <BlockIcon shape={shape} />
+            </span>
+            {shapeStyle[shape].legend}
+          </span>
+        ))}
+        <span className="flex items-center gap-1.5">
+          <BlockIcon shape="call" /> Call that waits
+        </span>
+        {hasAsync && (
+          <span className="flex items-center gap-1.5">
+            <BlockIcon shape="message" /> Message, no wait
+          </span>
+        )}
+      </figcaption>
+    </figure>
   );
 }
