@@ -197,11 +197,11 @@
           <li class="box"><h3>Set the scope</h3><p>Name the few functions that shape the design, and what you leave out.</p></li>
           <li class="box"><h3>Select the characteristics</h3><p>Pick the three qualities that drive this problem, and tie each one to the text.</p></li>
           <li class="box"><h3>Select a style</h3><p>Choose the simplest architecture style that supports them.</p></li>
-          <li class="box"><h3>Draw the diagram</h3><p>Use the built-in Excalidraw canvas, as in a real interview.</p></li>
+          <li class="box"><h3>Draw the diagram</h3><p>Use the built-in Excalidraw canvas, with a palette of standard pieces that you drag in.</p></li>
           <li class="box"><h3>State the trade-offs</h3><p>Say what your design gives up, and where it fails first.</p></li>
         </ol>
         <div class="box shot">
-          <img src="screenshots/kata.png" alt="A kata page with the problem text, the five steps, and the work area" width="1400" height="900" loading="lazy">
+          <img src="screenshots/kata.png" alt="A kata page with the problem text, the palette of building blocks, and a diagram on the canvas" width="1400" height="900" loading="lazy">
         </div>
       </section>
 
@@ -228,11 +228,28 @@
         </div>
       </section>
 
+      <section id="blocks">
+        <div class="split">
+          <div>
+            <h2>The pieces of a design, and what each one costs</h2>
+            <ul>
+              <li><strong>48 standard components</strong> in seven groups, from load balancer and cache to event stream and secrets store.</li>
+              <li><strong>The usual notation:</strong> a cylinder for stored data, a pipe for messages, a dashed line for a message that nobody waits for.</li>
+              <li><strong>Boundaries and patterns:</strong> frames for a deployment, a region, or a trust zone, and small sets of pieces that come with their arrows.</li>
+              <li><strong>A cost for each piece.</strong> Each one has a card with what it costs you and the question a reviewer asks about it.</li>
+            </ul>
+          </div>
+          <div class="box shot" style="margin-top: 0">
+            <img src="screenshots/building-blocks.png" alt="The Building blocks page with a card for each type of database" width="1400" height="900" loading="lazy">
+          </div>
+        </div>
+      </section>
+
       <section>
         <h2>Built for practice</h2>
         <div class="grid">
           <div class="box"><h3>Katas and interview questions</h3><p>From a sandwich chain to a ticket seller with two million buyers, plus the classic system design questions.</p></div>
-          <div class="box"><h3>A tutor, not an answer key</h3><p>A help chat next to the canvas explains concepts and gives hints. In a kata, it does not hand you the design.</p></div>
+          <div class="box"><h3>A tutor, not an answer key</h3><p>A help chat next to the canvas explains concepts and asks about the pieces you used. In a kata, it does not hand you the design.</p></div>
           <div class="box"><h3>Highlights and a notepad</h3><p>Mark the sentences that matter and think in a private notepad, as with pen and paper.</p></div>
           <div class="box"><h3>Solve your own problem</h3><p>Paste any problem, for example an interview question you had, and get a worked answer with a diagram.</p></div>
           <div class="box"><h3>Scratchpad</h3><p>Free boards with a canvas and notes, saved automatically, for designs that are not katas.</p></div>
@@ -245,7 +262,7 @@
           <div>
             <h2>A wiki for the concepts you meet</h2>
             <ul>
-              <li><strong>42 pages</strong> on trade-offs, modularity, styles, data, messaging, resilience, security, and teams.</li>
+              <li><strong>43 pages</strong> on trade-offs, modularity, styles, data, messaging, resilience, security, and teams.</li>
               <li><strong>Design inside one application:</strong> hexagonal, clean, vertical slices, domain models, CQRS.</li>
               <li><strong>Worked examples</strong> that show which sentence in the problem caused each decision.</li>
               <li><strong>A glossary</strong> of more than 120 terms in plain words.</li>

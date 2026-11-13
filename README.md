@@ -19,7 +19,7 @@ ArchSim closes that gap. You take a short business problem, draw a design, expla
 
 There is no single correct answer to a kata. The reviewer grades the quality of your reasoning against the problem, not a match with a reference design.
 
-![A kata with the problem text, the five steps, and the work area](docs/screenshots/kata.png)
+![A kata with the problem text, the palette of building blocks, and a diagram](docs/screenshots/kata.png)
 
 ## Features
 
@@ -27,14 +27,17 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 - **Katas and interview questions.** Original katas from starter to hard, classic system design interview questions (link shortener, chat, news feed, video streaming, notifications, payments), and two open interview prompts.
 - **A drawing canvas.** An embedded [Excalidraw](https://excalidraw.com) canvas, the same kind of tool used in real interviews.
-- **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts and gives hints and questions, and it does not hand you the design.
+- **Building blocks.** A palette above the canvas with 48 standard components in seven groups, three kinds of connection, five boundaries, and five small patterns. Stored data is a cylinder and a message channel is a pipe, as in the usual notation. Drag a piece to the canvas. A Learn page says what each piece costs you.
+- **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts, gives hints, and asks about the pieces you used. It does not hand you the design.
 - **Solve a problem.** Paste any problem text, for example an interview question you had. The app writes a worked answer with the five-step method and adds the problem to your katas.
 - **The Architectural Katas collection.** The app reads Ted Neward's public kata collection, so you can practice on about 40 more problems.
 - **Scratchpad.** Free boards with a canvas and notes, saved automatically, for designs that are not katas.
 
+![The Building blocks page with a card for each type of database](docs/screenshots/building-blocks.png)
+
 ### Learn
 
-- **A wiki of 42 pages** on the knowledge areas of a senior architect: trade-off analysis, modularity, architecture styles, data and consistency, messaging, resilience, observability, security, evolution, and the work with teams.
+- **A wiki of 43 pages** on the knowledge areas of a senior architect: trade-off analysis, modularity, architecture styles, data and consistency, messaging, resilience, observability, security, evolution, and the work with teams.
 - **Design inside one application.** Hexagonal, clean, and onion architecture, vertical slices, domain model patterns, CQRS, and event sourcing, with a clear line between system architecture and application architecture.
 - **Worked examples.** Finished katas that show each decision and the sentence in the problem that caused it, with a diagram, the rejected options, and a different valid answer.
 - **A glossary** of more than 120 terms in plain words, each with an example and a link to a lesson and to Wikipedia.
