@@ -346,7 +346,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         </div>
       </SidePanel>
       <div className="flex min-w-0 flex-1 flex-col bg-card">
-        <div role="tablist" aria-label="Work area" className="flex items-center gap-2 border-b-2 py-2 pr-3 pl-14">
+        <div role="tablist" aria-label="Work area" className="flex items-center gap-2 border-b-2 px-3 py-2">
           <Button
             role="tab"
             aria-selected={view === "notes"}
