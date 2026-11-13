@@ -23,7 +23,7 @@ function Method() {
         <li key={step.title}>
           <Card>
             <CardContent className="flex gap-4">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-border bg-main text-xs font-heading text-main-foreground">
                 {index + 1}
               </span>
               <div>
@@ -101,7 +101,7 @@ function Styles() {
                   const level = lesson.ratings[column.key];
                   return (
                     <TableCell key={column.key}>
-                      <Badge variant={level === "high" ? "default" : level === "medium" ? "secondary" : "outline"}>
+                      <Badge variant={level === "high" ? "default" : level === "medium" ? "neutral" : "neutral"}>
                         {level}
                       </Badge>
                     </TableCell>
@@ -136,7 +136,7 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
       </header>
 
       {contents.length > 2 && (
-        <nav aria-label="Contents" className="inline-block rounded-lg border bg-card px-4 py-3">
+        <nav aria-label="Contents" className="inline-block rounded-base border-2 bg-card px-4 py-3">
           <h2 className="font-medium">Contents</h2>
           <ol className="list-decimal pl-5 text-primary">
             {contents.map((heading) => (

@@ -113,15 +113,15 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             aria-checked={mode === item.id}
             onClick={() => setMode(item.id)}
             className={cn(
-              "rounded-xl border bg-card p-4 text-left transition-colors hover:border-primary/60",
-              mode === item.id && "border-primary ring-1 ring-primary",
+              "rounded-base border-2 border-border bg-secondary-background p-4 text-left shadow-shadow transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+              mode === item.id && "bg-main text-main-foreground",
             )}
           >
             <span className="flex items-center gap-2 font-medium">
               {item.title}
-              {mode === item.id && <CircleCheck className="size-4 text-primary" />}
+              {mode === item.id && <CircleCheck className="size-4" />}
             </span>
-            <span className="text-muted-foreground">{item.description}</span>
+            <span className={mode === item.id ? "" : "text-muted-foreground"}>{item.description}</span>
           </button>
         ))}
       </div>
@@ -175,7 +175,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
               <Input id="base-url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://…/v1" />
               <div className="flex flex-wrap gap-1.5">
                 {presets.map((preset) => (
-                  <Button key={preset.name} type="button" size="xs" variant="outline" onClick={() => setBaseUrl(preset.url)}>
+                  <Button key={preset.name} type="button" size="xs" variant="neutral" onClick={() => setBaseUrl(preset.url)}>
                     {preset.name}
                   </Button>
                 ))}
@@ -206,7 +206,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           {busy === "save" && <LoaderCircle className="animate-spin" />}
           Save
         </Button>
-        <Button variant="outline" onClick={onTest} disabled={busy !== null}>
+        <Button variant="neutral" onClick={onTest} disabled={busy !== null}>
           {busy === "test" && <LoaderCircle className="animate-spin" />}
           Save and test the connection
         </Button>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Diagram from "@/components/Diagram";
-import { headingId } from "@/lib/wiki";
+import { headingId } from "@/lib/wiki-pages";
 
 function text(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -11,9 +11,10 @@ function text(children: React.ReactNode): string {
 }
 
 // Draw the Markdown text of an article in the style of the app.
-export default function Prose({ markdown }: { markdown: string }) {
+// The compact form is for the help chat. Its links open in a new tab, so the canvas keeps its content.
+export default function Prose({ markdown, compact = false }: { markdown: string; compact?: boolean }) {
   return (
-    <div className="space-y-4 text-[0.9375rem] leading-7">
+    <div className={compact ? "space-y-2 text-sm leading-6" : "space-y-4 text-[0.9375rem] leading-7"}>
       <Markdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -26,7 +27,7 @@ export default function Prose({ markdown }: { markdown: string }) {
           ul: ({ children }) => <ul className="list-disc space-y-1.5 pl-6">{children}</ul>,
           ol: ({ children }) => <ol className="list-decimal space-y-1.5 pl-6">{children}</ol>,
           a: ({ href = "", children }) =>
-            href.startsWith("/") ? (
+            href.startsWith("/") && !compact ? (
               <Link href={href} className="text-primary underline-offset-4 hover:underline">
                 {children}
               </Link>
@@ -47,7 +48,7 @@ export default function Prose({ markdown }: { markdown: string }) {
               <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">{children}</code>
             ),
           table: ({ children }) => (
-            <div className="overflow-x-auto rounded-lg border bg-card">
+            <div className="overflow-x-auto rounded-base border-2 bg-card">
               <table className="w-full text-left text-sm leading-6">{children}</table>
             </div>
           ),

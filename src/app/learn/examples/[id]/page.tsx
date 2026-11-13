@@ -1,4 +1,5 @@
 import { ArrowRight, Lightbulb } from "lucide-react";
+import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Diagram from "@/components/Diagram";
@@ -14,7 +15,7 @@ function Step({ number, title, children }: { number: number; title: string; chil
   return (
     <section className="space-y-4">
       <h2 className="flex items-center gap-3 text-xl font-semibold tracking-tight">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-border bg-main text-xs font-heading text-main-foreground">
           {number}
         </span>
         {title}
@@ -54,9 +55,9 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
       <header className="space-y-4">
         <div className="flex items-center gap-2">
           <Badge>Worked example</Badge>
-          <Badge variant="secondary">{kata.difficulty}</Badge>
-          {kata.interview && <Badge variant="outline">interview question</Badge>}
-          {kata.custom && <Badge variant="outline">your problem · answer written by {example.author ?? "Claude"}</Badge>}
+          <Badge variant="neutral">{kata.difficulty}</Badge>
+          {kata.interview && <Badge variant="neutral">interview question</Badge>}
+          {kata.custom && <Badge variant="neutral">your problem · answer written by {example.author ?? "Claude"}</Badge>}
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">{kata.title}</h1>
         <Alert>
@@ -110,11 +111,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <h2 className="font-medium">Terms used in this answer</h2>
           <div className="flex flex-wrap gap-1.5">
             {terms.map((entry) => (
-              <Badge key={entry.id} variant="outline" asChild>
-                <Link href={`/glossary#${entry.id}`} title={entry.definition}>
-                  {entry.term}
-                </Link>
-              </Badge>
+              <Badge key={entry.id} variant="neutral" render={<Link href={`/glossary#${entry.id}`} title={entry.definition} />}>{entry.term}</Badge>
             ))}
           </div>
         </section>
@@ -155,9 +152,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <CardContent className="space-y-3">
             <p>{example.style.why}</p>
             {lesson && (
-              <Button variant="outline" size="sm" asChild>
-                <Link href={`/learn/${lesson.id}`}>Read the {lesson.name} lesson</Link>
-              </Button>
+              <LinkButton variant="neutral" size="sm" href={`/learn/${lesson.id}`}>Read the {lesson.name} lesson</LinkButton>
             )}
           </CardContent>
         </Card>
@@ -211,11 +206,9 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
         <CardContent>{example.alternative.body}</CardContent>
       </Card>
 
-      <Button asChild>
-        <Link href={`/kata/${kata.id}`}>
+      <LinkButton href={`/kata/${kata.id}`}>
           Do this kata with your own design <ArrowRight />
-        </Link>
-      </Button>
+        </LinkButton>
     </main>
   );
 }

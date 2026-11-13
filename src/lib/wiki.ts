@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { wikiSections, type WikiPage } from "./wiki-pages";
 
+export { headingId } from "./wiki-pages";
+
 export const wikiPages: WikiPage[] = wikiSections.flatMap((section) => section.pages);
 
 export function getWikiPage(slug: string): WikiPage | undefined {
@@ -24,9 +26,6 @@ export async function readArticle(slug: string): Promise<string | undefined> {
   }
 }
 
-export function headingId(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
 
 // Return the second-level headings of an article, for the contents list.
 export function headings(markdown: string): string[] {

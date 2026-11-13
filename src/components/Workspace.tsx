@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import HelpChat from "@/components/HelpChat";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -17,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { Kata } from "@/lib/katas";
+import { slimElements } from "@/lib/scene";
 import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/learn";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
@@ -47,7 +49,7 @@ function StepHeading({ number, title, hint }: { number: number; title: string; h
   return (
     <div>
       <div className="flex items-center gap-2 font-medium">
-        <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+        <span className="flex size-5 items-center justify-center rounded-full border-2 border-border bg-main text-[11px] font-heading text-main-foreground">
           {number}
         </span>
         {title}
@@ -124,13 +126,13 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
   return (
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
-      <aside className="flex w-[27rem] shrink-0 flex-col border-r bg-card text-sm leading-relaxed">
+      <aside className="flex w-[27rem] shrink-0 flex-col border-r-2 bg-card text-sm leading-relaxed">
         {/* "relative" keeps hidden labels inside this scroll area. Without it, they make the page scroll. */}
         <div className="relative flex-1 space-y-6 overflow-y-auto p-6">
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h1 className="text-xl font-semibold tracking-tight">{kata.title}</h1>
-              <Badge variant={kata.interview || kata.source ? "outline" : "secondary"}>
+              <Badge variant={kata.interview || kata.source ? "neutral" : "neutral"}>
                 {kata.source ? "community kata" : kata.interview ? "interview question" : kata.difficulty}
               </Badge>
             </div>
@@ -192,7 +194,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                     key={item.name}
                     type="button"
                     size="sm"
-                    variant={active ? "default" : "outline"}
+                    variant={active ? "default" : "neutral"}
                     aria-pressed={active}
                     disabled={!active && selected.length >= MAX_CHARACTERISTICS}
                     title={item.meaning}
@@ -207,7 +209,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               {selected.length} of {MAX_CHARACTERISTICS} selected
             </p>
             {selected.map((item) => (
-              <div key={item.name} className="space-y-1.5 rounded-md border bg-background p-3">
+              <div key={item.name} className="space-y-1.5 rounded-base border-2 bg-background p-3">
                 <Label htmlFor={`why-${item.name}`}>{item.name}</Label>
                 <p className="text-muted-foreground">
                   {glossary.find((entry) => entry.name === item.name)?.meaning}
@@ -223,9 +225,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             <Collapsible>
               <CollapsibleTrigger className="group flex items-center gap-1 text-primary hover:underline">
                 What does each characteristic mean?
-                <ChevronDown className="size-3.5 transition-transform group-data-[state=open]:rotate-180" />
+                <ChevronDown className="size-3.5 transition-transform group-data-[panel-open]:rotate-180" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2 space-y-2 rounded-md border bg-background p-3">
+              <CollapsibleContent className="mt-2 space-y-2 rounded-base border-2 bg-background p-3">
                 <p className="text-muted-foreground">
                   A quality the system must have, not a feature. Look for these signals in the kata:
                 </p>
@@ -249,7 +251,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               title="Architecture style"
               hint="Select the simplest style that supports your characteristics."
             />
-            <Select value={style} onValueChange={setStyle}>
+            <Select value={style || null} onValueChange={(value) => setStyle(value ?? "")}>
               <SelectTrigger className="w-full" aria-label="Architecture style">
                 <SelectValue placeholder="Select a style" />
               </SelectTrigger>
@@ -262,7 +264,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               </SelectContent>
             </Select>
             {lesson && (
-              <div className="space-y-2 rounded-md border bg-background p-3">
+              <div className="space-y-2 rounded-base border-2 bg-background p-3">
                 <p>{lesson.idea}</p>
                 <p>
                   <span className="font-medium">Use when:</span> {lesson.useWhen}
@@ -271,10 +273,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                   <span className="font-medium">Main cost:</span> {lesson.costs[0]}
                 </p>
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      See the diagram and the full lesson
-                    </Button>
+                  <DialogTrigger render={<Button variant="neutral" size="sm" />}>
+                    See the diagram and the full lesson
                   </DialogTrigger>
                   <DialogContent className="max-h-[85vh] overflow-y-auto text-sm leading-relaxed sm:max-w-2xl">
                     <DialogHeader>
@@ -318,7 +318,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           </section>
         </div>
 
-        <div className="space-y-3 border-t p-4">
+        <div className="space-y-3 border-t-2 p-4">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -330,9 +330,20 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           </Button>
         </div>
       </aside>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 bg-card">
         <Canvas onReady={(instance) => (api.current = instance)} />
       </div>
+      <HelpChat
+        intro="Ask about a concept, or check your reasoning. In a kata, the helper gives hints and questions, not the design."
+        getContext={() => ({
+          kind: "kata",
+          kataId: kata.id,
+          characteristics: selected.map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`).join("\n"),
+          style,
+          rationale,
+          elements: slimElements(api.current?.getSceneElements() ?? []),
+        })}
+      />
     </main>
   );
 }

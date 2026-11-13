@@ -99,3 +99,8 @@ export const wikiSections: WikiSection[] = [
     ],
   },
 ];
+
+// Make the anchor ID of a heading. This file has no file-system import, so the browser can use it.
+export function headingId(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}

@@ -40,3 +40,15 @@ export function describeScene(elements: SceneElement[]): string {
     section("Free text", freeText.map((text) => `- ${text}`)),
   ].join("\n\n");
 }
+
+// Keep only the fields of each canvas element that the text description uses.
+export function slimElements(elements: readonly object[]): SceneElement[] {
+  return (elements as SceneElement[]).map(({ id, type, text, containerId, startBinding, endBinding }) => ({
+    id,
+    type,
+    text,
+    containerId,
+    startBinding: startBinding ? { elementId: startBinding.elementId } : null,
+    endBinding: endBinding ? { elementId: endBinding.elementId } : null,
+  }));
+}

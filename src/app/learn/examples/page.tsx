@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import LinkButton from "@/components/LinkButton";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { allExamples } from "@/lib/library";
 
@@ -27,8 +26,8 @@ export default async function ExamplesPage() {
               <div className="flex items-center justify-between gap-2">
                 <CardTitle>{kata.title}</CardTitle>
                 <div className="flex shrink-0 gap-1">
-                  {kata.custom && <Badge variant="outline">yours</Badge>}
-                  <Badge variant="secondary">{kata.difficulty}</Badge>
+                  {kata.custom && <Badge variant="neutral">yours</Badge>}
+                  <Badge variant="neutral">{kata.difficulty}</Badge>
                 </div>
               </div>
               <CardDescription className="line-clamp-3">{kata.context}</CardDescription>
@@ -37,11 +36,9 @@ export default async function ExamplesPage() {
               Solved with: <span className="font-medium text-foreground">{example.style.name}</span>
             </CardContent>
             <CardFooter className="mt-auto">
-              <Button size="sm" asChild>
-                <Link href={`/learn/examples/${kata.id}`}>
+              <LinkButton size="sm" href={`/learn/examples/${kata.id}`}>
                   Study this answer <ArrowRight />
-                </Link>
-              </Button>
+                </LinkButton>
             </CardFooter>
           </Card>
         ))}

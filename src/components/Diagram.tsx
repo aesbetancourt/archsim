@@ -52,7 +52,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="mx-auto block w-full rounded-md border bg-card"
+      className="mx-auto block w-full rounded-base border-2 bg-card"
       style={{ maxWidth: width }}
       role="img"
       aria-label="Architecture diagram"
@@ -72,7 +72,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
             height={group.height}
             rx={10}
             className="fill-primary/5 stroke-primary"
-            strokeWidth={1.5}
+            strokeWidth={2}
           />
           <text x={group.left + 12} y={group.top + 18} fontSize={12} fontWeight={600} className="fill-primary">
             {group.label}
@@ -96,7 +96,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
               x2={end.x}
               y2={end.y}
               className="stroke-foreground/70"
-              strokeWidth={1.5}
+              strokeWidth={2}
               strokeDasharray={edge.async ? "6 4" : undefined}
               markerEnd="url(#arrow)"
               markerStart={edge.both ? "url(#arrow)" : undefined}
@@ -131,7 +131,7 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
               height={BOX_H}
               rx={6}
               className={node.external ? "fill-muted stroke-foreground/70" : "fill-card stroke-foreground/70"}
-              strokeWidth={1.5}
+              strokeWidth={2}
               strokeDasharray={node.external ? "3 3" : undefined}
             />
             <text fontSize={12} textAnchor="middle" className="fill-foreground">

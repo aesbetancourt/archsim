@@ -1,7 +1,8 @@
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Trash2 } from "lucide-react";
+import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
+import ConfirmButton from "@/components/ConfirmButton";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { listAttempts } from "@/lib/attempts";
@@ -33,19 +34,13 @@ export default async function Home() {
           review from Claude. If the concepts are new to you, start with a finished example.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button asChild>
-            <Link href="/learn/examples">
+          <LinkButton href="/learn/examples">
               <BookOpen /> Study a finished kata
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/learn">Learn the method and the styles</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/solve">
+            </LinkButton>
+          <LinkButton variant="neutral" href="/learn">Learn the method and the styles</LinkButton>
+          <LinkButton variant="neutral" href="/solve">
               <Sparkles /> Solve your own problem
-            </Link>
-          </Button>
+            </LinkButton>
         </div>
       </section>
 
@@ -59,9 +54,9 @@ export default async function Home() {
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle>{kata.title}</CardTitle>
                   <div className="flex shrink-0 gap-1">
-                    {kata.interview && <Badge variant="outline">interview</Badge>}
-                    {kata.custom && <Badge variant="outline">yours</Badge>}
-                    <Badge variant={kata.difficulty === "hard" ? "default" : "secondary"}>
+                    {kata.interview && <Badge variant="neutral">interview</Badge>}
+                    {kata.custom && <Badge variant="neutral">yours</Badge>}
+                    <Badge variant={kata.difficulty === "hard" ? "default" : "neutral"}>
                       {kata.difficulty}
                     </Badge>
                   </div>
@@ -70,15 +65,11 @@ export default async function Home() {
               </CardHeader>
               {kata.users && <CardContent className="text-sm text-muted-foreground">{kata.users}</CardContent>}
               <CardFooter className="mt-auto gap-2">
-                <Button size="sm" asChild>
-                  <Link href={`/kata/${kata.id}`}>
+                <LinkButton size="sm" href={`/kata/${kata.id}`}>
                     Start <ArrowRight />
-                  </Link>
-                </Button>
+                  </LinkButton>
                 {solved.has(kata.id) && (
-                  <Button size="sm" variant="ghost" asChild>
-                    <Link href={`/learn/examples/${kata.id}`}>See a finished answer</Link>
-                  </Button>
+                  <LinkButton size="sm" variant="ghost" href={`/learn/examples/${kata.id}`}>See a finished answer</LinkButton>
                 )}
               </CardFooter>
             </Card>
@@ -98,17 +89,26 @@ export default async function Home() {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button size="sm" asChild>
-              <Link href="/community">
+            <LinkButton size="sm" href="/community">
                 Browse the collection <ArrowRight />
-              </Link>
-            </Button>
+              </LinkButton>
           </CardFooter>
         </Card>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Your history</h2>
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-lg font-semibold tracking-tight">Your history</h2>
+          {attempts.length > 0 && (
+            <ConfirmButton
+              label="Clear history"
+              title="Clear the full history?"
+              description={`This removes all ${attempts.length} attempts, with their diagrams and reviews. You cannot get them back.`}
+              confirmLabel="Clear history"
+              endpoint="/api/attempts"
+            />
+          )}
+        </div>
         {attempts.length === 0 ? (
           <p className="text-sm text-muted-foreground">No attempts yet.</p>
         ) : (
@@ -120,7 +120,10 @@ export default async function Home() {
                   <TableHead>Style</TableHead>
                   <TableHead>Reviewer</TableHead>
                   <TableHead>Date</TableHead>
-                  <TableHead className="pr-4 text-right">Score</TableHead>
+                  <TableHead className="text-right">Score</TableHead>
+                  <TableHead className="w-0 pr-4">
+                    <span className="sr-only">Remove</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -136,7 +139,18 @@ export default async function Home() {
                     <TableCell className="text-muted-foreground">
                       {new Date(attempt.createdAt).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="pr-4 text-right tabular-nums">{attempt.overall} / 100</TableCell>
+                    <TableCell className="text-right tabular-nums">{attempt.overall} / 100</TableCell>
+                    <TableCell className="pr-4">
+                      <ConfirmButton
+                        label={<Trash2 />}
+                        ariaLabel="Remove this attempt"
+                        size="icon-xs"
+                        title="Remove this attempt?"
+                        description="This removes the attempt, with its diagram and review. You cannot get it back."
+                        confirmLabel="Remove"
+                        endpoint={`/api/attempts/${attempt.id}`}
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

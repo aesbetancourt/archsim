@@ -1,4 +1,5 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
+import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -29,19 +30,13 @@ export default async function CommunityPage({
           from his public collection. Each kata belongs to its author.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <a href={COMMUNITY_SOURCE.url} target="_blank" rel="noreferrer">
+          <LinkButton variant="neutral" size="sm" href={COMMUNITY_SOURCE.url}>
               The collection on GitHub <ExternalLink />
-            </a>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <a href={COMMUNITY_SOURCE.site} target="_blank" rel="noreferrer">
+            </LinkButton>
+          <LinkButton variant="neutral" size="sm" href={COMMUNITY_SOURCE.site}>
               The original website <ExternalLink />
-            </a>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/community?refresh=1">Download the list again</Link>
-          </Button>
+            </LinkButton>
+          <LinkButton variant="ghost" size="sm" href="/community?refresh=1">Download the list again</LinkButton>
         </div>
       </header>
 
@@ -63,14 +58,10 @@ export default async function CommunityPage({
               <CardDescription className="line-clamp-4">{kata.context}</CardDescription>
             </CardHeader>
             <CardFooter className="mt-auto gap-2">
-              <Button size="sm" asChild>
-                <Link href={`/kata/${kata.id}`}>
+              <LinkButton size="sm" href={`/kata/${kata.id}`}>
                   Start <ArrowRight />
-                </Link>
-              </Button>
-              <Button size="sm" variant="ghost" asChild>
-                <Link href={`/solve?kata=${kata.id}`}>Get a worked answer</Link>
-              </Button>
+                </LinkButton>
+              <LinkButton size="sm" variant="ghost" href={`/solve?kata=${kata.id}`}>Get a worked answer</LinkButton>
             </CardFooter>
           </Card>
         ))}

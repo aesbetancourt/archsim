@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Review } from "./rubric";
 
@@ -42,6 +42,16 @@ export async function getAttempt(id: string): Promise<Attempt | undefined> {
   } catch {
     return undefined;
   }
+}
+
+// Remove one attempt, with its diagram and its review.
+export async function deleteAttempt(id: string): Promise<void> {
+  await rm(attemptDir(id), { recursive: true, force: true });
+}
+
+// Remove all attempts. This includes attempts that have no review.
+export async function clearAttempts(): Promise<void> {
+  await rm(ROOT, { recursive: true, force: true });
 }
 
 // Return the reviewed attempts, newest first.

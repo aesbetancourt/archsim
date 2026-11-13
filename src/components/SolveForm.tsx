@@ -57,7 +57,7 @@ export default function SolveForm({ initialText }: { initialText: string }) {
           Solve it and show me the answer
         </Button>
         <Button
-          variant="outline"
+          variant="neutral"
           onClick={() => submit("practice")}
           disabled={busy !== null || text.trim().length < 40}
         >
