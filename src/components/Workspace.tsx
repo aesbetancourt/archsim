@@ -1,7 +1,7 @@
 "use client";
 
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { BookOpen, ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool, Send } from "lucide-react";
+import { BookOpen, ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool, RotateCcw, Send } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,20 +13,23 @@ import ProblemText from "@/components/ProblemText";
 import SidePanel from "@/components/SidePanel";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { clearDraft, type Draft, loadDraft, saveDraft } from "@/lib/draft";
 import type { Kata } from "@/lib/katas";
-import { loadNotesHtml, notesText } from "@/lib/notes";
+import { loadNotesHtml, notesText, saveNotesHtml } from "@/lib/notes";
 import { slimElements } from "@/lib/scene";
 import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/learn";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
 const MAX_CHARACTERISTICS = 3;
+// The time between the last change and the save of the work in progress.
+const SAVE_DELAY_MS = 800;
 
 const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
 
@@ -73,17 +76,138 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   const [notes, setNotes] = useState("");
   const [scope, setScope] = useState("");
 
-  // The notes belong to this kata. The editor saves them in this browser.
-  // This page keeps their plain text, for the help chat and for the saved attempt.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setNotes(notesText(loadNotesHtml(kata.id)));
-  }, [kata.id]);
-
   const [style, setStyle] = useState("");
   const [rationale, setRationale] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // The saved work on this kata. "undefined" means that it is not read yet.
+  const [draft, setDraft] = useState<Draft | null | undefined>(undefined);
+  const [saveState, setSaveState] = useState<"saved" | "pending" | "error">("saved");
+  // A new number makes a new, empty canvas and notepad. "Start again" changes it.
+  const [round, setRound] = useState(0);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A number that changes when the drawing changes.
+  const sceneVersion = useRef(-1);
+  // The newest answers, for a save that starts after a delay.
+  const latest = useRef({ scope, selected, style, rationale, notes });
+  // The drawing from the saved work. A save uses it while the canvas is not open yet.
+  const savedScene = useRef<Draft["scene"]>({ elements: [], files: {} });
+
+  // Read the saved work when the page opens. The editor saves the notes itself.
+  // This page keeps their plain text, for the help chat and for the saved attempt.
+  useEffect(() => {
+    const saved = loadDraft(kata.id);
+    /* eslint-disable react-hooks/set-state-in-effect */
+    const savedNotes = notesText(loadNotesHtml(kata.id));
+    latest.current = { ...latest.current, notes: savedNotes };
+    setNotes(savedNotes);
+    if (saved) {
+      // Set the newest answers first, so this read does not start a save.
+      latest.current = { scope: saved.scope, selected: saved.selected, style: saved.style, rationale: saved.rationale, notes: latest.current.notes };
+      savedScene.current = saved.scene;
+      setScope(saved.scope);
+      setSelected(saved.selected);
+      setStyle(saved.style);
+      setRationale(saved.rationale);
+    }
+    setDraft(saved);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [kata.id]);
+
+  const save = useCallback(() => {
+    saveTimer.current = null;
+    const { scope, selected, style, rationale } = latest.current;
+    const ok = saveDraft(kata.id, {
+      scope,
+      selected,
+      style,
+      rationale,
+      scene: api.current
+        ? { elements: [...api.current.getSceneElements()], files: { ...api.current.getFiles() } }
+        : savedScene.current,
+    });
+    setSaveState(ok ? "saved" : "error");
+  }, [kata.id]);
+
+  // Plan a save a short time after the last change.
+  const changed = useCallback(() => {
+    setSaveState("pending");
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(save, SAVE_DELAY_MS);
+  }, [save]);
+
+  // Save when an answer changes. Do not save before the saved work is read.
+  useEffect(() => {
+    const before = latest.current;
+    latest.current = { scope, selected, style, rationale, notes };
+    if (draft === undefined) return;
+    // The editor saves the notes itself. A change in the notes still saves the draft,
+    // so the home page can show this kata as in progress.
+    if (
+      before.scope !== scope ||
+      before.selected !== selected ||
+      before.style !== style ||
+      before.rationale !== rationale ||
+      before.notes !== notes
+    ) {
+      changed();
+    }
+  }, [scope, selected, style, rationale, notes, draft, changed]);
+
+  // Save immediately when the user leaves the page with a planned save.
+  useEffect(() => {
+    const flush = () => {
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+        save();
+      }
+    };
+    window.addEventListener("pagehide", flush);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      flush();
+    };
+  }, [save]);
+
+  // Excalidraw reports each pointer move. Plan a save only when the drawing changed.
+  const onSceneChange = useCallback(
+    (elements: readonly { version: number }[]) => {
+      const version = elements.reduce((sum, element) => sum + element.version, elements.length);
+      if (sceneVersion.current === -1) {
+        sceneVersion.current = version;
+        return;
+      }
+      if (version !== sceneVersion.current) {
+        sceneVersion.current = version;
+        changed();
+      }
+    },
+    [changed],
+  );
+
+  // Remove all the work on this kata: the answers, the notes, and the drawing.
+  function startAgain() {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = null;
+    clearDraft(kata.id);
+    saveNotesHtml(kata.id, "");
+    api.current = null;
+    savedScene.current = { elements: [], files: {} };
+    latest.current = { scope: "", selected: [], style: "", rationale: "", notes: "" };
+    setScope("");
+    setSelected(latest.current.selected);
+    setStyle("");
+    setRationale("");
+    setNotes("");
+    setDraft(null);
+    sceneVersion.current = -1;
+    setRound((current) => current + 1);
+    setSaveState("saved");
+    setError("");
+    setConfirmClear(false);
+  }
+
   const lesson = getStyleLesson(style);
   // The canvas must measure its position again after the panel opens or closes.
   const refreshCanvas = useCallback(() => api.current?.refresh(), []);
@@ -343,6 +467,33 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             {busy ? <LoaderCircle className="animate-spin" /> : <Send />}
             {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span role="status">
+              {saveState === "saved" && "Your work is saved in this browser."}
+              {saveState === "pending" && "Saving your work."}
+              {saveState === "error" && "The browser refused to save your work."}
+            </span>
+            <Dialog open={confirmClear} onOpenChange={setConfirmClear}>
+              <DialogTrigger render={<Button variant="ghost" size="xs" disabled={busy} />}>
+                <RotateCcw /> Start again
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Start this kata again?</DialogTitle>
+                  <DialogDescription>
+                    This removes your answers, your notes, and your diagram for this kata. You cannot get them back.
+                    Your reviewed attempts stay in the history.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="neutral" onClick={() => setConfirmClear(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={startAgain}>Start again</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </SidePanel>
       <div className="flex min-w-0 flex-1 flex-col bg-card">
@@ -371,10 +522,18 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         </div>
         <div className="relative min-h-0 flex-1">
           {/* The canvas stays loaded under the notepad, so the drawing is kept. */}
-          <Canvas onReady={(instance) => (api.current = instance)} />
+          {/* The canvas opens after the saved work is read, so it can show the saved drawing. */}
+          {draft !== undefined && (
+            <Canvas
+              key={round}
+              onReady={(instance) => (api.current = instance)}
+              initialData={draft?.scene.elements.length ? draft.scene : undefined}
+              onChange={onSceneChange}
+            />
+          )}
           {view === "notes" && (
             <div className="absolute inset-0 z-20 bg-card">
-              <NotesEditor kataId={kata.id} onTextChange={setNotes} />
+              <NotesEditor key={round} kataId={kata.id} onTextChange={setNotes} />
             </div>
           )}
         </div>

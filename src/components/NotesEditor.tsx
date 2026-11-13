@@ -5,12 +5,17 @@ import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Bold, Heading2, Highlighter, Italic, List, ListOrdered, Redo2, Strikethrough, TextQuote, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { loadNotesHtml, notesText, saveNotesHtml } from "@/lib/notes";
+import { loadNotesHtml, notesText, saveNotesHtml, toNotesHtml } from "@/lib/notes";
 
 type Props = {
-  kataId: string;
+  // With a kata ID, the editor reads and saves the notes of that kata in the browser.
+  kataId?: string;
+  // Without a kata ID, the page gives the first content and saves each change itself.
+  initialHtml?: string;
+  onHtmlChange?: (html: string) => void;
   // Called with the plain text of the notes after each change.
-  onTextChange: (text: string) => void;
+  onTextChange?: (text: string) => void;
+  label?: string;
 };
 
 function Tool({ label, active, disabled, onClick, children }: { label: string; active?: boolean; disabled?: boolean; onClick: () => void; children: React.ReactNode }) {
@@ -34,23 +39,24 @@ function Tool({ label, active, disabled, onClick, children }: { label: string; a
   );
 }
 
-// The notepad of a kata: a text editor with basic formats and a highlighter.
-export default function NotesEditor({ kataId, onTextChange }: Props) {
+// The notepad of a kata or a board: a text editor with basic formats and a highlighter.
+export default function NotesEditor({ kataId, initialHtml, onHtmlChange, onTextChange, label = "Notes for this kata" }: Props) {
   const editor = useEditor({
     extensions: [StarterKit, Highlight],
-    content: typeof window === "undefined" ? "" : loadNotesHtml(kataId),
+    content: typeof window === "undefined" ? "" : kataId ? loadNotesHtml(kataId) : toNotesHtml(initialHtml ?? ""),
     // The editor starts in the browser only. This prevents a mismatch with the server page.
     immediatelyRender: false,
     editorProps: {
       attributes: {
         class: "notes-editor mx-auto min-h-full max-w-3xl px-8 py-6 outline-none",
-        "aria-label": "Notes for this kata",
+        "aria-label": label,
       },
     },
     onUpdate: ({ editor }) => {
       const html = editor.isEmpty ? "" : editor.getHTML();
-      saveNotesHtml(kataId, html);
-      onTextChange(notesText(html));
+      if (kataId) saveNotesHtml(kataId, html);
+      onHtmlChange?.(html);
+      onTextChange?.(notesText(html));
     },
   });
 

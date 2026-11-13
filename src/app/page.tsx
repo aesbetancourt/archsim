@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen, GraduationCap, History, Library, Lightbulb, MessagesSquare, Sparkles, Target, Trash2, UserPen } from "lucide-react";
 import DifficultyIcon from "@/components/DifficultyIcon";
+import InProgress from "@/components/InProgress";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import ConfirmButton from "@/components/ConfirmButton";
@@ -29,7 +30,7 @@ export default async function Home() {
   return (
     <main className="mx-auto w-full max-w-4xl space-y-12 px-6 py-10">
       <section className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight">Practice software architecture</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Challenge your software architecture knowledge</h1>
         <p className="max-w-2xl text-muted-foreground">
           Each kata is a short business problem. Draw a design, explain your decisions, and get a
           review from Claude. If the concepts are new to you, start with a finished example.
@@ -46,6 +47,8 @@ export default async function Home() {
             </LinkButton>
         </div>
       </section>
+
+      <InProgress titles={Object.fromEntries(titles)} />
 
       {groups.map((group) => (
       <section key={group.title} className="space-y-4">

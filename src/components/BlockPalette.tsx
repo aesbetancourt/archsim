@@ -10,7 +10,7 @@ import { type Block, blockGroups, blocks } from "@/lib/blocks";
 
 const HIDDEN_KEY = "archsim:blocks-hidden";
 // The time the pointer must stay on a piece before its description shows.
-const TIP_DELAY_MS = 2000;
+const TIP_DELAY_MS = 1000;
 const TIP_WIDTH = 320;
 
 type Tip = { block: Block; left: number; top: number };

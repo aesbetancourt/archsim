@@ -1,4 +1,5 @@
 import { ArrowRight, PencilRuler, Trash2 } from "lucide-react";
+import { notesText } from "@/lib/notes";
 import Link from "next/link";
 import ConfirmButton from "@/components/ConfirmButton";
 import NewBoardButton from "@/components/NewBoardButton";
@@ -41,7 +42,7 @@ export default async function ScratchpadPage() {
                   </Link>
                 </CardTitle>
                 <CardDescription className="line-clamp-3 whitespace-pre-line">
-                  {board.notes || "No notes."}
+                  {notesText(board.notes) || "No notes."}
                 </CardDescription>
               </CardHeader>
               <CardFooter className="mt-auto items-center justify-between gap-2">

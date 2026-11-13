@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ArchSim",
-  description: "Architecture kata practice with Claude reviews",
+  description: "Challenge your software architecture knowledge with katas and an AI reviewer.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

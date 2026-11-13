@@ -1,23 +1,19 @@
 "use client";
 
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, NotebookPen, PenTool } from "lucide-react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HelpChat from "@/components/HelpChat";
-import SidePanel from "@/components/SidePanel";
-import StyleLessonBody from "@/components/StyleLessonBody";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import LinkButton from "@/components/LinkButton";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import type { Board } from "@/lib/boards";
-import { characteristics, styleLessons } from "@/lib/learn";
+import { notesText } from "@/lib/notes";
 import { slimElements } from "@/lib/scene";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
+const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
 
 const SAVE_DELAY_MS = 1200;
 
@@ -30,21 +26,12 @@ const statusText: Record<Status, string> = {
   error: "The save failed. Change something to try again.",
 };
 
-function Reference({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <Collapsible>
-      <CollapsibleTrigger className="group flex w-full items-center justify-between rounded-base border-2 border-border bg-secondary-background px-3 py-2 font-medium">
-        {title}
-        <ChevronDown className="size-4 transition-transform group-data-[panel-open]:rotate-180" />
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 space-y-2 px-1">{children}</CollapsibleContent>
-    </Collapsible>
-  );
-}
-
 export default function BoardEditor({ board }: { board: Board }) {
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
   const [title, setTitle] = useState(board.title);
+  // The large area shows the canvas or the notepad. A board starts on the canvas.
+  const [view, setView] = useState<"notes" | "diagram">("diagram");
+  // The notes as HTML. The notepad opens with them each time the user selects its tab.
   const [notes, setNotes] = useState(board.notes);
   const [status, setStatus] = useState<Status>("saved");
   // The newest values, for a save that starts after a delay.
@@ -52,9 +39,6 @@ export default function BoardEditor({ board }: { board: Board }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // A number that changes when the drawing changes.
   const sceneVersion = useRef(-1);
-
-  // The canvas must measure its position again after the panel opens or closes.
-  const refreshCanvas = useCallback(() => api.current?.refresh(), []);
 
   const save = useCallback(async () => {
     timer.current = null;
@@ -115,102 +99,73 @@ export default function BoardEditor({ board }: { board: Board }) {
 
   return (
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
-      <SidePanel widthClass="w-[24rem]" onToggle={refreshCanvas}>
-        <div className="relative flex-1 space-y-5 overflow-y-auto p-5">
-          <Link href="/scratchpad" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="size-4" /> All boards
-          </Link>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="board-title">Title</Label>
-            <Input
-              id="board-title"
-              value={title}
-              onChange={(event) => {
-                setTitle(event.target.value);
-                latest.current.title = event.target.value;
-                changed();
-              }}
-            />
+      <div className="flex min-w-0 flex-1 flex-col bg-card">
+        <div className="flex items-center gap-2 border-b-2 px-3 py-2">
+          <LinkButton variant="ghost" size="sm" href="/scratchpad" aria-label="All boards" title="All boards">
+            <ArrowLeft />
+          </LinkButton>
+          <Input
+            aria-label="Title of the board"
+            className="h-8 w-64 font-medium"
+            value={title}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              latest.current.title = event.target.value;
+              changed();
+            }}
+          />
+          <div role="tablist" aria-label="Work area" className="flex items-center gap-2">
+            <Button
+              role="tab"
+              aria-selected={view === "diagram"}
+              variant={view === "diagram" ? "noShadow" : "ghost"}
+              size="sm"
+              onClick={() => setView("diagram")}
+            >
+              <PenTool /> Diagram
+            </Button>
+            <Button
+              role="tab"
+              aria-selected={view === "notes"}
+              variant={view === "notes" ? "noShadow" : "ghost"}
+              size="sm"
+              onClick={() => setView("notes")}
+            >
+              <NotebookPen /> Notes
+            </Button>
           </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="board-notes">Notes</Label>
-            <Textarea
-              id="board-notes"
-              className="min-h-64"
-              placeholder="Requirements, assumptions, decisions, open questions…"
-              value={notes}
-              onChange={(event) => {
-                setNotes(event.target.value);
-                latest.current.notes = event.target.value;
-                changed();
-              }}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="font-medium">Reference</h2>
-            <Reference title="Architecture characteristics">
-              <dl className="space-y-2">
-                {characteristics.map((item) => (
-                  <div key={item.name}>
-                    <dt className="font-medium">{item.name}</dt>
-                    <dd className="text-muted-foreground">
-                      {item.meaning} Signal: {item.signal}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Reference>
-            <Reference title="Architecture styles">
-              <ul className="space-y-2">
-                {styleLessons.map((lesson) => (
-                  <li key={lesson.id}>
-                    <Dialog>
-                      <DialogTrigger className="text-left font-medium text-primary hover:underline">
-                        {lesson.name}
-                      </DialogTrigger>
-                      <DialogContent className="max-h-[85vh] overflow-y-auto text-sm leading-relaxed sm:max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle>{lesson.name}</DialogTitle>
-                          <DialogDescription>{lesson.idea}</DialogDescription>
-                        </DialogHeader>
-                        <StyleLessonBody lesson={lesson} />
-                      </DialogContent>
-                    </Dialog>
-                    <p className="text-muted-foreground">{lesson.idea}</p>
-                  </li>
-                ))}
-              </ul>
-            </Reference>
-            <p className="flex flex-wrap gap-x-4 gap-y-1">
-              <a href="/learn" target="_blank" className="text-primary hover:underline">
-                Learn pages ↗
-              </a>
-              <a href="/glossary" target="_blank" className="text-primary hover:underline">
-                Glossary ↗
-              </a>
-            </p>
-          </div>
+          <span className="ml-auto text-xs text-muted-foreground" role="status">
+            {statusText[status]}
+          </span>
         </div>
-        <p className="border-t-2 px-5 py-3 text-muted-foreground" role="status">
-          {statusText[status]}
-        </p>
-      </SidePanel>
-      <div className="min-w-0 flex-1 bg-card">
-        <Canvas
-          onReady={(instance) => (api.current = instance)}
-          initialData={{ elements: board.scene.elements, files: board.scene.files }}
-          onChange={onSceneChange}
-        />
+        <div className="relative min-h-0 flex-1">
+          {/* The canvas stays loaded under the notepad, so the drawing is kept. */}
+          <Canvas
+            onReady={(instance) => (api.current = instance)}
+            initialData={{ elements: board.scene.elements, files: board.scene.files }}
+            onChange={onSceneChange}
+          />
+          {view === "notes" && (
+            <div className="absolute inset-0 z-20 bg-card">
+              <NotesEditor
+                label="Notes for this board"
+                initialHtml={notes}
+                onHtmlChange={(html) => {
+                  setNotes(html);
+                  latest.current.notes = html;
+                  changed();
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
       <HelpChat
         intro="Ask about your notes, your diagram, or any architecture topic."
         getContext={() => ({
           kind: "board",
           title: latest.current.title,
-          notes: latest.current.notes,
+          notes: notesText(latest.current.notes),
           elements: slimElements(api.current?.getSceneElements() ?? (board.scene.elements as object[])),
         })}
       />
