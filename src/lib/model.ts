@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
@@ -20,6 +20,9 @@ const TIMEOUT_MS = 5 * 60 * 1000;
 
 // These models decline some requests. The API can then continue on a different model.
 const FALLBACK_MODELS = ["claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5"];
+
+// The number of times to ask OpenCode when the answer is not valid JSON.
+const OPENCODE_TRIES = 2;
 
 // Get JSON from a model answer. Some models put it in a code block.
 function parseJson(text: string): unknown {
@@ -53,15 +56,25 @@ async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelRe
   const cwd = call.imagePath ? path.dirname(call.imagePath) : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
   const model = settings.openCode.model;
   try {
-    const text = await runOpenCode({
-      cwd,
-      prompt: call.prompt,
-      systemPrompt: call.systemPrompt,
-      schema: call.schema,
-      model,
-      imageName: call.imagePath ? path.basename(call.imagePath) : undefined,
-    });
-    return { output: parseJson(text), model: model ? `OpenCode (${model})` : "OpenCode" };
+    // OpenCode cannot force the answer to match the schema. A model sometimes writes JSON
+    // that is not valid, for example with a quote mark that is not escaped. Ask one more time.
+    for (let attempt = 1; ; attempt++) {
+      const text = await runOpenCode({
+        cwd,
+        prompt: call.prompt,
+        systemPrompt: call.systemPrompt,
+        schema: call.schema,
+        model,
+        imageName: call.imagePath ? path.basename(call.imagePath) : undefined,
+      });
+      try {
+        return { output: parseJson(text), model: model ? `OpenCode (${model})` : "OpenCode" };
+      } catch (error) {
+        // Keep the answer next to the attempt, so the cause can be found.
+        if (call.imagePath) await writeFile(path.join(cwd, "model-answer.txt"), text).catch(() => undefined);
+        if (attempt === OPENCODE_TRIES) throw error;
+      }
+    }
   } finally {
     if (!call.imagePath) await rm(cwd, { recursive: true, force: true });
   }

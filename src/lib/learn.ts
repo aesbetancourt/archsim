@@ -370,7 +370,7 @@ export const kataSteps = [
   },
   {
     title: "Select the driving characteristics",
-    body: "An architecture characteristic is a quality the system must have, such as availability. It is not a feature. Select at most three, and tie each one to a sentence in the kata. A design that tries to be good at everything is good at nothing.",
+    body: "An architecture characteristic is a quality the system must have, such as availability. It is not a feature. Select the few that drive the design, and tie each one to a sentence in the kata. Three is the usual number, and the app lets you select up to five. A design that tries to be good at everything is good at nothing.",
   },
   {
     title: "Select a style",

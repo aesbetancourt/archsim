@@ -1,4 +1,4 @@
-import { ArrowLeftRight, Component, Crosshair, FileText, ListChecks, type LucideIcon, MessageCircleQuestion, RotateCcw, Scale, Shapes, ThumbsUp, Trash2, TriangleAlert } from "lucide-react";
+import { ArrowLeftRight, BookOpen, Component, Crosshair, FileText, ListChecks, type LucideIcon, MessageCircleQuestion, RotateCcw, Scale, Shapes, ThumbsUp, Trash2, TriangleAlert } from "lucide-react";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { getAttempt } from "@/lib/attempts";
 import { findKata } from "@/lib/library";
-import { dimensions } from "@/lib/rubric";
+import { dimensions, studyPages } from "@/lib/rubric";
 
 // One icon for each dimension of the review.
 const dimensionIcons: Record<string, LucideIcon> = {
@@ -57,6 +57,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
           const result = review.dimensions.find((dimension) => dimension.id === dimensionId);
           if (!result) return null;
           const Icon = dimensionIcons[dimensionId];
+          const study = studyPages.find((page) => page.slug === result.study);
           return (
             <Card key={dimensionId}>
               <CardHeader>
@@ -70,9 +71,24 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>{result.evidence}</p>
+                {result.concept && (
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">The idea:</span> {result.concept}
+                  </p>
+                )}
                 <p className="text-muted-foreground">
                   <span className="font-medium text-foreground">Next time:</span> {result.improvement}
                 </p>
+                {result.example && (
+                  <p className="rounded-base border-2 bg-secondary-background px-3 py-2 text-muted-foreground">
+                    <span className="font-medium text-foreground">For example:</span> {result.example}
+                  </p>
+                )}
+                {study && (
+                  <Link href={`/learn/${study.slug}`} className="inline-flex items-center gap-1 text-primary hover:underline">
+                    <BookOpen className="size-3.5" aria-hidden /> Read: {study.title}
+                  </Link>
+                )}
               </CardContent>
             </Card>
           );

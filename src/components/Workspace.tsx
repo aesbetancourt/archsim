@@ -27,7 +27,9 @@ import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
-const MAX_CHARACTERISTICS = 3;
+// The most characteristics that a person can select. The method recommends three.
+const MAX_CHARACTERISTICS = 5;
+const USUAL_CHARACTERISTICS = 3;
 // The time between the last change and the save of the work in progress.
 const SAVE_DELAY_MS = 800;
 
@@ -212,7 +214,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   // The canvas must measure its position again after the panel opens or closes.
   const refreshCanvas = useCallback(() => api.current?.refresh(), []);
 
-  // Select or remove a characteristic. The limit is three.
+  // Select or remove a characteristic, up to the limit.
   function toggle(name: string) {
     setSelected((current) =>
       current.some((item) => item.name === name)
@@ -323,7 +325,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             <StepHeading
               number={2}
               title="Driving characteristics"
-              hint={`Select the top ${MAX_CHARACTERISTICS}. Then tie each one to a sentence in the kata.`}
+              hint={`Select the few that drive the design: ${USUAL_CHARACTERISTICS} is usual, ${MAX_CHARACTERISTICS} is the limit. Then tie each one to a sentence in the kata.`}
             />
             <div className="flex flex-wrap gap-1.5" role="group" aria-label="Driving characteristics">
               {glossary.map((item) => {
@@ -346,6 +348,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             </div>
             <p className="text-muted-foreground">
               {selected.length} of {MAX_CHARACTERISTICS} selected
+              {selected.length > USUAL_CHARACTERISTICS && ". Each one you add makes the design harder. Make sure each has a reason."}
             </p>
             {selected.map((item) => (
               <div key={item.name} className="space-y-1.5 rounded-base border-2 bg-background p-3">
