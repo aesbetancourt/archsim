@@ -29,6 +29,21 @@ const lineStyle: Record<LinkKind, "solid" | "dashed" | "dotted"> = {
 
 const colorOf = (block: Block) => blockGroups.find((group) => group.id === block.group)?.color ?? "#ffffff";
 
+// Excalidraw moves the first point of an attached arrow by half a pixel when it builds the arrow.
+// A line or an arrow must start at the point [0, 0], or the editor reports an error when the user selects it.
+// Move the element to its first point and make all points relative to it.
+function normalize(element: Element): Element {
+  if (element.type !== "arrow" && element.type !== "line") return element;
+  const [dx, dy] = element.points[0];
+  if (dx === 0 && dy === 0) return element;
+  return {
+    ...element,
+    x: element.x + dx,
+    y: element.y + dy,
+    points: element.points.map(([px, py]) => [px - dx, py - dy]),
+  } as Element;
+}
+
 // Collects the parts of one drop. Each part gets an ID that starts with the same random text.
 class Builder {
   private uid = Math.random().toString(36).slice(2, 10);
@@ -116,7 +131,7 @@ class Builder {
 
   build(): Element[] {
     const elements = convertToExcalidrawElements(this.parts, { regenerateIds: false });
-    const withExtra = elements.map((element) => ({ ...element, ...this.extra.get(element.id) }));
+    const withExtra = elements.map((element) => ({ ...normalize(element), ...this.extra.get(element.id) }));
     const byId = new Map(withExtra.map((element) => [element.id, element]));
     // A label is in the same group as its shape.
     return withExtra.map((element) => {
