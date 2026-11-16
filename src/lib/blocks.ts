@@ -28,7 +28,7 @@ export type BlockShape =
 export type LinkKind = "call" | "message" | "replication";
 
 // A small set of pieces that often come together, with the arrows between them.
-export type Pattern = {
+type Pattern = {
   // Each piece has a key, the ID of its block, and a place in a grid.
   pieces: { key: string; block: string; col: number; row: number }[];
   links: { from: string; to: string; kind: LinkKind }[];

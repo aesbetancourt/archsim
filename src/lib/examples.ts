@@ -1,7 +1,7 @@
 import type { DiagramShape } from "./diagram-shapes";
 import { interviewExamples } from "./interview-katas";
 
-export type DiagramNode = {
+type DiagramNode = {
   id: string;
   label: string;
   col: number;
@@ -11,7 +11,7 @@ export type DiagramNode = {
   shape?: DiagramShape;
 };
 
-export type DiagramGroup = {
+type DiagramGroup = {
   id: string;
   label: string;
   col: number;
@@ -20,7 +20,7 @@ export type DiagramGroup = {
   rows: number;
 };
 
-export type DiagramEdge = {
+type DiagramEdge = {
   from: string;
   to: string;
   label?: string;

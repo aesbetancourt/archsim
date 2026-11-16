@@ -87,7 +87,7 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Next.js** (App Router) and **TypeScript**
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
-- **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`)
+- **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`), and [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
 - **No database.** Attempts, boards, settings, and your own problems are plain files in a `data/` folder that git ignores. Highlights and notes in progress are in the browser.
 
 ```mermaid

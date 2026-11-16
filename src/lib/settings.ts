@@ -15,7 +15,7 @@ export type Settings = {
 
 const FILE = path.join(process.cwd(), "data", "settings.json");
 
-export const defaultSettings: Settings = {
+const defaultSettings: Settings = {
   mode: "claude-code",
   claudeCode: { model: "" },
   openCode: { model: "" },

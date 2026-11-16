@@ -10,7 +10,7 @@ export const dimensions = [
   { id: "risks", label: "Risks" },
 ] as const;
 
-export type DimensionId = (typeof dimensions)[number]["id"];
+type DimensionId = (typeof dimensions)[number]["id"];
 
 export type Review = {
   summary: string;

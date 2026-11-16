@@ -1,5 +1,5 @@
 // The notes of a kata are saved in the browser as HTML, for each kata.
-export const notesKey = (kataId: string) => `archsim:notes:${kataId}`;
+const notesKey = (kataId: string) => `archsim:notes:${kataId}`;
 
 // Notes are HTML. Older notes are plain text. Convert those to paragraphs.
 export function toNotesHtml(saved: string): string {
