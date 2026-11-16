@@ -52,7 +52,13 @@ export const solutionSchema = object({
         edges: {
           type: "array",
           items: object(
-            { from: text, to: text, label: text, async: { type: "boolean" }, both: { type: "boolean" } },
+            {
+              from: text,
+              to: text,
+              label: text,
+              async: { type: "boolean" },
+              both: { type: "boolean" },
+            },
             ["label", "async", "both"],
           ),
         },

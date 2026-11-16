@@ -1,10 +1,10 @@
 ## Two tools for two problems
 
-| | Replication | Partitioning (sharding) |
-|---|---|---|
-| What it does | Keeps full copies of the data on several servers | Splits the data, so each server holds a part |
-| Solves | Loss of a server, too many reads | Too much data, too many writes |
-| Does not solve | Too many writes | Loss of a server |
+|                | Replication                                      | Partitioning (sharding)                      |
+| -------------- | ------------------------------------------------ | -------------------------------------------- |
+| What it does   | Keeps full copies of the data on several servers | Splits the data, so each server holds a part |
+| Solves         | Loss of a server, too many reads                 | Too much data, too many writes               |
+| Does not solve | Too many writes                                  | Loss of a server                             |
 
 Large systems use both: the data is split into partitions, and each partition has copies.
 
@@ -21,10 +21,10 @@ When the leader fails, a follower becomes the new leader. This is [failover](/gl
 
 Each record goes to one partition, selected by a partition key.
 
-| Method | How | Strong at | Weak at |
-|---|---|---|---|
+| Method   | How                                         | Strong at     | Weak at                                    |
+| -------- | ------------------------------------------- | ------------- | ------------------------------------------ |
 | By range | Keys A to F on server 1, G to M on server 2 | Range queries | Uneven load, if many keys are in one range |
-| By hash | A hash of the key selects the server | Even spread | Range queries |
+| By hash  | A hash of the key selects the server        | Even spread   | Range queries                              |
 
 The choice of the key is the main decision:
 
@@ -49,4 +49,4 @@ In an interview, say this order. It shows that you know the cost of each step.
 
 ## Further reading
 
-- [Replication](https://en.wikipedia.org/wiki/Replication_(computing)), [Shard](https://en.wikipedia.org/wiki/Shard_(database_architecture)), and [Consistent hashing](https://en.wikipedia.org/wiki/Consistent_hashing) on Wikipedia
+- [Replication](<https://en.wikipedia.org/wiki/Replication_(computing)>), [Shard](<https://en.wikipedia.org/wiki/Shard_(database_architecture)>), and [Consistent hashing](https://en.wikipedia.org/wiki/Consistent_hashing) on Wikipedia

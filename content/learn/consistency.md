@@ -9,12 +9,12 @@
 
 A database transaction groups several changes. ACID names the four promises:
 
-| Letter | Promise | Without it |
-|---|---|---|
-| Atomic | All changes occur, or none | The money leaves one account and does not arrive in the other |
-| Consistent | The rules of the data hold after the transaction | A seat with two owners |
-| Isolated | Transactions that run at the same time do not disturb each other | Two buyers both see the seat as free |
-| Durable | A confirmed change survives a crash | A confirmed payment is gone after a restart |
+| Letter     | Promise                                                          | Without it                                                    |
+| ---------- | ---------------------------------------------------------------- | ------------------------------------------------------------- |
+| Atomic     | All changes occur, or none                                       | The money leaves one account and does not arrive in the other |
+| Consistent | The rules of the data hold after the transaction                 | A seat with two owners                                        |
+| Isolated   | Transactions that run at the same time do not disturb each other | Two buyers both see the seat as free                          |
+| Durable    | A confirmed change survives a crash                              | A confirmed payment is gone after a restart                   |
 
 Inside one database, transactions are cheap and reliable. This is a strong reason to keep data that must change together in one database. See [How to find component boundaries](/learn/boundaries).
 
@@ -29,10 +29,10 @@ When data is copied to several servers, a write reaches the copies at slightly d
 
 When the network between copies breaks (a partition), a system must select: refuse some requests to stay consistent, or answer all requests and permit the copies to differ. It cannot do both. Partitions do occur, so the real choice is between consistency and availability during a fault.
 
-| The data is | Prefer | Reason |
-|---|---|---|
-| Money, stock, seats | Consistency | A wrong answer costs more than no answer |
-| Feeds, catalogs, counters | Availability | An old answer is better than an error |
+| The data is               | Prefer       | Reason                                   |
+| ------------------------- | ------------ | ---------------------------------------- |
+| Money, stock, seats       | Consistency  | A wrong answer costs more than no answer |
+| Feeds, catalogs, counters | Availability | An old answer is better than an error    |
 
 Most systems make this choice for each kind of data, not once for the whole system.
 

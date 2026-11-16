@@ -6,13 +6,13 @@ Most decisions in a project are cheap to change: a function name, a library for 
 
 ## What is yours to decide
 
-| Area | Example decision |
-|---|---|
-| Characteristics | "Availability matters more than consistency for the product catalog." |
-| Structure | "Orders and payments are one deployment. Search is separate." |
-| Data | "Each service owns its tables. No service reads the tables of another." |
-| Communication | "The order service tells the others through events, and does not wait." |
-| Principles | "Prefer a boring technology that the team already operates." |
+| Area            | Example decision                                                        |
+| --------------- | ----------------------------------------------------------------------- |
+| Characteristics | "Availability matters more than consistency for the product catalog."   |
+| Structure       | "Orders and payments are one deployment. Search is separate."           |
+| Data            | "Each service owns its tables. No service reads the tables of another." |
+| Communication   | "The order service tells the others through events, and does not wait." |
+| Principles      | "Prefer a boring technology that the team already operates."            |
 
 An architect usually does not decide how a class is written or which pattern a developer uses in a module. Those are design decisions, and the team that writes the code makes them better.
 

@@ -1,4 +1,19 @@
-import { ArrowLeftRight, BookOpen, Component, Crosshair, FileText, ListChecks, type LucideIcon, MessageCircleQuestion, RotateCcw, Scale, Shapes, ThumbsUp, Trash2, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeftRight,
+  BookOpen,
+  Component,
+  Crosshair,
+  FileText,
+  ListChecks,
+  type LucideIcon,
+  MessageCircleQuestion,
+  RotateCcw,
+  Scale,
+  Shapes,
+  ThumbsUp,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -77,15 +92,20 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
                   </p>
                 )}
                 <p className="text-muted-foreground">
-                  <span className="font-medium text-foreground">Next time:</span> {result.improvement}
+                  <span className="font-medium text-foreground">Next time:</span>{" "}
+                  {result.improvement}
                 </p>
                 {result.example && (
                   <p className="rounded-base border-2 bg-secondary-background px-3 py-2 text-muted-foreground">
-                    <span className="font-medium text-foreground">For example:</span> {result.example}
+                    <span className="font-medium text-foreground">For example:</span>{" "}
+                    {result.example}
                   </p>
                 )}
                 {study && (
-                  <Link href={`/learn/${study.slug}`} className="inline-flex items-center gap-1 text-primary hover:underline">
+                  <Link
+                    href={`/learn/${study.slug}`}
+                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                  >
                     <BookOpen className="size-3.5" aria-hidden /> Read: {study.title}
                   </Link>
                 )}
@@ -115,7 +135,8 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageCircleQuestion className="size-4 text-primary" aria-hidden /> Questions a review board would ask
+              <MessageCircleQuestion className="size-4 text-primary" aria-hidden /> Questions a
+              review board would ask
             </CardTitle>
             <CardDescription>Answer them before your next attempt.</CardDescription>
           </CardHeader>
@@ -137,7 +158,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
           <CardDescription>Style: {attempt.style || "none"}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* oxlint-disable-next-line nextjs/no-img-element */}
           <img
             src={`/attempt/${attempt.id}/diagram`}
             alt="Your diagram"
@@ -151,11 +172,15 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
           )}
           <div>
             <h3 className="font-medium">Characteristics</h3>
-            <p className="whitespace-pre-wrap text-muted-foreground">{attempt.characteristics || "none"}</p>
+            <p className="whitespace-pre-wrap text-muted-foreground">
+              {attempt.characteristics || "none"}
+            </p>
           </div>
           <div>
             <h3 className="font-medium">Rationale</h3>
-            <p className="whitespace-pre-wrap text-muted-foreground">{attempt.rationale || "none"}</p>
+            <p className="whitespace-pre-wrap text-muted-foreground">
+              {attempt.rationale || "none"}
+            </p>
           </div>
           {attempt.notes && (
             <div>

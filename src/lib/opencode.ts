@@ -23,7 +23,14 @@ const projectConfig = {
 
 // Start a headless OpenCode process and return the text of its answer.
 // The process uses the OpenCode login of this computer.
-export async function runOpenCode({ cwd, prompt, systemPrompt, schema, model, imageName }: OpenCodeCall): Promise<string> {
+export async function runOpenCode({
+  cwd,
+  prompt,
+  systemPrompt,
+  schema,
+  model,
+  imageName,
+}: OpenCodeCall): Promise<string> {
   await writeFile(path.join(cwd, "opencode.json"), JSON.stringify(projectConfig, null, 2));
 
   // OpenCode has no option for a system prompt or a JSON Schema. Put both in the message.
@@ -43,7 +50,11 @@ ${prompt}`;
   return new Promise((resolve, reject) => {
     // OpenCode reads its folder from the PWD variable, not from the real working folder.
     // Without this, it works in the folder of the app.
-    const child = spawn("opencode", args, { cwd, env: { ...process.env, PWD: cwd }, stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn("opencode", args, {
+      cwd,
+      env: { ...process.env, PWD: cwd },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     let stdout = "";
     let stderr = "";
     const timer = setTimeout(() => {
@@ -66,17 +77,27 @@ ${prompt}`;
         if (!line.trim()) continue;
         try {
           const event = JSON.parse(line);
-          if (event.type === "text" && typeof event.part?.text === "string") text += event.part.text;
-          if (event.type === "error") failure = event.error?.message ?? event.error?.type ?? "unknown error";
+          if (event.type === "text" && typeof event.part?.text === "string")
+            text += event.part.text;
+          if (event.type === "error")
+            failure = event.error?.message ?? event.error?.type ?? "unknown error";
         } catch {
           // Ignore a line that is not JSON.
         }
       }
       if (text) return resolve(text);
       if (/credential|auth|401/i.test(failure)) {
-        return reject(new Error(`OpenCode could not sign in to the model provider (${failure}). Run "opencode auth login" in a terminal, or select a different model in Settings.`));
+        return reject(
+          new Error(
+            `OpenCode could not sign in to the model provider (${failure}). Run "opencode auth login" in a terminal, or select a different model in Settings.`,
+          ),
+        );
       }
-      reject(new Error(`OpenCode failed (exit code ${code}): ${(failure || stderr || stdout || "no output").slice(0, 400)}`));
+      reject(
+        new Error(
+          `OpenCode failed (exit code ${code}): ${(failure || stderr || stdout || "no output").slice(0, 400)}`,
+        ),
+      );
     });
   });
 }

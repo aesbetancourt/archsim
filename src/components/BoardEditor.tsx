@@ -101,7 +101,13 @@ export default function BoardEditor({ board }: { board: Board }) {
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
       <div className="flex min-w-0 flex-1 flex-col bg-card">
         <div className="flex items-center gap-2 border-b-2 px-3 py-2">
-          <LinkButton variant="ghost" size="sm" href="/scratchpad" aria-label="All boards" title="All boards">
+          <LinkButton
+            variant="ghost"
+            size="sm"
+            href="/scratchpad"
+            aria-label="All boards"
+            title="All boards"
+          >
             <ArrowLeft />
           </LinkButton>
           <Input
@@ -166,7 +172,9 @@ export default function BoardEditor({ board }: { board: Board }) {
           kind: "board",
           title: latest.current.title,
           notes: notesText(latest.current.notes),
-          elements: slimElements(api.current?.getSceneElements() ?? (board.scene.elements as object[])),
+          elements: slimElements(
+            api.current?.getSceneElements() ?? (board.scene.elements as object[]),
+          ),
         })}
       />
     </main>

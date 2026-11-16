@@ -11,13 +11,13 @@ Most serious faults are authorization faults: the system knows who the user is a
 
 ## Principles
 
-| Principle | Meaning | In a design |
-|---|---|---|
-| Least privilege | Each part gets only the access it needs | The notification service cannot read payment tables |
-| Defense in depth | More than one barrier | Check identity at the gateway and again in the service |
-| Trust boundaries | Mark where data crosses from less trusted to more trusted | Validate all input at each boundary |
-| Fail closed | When a check cannot be made, refuse | If the permission service is down, deny, do not permit |
-| Do not hold what you do not need | Data you do not store cannot be stolen | Card numbers stay with the payment provider |
+| Principle                        | Meaning                                                   | In a design                                            |
+| -------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
+| Least privilege                  | Each part gets only the access it needs                   | The notification service cannot read payment tables    |
+| Defense in depth                 | More than one barrier                                     | Check identity at the gateway and again in the service |
+| Trust boundaries                 | Mark where data crosses from less trusted to more trusted | Validate all input at each boundary                    |
+| Fail closed                      | When a check cannot be made, refuse                       | If the permission service is down, deny, do not permit |
+| Do not hold what you do not need | Data you do not store cannot be stolen                    | Card numbers stay with the payment provider            |
 
 ## Data
 

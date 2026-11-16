@@ -58,11 +58,11 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 The reviewer, the tutor chat, and the worked answers all use one connection that you select in Settings. No provider is required by the design.
 
-| Mode | What it uses | API key in the app |
-|---|---|---|
-| Claude Code | The `claude` command and its login on your computer | No |
-| OpenCode | The `opencode` command and its login on your computer | No |
-| Anthropic API | An Anthropic API key | Yes |
+| Mode                       | What it uses                                                                                  | API key in the app           |
+| -------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------- |
+| Claude Code                | The `claude` command and its login on your computer                                           | No                           |
+| OpenCode                   | The `opencode` command and its login on your computer                                         | No                           |
+| Anthropic API              | An Anthropic API key                                                                          | Yes                          |
 | OpenAI-compatible endpoint | Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with this API format | Yes, except for local models |
 
 Each review records which model wrote it, so scores from different models stay distinguishable. A review needs a model that can read images and return structured JSON.
@@ -87,6 +87,7 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Next.js** (App Router) and **TypeScript**
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
+- **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`)
 - **No database.** Attempts, boards, settings, and your own problems are plain files in a `data/` folder that git ignores. Highlights and notes in progress are in the browser.
 
 ```mermaid
@@ -111,7 +112,7 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 ## Credits
 
 - **The architecture kata** is an idea of [Ted Neward](https://github.com/tedneward/ArchKatas). The app reads his public collection of katas and shows each kata with its author. The kata texts are not part of this repository.
-- **The method** is inspired by the book *Fundamentals of Software Architecture* by Mark Richards and Neal Ford: architecture characteristics, architecture styles, and the rule that every decision is a trade-off.
+- **The method** is inspired by the book _Fundamentals of Software Architecture_ by Mark Richards and Neal Ford: architecture characteristics, architecture styles, and the rule that every decision is a trade-off.
 
 ## License
 

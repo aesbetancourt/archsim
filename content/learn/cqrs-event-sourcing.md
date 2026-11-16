@@ -30,11 +30,11 @@ Command query responsibility segregation: use one model to change data and a dif
 
 It has levels. Use the lowest one that solves your problem.
 
-| Level | What is separate | Cost |
-|---|---|---|
-| 1 | Only the code: commands use the [domain model](/learn/domain-model), queries read the same database directly | Low. Often a good idea |
-| 2 | Also the tables: read tables or views in the same database, shaped for the screens | Medium |
-| 3 | Also the store: the read side has its own database, updated from the write side with a delay | High: the read side is [eventually consistent](/learn/consistency) |
+| Level | What is separate                                                                                             | Cost                                                               |
+| ----- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| 1     | Only the code: commands use the [domain model](/learn/domain-model), queries read the same database directly | Low. Often a good idea                                             |
+| 2     | Also the tables: read tables or views in the same database, shaped for the screens                           | Medium                                                             |
+| 3     | Also the store: the read side has its own database, updated from the write side with a delay                 | High: the read side is [eventually consistent](/learn/consistency) |
 
 The reason for it: the best structure to check business rules is rarely the best structure to fill a screen. A rich aggregate is good for "can this order be cancelled?" and bad for "list 50 orders with customer names". With one model for both, each side gets worse.
 
@@ -44,21 +44,21 @@ You have already seen level 3 in this app. In the News Feed worked example, post
 
 Normally a database stores the current state: the balance is 70. With event sourcing, it stores every change as an event, and never changes or deletes one: opened with 100, withdrew 50, deposited 20. The current state is calculated by replaying the events.
 
-| You get | You pay |
-|---|---|
-| A full history: what occurred, and when | Reads need a prepared view. So you also need CQRS |
-| The state at any past moment | The format of old events must be supported forever |
-| New views built from old events | Developers must learn a different way to think |
+| You get                                    | You pay                                            |
+| ------------------------------------------ | -------------------------------------------------- |
+| A full history: what occurred, and when    | Reads need a prepared view. So you also need CQRS  |
+| The state at any past moment               | The format of old events must be supported forever |
+| New views built from old events            | Developers must learn a different way to think     |
 | A natural source of events for other parts | "Delete this personal data" becomes a hard problem |
 
 A [ledger](/glossary#ledger) is event sourcing in a form that accountants have used for centuries. The Payment System worked example uses that idea for money, and normal tables for everything else. That is the right scale for it: one part where history is the product.
 
 ## Not the same as event-driven
 
-| Term | Level | Meaning |
-|---|---|---|
-| [Event-driven architecture](/learn/event-driven) | System | Parts tell each other what occurred, through messages |
-| Event sourcing | Storage in one part | The stored data is a list of events |
+| Term                                             | Level               | Meaning                                               |
+| ------------------------------------------------ | ------------------- | ----------------------------------------------------- |
+| [Event-driven architecture](/learn/event-driven) | System              | Parts tell each other what occurred, through messages |
+| Event sourcing                                   | Storage in one part | The stored data is a list of events                   |
 
 A system can have either without the other.
 

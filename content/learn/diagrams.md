@@ -6,12 +6,12 @@ A diagram exists so that another person understands the system the way you do. I
 
 C4 is a simple, common way to draw software. It has four levels of zoom, like a map.
 
-| Level | Shows | Reader |
-|---|---|---|
-| 1. Context | Your system as one box, with its users and the other systems around it | Everyone, including people outside engineering |
-| 2. Container | The deployable parts in your system: applications, databases, queues | Architects and developers |
-| 3. Component | The main parts inside one container | The team that builds it |
-| 4. Code | Classes and functions | Rarely drawn |
+| Level        | Shows                                                                  | Reader                                         |
+| ------------ | ---------------------------------------------------------------------- | ---------------------------------------------- |
+| 1. Context   | Your system as one box, with its users and the other systems around it | Everyone, including people outside engineering |
+| 2. Container | The deployable parts in your system: applications, databases, queues   | Architects and developers                      |
+| 3. Component | The main parts inside one container                                    | The team that builds it                        |
+| 4. Code      | Classes and functions                                                  | Rarely drawn                                   |
 
 The diagrams in the worked examples of this app are level 2. It is the level for a kata and for an interview. In a real project, draw level 1 first: it forces you to state who uses the system and what it depends on.
 
@@ -29,12 +29,12 @@ The diagrams in the worked examples of this app are level 2. It is the level for
 
 ## Different diagrams for different questions
 
-| Question | Diagram |
-|---|---|
-| What are the parts and how do they connect? | Container diagram |
-| What occurs, in what order, for one action? | Sequence diagram |
-| Where does it run? | Deployment diagram |
-| What states can an order have? | State diagram |
+| Question                                    | Diagram            |
+| ------------------------------------------- | ------------------ |
+| What are the parts and how do they connect? | Container diagram  |
+| What occurs, in what order, for one action? | Sequence diagram   |
+| Where does it run?                          | Deployment diagram |
+| What states can an order have?              | State diagram      |
 
 A sequence diagram is the best tool for a hard flow, such as "what occurs when the payment times out?". Use one in the deep-dive part of an [interview](/learn/interview-format).
 

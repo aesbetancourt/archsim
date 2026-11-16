@@ -27,14 +27,14 @@ Look at the last arrow. The database adapter points to the port, not the other w
 
 ## The parts
 
-| Part | What it is | Example |
-|---|---|---|
-| Domain model | The business rules and data, with no technical code | An `Order` that knows when it can be cancelled |
-| Use case (application service) | One action the application offers. It coordinates the domain and the ports | `PlaceOrder` |
-| Input port (driving port) | The interface that the outside uses to start a use case | The `PlaceOrder` interface |
-| Output port (driven port) | An interface for something the core needs from outside | `OrderRepository`, `PaymentGateway` |
-| Driving adapter (primary) | Converts an outside request to a call on an input port | An HTTP controller, a queue consumer, a test |
-| Driven adapter (secondary) | Implements an output port with a real technology | A PostgreSQL repository, a Stripe client |
+| Part                           | What it is                                                                 | Example                                        |
+| ------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------- |
+| Domain model                   | The business rules and data, with no technical code                        | An `Order` that knows when it can be cancelled |
+| Use case (application service) | One action the application offers. It coordinates the domain and the ports | `PlaceOrder`                                   |
+| Input port (driving port)      | The interface that the outside uses to start a use case                    | The `PlaceOrder` interface                     |
+| Output port (driven port)      | An interface for something the core needs from outside                     | `OrderRepository`, `PaymentGateway`            |
+| Driving adapter (primary)      | Converts an outside request to a call on an input port                     | An HTTP controller, a queue consumer, a test   |
+| Driven adapter (secondary)     | Implements an output port with a real technology                           | A PostgreSQL repository, a Stripe client       |
 
 ## The one rule
 
@@ -66,5 +66,5 @@ Hexagonal structure is inside one deployable unit. It says nothing about how man
 
 ## Further reading
 
-- [Hexagonal architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)) on Wikipedia
+- [Hexagonal architecture](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>) on Wikipedia
 - [The original article](https://alistair.cockburn.us/hexagonal-architecture/), by Alistair Cockburn

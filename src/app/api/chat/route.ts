@@ -1,4 +1,10 @@
-import { helperPrompt, helperSchema, helperSystemPrompt, type ChatMessage, type HelperContext } from "@/lib/helper";
+import {
+  helperPrompt,
+  helperSchema,
+  helperSystemPrompt,
+  type ChatMessage,
+  type HelperContext,
+} from "@/lib/helper";
 import { findKata } from "@/lib/library";
 import { runModel } from "@/lib/model";
 
@@ -6,7 +12,10 @@ import { runModel } from "@/lib/model";
 const MAX_MESSAGES = 12;
 
 export async function POST(request: Request) {
-  const { context, messages } = (await request.json()) as { context: HelperContext; messages: ChatMessage[] };
+  const { context, messages } = (await request.json()) as {
+    context: HelperContext;
+    messages: ChatMessage[];
+  };
   if (!messages?.length || messages[messages.length - 1].role !== "user") {
     return Response.json({ error: "There is no question to answer." }, { status: 400 });
   }

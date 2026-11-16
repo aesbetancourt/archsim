@@ -32,7 +32,10 @@ function toKata(fileName: string, raw: RawKata): Kata {
   if (paragraphs.length > 1 && paragraphs[0].startsWith("(")) paragraphs.push(paragraphs.shift()!);
   const [context = "", ...rest] = paragraphs;
   const kata: Kata = {
-    id: `ak-${fileName.replace(/\.json$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+    id: `ak-${fileName
+      .replace(/\.json$/, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")}`,
     title: raw.title,
     difficulty: "medium",
     context,

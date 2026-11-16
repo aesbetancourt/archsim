@@ -44,17 +44,23 @@ export default function WikiSidebar() {
       />
       <ul>{link("/learn", "Contents")}</ul>
       {wikiSections.map((section) => {
-        const pages = section.pages.filter((page) => !words || page.title.toLowerCase().includes(words));
+        const pages = section.pages.filter(
+          (page) => !words || page.title.toLowerCase().includes(words),
+        );
         if (pages.length === 0) return null;
         return (
           <div key={section.title} className="space-y-1">
-            <h2 className="px-2 text-xs font-semibold uppercase tracking-wide text-foreground">{section.title}</h2>
+            <h2 className="px-2 text-xs font-semibold uppercase tracking-wide text-foreground">
+              {section.title}
+            </h2>
             <ul>{pages.map((page) => link(`/learn/${page.slug}`, page.title))}</ul>
           </div>
         );
       })}
       <div className="space-y-1">
-        <h2 className="px-2 text-xs font-semibold uppercase tracking-wide text-foreground">Practice</h2>
+        <h2 className="px-2 text-xs font-semibold uppercase tracking-wide text-foreground">
+          Practice
+        </h2>
         <ul>{extraLinks.map((item) => link(item.href, item.title))}</ul>
       </div>
     </nav>

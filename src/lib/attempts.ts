@@ -37,7 +37,10 @@ export async function createAttemptDir(): Promise<{ id: string; dir: string }> {
 }
 
 export async function saveAttempt(attempt: Attempt): Promise<void> {
-  await writeFile(path.join(attemptDir(attempt.id), "attempt.json"), JSON.stringify(attempt, null, 2));
+  await writeFile(
+    path.join(attemptDir(attempt.id), "attempt.json"),
+    JSON.stringify(attempt, null, 2),
+  );
 }
 
 export async function getAttempt(id: string): Promise<Attempt | undefined> {

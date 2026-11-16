@@ -66,24 +66,46 @@ export function describeScene(elements: SceneElement[]): string {
       connections,
     ),
     ...(boundaries.length
-      ? [section("Boundaries (frames around components; this text does not say which components are in each frame, the picture does)", boundaries)]
+      ? [
+          section(
+            "Boundaries (frames around components; this text does not say which components are in each frame, the picture does)",
+            boundaries,
+          ),
+        ]
       : []),
-    section("Free text", freeText.map((text) => `- ${text}`)),
+    section(
+      "Free text",
+      freeText.map((text) => `- ${text}`),
+    ),
   ].join("\n\n");
 }
 
 // Keep only the fields of each canvas element that the text description uses.
 export function slimElements(elements: readonly object[]): SceneElement[] {
-  return (elements as SceneElement[]).map(({ id, type, text, containerId, startBinding, endBinding, customData, groupIds, strokeStyle }) => ({
-    id,
-    type,
-    text,
-    containerId,
-    startBinding: startBinding ? { elementId: startBinding.elementId } : null,
-    endBinding: endBinding ? { elementId: endBinding.elementId } : null,
-    ...(customData?.decor ? { customData: { decor: true } } : {}),
-    ...(customData?.boundary ? { customData: { boundary: true } } : {}),
-    ...((type === "arrow" || type === "line") && strokeStyle && strokeStyle !== "solid" ? { strokeStyle } : {}),
-    ...(groupIds?.length ? { groupIds } : {}),
-  }));
+  return (elements as SceneElement[]).map(
+    ({
+      id,
+      type,
+      text,
+      containerId,
+      startBinding,
+      endBinding,
+      customData,
+      groupIds,
+      strokeStyle,
+    }) => ({
+      id,
+      type,
+      text,
+      containerId,
+      startBinding: startBinding ? { elementId: startBinding.elementId } : null,
+      endBinding: endBinding ? { elementId: endBinding.elementId } : null,
+      ...(customData?.decor ? { customData: { decor: true } } : {}),
+      ...(customData?.boundary ? { customData: { boundary: true } } : {}),
+      ...((type === "arrow" || type === "line") && strokeStyle && strokeStyle !== "solid"
+        ? { strokeStyle }
+        : {}),
+      ...(groupIds?.length ? { groupIds } : {}),
+    }),
+  );
 }

@@ -6,13 +6,13 @@ A candidate who draws a correct diagram in silence usually does worse than a can
 
 ## A plan for 45 minutes
 
-| Minutes | Step | Result |
-|---|---|---|
-| 0 to 8 | Ask questions and set the scope | A short list of functions, numbers, and what is out of scope |
-| 8 to 12 | Estimate | Requests each second, data size, the one number that is hard |
-| 12 to 25 | Draw the main design | Boxes for the core flow, with data stores and arrow labels |
-| 25 to 40 | Go deep on one or two hard parts | The details of the part that makes this problem difficult |
-| 40 to 45 | Weak points and operation | What fails first, how you would know, what you would do next |
+| Minutes  | Step                             | Result                                                       |
+| -------- | -------------------------------- | ------------------------------------------------------------ |
+| 0 to 8   | Ask questions and set the scope  | A short list of functions, numbers, and what is out of scope |
+| 8 to 12  | Estimate                         | Requests each second, data size, the one number that is hard |
+| 12 to 25 | Draw the main design             | Boxes for the core flow, with data stores and arrow labels   |
+| 25 to 40 | Go deep on one or two hard parts | The details of the part that makes this problem difficult    |
+| 40 to 45 | Weak points and operation        | What fails first, how you would know, what you would do next |
 
 ## Step 1: questions
 

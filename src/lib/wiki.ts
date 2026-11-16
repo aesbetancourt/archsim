@@ -26,7 +26,6 @@ export async function readArticle(slug: string): Promise<string | undefined> {
   }
 }
 
-
 // Return the second-level headings of an article, for the contents list.
 export function headings(markdown: string): string[] {
   return [...markdown.matchAll(/^## (.+)$/gm)].map((match) => match[1].trim());

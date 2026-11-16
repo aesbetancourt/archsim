@@ -2,7 +2,14 @@ import { ArrowRight, Lightbulb } from "lucide-react";
 import DifficultyIcon from "@/components/DifficultyIcon";
 import LinkButton from "@/components/LinkButton";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { allExamples } from "@/lib/library";
 
 // Read the user's problems on each request.
@@ -19,8 +26,8 @@ export default async function ExamplesPage() {
           Worked examples
         </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
-          Each example is a finished kata. It shows the five steps of the method, a diagram, and
-          the reason for each decision.
+          Each example is a finished kata. It shows the five steps of the method, a diagram, and the
+          reason for each decision.
         </p>
       </header>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -43,8 +50,8 @@ export default async function ExamplesPage() {
             </CardContent>
             <CardFooter className="mt-auto">
               <LinkButton size="sm" href={`/learn/examples/${kata.id}`}>
-                  Study this answer <ArrowRight />
-                </LinkButton>
+                Study this answer <ArrowRight />
+              </LinkButton>
             </CardFooter>
           </Card>
         ))}

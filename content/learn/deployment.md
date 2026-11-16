@@ -15,12 +15,12 @@ A change goes from a developer to production through automatic steps: build, tes
 
 ## Release strategies
 
-| Strategy | How it works | Good at | Cost |
-|---|---|---|---|
-| Rolling | Replace the copies a few at a time | Simple, no extra machines | Two versions run together for a while |
-| Blue-green | Start a full second environment, then move all traffic to it | Immediate return to the old version | Double the machines during the release |
-| Canary | Send a small share of users to the new version, and watch | Finds problems with few users affected | Needs good [measurements](/learn/observability) |
-| Feature flag | New code is deployed switched off, then switched on for selected users | Release with no deployment, fast switch-off | Flags must be removed later, or they pile up |
+| Strategy     | How it works                                                           | Good at                                     | Cost                                            |
+| ------------ | ---------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------- |
+| Rolling      | Replace the copies a few at a time                                     | Simple, no extra machines                   | Two versions run together for a while           |
+| Blue-green   | Start a full second environment, then move all traffic to it           | Immediate return to the old version         | Double the machines during the release          |
+| Canary       | Send a small share of users to the new version, and watch              | Finds problems with few users affected      | Needs good [measurements](/learn/observability) |
+| Feature flag | New code is deployed switched off, then switched on for selected users | Release with no deployment, fast switch-off | Flags must be removed later, or they pile up    |
 
 ## What every strategy requires
 

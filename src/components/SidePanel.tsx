@@ -23,7 +23,7 @@ export default function SidePanel({ widthClass, onToggle, children }: Props) {
   // Remember the choice in this browser.
   useEffect(() => {
     try {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // oxlint-disable-next-line react/set-state-in-effect
       if (localStorage.getItem(STORAGE_KEY) === "1") setHidden(true);
     } catch {
       // Storage is not available. Start with the panel open.
@@ -49,7 +49,11 @@ export default function SidePanel({ widthClass, onToggle, children }: Props) {
   return (
     <div className="relative z-30 shrink-0">
       <aside
-        className={cn("flex h-full flex-col border-r-2 bg-card text-sm leading-relaxed", widthClass, hidden && "hidden")}
+        className={cn(
+          "flex h-full flex-col border-r-2 bg-card text-sm leading-relaxed",
+          widthClass,
+          hidden && "hidden",
+        )}
       >
         {children}
       </aside>

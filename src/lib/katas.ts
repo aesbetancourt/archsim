@@ -138,7 +138,7 @@ export const katas: Kata[] = [
     difficulty: "hard",
     interview: true,
     context:
-      "Our customers build AI agents that do operational work. They want to say: \"when something happens in one of my tools, run my agent on it\". Design everything that occurs before the run starts.",
+      'Our customers build AI agents that do operational work. They want to say: "when something happens in one of my tools, run my agent on it". Design everything that occurs before the run starts.',
     requirements: [
       "Start with one case: when an email arrives in a shared finance inbox (Gmail or Outlook), run the agent on it.",
       "Customers connect their accounts, and we keep those connections working.",

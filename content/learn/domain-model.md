@@ -6,15 +6,15 @@ The patterns on this page come from domain-driven design. They are worth their c
 
 ## The building blocks
 
-| Block | What it is | Example |
-|---|---|---|
-| Entity | An object with an identity that stays the same while its data changes | An order, a customer |
-| Value object | An object defined only by its values. It does not change, and two with the same values are equal | Money (amount and currency), an address, a date range |
-| Aggregate | A group of entities and value objects that changes as one unit, with one entity as the root | An order with its lines |
-| Repository | An interface that loads and saves whole aggregates | `OrderRepository` |
-| Domain service | A rule that does not belong to one entity | A transfer between two accounts |
-| Domain event | A fact that the business cares about | "Order placed" |
-| Factory | Code that creates a valid aggregate | Create an order from a cart |
+| Block          | What it is                                                                                       | Example                                               |
+| -------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| Entity         | An object with an identity that stays the same while its data changes                            | An order, a customer                                  |
+| Value object   | An object defined only by its values. It does not change, and two with the same values are equal | Money (amount and currency), an address, a date range |
+| Aggregate      | A group of entities and value objects that changes as one unit, with one entity as the root      | An order with its lines                               |
+| Repository     | An interface that loads and saves whole aggregates                                               | `OrderRepository`                                     |
+| Domain service | A rule that does not belong to one entity                                                        | A transfer between two accounts                       |
+| Domain event   | A fact that the business cares about                                                             | "Order placed"                                        |
+| Factory        | Code that creates a valid aggregate                                                              | Create an order from a cart                           |
 
 ## Value objects
 

@@ -12,7 +12,7 @@ export default function InProgress({ titles }: { titles: Record<string, string> 
 
   useEffect(() => {
     // The saved work is known only in the browser, after the first render.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // oxlint-disable-next-line react/set-state-in-effect
     setDrafts(listDrafts().filter((draft) => titles[draft.kataId]));
   }, [titles]);
 
@@ -31,7 +31,8 @@ export default function InProgress({ titles }: { titles: Record<string, string> 
                 {draft.stepsDone} of 5 steps started
                 {draft.shapes > 0 && ` · ${draft.shapes} shapes in the diagram`}
                 {draft.hasNotes && " · notes"}
-                {draft.savedAt && ` · saved ${new Date(draft.savedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`}
+                {draft.savedAt &&
+                  ` · saved ${new Date(draft.savedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`}
               </CardDescription>
             </CardHeader>
             <CardFooter className="mt-auto">

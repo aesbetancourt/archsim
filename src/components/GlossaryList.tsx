@@ -12,7 +12,9 @@ export default function GlossaryList() {
   const words = query.trim().toLowerCase();
   const visible = glossary.filter(
     (entry) =>
-      !words || entry.term.toLowerCase().includes(words) || entry.definition.toLowerCase().includes(words),
+      !words ||
+      entry.term.toLowerCase().includes(words) ||
+      entry.definition.toLowerCase().includes(words),
   );
 
   return (
@@ -35,25 +37,32 @@ export default function GlossaryList() {
             <Card className="py-0">
               <CardContent className="divide-y px-0">
                 {entries.map((entry) => (
-                  <div key={entry.id} id={entry.id} className="scroll-mt-6 space-y-1 px-5 py-4 target:bg-accent">
+                  <div
+                    key={entry.id}
+                    id={entry.id}
+                    className="scroll-mt-6 space-y-1 px-5 py-4 target:bg-accent"
+                  >
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="font-medium">{entry.term}</h3>
                       <div className="flex shrink-0 items-center gap-3 text-xs">
-                      {entry.learn && (
-                        <Link href={`/learn/${entry.learn}`} className="text-primary hover:underline">
-                          Lesson
-                        </Link>
-                      )}
-                      {entry.wiki && (
-                        <a
-                          href={wikiUrl(entry.wiki)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-primary hover:underline"
-                        >
-                          Wikipedia <ExternalLink className="size-3" />
-                        </a>
-                      )}
+                        {entry.learn && (
+                          <Link
+                            href={`/learn/${entry.learn}`}
+                            className="text-primary hover:underline"
+                          >
+                            Lesson
+                          </Link>
+                        )}
+                        {entry.wiki && (
+                          <a
+                            href={wikiUrl(entry.wiki)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-primary hover:underline"
+                          >
+                            Wikipedia <ExternalLink className="size-3" />
+                          </a>
+                        )}
                       </div>
                     </div>
                     <p>{entry.definition}</p>

@@ -46,7 +46,8 @@ export const styleLessons: StyleLesson[] = [
       "One serious fault can stop the full application.",
     ],
     useWhen: "The team is small, the budget is tight, or the problem is not yet well understood.",
-    avoidWhen: "Parts of the system have very different load, or many teams must release independently.",
+    avoidWhen:
+      "Parts of the system have very different load, or many teams must release independently.",
     example: "An internal tool for 200 employees to submit and approve expenses.",
     ratings: { simplicity: "high", scalability: "low", faultTolerance: "low", cost: "low" },
   },
@@ -75,7 +76,8 @@ export const styleLessons: StyleLesson[] = [
       "It still scales and fails as one unit.",
       "One shared database makes it easy to couple modules by accident.",
     ],
-    useWhen: "You want clear business boundaries without the operating cost of a distributed system.",
+    useWhen:
+      "You want clear business boundaries without the operating cost of a distributed system.",
     avoidWhen: "Some parts need independent scaling or independent uptime now.",
     example: "An online shop for one company, built by a team of six.",
     ratings: { simplicity: "high", scalability: "low", faultTolerance: "low", cost: "low" },
@@ -145,10 +147,16 @@ export const styleLessons: StyleLesson[] = [
       "The database is a shared point of failure and a scaling limit.",
       "Each service is still large, so it scales in large steps.",
     ],
-    useWhen: "You need some independence between business areas, and the team cannot afford microservices.",
+    useWhen:
+      "You need some independence between business areas, and the team cannot afford microservices.",
     avoidWhen: "Load is extreme or very uneven, or many teams need full autonomy.",
     example: "An insurance claims system with intake, assessment, and payment services.",
-    ratings: { simplicity: "medium", scalability: "medium", faultTolerance: "medium", cost: "medium" },
+    ratings: {
+      simplicity: "medium",
+      scalability: "medium",
+      faultTolerance: "medium",
+      cost: "medium",
+    },
   },
   {
     id: "event-driven",
@@ -179,8 +187,10 @@ export const styleLessons: StyleLesson[] = [
       "You must design for lost, repeated, and out-of-order events.",
     ],
     useWhen: "Work arrives in bursts, or one occurrence must start many independent reactions.",
-    avoidWhen: "The user needs an immediate, certain answer, or steps must occur in one strict transaction.",
-    example: "After an order is placed: charge the card, tell the kitchen, and send a message, each independently.",
+    avoidWhen:
+      "The user needs an immediate, certain answer, or steps must occur in one strict transaction.",
+    example:
+      "After an order is placed: charge the card, tell the kitchen, and send a message, each independently.",
     ratings: { simplicity: "low", scalability: "high", faultTolerance: "high", cost: "medium" },
   },
   {
@@ -219,7 +229,8 @@ export const styleLessons: StyleLesson[] = [
     ],
     useWhen: "The system is large, load is uneven between parts, and many teams need autonomy.",
     avoidWhen: "The team is small, or the business boundaries are not yet clear.",
-    example: "A streaming platform with separate services for catalog, playback, billing, and recommendations.",
+    example:
+      "A streaming platform with separate services for catalog, playback, billing, and recommendations.",
     ratings: { simplicity: "low", scalability: "high", faultTolerance: "high", cost: "high" },
   },
   {
@@ -289,7 +300,8 @@ export const styleLessons: StyleLesson[] = [
     ],
     useWhen: "The problem is one-way data processing: import, convert, enrich, export.",
     avoidWhen: "Users interact with the system in many different ways.",
-    example: "A nightly job that reads clinic billing records, checks them, and sends them to insurers.",
+    example:
+      "A nightly job that reads clinic billing records, checks them, and sends them to insurers.",
     ratings: { simplicity: "high", scalability: "low", faultTolerance: "low", cost: "low" },
   },
 ];
@@ -304,7 +316,7 @@ export const characteristics: Characteristic[] = [
   {
     name: "Availability",
     meaning: "The system is up when users need it.",
-    signal: "\"Must continue to work when…\", a business that loses money each minute it is down.",
+    signal: '"Must continue to work when…", a business that loses money each minute it is down.',
   },
   {
     name: "Scalability",
@@ -319,7 +331,7 @@ export const characteristics: Characteristic[] = [
   {
     name: "Performance",
     meaning: "The system answers fast.",
-    signal: "\"Real time\", \"immediately\", users who wait on a screen.",
+    signal: '"Real time", "immediately", users who wait on a screen.',
   },
   {
     name: "Fault tolerance",
@@ -329,7 +341,7 @@ export const characteristics: Characteristic[] = [
   {
     name: "Data consistency",
     meaning: "All users see the same, correct data.",
-    signal: "\"Must never sell one seat twice\", money, stock, legal records.",
+    signal: '"Must never sell one seat twice", money, stock, legal records.',
   },
   {
     name: "Security",
@@ -339,7 +351,7 @@ export const characteristics: Characteristic[] = [
   {
     name: "Auditability",
     meaning: "The system can prove who did what, and when.",
-    signal: "Law, regulators, disputes, \"records each…\".",
+    signal: 'Law, regulators, disputes, "records each…".',
   },
   {
     name: "Deployability",
@@ -349,7 +361,7 @@ export const characteristics: Characteristic[] = [
   {
     name: "Extensibility",
     meaning: "New features or partners are easy to add later.",
-    signal: "\"Next year we want to add…\", new countries, new partners.",
+    signal: '"Next year we want to add…", new countries, new partners.',
   },
   {
     name: "Interoperability",

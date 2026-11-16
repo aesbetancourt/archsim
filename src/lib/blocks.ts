@@ -55,16 +55,61 @@ export type Block = {
 };
 
 export const blockGroups: BlockGroup[] = [
-  { id: "edge", title: "Clients and entry", summary: "Who calls the system, and what a request meets first.", color: "#a5d8ff" },
+  {
+    id: "edge",
+    title: "Clients and entry",
+    summary: "Who calls the system, and what a request meets first.",
+    color: "#a5d8ff",
+  },
   { id: "compute", title: "Compute", summary: "Where your code runs.", color: "#d0bfff" },
-  { id: "databases", title: "Databases", summary: "The source of truth for the data. Each type is good at one kind of access.", color: "#b2f2bb" },
-  { id: "storage", title: "Other storage", summary: "Copies of the data for speed, search, files, and analysis.", color: "#96f2d7" },
-  { id: "messaging", title: "Messaging", summary: "How parts talk without a direct call.", color: "#ffec99" },
-  { id: "security", title: "Security", summary: "What decides who can do what, and what stops abuse.", color: "#ffc9c9" },
-  { id: "operations", title: "Operations", summary: "What lets a team see, release, and change the system safely.", color: "#ffd8a8" },
-  { id: "connections", title: "Connections", summary: "How two parts talk. The line style says if the caller waits.", color: "#e9ecef" },
-  { id: "boundaries", title: "Boundaries", summary: "Frames that show where parts run and who owns or trusts them.", color: "#dee2e6" },
-  { id: "patterns", title: "Patterns", summary: "Small sets of pieces that often come together. Each one is a start, not an answer.", color: "#fcc2d7" },
+  {
+    id: "databases",
+    title: "Databases",
+    summary: "The source of truth for the data. Each type is good at one kind of access.",
+    color: "#b2f2bb",
+  },
+  {
+    id: "storage",
+    title: "Other storage",
+    summary: "Copies of the data for speed, search, files, and analysis.",
+    color: "#96f2d7",
+  },
+  {
+    id: "messaging",
+    title: "Messaging",
+    summary: "How parts talk without a direct call.",
+    color: "#ffec99",
+  },
+  {
+    id: "security",
+    title: "Security",
+    summary: "What decides who can do what, and what stops abuse.",
+    color: "#ffc9c9",
+  },
+  {
+    id: "operations",
+    title: "Operations",
+    summary: "What lets a team see, release, and change the system safely.",
+    color: "#ffd8a8",
+  },
+  {
+    id: "connections",
+    title: "Connections",
+    summary: "How two parts talk. The line style says if the caller waits.",
+    color: "#e9ecef",
+  },
+  {
+    id: "boundaries",
+    title: "Boundaries",
+    summary: "Frames that show where parts run and who owns or trusts them.",
+    color: "#dee2e6",
+  },
+  {
+    id: "patterns",
+    title: "Patterns",
+    summary: "Small sets of pieces that often come together. Each one is a start, not an answer.",
+    color: "#fcc2d7",
+  },
 ];
 
 export const blocks: Block[] = [
@@ -74,7 +119,8 @@ export const blocks: Block[] = [
     group: "edge",
     shape: "person",
     does: "A person who uses the system in one role: a customer, a driver, an administrator.",
-    useWhen: "Always. Give each role its own figure and name. The roles decide the functions and the permissions.",
+    useWhen:
+      "Always. Give each role its own figure and name. The roles decide the functions and the permissions.",
     cost: "People make errors, repeat an action, and leave in the middle of a task. Each role needs its own rules.",
     question: "Which roles are there, and what is each one permitted to do?",
     learn: "method",
@@ -162,7 +208,8 @@ export const blocks: Block[] = [
     group: "edge",
     shape: "box",
     does: "Changes a name to the address of a server. It can send each user to the nearest or to a healthy region.",
-    useWhen: "The system runs in more than one region, or must move traffic away from a failed one.",
+    useWhen:
+      "The system runs in more than one region, or must move traffic away from a failed one.",
     cost: "Changes take time to reach all users, because answers are cached. It cannot see one failed server quickly.",
     question: "How long do users still go to a failed region after you change the record?",
     learn: "scalability",
@@ -173,7 +220,8 @@ export const blocks: Block[] = [
     group: "edge",
     shape: "box",
     does: "A server in front of your services. It ends the encrypted connection, serves static files, and passes requests on.",
-    useWhen: "You need one place for certificates, compression, or simple routing, and an API gateway is too much.",
+    useWhen:
+      "You need one place for certificates, compression, or simple routing, and an API gateway is too much.",
     cost: "It is one more hop and one more configuration to keep correct.",
     question: "What does this do that the load balancer or the gateway does not do?",
     learn: "api-design",
@@ -195,7 +243,7 @@ export const blocks: Block[] = [
     group: "compute",
     shape: "box",
     does: "A running program that owns one area of business logic and answers requests.",
-    useWhen: "Always. Give each one a business name, not the name \"Backend\".",
+    useWhen: 'Always. Give each one a business name, not the name "Backend".',
     cost: "Each more service adds a deployment, a network call, and a new way to fail.",
     question: "Why is this a separate service and not a module in a different one?",
     learn: "boundaries",
@@ -206,9 +254,11 @@ export const blocks: Block[] = [
     group: "compute",
     shape: "module",
     does: "A part of one application that owns one business area. Modules run in the same process and call each other directly.",
-    useWhen: "The team is small, or no part needs its own scale or its own release. It is the correct start for most systems.",
+    useWhen:
+      "The team is small, or no part needs its own scale or its own release. It is the correct start for most systems.",
     cost: "All modules are released together and scale together. One module can read the tables of another, unless a rule stops it.",
-    question: "What stops one module from using the internal code or the tables of a different module?",
+    question:
+      "What stops one module from using the internal code or the tables of a different module?",
     learn: "modular-monolith",
   },
   {
@@ -217,7 +267,8 @@ export const blocks: Block[] = [
     group: "compute",
     shape: "box",
     does: "Takes jobs from a queue and does them in the background, outside the request of the user.",
-    useWhen: "Work is slow, comes in peaks, or must be tried again: video conversion, emails, reports.",
+    useWhen:
+      "Work is slow, comes in peaks, or must be tried again: video conversion, emails, reports.",
     cost: "The user does not get the result in the answer. A job can run two times.",
     question: "Is it safe to run the same job two times?",
     learn: "sync-async",
@@ -228,7 +279,8 @@ export const blocks: Block[] = [
     group: "compute",
     shape: "box",
     does: "Starts work at a set time or at a set interval.",
-    useWhen: "The problem has a clock: nightly reports, reminders, polls of a system that sends no events.",
+    useWhen:
+      "The problem has a clock: nightly reports, reminders, polls of a system that sends no events.",
     cost: "A missed run is silent. Two copies of the scheduler start the work two times.",
     question: "How do you know that a run did not occur?",
     learn: "observability",
@@ -272,7 +324,8 @@ export const blocks: Block[] = [
     group: "compute",
     shape: "box",
     does: "Processes a large set of data in one run, at a planned time.",
-    useWhen: "The work is on all the data and nobody waits for it: invoices, a nightly export, a model that is trained again.",
+    useWhen:
+      "The work is on all the data and nobody waits for it: invoices, a nightly export, a model that is trained again.",
     cost: "Results are as old as the last run. A failed run at night is found in the morning.",
     question: "What happens when the run is not finished before the next one starts?",
     learn: "sync-async",
@@ -294,7 +347,8 @@ export const blocks: Block[] = [
     group: "databases",
     shape: "store",
     does: "Stores rows in tables with relations, and changes many rows in one transaction.",
-    useWhen: "Data has relations and must stay correct: orders, payments, accounts. It is the safe default.",
+    useWhen:
+      "Data has relations and must stay correct: orders, payments, accounts. It is the safe default.",
     cost: "Writes go to one primary server. To grow past it, you must divide the data yourself.",
     question: "Which service owns each table, and does one server hold the expected write load?",
     learn: "data-stores",
@@ -305,7 +359,8 @@ export const blocks: Block[] = [
     group: "databases",
     shape: "store",
     does: "Stores one value for each key, across many servers, with very fast reads and writes by key.",
-    useWhen: "Access is always by one known key and the volume is very large: sessions, carts, short links.",
+    useWhen:
+      "Access is always by one known key and the volume is very large: sessions, carts, short links.",
     cost: "You cannot query by other fields or join. You design the keys for the queries you know now.",
     question: "What are the keys, and which queries can this design not answer?",
     learn: "data-stores",
@@ -327,7 +382,8 @@ export const blocks: Block[] = [
     group: "storage",
     shape: "store",
     does: "Keeps the answers to frequent reads in memory, so the slow source is asked less often.",
-    useWhen: "The same data is read many times for each write, and a slightly old answer is acceptable.",
+    useWhen:
+      "The same data is read many times for each write, and a slightly old answer is acceptable.",
     cost: "The cache can show old data. When it is empty or down, all the load reaches the source.",
     question: "How old can the data be, and what happens when the cache is empty?",
     learn: "caching",
@@ -371,7 +427,8 @@ export const blocks: Block[] = [
     group: "databases",
     shape: "store",
     does: "Stores very many rows across many servers, sorted inside each partition, with very fast writes.",
-    useWhen: "Writes are extremely frequent and reads are by a known key and a range: messages of a chat, events of a device.",
+    useWhen:
+      "Writes are extremely frequent and reads are by a known key and a range: messages of a chat, events of a device.",
     cost: "Queries must be known before you design the tables. Joins and changes across rows are not available.",
     question: "What is the partition key, and can one partition get too large?",
     learn: "scaling-data",
@@ -382,7 +439,8 @@ export const blocks: Block[] = [
     group: "databases",
     shape: "store",
     does: "Stores things and the relations between them, and follows relations many steps deep quickly.",
-    useWhen: "The questions are about relations: friends of friends, paths, who is connected to this fraud case.",
+    useWhen:
+      "The questions are about relations: friends of friends, paths, who is connected to this fraud case.",
     cost: "It is hard to divide across servers. It is a poor fit for simple record access.",
     question: "Which question needs more than two steps of relations?",
     learn: "data-stores",
@@ -404,7 +462,8 @@ export const blocks: Block[] = [
     group: "databases",
     shape: "store",
     does: "Stores a list of numbers for each item and finds the items that are nearest in meaning.",
-    useWhen: "Search is by meaning and not by exact words: similar products, documents for an AI answer.",
+    useWhen:
+      "Search is by meaning and not by exact words: similar products, documents for an AI answer.",
     cost: "Results are approximate. Each change of the model means that you compute all the vectors again.",
     question: "How does new or changed content get its vector, and how late can that be?",
     learn: "data-stores",
@@ -448,7 +507,8 @@ export const blocks: Block[] = [
     group: "messaging",
     shape: "pipe",
     does: "Holds jobs until a worker takes them. Each job goes to one worker.",
-    useWhen: "The sender must not wait for the work, or the load comes in peaks that the workers cannot follow.",
+    useWhen:
+      "The sender must not wait for the work, or the load comes in peaks that the workers cannot follow.",
     cost: "The result comes later. Jobs can arrive two times or in a different order, and the queue can grow.",
     question: "What happens to a job that fails each time it runs?",
     learn: "messaging",
@@ -492,7 +552,8 @@ export const blocks: Block[] = [
     group: "messaging",
     shape: "pipe",
     does: "Receives events from many sources and routes each one to targets with rules.",
-    useWhen: "Many types of events from many producers must reach different consumers, with filters.",
+    useWhen:
+      "Many types of events from many producers must reach different consumers, with filters.",
     cost: "Routing rules become hidden logic. Throughput and order are weaker than in an event stream.",
     question: "Where can a developer see which consumers get one type of event?",
     learn: "messaging",
@@ -525,7 +586,8 @@ export const blocks: Block[] = [
     group: "security",
     shape: "box",
     does: "Refuses requests above a limit for each user, key, or address.",
-    useWhen: "The API is public, one client can hurt the others, or a downstream system has a hard limit.",
+    useWhen:
+      "The API is public, one client can hurt the others, or a downstream system has a hard limit.",
     cost: "Good users get refused at a peak. Exact limits across many servers need shared state.",
     question: "What is limited, per what, and what does a refused client do?",
     learn: "resilience",
@@ -580,7 +642,8 @@ export const blocks: Block[] = [
     group: "operations",
     shape: "box",
     does: "Turns a function on or off for some or all users without a new release.",
-    useWhen: "You release often, test with a few users first, or need a fast way to turn a function off.",
+    useWhen:
+      "You release often, test with a few users first, or need a fast way to turn a function off.",
     cost: "Each flag is a second path through the code. Old flags stay and confuse.",
     question: "Who removes a flag after the function is on for all users?",
     learn: "deployment",
@@ -591,7 +654,8 @@ export const blocks: Block[] = [
     group: "operations",
     shape: "box",
     does: "Builds, tests, and releases each change automatically, in steps.",
-    useWhen: "Always for a team product. Draw it when the problem is about release speed or safe change.",
+    useWhen:
+      "Always for a team product. Draw it when the problem is about release speed or safe change.",
     cost: "A slow or unreliable pipeline blocks all teams. It has wide access, so it is a target for attack.",
     question: "How does a bad release get stopped and undone?",
     learn: "deployment",
@@ -613,7 +677,8 @@ export const blocks: Block[] = [
     group: "connections",
     shape: "message",
     does: "A dashed arrow. The sender gives a message to a queue, a topic, or a stream, and does not wait.",
-    useWhen: "The work can occur later, the receiver can be down for a time, or the load comes in peaks.",
+    useWhen:
+      "The work can occur later, the receiver can be down for a time, or the load comes in peaks.",
     cost: "The result is not known when the sender continues. Messages can come two times or in a different order.",
     question: "How does the user learn the result, and what if the message is processed two times?",
     learn: "sync-async",
@@ -635,7 +700,8 @@ export const blocks: Block[] = [
     group: "boundaries",
     shape: "boundary",
     does: "A frame for the parts that are built, released, and run as one unit. One frame with many modules is a monolith.",
-    useWhen: "Always, when the design has modules. It shows which parts share a release and a process, and which do not.",
+    useWhen:
+      "Always, when the design has modules. It shows which parts share a release and a process, and which do not.",
     cost: "All the parts in the frame fail together and scale together.",
     question: "Why are these parts one deployment, and what would make you divide it?",
     learn: "distributed",
@@ -646,7 +712,8 @@ export const blocks: Block[] = [
     group: "boundaries",
     shape: "boundary",
     does: "A frame for the parts that run in one geographic location of a cloud provider.",
-    useWhen: "Users are far apart, the law says where data must stay, or the system must survive the loss of a location.",
+    useWhen:
+      "Users are far apart, the law says where data must stay, or the system must survive the loss of a location.",
     cost: "Data between regions is slow to copy and can disagree. Each region multiplies cost and work.",
     question: "Which data is in one region only, and which is copied to all?",
     learn: "deployment",
@@ -657,7 +724,8 @@ export const blocks: Block[] = [
     group: "boundaries",
     shape: "boundary",
     does: "A frame for the parts in one data center of a region. Zones fail separately.",
-    useWhen: "The system must survive the loss of one data center. This is the usual first step to high availability.",
+    useWhen:
+      "The system must survive the loss of one data center. This is the usual first step to high availability.",
     cost: "Each part needs copies in two or more zones, and data must be copied between them.",
     question: "What still works when one zone is gone?",
     learn: "resilience",
@@ -679,7 +747,8 @@ export const blocks: Block[] = [
     group: "boundaries",
     shape: "boundary",
     does: "A frame for a zone with one level of trust. Each arrow that crosses the line must be checked.",
-    useWhen: "The system holds money, personal data, or secrets, or the problem asks about security.",
+    useWhen:
+      "The system holds money, personal data, or secrets, or the problem asks about security.",
     cost: "Each crossing needs a login check, a permission check, and encryption.",
     question: "What is checked at each arrow that crosses this line?",
     learn: "security",
@@ -712,7 +781,8 @@ export const blocks: Block[] = [
     group: "patterns",
     shape: "pattern",
     does: "A service puts a job in a queue. A worker does the job later. Jobs that fail too often go to a dead-letter queue.",
-    useWhen: "Work is slow or comes in peaks, and the user does not need the result in the same request.",
+    useWhen:
+      "Work is slow or comes in peaks, and the user does not need the result in the same request.",
     cost: "The user gets the result later. Each job must be safe to run two times.",
     question: "How does the user learn that the job is done, or that it failed?",
     learn: "messaging",

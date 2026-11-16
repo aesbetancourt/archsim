@@ -14,11 +14,11 @@ Each architecture decision improves some qualities and makes others worse. A sha
 
 Decision: how does the kitchen screen get new orders?
 
-| | Screen asks every 10 seconds | Server pushes on an open connection |
-|---|---|---|
-| Simplicity | Better: a normal request | Worse: connection handling |
-| Delay | Worse: up to 10 seconds | Better: immediate |
-| Weak network | Better: each request is independent | Worse: connections drop |
+|              | Screen asks every 10 seconds        | Server pushes on an open connection |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| Simplicity   | Better: a normal request            | Worse: connection handling          |
+| Delay        | Worse: up to 10 seconds             | Better: immediate                   |
+| Weak network | Better: each request is independent | Worse: connections drop             |
 
 "We select the 10-second request because the shop network is weak and the team is small. We accept a delay of up to 10 seconds. We will look again if pickup times become shorter than two minutes."
 

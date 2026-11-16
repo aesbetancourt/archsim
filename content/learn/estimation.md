@@ -6,25 +6,25 @@ The goal is the order of magnitude: is it 10, 1,000, or 100,000? Round hard, and
 
 ## Numbers to remember
 
-| Fact | Rounded value |
-|---|---|
-| Seconds in a day | About 100,000 (exact: 86,400) |
-| 1 million actions each day | About 12 each second |
-| 1 billion actions each day | About 12,000 each second |
-| Peak load | Often 2 to 10 times the average |
-| 1 kilobyte | A short text record |
-| 1 megabyte | A photo of medium quality |
-| 1 gigabyte | About an hour of compressed video |
+| Fact                       | Rounded value                     |
+| -------------------------- | --------------------------------- |
+| Seconds in a day           | About 100,000 (exact: 86,400)     |
+| 1 million actions each day | About 12 each second              |
+| 1 billion actions each day | About 12,000 each second          |
+| Peak load                  | Often 2 to 10 times the average   |
+| 1 kilobyte                 | A short text record               |
+| 1 megabyte                 | A photo of medium quality         |
+| 1 gigabyte                 | About an hour of compressed video |
 
 Typical delays, as rough guides:
 
-| Operation | Time |
-|---|---|
-| Read from memory | Far less than a microsecond |
-| Read from a fast disk | About 0.1 milliseconds |
-| A call in the same data center | About 1 millisecond |
-| A simple database query | 1 to 10 milliseconds |
-| A call between continents | 100 to 200 milliseconds |
+| Operation                      | Time                        |
+| ------------------------------ | --------------------------- |
+| Read from memory               | Far less than a microsecond |
+| Read from a fast disk          | About 0.1 milliseconds      |
+| A call in the same data center | About 1 millisecond         |
+| A simple database query        | 1 to 10 milliseconds        |
+| A call between continents      | 100 to 200 milliseconds     |
 
 These depend on hardware and change over time. Use them to compare options, not as exact facts.
 

@@ -27,7 +27,8 @@ const lineStyle: Record<LinkKind, "solid" | "dashed" | "dotted"> = {
   replication: "dotted",
 };
 
-const colorOf = (block: Block) => blockGroups.find((group) => group.id === block.group)?.color ?? "#ffffff";
+const colorOf = (block: Block) =>
+  blockGroups.find((group) => group.id === block.group)?.color ?? "#ffffff";
 
 // Excalidraw moves the first point of an attached arrow by half a pixel when it builds the arrow.
 // A line or an arrow must start at the point [0, 0], or the editor reports an error when the user selects it.
@@ -69,22 +70,67 @@ class Builder {
     const group = { groupIds: [`${mainId}-group`] };
     const decor = { ...group, customData: { decor: true } };
     const line = (x1: number, y1: number, x2: number, y2: number) =>
-      this.add({ type: "line", x: x1, y: y1, points: [[0, 0], [x2 - x1, y2 - y1]] }, decor);
+      this.add(
+        {
+          type: "line",
+          x: x1,
+          y: y1,
+          points: [
+            [0, 0],
+            [x2 - x1, y2 - y1],
+          ],
+        },
+        decor,
+      );
 
     if (block.shape === "store") {
       // A cylinder: an ellipse at the bottom, a body with no outline, two sides, and an ellipse on top.
-      this.add({ type: "ellipse", x, y: y + HEIGHT - END / 2, width: WIDTH, height: END, ...fill }, decor);
-      this.add({ type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, strokeColor: "transparent", roundness: null, label }, group, mainId);
+      this.add(
+        { type: "ellipse", x, y: y + HEIGHT - END / 2, width: WIDTH, height: END, ...fill },
+        decor,
+      );
+      this.add(
+        {
+          type: "rectangle",
+          x,
+          y,
+          width: WIDTH,
+          height: HEIGHT,
+          ...fill,
+          strokeColor: "transparent",
+          roundness: null,
+          label,
+        },
+        group,
+        mainId,
+      );
       line(x, y, x, y + HEIGHT);
       line(x + WIDTH, y, x + WIDTH, y + HEIGHT);
       this.add({ type: "ellipse", x, y: y - END / 2, width: WIDTH, height: END, ...fill }, decor);
     } else if (block.shape === "pipe") {
       // A pipe: the same cylinder on its side.
       this.add({ type: "ellipse", x: x - END / 2, y, width: END, height: HEIGHT, ...fill }, decor);
-      this.add({ type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, strokeColor: "transparent", roundness: null, label }, group, mainId);
+      this.add(
+        {
+          type: "rectangle",
+          x,
+          y,
+          width: WIDTH,
+          height: HEIGHT,
+          ...fill,
+          strokeColor: "transparent",
+          roundness: null,
+          label,
+        },
+        group,
+        mainId,
+      );
       line(x, y, x + WIDTH, y);
       line(x, y + HEIGHT, x + WIDTH, y + HEIGHT);
-      this.add({ type: "ellipse", x: x + WIDTH - END / 2, y, width: END, height: HEIGHT, ...fill }, decor);
+      this.add(
+        { type: "ellipse", x: x + WIDTH - END / 2, y, width: END, height: HEIGHT, ...fill },
+        decor,
+      );
     } else if (block.shape === "person") {
       // A figure of a person, with the name in a box with no outline below it.
       const middle = x + WIDTH / 2;
@@ -94,35 +140,89 @@ class Builder {
       line(middle, y + 36, middle - 11, y + 50);
       line(middle, y + 36, middle + 11, y + 50);
       this.add(
-        { type: "rectangle", x, y: y + 52, width: WIDTH, height: 30, backgroundColor: "transparent", strokeColor: "transparent", roundness: null, label },
+        {
+          type: "rectangle",
+          x,
+          y: y + 52,
+          width: WIDTH,
+          height: 30,
+          backgroundColor: "transparent",
+          strokeColor: "transparent",
+          roundness: null,
+          label,
+        },
         group,
         mainId,
       );
     } else if (block.shape === "device") {
       // A piece of hardware: a box with a short base line, like a screen.
-      this.add({ type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, roundness: { type: 3 }, label }, group, mainId);
+      this.add(
+        {
+          type: "rectangle",
+          x,
+          y,
+          width: WIDTH,
+          height: HEIGHT,
+          ...fill,
+          roundness: { type: 3 },
+          label,
+        },
+        group,
+        mainId,
+      );
       line(x + WIDTH / 2 - 26, y + HEIGHT + 8, x + WIDTH / 2 + 26, y + HEIGHT + 8);
     } else if (block.shape === "module") {
       // A module has square corners. A part that is deployed alone has round corners.
-      this.add({ type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, roundness: null, label }, undefined, mainId);
+      this.add(
+        { type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, roundness: null, label },
+        undefined,
+        mainId,
+      );
     } else if (block.shape === "actor") {
-      this.add({ type: "ellipse", x, y, width: WIDTH, height: HEIGHT, ...fill, label }, undefined, mainId);
+      this.add(
+        { type: "ellipse", x, y, width: WIDTH, height: HEIGHT, ...fill, label },
+        undefined,
+        mainId,
+      );
     } else {
       // A dashed outline is the usual sign for a system that is not yours.
       const strokeStyle = block.shape === "external" ? "dashed" : "solid";
-      this.add({ type: "rectangle", x, y, width: WIDTH, height: HEIGHT, ...fill, roundness: { type: 3 }, strokeStyle, label }, undefined, mainId);
+      this.add(
+        {
+          type: "rectangle",
+          x,
+          y,
+          width: WIDTH,
+          height: HEIGHT,
+          ...fill,
+          roundness: { type: 3 },
+          strokeStyle,
+          label,
+        },
+        undefined,
+        mainId,
+      );
     }
   }
 
   // Add an arrow between two points. It attaches to the shapes with the given IDs.
-  arrow(kind: LinkKind, from: [number, number], to: [number, number], startId?: string, endId?: string) {
+  arrow(
+    kind: LinkKind,
+    from: [number, number],
+    to: [number, number],
+    startId?: string,
+    endId?: string,
+  ) {
     this.add({
       type: "arrow",
       x: from[0],
       y: from[1],
       width: to[0] - from[0],
       height: to[1] - from[1],
-      points: [[0, 0], [to[0] - from[0], to[1] - from[1]]],
+      points: [
+        [0, 0],
+        [to[0] - from[0], to[1] - from[1]],
+      ],
       strokeStyle: lineStyle[kind],
       ...(startId ? { start: { id: startId } } : {}),
       ...(endId ? { end: { id: endId } } : {}),
@@ -131,18 +231,26 @@ class Builder {
 
   build(): Element[] {
     const elements = convertToExcalidrawElements(this.parts, { regenerateIds: false });
-    const withExtra = elements.map((element) => ({ ...normalize(element), ...this.extra.get(element.id) }));
+    const withExtra = elements.map((element) => ({
+      ...normalize(element),
+      ...this.extra.get(element.id),
+    }));
     const byId = new Map(withExtra.map((element) => [element.id, element]));
     // A label is in the same group as its shape.
     return withExtra.map((element) => {
-      const container = element.type === "text" && element.containerId ? byId.get(element.containerId) : undefined;
+      const container =
+        element.type === "text" && element.containerId ? byId.get(element.containerId) : undefined;
       return container?.groupIds.length ? { ...element, groupIds: container.groupIds } : element;
     }) as Element[];
   }
 }
 
 // The start and the end of an arrow between two pieces of a pattern, from their places in the grid.
-function ends(from: { col: number; row: number }, to: { col: number; row: number }, origin: [number, number]) {
+function ends(
+  from: { col: number; row: number },
+  to: { col: number; row: number },
+  origin: [number, number],
+) {
   const left = (cell: { col: number }) => origin[0] + cell.col * COLUMN;
   const top = (cell: { row: number }) => origin[1] + cell.row * ROW;
   if (from.col === to.col) {
@@ -158,13 +266,25 @@ function ends(from: { col: number; row: number }, to: { col: number; row: number
     // A diagonal arrow leaves from the bottom or the top, so it does not share a start with a straight one.
     const down = to.row > from.row;
     return {
-      start: [left(from) + WIDTH / 2 + (right ? 40 : -40), down ? top(from) + HEIGHT + GAP : top(from) - GAP] as [number, number],
-      end: [right ? left(to) - GAP : left(to) + WIDTH + GAP, top(to) + HEIGHT / 2] as [number, number],
+      start: [
+        left(from) + WIDTH / 2 + (right ? 40 : -40),
+        down ? top(from) + HEIGHT + GAP : top(from) - GAP,
+      ] as [number, number],
+      end: [right ? left(to) - GAP : left(to) + WIDTH + GAP, top(to) + HEIGHT / 2] as [
+        number,
+        number,
+      ],
     };
   }
   return {
-    start: [right ? left(from) + WIDTH + GAP : left(from) - GAP, top(from) + HEIGHT / 2] as [number, number],
-    end: [right ? left(to) - GAP : left(to) + WIDTH + GAP, top(to) + HEIGHT / 2] as [number, number],
+    start: [right ? left(from) + WIDTH + GAP : left(from) - GAP, top(from) + HEIGHT / 2] as [
+      number,
+      number,
+    ],
+    end: [right ? left(to) - GAP : left(to) + WIDTH + GAP, top(to) + HEIGHT / 2] as [
+      number,
+      number,
+    ],
   };
 }
 
@@ -198,7 +318,13 @@ export function elementsFor(block: Block, x: number, y: number): Element[] {
         backgroundColor: "transparent",
         strokeStyle: "dashed",
         roundness: { type: 3 },
-        label: { text: block.name, fontSize: 16, textAlign: "left", verticalAlign: "top", strokeColor: TEXT_COLOR },
+        label: {
+          text: block.name,
+          fontSize: 16,
+          textAlign: "left",
+          verticalAlign: "top",
+          strokeColor: TEXT_COLOR,
+        },
       },
       { customData: { boundary: true } },
     );
@@ -206,7 +332,8 @@ export function elementsFor(block: Block, x: number, y: number): Element[] {
     const { pieces, links } = block.pattern;
     for (const piece of pieces) {
       const part = getBlock(piece.block);
-      if (part) builder.component(part, x + piece.col * COLUMN, y + piece.row * ROW, builder.id(piece.key));
+      if (part)
+        builder.component(part, x + piece.col * COLUMN, y + piece.row * ROW, builder.id(piece.key));
     }
     for (const link of links) {
       const from = pieces.find((piece) => piece.key === link.from);

@@ -1,48 +1,38 @@
-"use client"
+"use client";
 
-import { Menu as MenuPrimitive } from "@base-ui/react/menu"
-import { Check, ChevronRight, Circle } from "lucide-react"
+import { Menu as MenuPrimitive } from "@base-ui/react/menu";
+import { Check, ChevronRight, Circle } from "lucide-react";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 // Base UI's GroupLabel must live inside a Group or RadioGroup. Track that so a
 // standalone label (like Radix allowed) still renders instead of throwing.
-const DropdownMenuGroupContext = React.createContext(false)
+const DropdownMenuGroupContext = React.createContext(false);
 
-function DropdownMenu({
-  ...props
-}: React.ComponentProps<typeof MenuPrimitive.Root>) {
-  return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />
+function DropdownMenu({ ...props }: React.ComponentProps<typeof MenuPrimitive.Root>) {
+  return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
-function DropdownMenuTrigger({
-  ...props
-}: React.ComponentProps<typeof MenuPrimitive.Trigger>) {
-  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
+function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof MenuPrimitive.Trigger>) {
+  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
 }
 
-function DropdownMenuGroup({
-  ...props
-}: React.ComponentProps<typeof MenuPrimitive.Group>) {
+function DropdownMenuGroup({ ...props }: React.ComponentProps<typeof MenuPrimitive.Group>) {
   return (
     <DropdownMenuGroupContext.Provider value={true}>
       <MenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
     </DropdownMenuGroupContext.Provider>
-  )
+  );
 }
 
-function DropdownMenuPortal({
-  ...props
-}: React.ComponentProps<typeof MenuPrimitive.Portal>) {
-  return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+function DropdownMenuPortal({ ...props }: React.ComponentProps<typeof MenuPrimitive.Portal>) {
+  return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
-function DropdownMenuSub({
-  ...props
-}: React.ComponentProps<typeof MenuPrimitive.SubmenuRoot>) {
-  return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />
+function DropdownMenuSub({ ...props }: React.ComponentProps<typeof MenuPrimitive.SubmenuRoot>) {
+  return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />;
 }
 
 function DropdownMenuRadioGroup({
@@ -50,12 +40,9 @@ function DropdownMenuRadioGroup({
 }: React.ComponentProps<typeof MenuPrimitive.RadioGroup>) {
   return (
     <DropdownMenuGroupContext.Provider value={true}>
-      <MenuPrimitive.RadioGroup
-        data-slot="dropdown-menu-radio-group"
-        {...props}
-      />
+      <MenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />
     </DropdownMenuGroupContext.Provider>
-  )
+  );
 }
 
 function DropdownMenuSubTrigger({
@@ -64,7 +51,7 @@ function DropdownMenuSubTrigger({
   children,
   ...props
 }: React.ComponentProps<typeof MenuPrimitive.SubmenuTrigger> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <MenuPrimitive.SubmenuTrigger
@@ -79,11 +66,11 @@ function DropdownMenuSubTrigger({
       {children}
       <ChevronRight className="ml-auto" />
     </MenuPrimitive.SubmenuTrigger>
-  )
+  );
 }
 
 const dropdownMenuPopupClassName =
-  "z-50 min-w-[8rem] overflow-hidden rounded-base border-2 border-border bg-background p-1 font-base text-foreground outline-none origin-(--transform-origin) data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2"
+  "z-50 min-w-[8rem] overflow-hidden rounded-base border-2 border-border bg-background p-1 font-base text-foreground outline-none origin-(--transform-origin) data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2";
 
 function DropdownMenuSubContent({
   className,
@@ -113,7 +100,7 @@ function DropdownMenuSubContent({
         />
       </MenuPrimitive.Positioner>
     </MenuPrimitive.Portal>
-  )
+  );
 }
 
 function DropdownMenuContent({
@@ -144,7 +131,7 @@ function DropdownMenuContent({
         />
       </MenuPrimitive.Positioner>
     </MenuPrimitive.Portal>
-  )
+  );
 }
 
 function DropdownMenuItem({
@@ -152,7 +139,7 @@ function DropdownMenuItem({
   inset,
   ...props
 }: React.ComponentProps<typeof MenuPrimitive.Item> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <MenuPrimitive.Item
@@ -164,7 +151,7 @@ function DropdownMenuItem({
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DropdownMenuCheckboxItem({
@@ -190,7 +177,7 @@ function DropdownMenuCheckboxItem({
       </span>
       {children}
     </MenuPrimitive.CheckboxItem>
-  )
+  );
 }
 
 function DropdownMenuRadioItem({
@@ -214,7 +201,7 @@ function DropdownMenuRadioItem({
       </span>
       {children}
     </MenuPrimitive.RadioItem>
-  )
+  );
 }
 
 function DropdownMenuLabel({
@@ -222,13 +209,10 @@ function DropdownMenuLabel({
   inset,
   ...props
 }: React.ComponentProps<typeof MenuPrimitive.GroupLabel> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
-  const inGroup = React.useContext(DropdownMenuGroupContext)
-  const labelClassName = cn(
-    "px-2 py-1.5 text-sm font-heading data-inset:pl-8",
-    className,
-  )
+  const inGroup = React.useContext(DropdownMenuGroupContext);
+  const labelClassName = cn("px-2 py-1.5 text-sm font-heading data-inset:pl-8", className);
 
   // Outside a group, Base UI's GroupLabel has no context and throws, so fall
   // back to a plain element (which is what Radix rendered anyway).
@@ -240,7 +224,7 @@ function DropdownMenuLabel({
         className={labelClassName}
         {...(props as React.ComponentProps<"div">)}
       />
-    )
+    );
   }
 
   return (
@@ -250,7 +234,7 @@ function DropdownMenuLabel({
       className={labelClassName}
       {...props}
     />
-  )
+  );
 }
 
 function DropdownMenuSeparator({
@@ -263,20 +247,17 @@ function DropdownMenuSeparator({
       className={cn("-mx-1 my-1 h-0.5 bg-border", className)}
       {...props}
     />
-  )
+  );
 }
 
-function DropdownMenuShortcut({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="dropdown-menu-shortcut"
       className={cn("ml-auto text-xs font-base tracking-widest", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -295,4 +276,4 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
-}
+};

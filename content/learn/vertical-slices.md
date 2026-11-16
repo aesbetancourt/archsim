@@ -28,13 +28,13 @@ Each slice selects the structure it needs. "List orders" can be one query with n
 
 ## Compared with layers
 
-| | By layer | By slice |
-|---|---|---|
-| A new feature | Touches each layer folder | Adds one folder |
-| To understand a feature | Read files in many places | Read one folder |
-| Shared logic | Natural: it is in the service layer | Needs a decision: copy it, or move it to a shared part |
-| Risk | Layers that do nothing but pass data | Duplicated rules that drift apart |
-| To delete a feature | Hard to find all the pieces | Delete the folder |
+|                         | By layer                             | By slice                                               |
+| ----------------------- | ------------------------------------ | ------------------------------------------------------ |
+| A new feature           | Touches each layer folder            | Adds one folder                                        |
+| To understand a feature | Read files in many places            | Read one folder                                        |
+| Shared logic            | Natural: it is in the service layer  | Needs a decision: copy it, or move it to a shared part |
+| Risk                    | Layers that do nothing but pass data | Duplicated rules that drift apart                      |
+| To delete a feature     | Hard to find all the pieces          | Delete the folder                                      |
 
 ## The hard part: shared code
 

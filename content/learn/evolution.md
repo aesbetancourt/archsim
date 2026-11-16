@@ -20,12 +20,12 @@ The hard part is the data. While both systems run, each piece of data needs one 
 
 ## Other techniques for change in steps
 
-| Technique | Use |
-|---|---|
-| Branch by abstraction | Put an interface in front of the part to replace. Build the new part behind it, and switch |
-| Parallel run | Run old and new with the same input, and compare the results before you trust the new one |
-| Expand and contract | Add the new structure, move the users of it, then remove the old structure. See [Deployment and release](/learn/deployment) |
-| Feature flags | Switch on the new path for a few users first |
+| Technique             | Use                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Branch by abstraction | Put an interface in front of the part to replace. Build the new part behind it, and switch                                  |
+| Parallel run          | Run old and new with the same input, and compare the results before you trust the new one                                   |
+| Expand and contract   | Add the new structure, move the users of it, then remove the old structure. See [Deployment and release](/learn/deployment) |
+| Feature flags         | Switch on the new path for a few users first                                                                                |
 
 ## Fitness functions
 

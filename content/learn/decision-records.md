@@ -6,13 +6,13 @@ The problem it solves: six months later, nobody remembers why the system uses a 
 
 ## The format
 
-| Part | Content |
-|---|---|
-| Title | A number and a short statement: "7. Use a queue between orders and notifications" |
-| Status | Proposed, accepted, or replaced by another ADR |
-| Context | The situation and the forces: requirements, constraints, what makes this hard |
-| Decision | What we do, in active voice: "We will…" |
-| Consequences | What becomes easier, what becomes harder, and what we now must do |
+| Part         | Content                                                                           |
+| ------------ | --------------------------------------------------------------------------------- |
+| Title        | A number and a short statement: "7. Use a queue between orders and notifications" |
+| Status       | Proposed, accepted, or replaced by another ADR                                    |
+| Context      | The situation and the forces: requirements, constraints, what makes this hard     |
+| Decision     | What we do, in active voice: "We will…"                                           |
+| Consequences | What becomes easier, what becomes harder, and what we now must do                 |
 
 One page is the usual limit. If it is longer, it probably holds more than one decision.
 

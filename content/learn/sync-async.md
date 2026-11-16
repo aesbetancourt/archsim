@@ -2,13 +2,13 @@
 
 When one part needs something from another, it can call and wait for the answer (synchronous), or send a message and continue (asynchronous). In the diagrams of this app, a solid arrow is a call that waits, and a dashed arrow is a message that does not wait.
 
-| | Synchronous call | Asynchronous message |
-|---|---|---|
-| The caller | Waits for the answer | Continues immediately |
-| If the receiver is down | The caller fails or waits | The message waits in a queue |
-| If the receiver is slow | The caller is slow | Nothing visible to the caller |
-| The result | Known immediately | Known later, or never by the caller |
-| To understand and debug | Easy: one path | Harder: work occurs in several places and times |
+|                         | Synchronous call          | Asynchronous message                            |
+| ----------------------- | ------------------------- | ----------------------------------------------- |
+| The caller              | Waits for the answer      | Continues immediately                           |
+| If the receiver is down | The caller fails or waits | The message waits in a queue                    |
+| If the receiver is slow | The caller is slow        | Nothing visible to the caller                   |
+| The result              | Known immediately         | Known later, or never by the caller             |
+| To understand and debug | Easy: one path            | Harder: work occurs in several places and times |
 
 ## When to wait
 

@@ -12,7 +12,13 @@ type ClaudeCall = {
 
 // Start a headless Claude Code process and return its structured output.
 // The process uses the local Claude Code login. It can only read files in cwd.
-export function runClaude({ cwd, prompt, systemPrompt, schema, model }: ClaudeCall): Promise<unknown> {
+export function runClaude({
+  cwd,
+  prompt,
+  systemPrompt,
+  schema,
+  model,
+}: ClaudeCall): Promise<unknown> {
   const args = [
     "-p",
     prompt,

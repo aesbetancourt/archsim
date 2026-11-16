@@ -1,4 +1,16 @@
-import { Activity, ArrowLeftRight, BookOpen, Boxes, Code, Compass, Database, GraduationCap, ListChecks, type LucideIcon, Users } from "lucide-react";
+import {
+  Activity,
+  ArrowLeftRight,
+  BookOpen,
+  Boxes,
+  Code,
+  Compass,
+  Database,
+  GraduationCap,
+  ListChecks,
+  type LucideIcon,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { wikiPages } from "@/lib/wiki";
@@ -37,27 +49,30 @@ export default function LearnPage() {
         {wikiSections.map((section) => {
           const Icon = sectionIcons[section.title] ?? BookOpen;
           return (
-          <Card key={section.title}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon className="size-4 text-primary" aria-hidden /> {section.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {section.pages
-                  .filter((page) => page.kind !== "style")
-                  .map((page) => (
-                    <li key={page.slug}>
-                      <Link href={`/learn/${page.slug}`} className="font-medium text-primary hover:underline">
-                        {page.title}
-                      </Link>
-                      <p className="text-muted-foreground">{page.summary}</p>
-                    </li>
-                  ))}
-              </ul>
-            </CardContent>
-          </Card>
+            <Card key={section.title}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Icon className="size-4 text-primary" aria-hidden /> {section.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {section.pages
+                    .filter((page) => page.kind !== "style")
+                    .map((page) => (
+                      <li key={page.slug}>
+                        <Link
+                          href={`/learn/${page.slug}`}
+                          className="font-medium text-primary hover:underline"
+                        >
+                          {page.title}
+                        </Link>
+                        <p className="text-muted-foreground">{page.summary}</p>
+                      </li>
+                    ))}
+                </ul>
+              </CardContent>
+            </Card>
           );
         })}
       </div>

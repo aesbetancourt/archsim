@@ -74,7 +74,11 @@ export default function HelpChat({ getContext, intro }: Props) {
         </h2>
         <div className="flex items-center gap-1">
           {messages.length > 0 && (
-            <button type="button" className="px-1 text-xs underline" onClick={() => setMessages([])}>
+            <button
+              type="button"
+              className="px-1 text-xs underline"
+              onClick={() => setMessages([])}
+            >
               Clear
             </button>
           )}
@@ -88,7 +92,10 @@ export default function HelpChat({ getContext, intro }: Props) {
         <p className="text-muted-foreground">{intro}</p>
         {messages.map((message, index) =>
           message.role === "user" ? (
-            <p key={index} className="ml-8 whitespace-pre-wrap rounded-base border-2 border-border bg-background px-3 py-2">
+            <p
+              key={index}
+              className="ml-8 whitespace-pre-wrap rounded-base border-2 border-border bg-background px-3 py-2"
+            >
               {message.text}
             </p>
           ) : (

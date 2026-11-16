@@ -2,13 +2,13 @@
 
 People use "architecture" for two different levels. They answer different questions, and you can select them independently.
 
-| | System architecture | Application architecture |
-|---|---|---|
-| Question | How many deployable parts are there, and how do they talk? | How is the code inside one deployable part organized? |
-| Examples | Microservices, event-driven, modular monolith | Hexagonal, clean, onion, layered code, vertical slices |
-| Visible in | A diagram of services, databases, and queues | The folders, modules, and dependencies of one code base |
-| Drives | Scalability, availability, team independence | Testability, ease of change, protection of business rules |
-| Cost of a wrong choice | Very high: it touches deployments, data, and teams | Medium: a team can refactor one code base |
+|                        | System architecture                                        | Application architecture                                  |
+| ---------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| Question               | How many deployable parts are there, and how do they talk? | How is the code inside one deployable part organized?     |
+| Examples               | Microservices, event-driven, modular monolith              | Hexagonal, clean, onion, layered code, vertical slices    |
+| Visible in             | A diagram of services, databases, and queues               | The folders, modules, and dependencies of one code base   |
+| Drives                 | Scalability, availability, team independence               | Testability, ease of change, protection of business rules |
+| Cost of a wrong choice | Very high: it touches deployments, data, and teams         | Medium: a team can refactor one code base                 |
 
 So "we use hexagonal architecture" and "we use microservices" are not alternatives. A system can be a set of microservices where each service is hexagonal inside. A modular monolith can use hexagonal structure in each module. The [styles](/learn/styles) pages of this app are about the first level. This section is about the second.
 
@@ -28,13 +28,13 @@ The tool that makes this possible is dependency inversion. The business code def
 
 ## The patterns in this section
 
-| Pattern | Main idea | Read it when |
-|---|---|---|
-| [Hexagonal architecture](/learn/hexagonal) | The application talks to the outside only through ports, and adapters connect them to real technology | You want the clearest version of the idea |
-| [Clean and onion architecture](/learn/clean-onion) | Rings around the business rules, with a strict direction for dependencies | You meet these names in a team or an interview |
-| [Vertical slices](/learn/vertical-slices) | Organize code by feature, not by technical layer | Layers make each feature touch many folders |
-| [Domain model patterns](/learn/domain-model) | Entities, value objects, aggregates, and repositories | The business rules are complex |
-| [CQRS and event sourcing](/learn/cqrs-event-sourcing) | Separate models for writing and reading, and a history of events as the stored data | Reads and writes have very different needs |
+| Pattern                                               | Main idea                                                                                             | Read it when                                   |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [Hexagonal architecture](/learn/hexagonal)            | The application talks to the outside only through ports, and adapters connect them to real technology | You want the clearest version of the idea      |
+| [Clean and onion architecture](/learn/clean-onion)    | Rings around the business rules, with a strict direction for dependencies                             | You meet these names in a team or an interview |
+| [Vertical slices](/learn/vertical-slices)             | Organize code by feature, not by technical layer                                                      | Layers make each feature touch many folders    |
+| [Domain model patterns](/learn/domain-model)          | Entities, value objects, aggregates, and repositories                                                 | The business rules are complex                 |
+| [CQRS and event sourcing](/learn/cqrs-event-sourcing) | Separate models for writing and reading, and a history of events as the stored data                   | Reads and writes have very different needs     |
 
 ## How to select
 

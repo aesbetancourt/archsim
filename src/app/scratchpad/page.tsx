@@ -18,8 +18,8 @@ export default async function ScratchpadPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-3">
           <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
-          <PencilRuler className="size-7 shrink-0 text-primary" aria-hidden />
-          Scratchpad
+            <PencilRuler className="size-7 shrink-0 text-primary" aria-hidden />
+            Scratchpad
           </h1>
           <p className="max-w-2xl text-base text-muted-foreground">
             A free space to draw diagrams and write notes. A board is not a kata: nothing is
@@ -51,7 +51,8 @@ export default async function ScratchpadPage() {
                     Open <ArrowRight />
                   </LinkButton>
                   <span className="text-xs text-muted-foreground">
-                    {board.scene.elements.length} shapes · changed {new Date(board.updatedAt).toLocaleDateString()}
+                    {board.scene.elements.length} shapes · changed{" "}
+                    {new Date(board.updatedAt).toLocaleDateString()}
                   </span>
                 </div>
                 <ConfirmButton

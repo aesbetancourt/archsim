@@ -1,7 +1,22 @@
-import { Component, Cpu, Cylinder, Database, MonitorSmartphone, Scan, Shapes, Square, SquareDashed, User } from "lucide-react";
+import {
+  Component,
+  Cpu,
+  Cylinder,
+  Database,
+  MonitorSmartphone,
+  Scan,
+  Shapes,
+  Square,
+  SquareDashed,
+  User,
+} from "lucide-react";
 import type { BlockShape } from "@/lib/blocks";
 
-const dash: Partial<Record<BlockShape, string>> = { call: "none", message: "4 3", replication: "1.5 3" };
+const dash: Partial<Record<BlockShape, string>> = {
+  call: "none",
+  message: "4 3",
+  replication: "1.5 3",
+};
 
 // A small icon that shows the form of a piece on the canvas.
 export default function BlockIcon({ shape }: { shape: BlockShape }) {
@@ -10,7 +25,15 @@ export default function BlockIcon({ shape }: { shape: BlockShape }) {
   if (pattern) {
     // An arrow with the line style of the connection.
     return (
-      <svg viewBox="0 0 24 12" className="h-3 w-6 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+      <svg
+        viewBox="0 0 24 12"
+        className="h-3 w-6 shrink-0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden
+      >
         <path d="M2 6H19" strokeDasharray={pattern} />
         <path d="M17 2l4 4-4 4" />
       </svg>

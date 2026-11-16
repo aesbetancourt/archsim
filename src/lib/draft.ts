@@ -39,7 +39,10 @@ export function saveDraft(kataId: string, work: Draft): boolean {
   } catch {
     // Images in the drawing can be too large for the storage. Save the draft without them.
     try {
-      localStorage.setItem(draftKey(kataId), JSON.stringify({ ...draft, scene: { ...draft.scene, files: {} } }));
+      localStorage.setItem(
+        draftKey(kataId),
+        JSON.stringify({ ...draft, scene: { ...draft.scene, files: {} } }),
+      );
       return true;
     } catch {
       return false;
@@ -55,7 +58,13 @@ export function clearDraft(kataId: string): void {
   }
 }
 
-export type DraftSummary = { kataId: string; savedAt?: string; stepsDone: number; shapes: number; hasNotes: boolean };
+export type DraftSummary = {
+  kataId: string;
+  savedAt?: string;
+  stepsDone: number;
+  shapes: number;
+  hasNotes: boolean;
+};
 
 // List the katas that have unfinished work in this browser, newest first.
 export function listDrafts(): DraftSummary[] {
@@ -67,15 +76,26 @@ export function listDrafts(): DraftSummary[] {
       const kataId = key.slice(PREFIX.length);
       const draft = loadDraft(kataId);
       if (!draft) continue;
-      const hasNotes = Boolean(localStorage.getItem(`archsim:notes:${kataId}`)?.replace(/<[^>]+>/g, "").trim());
-      const steps = [draft.scope.trim(), draft.selected.length, draft.style, draft.scene.elements.length, draft.rationale.trim()];
+      const hasNotes = Boolean(
+        localStorage
+          .getItem(`archsim:notes:${kataId}`)
+          ?.replace(/<[^>]+>/g, "")
+          .trim(),
+      );
+      const steps = [
+        draft.scope.trim(),
+        draft.selected.length,
+        draft.style,
+        draft.scene.elements.length,
+        draft.rationale.trim(),
+      ];
       const stepsDone = steps.filter(Boolean).length;
       // A draft with no content is not unfinished work.
       if (stepsDone === 0 && !hasNotes) continue;
       // Count each piece one time. Do not count labels and the decoration parts of a piece.
-      const shapes = (draft.scene.elements as { type?: string; customData?: { decor?: boolean } }[]).filter(
-        (element) => element.type !== "text" && !element.customData?.decor,
-      ).length;
+      const shapes = (
+        draft.scene.elements as { type?: string; customData?: { decor?: boolean } }[]
+      ).filter((element) => element.type !== "text" && !element.customData?.decor).length;
       summaries.push({ kataId, savedAt: draft.savedAt, stepsDone, shapes, hasNotes });
     }
   } catch {

@@ -1,10 +1,10 @@
 ## Two shapes
 
-| | Queue | Topic (publish and subscribe) |
-|---|---|---|
-| Each message goes to | One worker | Each subscriber |
-| Use it for | Work to be done once: "convert this video" | News that several parts react to: "order placed" |
-| More workers | Share the work | Each subscriber group gets all messages |
+|                      | Queue                                      | Topic (publish and subscribe)                    |
+| -------------------- | ------------------------------------------ | ------------------------------------------------ |
+| Each message goes to | One worker                                 | Each subscriber                                  |
+| Use it for           | Work to be done once: "convert this video" | News that several parts react to: "order placed" |
+| More workers         | Share the work                             | Each subscriber group gets all messages          |
 
 A third form is a log: an ordered list of events that is kept for a period. Subscribers read it at their own position and can read it again from the start. It is used for very high volume and when a new subscriber must see old events.
 
@@ -17,11 +17,11 @@ Name events in the past tense. If an "event" is named "SendEmail", it is a comma
 
 ## Delivery promises
 
-| Promise | Meaning | Result |
-|---|---|---|
-| At most once | A message is sent one time and can be lost | No duplicates, lost work |
-| At least once | A message is repeated until it is confirmed | No lost work, duplicates |
-| Exactly once | The effect occurs one time | Not a delivery promise. It is "at least once" plus a receiver that detects repeats |
+| Promise       | Meaning                                     | Result                                                                             |
+| ------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| At most once  | A message is sent one time and can be lost  | No duplicates, lost work                                                           |
+| At least once | A message is repeated until it is confirmed | No lost work, duplicates                                                           |
+| Exactly once  | The effect occurs one time                  | Not a delivery promise. It is "at least once" plus a receiver that detects repeats |
 
 Design for "at least once" and make each receiver [safe to repeat](/learn/distributed-transactions). The Agent Triggers worked example is built on this.
 
@@ -31,12 +31,12 @@ Most systems keep order only inside one partition or one group. If order matters
 
 ## What goes wrong
 
-| Problem | What occurs | Protection |
-|---|---|---|
-| A message that always fails | The worker repeats it forever and blocks the others | After some attempts, move it to a [dead-letter list](/glossary#dead-letter) |
-| Workers are too slow | The queue grows, work is late | Measure the delay of the queue, add workers automatically |
-| A burst from one customer | All other customers wait | A limit or a separate queue for each customer or priority |
-| The format of a message changes | Old receivers fail | Only add fields. See [API design](/learn/api-design) |
+| Problem                         | What occurs                                         | Protection                                                                  |
+| ------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------- |
+| A message that always fails     | The worker repeats it forever and blocks the others | After some attempts, move it to a [dead-letter list](/glossary#dead-letter) |
+| Workers are too slow            | The queue grows, work is late                       | Measure the delay of the queue, add workers automatically                   |
+| A burst from one customer       | All other customers wait                            | A limit or a separate queue for each customer or priority                   |
+| The format of a message changes | Old receivers fail                                  | Only add fields. See [API design](/learn/api-design)                        |
 
 ## In a kata
 

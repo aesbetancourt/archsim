@@ -19,7 +19,13 @@ export type ModelResult = { output: unknown; model: string };
 const TIMEOUT_MS = 5 * 60 * 1000;
 
 // These models decline some requests. The API can then continue on a different model.
-const FALLBACK_MODELS = ["claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5"];
+const FALLBACK_MODELS = [
+  "claude-fable-5-2",
+  "claude-fable-5-1",
+  "claude-opus-5-5",
+  "claude-opus-5",
+  "claude-sonnet-5-5",
+];
 
 // The number of times to ask OpenCode when the answer is not valid JSON.
 const OPENCODE_TRIES = 2;
@@ -38,13 +44,21 @@ function parseJson(text: string): unknown {
 
 async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<ModelResult> {
   // Claude Code reads the image from its working directory.
-  const cwd = call.imagePath ? path.dirname(call.imagePath) : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
+  const cwd = call.imagePath
+    ? path.dirname(call.imagePath)
+    : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
   const prompt = call.imagePath
     ? `Read the file ${path.basename(call.imagePath)} in the current directory before you answer.\n\n${call.prompt}`
     : call.prompt;
   const model = settings.claudeCode.model || process.env.ARCHSIM_MODEL || "";
   try {
-    const output = await runClaude({ cwd, prompt, systemPrompt: call.systemPrompt, schema: call.schema, model });
+    const output = await runClaude({
+      cwd,
+      prompt,
+      systemPrompt: call.systemPrompt,
+      schema: call.schema,
+      model,
+    });
     return { output, model: model ? `Claude Code (${model})` : "Claude Code" };
   } finally {
     if (!call.imagePath) await rm(cwd, { recursive: true, force: true });
@@ -53,7 +67,9 @@ async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<Model
 
 async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelResult> {
   // OpenCode reads the image from its working directory.
-  const cwd = call.imagePath ? path.dirname(call.imagePath) : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
+  const cwd = call.imagePath
+    ? path.dirname(call.imagePath)
+    : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
   const model = settings.openCode.model;
   try {
     // OpenCode cannot force the answer to match the schema. A model sometimes writes JSON
@@ -71,7 +87,8 @@ async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelRe
         return { output: parseJson(text), model: model ? `OpenCode (${model})` : "OpenCode" };
       } catch (error) {
         // Keep the answer next to the attempt, so the cause can be found.
-        if (call.imagePath) await writeFile(path.join(cwd, "model-answer.txt"), text).catch(() => undefined);
+        if (call.imagePath)
+          await writeFile(path.join(cwd, "model-answer.txt"), text).catch(() => undefined);
         if (attempt === OPENCODE_TRIES) throw error;
       }
     }
@@ -99,8 +116,12 @@ async function viaAnthropic(call: ModelCall, settings: Settings): Promise<ModelR
       max_tokens: 16000,
       system: call.systemPrompt,
       messages: [{ role: "user", content }],
-      output_config: { format: { type: "json_schema", schema: call.schema as Record<string, unknown> } },
-      ...(useFallback ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const } : {}),
+      output_config: {
+        format: { type: "json_schema", schema: call.schema as Record<string, unknown> },
+      },
+      ...(useFallback
+        ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }
+        : {}),
     });
     if (response.stop_reason === "refusal") {
       throw new Error("The model declined this request.");
@@ -108,7 +129,9 @@ async function viaAnthropic(call: ModelCall, settings: Settings): Promise<ModelR
     if (response.stop_reason === "max_tokens") {
       throw new Error("The answer was cut off at the token limit.");
     }
-    const text = response.content.flatMap((block) => (block.type === "text" ? [block.text] : [])).join("");
+    const text = response.content
+      .flatMap((block) => (block.type === "text" ? [block.text] : []))
+      .join("");
     return { output: parseJson(text), model: response.model };
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
@@ -141,7 +164,10 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
   const send = (withSchema: boolean) =>
     fetch(`${baseUrl.replace(/\/+$/, "")}/chat/completions`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}) },
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+      },
       signal: AbortSignal.timeout(TIMEOUT_MS),
       body: JSON.stringify({
         model,
@@ -155,7 +181,12 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
           { role: "user", content },
         ],
         ...(withSchema
-          ? { response_format: { type: "json_schema", json_schema: { name: "result", schema: call.schema } } }
+          ? {
+              response_format: {
+                type: "json_schema",
+                json_schema: { name: "result", schema: call.schema },
+              },
+            }
           : {}),
       }),
     });
@@ -167,7 +198,9 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
     throw new Error("The provider rejected the API key. Check the key in Settings.");
   }
   if (!response.ok) {
-    throw new Error(`The provider answered ${response.status}: ${(await response.text()).slice(0, 300)}`);
+    throw new Error(
+      `The provider answered ${response.status}: ${(await response.text()).slice(0, 300)}`,
+    );
   }
   const body = await response.json();
   const text = body.choices?.[0]?.message?.content;

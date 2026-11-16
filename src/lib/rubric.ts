@@ -33,7 +33,9 @@ export type Review = {
 };
 
 // The Learn pages that a review can send the person to.
-export const studyPages = wikiSections.flatMap((section) => section.pages).map((page) => ({ slug: page.slug, title: page.title }));
+export const studyPages = wikiSections
+  .flatMap((section) => section.pages)
+  .map((page) => ({ slug: page.slug, title: page.title }));
 
 // The output of the reviewer must match this schema, with each provider.
 export const reviewSchema = {

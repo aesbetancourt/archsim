@@ -8,13 +8,13 @@ A network call looks like a function call in the code. It is not one.
 
 A well-known list, the fallacies of distributed computing, names the wrong assumptions that developers make. The important ones for design:
 
-| Wrong assumption | What is true | What the design must do |
-|---|---|---|
-| The network is reliable | Calls fail and time out | [Timeouts, retries](/learn/resilience), and safe repeats |
-| There is no delay | Each call adds milliseconds | Few calls for each request, no long chains |
-| The other part is there | Parts are down or slow at times | A plan for each dependency that fails |
-| Data changes together | There is no shared transaction | [Sagas or an outbox](/learn/distributed-transactions) |
-| One team operates it | Many parts need many deployments | Automation and [observability](/learn/observability) |
+| Wrong assumption        | What is true                     | What the design must do                                  |
+| ----------------------- | -------------------------------- | -------------------------------------------------------- |
+| The network is reliable | Calls fail and time out          | [Timeouts, retries](/learn/resilience), and safe repeats |
+| There is no delay       | Each call adds milliseconds      | Few calls for each request, no long chains               |
+| The other part is there | Parts are down or slow at times  | A plan for each dependency that fails                    |
+| Data changes together   | There is no shared transaction   | [Sagas or an outbox](/learn/distributed-transactions)    |
+| One team operates it    | Many parts need many deployments | Automation and [observability](/learn/observability)     |
 
 Inside one deployment, a call either works or the whole program has a fault. Across a network there is a third result: you do not know. The request can be lost, or the answer can be lost after the work was done. Most hard problems in distributed systems come from this third result.
 

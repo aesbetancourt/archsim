@@ -6,7 +6,14 @@ import Prose from "@/components/Prose";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { blockGroups, blocksIn } from "@/lib/blocks";
 import { characteristics, kataSteps, styleLessons } from "@/lib/learn";
 import { getWikiPage, headingId, headings, neighbors, readArticle } from "@/lib/wiki";
@@ -46,7 +53,8 @@ function Characteristics() {
       <p className="max-w-2xl">
         A characteristic is a quality of the system, not a feature. &quot;Customers pay online&quot;
         is a feature. &quot;Payment works during the lunch peak&quot; is a characteristic
-        (elasticity). The characteristics you select decide the style. Other names for the same thing are non-functional requirements and quality attributes.
+        (elasticity). The characteristics you select decide the style. Other names for the same
+        thing are non-functional requirements and quality attributes.
       </p>
       <Card className="py-0">
         <Table>
@@ -62,7 +70,9 @@ function Characteristics() {
               <TableRow key={item.name} className="align-top">
                 <TableCell className="pl-4 font-medium">{item.name}</TableCell>
                 <TableCell className="whitespace-normal">{item.meaning}</TableCell>
-                <TableCell className="whitespace-normal pr-4 text-muted-foreground">{item.signal}</TableCell>
+                <TableCell className="whitespace-normal pr-4 text-muted-foreground">
+                  {item.signal}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -94,7 +104,10 @@ function Styles() {
             {styleLessons.map((lesson) => (
               <TableRow key={lesson.id}>
                 <TableCell className="pl-4">
-                  <Link href={`/learn/${lesson.id}`} className="font-medium text-primary hover:underline">
+                  <Link
+                    href={`/learn/${lesson.id}`}
+                    className="font-medium text-primary hover:underline"
+                  >
                     {lesson.name}
                   </Link>
                   <p className="whitespace-normal text-muted-foreground">{lesson.idea}</p>
@@ -103,7 +116,11 @@ function Styles() {
                   const level = lesson.ratings[column.key];
                   return (
                     <TableCell key={column.key}>
-                      <Badge variant={level === "high" ? "default" : level === "medium" ? "neutral" : "neutral"}>
+                      <Badge
+                        variant={
+                          level === "high" ? "default" : level === "medium" ? "neutral" : "neutral"
+                        }
+                      >
                         {level}
                       </Badge>
                     </TableCell>
@@ -123,9 +140,9 @@ function Blocks() {
     <div className="space-y-8">
       <div className="max-w-2xl space-y-2">
         <p>
-          Most designs use the same set of pieces. An architect knows what each piece does
-          and, more important, what it costs. No piece is free: each one adds a part that can fail
-          and a decision that you must defend.
+          Most designs use the same set of pieces. An architect knows what each piece does and, more
+          important, what it costs. No piece is free: each one adds a part that can fail and a
+          decision that you must defend.
         </p>
         <p>
           The same pieces are above the canvas in each kata and in the Scratchpad. Drag a piece to
@@ -140,7 +157,10 @@ function Blocks() {
         <ul>
           {blockGroups.map((group) => (
             <li key={group.id} className="flex items-center gap-2">
-              <span style={{ backgroundColor: group.color }} className="size-2.5 rounded-full border border-border" />
+              <span
+                style={{ backgroundColor: group.color }}
+                className="size-2.5 rounded-full border border-border"
+              />
               <a href={`#${group.id}`} className="text-primary hover:underline">
                 {group.title}
               </a>
@@ -164,7 +184,11 @@ function Blocks() {
                   <span
                     style={{ backgroundColor: group.color }}
                     className={`inline-flex items-center gap-1 border-2 border-border px-2 py-0.5 font-medium text-black ${
-                      block.shape === "actor" || block.shape === "person" ? "rounded-full" : block.shape === "module" ? "rounded-none" : "rounded-base"
+                      block.shape === "actor" || block.shape === "person"
+                        ? "rounded-full"
+                        : block.shape === "module"
+                          ? "rounded-none"
+                          : "rounded-base"
                     } ${block.shape === "external" || block.shape === "boundary" ? "border-dashed" : ""}`}
                   >
                     <BlockIcon shape={block.shape} />
@@ -186,7 +210,8 @@ function Blocks() {
                     </div>
                     <div>
                       <dt className="flex items-center gap-1.5 font-medium">
-                        <CircleHelp className="size-3.5 text-primary" aria-hidden /> Answer this in your trade-offs
+                        <CircleHelp className="size-3.5 text-primary" aria-hidden /> Answer this in
+                        your trade-offs
                       </dt>
                       <dd className="text-muted-foreground">{block.question}</dd>
                     </div>
@@ -263,14 +288,20 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
 
       <nav aria-label="Reading order" className="flex justify-between gap-4 border-t pt-4">
         {previous ? (
-          <Link href={`/learn/${previous.slug}`} className="flex items-center gap-1 text-primary hover:underline">
+          <Link
+            href={`/learn/${previous.slug}`}
+            className="flex items-center gap-1 text-primary hover:underline"
+          >
             <ArrowLeft className="size-4" /> {previous.title}
           </Link>
         ) : (
           <span />
         )}
         {next && (
-          <Link href={`/learn/${next.slug}`} className="flex items-center gap-1 text-right text-primary hover:underline">
+          <Link
+            href={`/learn/${next.slug}`}
+            className="flex items-center gap-1 text-right text-primary hover:underline"
+          >
             {next.title} <ArrowRight className="size-4" />
           </Link>
         )}

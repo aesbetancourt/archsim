@@ -3,7 +3,18 @@
 import Highlight from "@tiptap/extension-highlight";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Bold, Heading2, Highlighter, Italic, List, ListOrdered, Redo2, Strikethrough, TextQuote, Undo2 } from "lucide-react";
+import {
+  Bold,
+  Heading2,
+  Highlighter,
+  Italic,
+  List,
+  ListOrdered,
+  Redo2,
+  Strikethrough,
+  TextQuote,
+  Undo2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { loadNotesHtml, notesText, saveNotesHtml, toNotesHtml } from "@/lib/notes";
 
@@ -18,7 +29,19 @@ type Props = {
   label?: string;
 };
 
-function Tool({ label, active, disabled, onClick, children }: { label: string; active?: boolean; disabled?: boolean; onClick: () => void; children: React.ReactNode }) {
+function Tool({
+  label,
+  active,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  active?: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -40,10 +63,21 @@ function Tool({ label, active, disabled, onClick, children }: { label: string; a
 }
 
 // The notepad of a kata or a board: a text editor with basic formats and a highlighter.
-export default function NotesEditor({ kataId, initialHtml, onHtmlChange, onTextChange, label = "Notes for this kata" }: Props) {
+export default function NotesEditor({
+  kataId,
+  initialHtml,
+  onHtmlChange,
+  onTextChange,
+  label = "Notes for this kata",
+}: Props) {
   const editor = useEditor({
     extensions: [StarterKit, Highlight],
-    content: typeof window === "undefined" ? "" : kataId ? loadNotesHtml(kataId) : toNotesHtml(initialHtml ?? ""),
+    content:
+      typeof window === "undefined"
+        ? ""
+        : kataId
+          ? loadNotesHtml(kataId)
+          : toNotesHtml(initialHtml ?? ""),
     // The editor starts in the browser only. This prevents a mismatch with the server page.
     immediatelyRender: false,
     editorProps: {
@@ -83,15 +117,32 @@ export default function NotesEditor({ kataId, initialHtml, onHtmlChange, onTextC
   if (!editor) return null;
   // The state is empty for a moment after the editor starts.
   const state = current ?? {
-    bold: false, italic: false, strike: false, highlight: false, heading: false,
-    bullets: false, numbers: false, quote: false, canUndo: false, canRedo: false, empty: editor.isEmpty,
+    bold: false,
+    italic: false,
+    strike: false,
+    highlight: false,
+    heading: false,
+    bullets: false,
+    numbers: false,
+    quote: false,
+    canUndo: false,
+    canRedo: false,
+    empty: editor.isEmpty,
   };
   const run = () => editor.chain().focus();
 
   return (
     <div className="flex h-full flex-col">
-      <div role="toolbar" aria-label="Text format" className="flex flex-wrap items-center gap-1 border-b-2 px-3 py-1.5">
-        <Tool label="Highlight" active={state.highlight} onClick={() => run().toggleHighlight().run()}>
+      <div
+        role="toolbar"
+        aria-label="Text format"
+        className="flex flex-wrap items-center gap-1 border-b-2 px-3 py-1.5"
+      >
+        <Tool
+          label="Highlight"
+          active={state.highlight}
+          onClick={() => run().toggleHighlight().run()}
+        >
           <Highlighter />
         </Tool>
         <span className="mx-1 h-5 w-0.5 bg-border" />
@@ -101,17 +152,33 @@ export default function NotesEditor({ kataId, initialHtml, onHtmlChange, onTextC
         <Tool label="Italic" active={state.italic} onClick={() => run().toggleItalic().run()}>
           <Italic />
         </Tool>
-        <Tool label="Strike through" active={state.strike} onClick={() => run().toggleStrike().run()}>
+        <Tool
+          label="Strike through"
+          active={state.strike}
+          onClick={() => run().toggleStrike().run()}
+        >
           <Strikethrough />
         </Tool>
         <span className="mx-1 h-5 w-0.5 bg-border" />
-        <Tool label="Heading" active={state.heading} onClick={() => run().toggleHeading({ level: 2 }).run()}>
+        <Tool
+          label="Heading"
+          active={state.heading}
+          onClick={() => run().toggleHeading({ level: 2 }).run()}
+        >
           <Heading2 />
         </Tool>
-        <Tool label="Bullet list" active={state.bullets} onClick={() => run().toggleBulletList().run()}>
+        <Tool
+          label="Bullet list"
+          active={state.bullets}
+          onClick={() => run().toggleBulletList().run()}
+        >
           <List />
         </Tool>
-        <Tool label="Numbered list" active={state.numbers} onClick={() => run().toggleOrderedList().run()}>
+        <Tool
+          label="Numbered list"
+          active={state.numbers}
+          onClick={() => run().toggleOrderedList().run()}
+        >
           <ListOrdered />
         </Tool>
         <Tool label="Quote" active={state.quote} onClick={() => run().toggleBlockquote().run()}>
@@ -125,11 +192,14 @@ export default function NotesEditor({ kataId, initialHtml, onHtmlChange, onTextC
           <Redo2 />
         </Tool>
       </div>
-      <div className="relative min-h-0 flex-1 overflow-y-auto" onClick={() => editor.commands.focus()}>
+      <div
+        className="relative min-h-0 flex-1 overflow-y-auto"
+        onClick={() => editor.commands.focus()}
+      >
         {state.empty && (
           <p className="pointer-events-none absolute inset-x-0 mx-auto max-w-3xl px-8 py-6 text-[0.95rem] leading-7 text-muted-foreground">
-            Think here before you draw. What does the system do? What is hard? What are your questions and
-            assumptions?
+            Think here before you draw. What does the system do? What is hard? What are your
+            questions and assumptions?
           </p>
         )}
         <EditorContent editor={editor} className="h-full" />

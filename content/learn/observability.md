@@ -6,11 +6,11 @@ Interviewers ask this more and more: "how would you know it is working, and how 
 
 ## Three kinds of data
 
-| Signal | What it is | Answers |
-|---|---|---|
-| Metrics | Numbers measured over time | Is there a problem? How large? |
-| Logs | A record of each event, with details | What exactly occurred for this request? |
-| Traces | The path of one request through all the parts, with times | Where is the time lost? Which part failed? |
+| Signal  | What it is                                                | Answers                                    |
+| ------- | --------------------------------------------------------- | ------------------------------------------ |
+| Metrics | Numbers measured over time                                | Is there a problem? How large?             |
+| Logs    | A record of each event, with details                      | What exactly occurred for this request?    |
+| Traces  | The path of one request through all the parts, with times | Where is the time lost? Which part failed? |
 
 Give each request an ID at the entry point and pass it to each part. Without it, logs from different services cannot be connected.
 
@@ -27,11 +27,11 @@ For background work, measure the delay: the age of the oldest item in the queue.
 
 ## Service levels
 
-| Term | Meaning | Example |
-|---|---|---|
-| Indicator (SLI) | A measurement of what users experience | The share of redirects that answer in less than 100 milliseconds |
-| Objective (SLO) | The target for the indicator | 99.9% each month |
-| Agreement (SLA) | A promise to a customer, with a penalty | 99.5%, or the customer gets money back |
+| Term            | Meaning                                 | Example                                                          |
+| --------------- | --------------------------------------- | ---------------------------------------------------------------- |
+| Indicator (SLI) | A measurement of what users experience  | The share of redirects that answer in less than 100 milliseconds |
+| Objective (SLO) | The target for the indicator            | 99.9% each month                                                 |
+| Agreement (SLA) | A promise to a customer, with a penalty | 99.5%, or the customer gets money back                           |
 
 An objective makes "available" exact. It also gives an error budget: 99.9% each month permits about 43 minutes of failure. If the budget is used, the team stops new features and works on reliability. If the budget is not used, the team can release faster.
 

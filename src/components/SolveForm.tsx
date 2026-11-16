@@ -66,7 +66,9 @@ export default function SolveForm({ initialText }: { initialText: string }) {
         </Button>
       </div>
       {busy && (
-        <p className="text-muted-foreground">The model is writing the answer. This can take two minutes.</p>
+        <p className="text-muted-foreground">
+          The model is writing the answer. This can take two minutes.
+        </p>
       )}
     </div>
   );

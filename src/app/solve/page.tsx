@@ -18,7 +18,11 @@ function kataText(kata: Kata): string {
     .join("\n\n");
 }
 
-export default async function SolvePage({ searchParams }: { searchParams: Promise<{ kata?: string }> }) {
+export default async function SolvePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kata?: string }>;
+}) {
   const { kata: kataId } = await searchParams;
   const kata = kataId ? await findKata(kataId) : undefined;
 

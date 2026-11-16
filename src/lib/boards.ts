@@ -56,7 +56,10 @@ export async function createBoard(): Promise<Board> {
   return board;
 }
 
-export async function updateBoard(id: string, change: Pick<Board, "title" | "notes" | "scene">): Promise<Board | undefined> {
+export async function updateBoard(
+  id: string,
+  change: Pick<Board, "title" | "notes" | "scene">,
+): Promise<Board | undefined> {
   const board = await getBoard(id);
   if (!board) return undefined;
   const next: Board = {

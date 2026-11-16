@@ -30,7 +30,17 @@ function offsetIn(block: Element, node: Node, offset: number): number {
   return range.toString().length;
 }
 
-function Block({ id, text, ranges, onRemove }: { id: string; text: string; ranges: [number, number][]; onRemove: (index: number) => void }) {
+function Block({
+  id,
+  text,
+  ranges,
+  onRemove,
+}: {
+  id: string;
+  text: string;
+  ranges: [number, number][];
+  onRemove: (index: number) => void;
+}) {
   const parts: React.ReactNode[] = [];
   let position = 0;
   ranges.forEach(([start, end], index) => {
@@ -61,7 +71,7 @@ export default function ProblemText({ kata }: { kata: Kata }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey(kata.id));
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // oxlint-disable-next-line react/set-state-in-effect
       if (saved) setMarks(JSON.parse(saved));
     } catch {
       // Storage is not available. Start with no highlights.
@@ -107,8 +117,12 @@ export default function ProblemText({ kata }: { kata: Kata }) {
     for (const block of root.current.querySelectorAll("[data-block]")) {
       if (!range.intersectsNode(block)) continue;
       const length = block.textContent?.length ?? 0;
-      const start = block.contains(range.startContainer) ? offsetIn(block, range.startContainer, range.startOffset) : 0;
-      const end = block.contains(range.endContainer) ? offsetIn(block, range.endContainer, range.endOffset) : length;
+      const start = block.contains(range.startContainer)
+        ? offsetIn(block, range.startContainer, range.startOffset)
+        : 0;
+      const end = block.contains(range.endContainer)
+        ? offsetIn(block, range.endContainer, range.endOffset)
+        : length;
       if (end > start) {
         const id = block.getAttribute("data-block")!;
         next[id] = merge([...(next[id] ?? []), [start, end]]);
@@ -124,7 +138,9 @@ export default function ProblemText({ kata }: { kata: Kata }) {
       id={id}
       text={text}
       ranges={marks[id] ?? []}
-      onRemove={(index) => update({ ...marks, [id]: (marks[id] ?? []).filter((_, position) => position !== index) })}
+      onRemove={(index) =>
+        update({ ...marks, [id]: (marks[id] ?? []).filter((_, position) => position !== index) })
+      }
     />
   );
   const total = Object.values(marks).reduce((sum, ranges) => sum + ranges.length, 0);
@@ -132,7 +148,9 @@ export default function ProblemText({ kata }: { kata: Kata }) {
   return (
     <div ref={root} className="space-y-3" onMouseUp={onSelect} onKeyUp={onSelect}>
       <p>{block("context", kata.context)}</p>
-      {kata.details?.map((paragraph, index) => <p key={index}>{block(`detail-${index}`, paragraph)}</p>)}
+      {kata.details?.map((paragraph, index) => (
+        <p key={index}>{block(`detail-${index}`, paragraph)}</p>
+      ))}
       {kata.users && (
         <p>
           <span className="font-medium">Users:</span> {block("users", kata.users)}
@@ -171,7 +189,10 @@ export default function ProblemText({ kata }: { kata: Kata }) {
 
       {button && (
         // The wrapper sets the position. The button uses a variant that does not move on hover.
-        <div className="fixed z-50 -translate-x-1/2 -translate-y-full pb-1.5" style={{ left: button.x, top: button.y }}>
+        <div
+          className="fixed z-50 -translate-x-1/2 -translate-y-full pb-1.5"
+          style={{ left: button.x, top: button.y }}
+        >
           <Button
             variant="noShadow"
             size="xs"

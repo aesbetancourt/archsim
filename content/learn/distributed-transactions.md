@@ -8,11 +8,11 @@ The first answer is always: can these two things be in one service with one data
 
 A saga is a sequence of local transactions, one in each service. If a step fails, the saga runs a compensation for each step that was already done: an action that reverses it.
 
-| Step | Action | Compensation |
-|---|---|---|
-| 1 | Reserve the slot | Release the slot |
-| 2 | Charge the card | Refund the charge |
-| 3 | Confirm the lesson | (last step) |
+| Step | Action             | Compensation      |
+| ---- | ------------------ | ----------------- |
+| 1    | Reserve the slot   | Release the slot  |
+| 2    | Charge the card    | Refund the charge |
+| 3    | Confirm the lesson | (last step)       |
 
 Two ways to run a saga:
 

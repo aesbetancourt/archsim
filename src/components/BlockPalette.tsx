@@ -1,6 +1,10 @@
 "use client";
 
-import { MIME_TYPES, serializeLibraryAsJSON, viewportCoordsToSceneCoords } from "@excalidraw/excalidraw";
+import {
+  MIME_TYPES,
+  serializeLibraryAsJSON,
+  viewportCoordsToSceneCoords,
+} from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI, LibraryItems } from "@excalidraw/excalidraw/types";
 import { Blocks, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -54,16 +58,19 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
     }, TIP_DELAY_MS);
   };
 
-  useEffect(() => () => {
-    if (tipTimer.current) clearTimeout(tipTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (tipTimer.current) clearTimeout(tipTimer.current);
+    },
+    [],
+  );
   // The number of pieces added with a click. It sets the position of the next one.
   const clicks = useRef(0);
 
   useEffect(() => {
     try {
       // The saved state is known only in the browser, after the first render.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // oxlint-disable-next-line react/set-state-in-effect
       if (localStorage.getItem(HIDDEN_KEY) === "1") setOpen(false);
     } catch {
       // The browser can refuse access to storage. The palette stays open.
@@ -99,17 +106,26 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
     // Put single pieces in rows of three, so a new piece does not cover the last one.
     const index = single ? clicks.current++ % 9 : 0;
     const x = center.x - size.width / 2 + (single ? ((index % 3) - 1) * (WIDTH + 40) : 0);
-    const y = center.y - size.height / 2 + (single ? (Math.floor(index / 3) - 1) * (HEIGHT + 50) : 0);
+    const y =
+      center.y - size.height / 2 + (single ? (Math.floor(index / 3) - 1) * (HEIGHT + 50) : 0);
     const elements = elementsFor(block, x, y);
     const current = api.getSceneElements();
     // A boundary goes below the other shapes, so the pieces in it stay easy to select.
-    api.updateScene({ elements: block.shape === "boundary" ? [...elements, ...current] : [...current, ...elements] });
+    api.updateScene({
+      elements: block.shape === "boundary" ? [...elements, ...current] : [...current, ...elements],
+    });
   };
 
   // Excalidraw accepts a dropped library item and puts it at the pointer.
   const dragStart = (event: React.DragEvent, block: Block) => {
     const items = [
-      { id: block.id, status: "unpublished", created: 0, name: block.name, elements: elementsFor(block, 0, 0) },
+      {
+        id: block.id,
+        status: "unpublished",
+        created: 0,
+        name: block.name,
+        elements: elementsFor(block, 0, 0),
+      },
     ] as unknown as LibraryItems;
     event.dataTransfer.setData(MIME_TYPES.excalidrawlib, serializeLibraryAsJSON(items));
     event.dataTransfer.effectAllowed = "copy";
@@ -119,12 +135,21 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
   const shown = words
     ? blocks.filter((block) => `${block.name} ${block.does}`.toLowerCase().includes(words))
     : blocks.filter((block) => block.group === groupId);
-  const colorOf = (block: Block) => blockGroups.find((group) => group.id === block.group)?.color ?? "#ffffff";
+  const colorOf = (block: Block) =>
+    blockGroups.find((group) => group.id === block.group)?.color ?? "#ffffff";
 
   return (
-    <div className="border-b-2 border-border bg-secondary-background text-xs" onPointerEnter={loadCanvasFont}>
+    <div
+      className="border-b-2 border-border bg-secondary-background text-xs"
+      onPointerEnter={loadCanvasFont}
+    >
       <div className="flex items-center gap-3 px-3 py-1.5">
-        <button type="button" onClick={toggle} aria-expanded={open} className="flex shrink-0 items-center gap-1.5 font-medium">
+        <button
+          type="button"
+          onClick={toggle}
+          aria-expanded={open}
+          className="flex shrink-0 items-center gap-1.5 font-medium"
+        >
           <Blocks className="size-4" /> Building blocks
           <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
@@ -138,14 +163,27 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
             className="w-44 rounded-base border-2 border-border bg-background px-2 py-0.5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         )}
-        {open && <span className="hidden text-muted-foreground lg:inline">Drag a piece to the canvas, or click it.</span>}
-        <a href="/learn/building-blocks" target="_blank" rel="noreferrer" className="ml-auto shrink-0 text-primary hover:underline">
+        {open && (
+          <span className="hidden text-muted-foreground lg:inline">
+            Drag a piece to the canvas, or click it.
+          </span>
+        )}
+        <a
+          href="/learn/building-blocks"
+          target="_blank"
+          rel="noreferrer"
+          className="ml-auto shrink-0 text-primary hover:underline"
+        >
           What each piece costs
         </a>
       </div>
       {open && (
         <div className="space-y-1.5 px-3 pb-2">
-          <div role="tablist" aria-label="Groups of pieces" className="flex flex-wrap gap-x-1 gap-y-1">
+          <div
+            role="tablist"
+            aria-label="Groups of pieces"
+            className="flex flex-wrap gap-x-1 gap-y-1"
+          >
             {blockGroups.map((group) => {
               const selected = !words && group.id === groupId;
               return (
@@ -159,10 +197,15 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
                     setQuery("");
                   }}
                   className={`flex items-center gap-1.5 rounded-base border-2 px-2 py-0.5 ${
-                    selected ? "border-border bg-background font-medium" : "border-transparent text-muted-foreground hover:text-foreground"
+                    selected
+                      ? "border-border bg-background font-medium"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <span style={{ backgroundColor: group.color }} className="size-2.5 rounded-full border border-border" />
+                  <span
+                    style={{ backgroundColor: group.color }}
+                    className="size-2.5 rounded-full border border-border"
+                  />
                   {group.title}
                 </button>
               );
@@ -189,14 +232,22 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
                 aria-describedby={tip?.block.id === block.id ? "block-tip" : undefined}
                 style={{ backgroundColor: colorOf(block) }}
                 className={`flex cursor-grab items-center gap-1 border-2 border-border px-2 py-0.5 font-medium text-black active:cursor-grabbing ${
-                  block.shape === "actor" || block.shape === "person" ? "rounded-full" : block.shape === "module" ? "rounded-none" : "rounded-base"
+                  block.shape === "actor" || block.shape === "person"
+                    ? "rounded-full"
+                    : block.shape === "module"
+                      ? "rounded-none"
+                      : "rounded-base"
                 } ${block.shape === "external" || block.shape === "boundary" ? "border-dashed" : ""}`}
               >
                 <BlockIcon shape={block.shape} />
                 {block.name}
               </button>
             ))}
-            {shown.length === 0 && <span className="text-muted-foreground">No piece has these words. Draw a shape and name it.</span>}
+            {shown.length === 0 && (
+              <span className="text-muted-foreground">
+                No piece has these words. Draw a shape and name it.
+              </span>
+            )}
           </div>
         </div>
       )}

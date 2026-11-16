@@ -6,13 +6,13 @@ Before you add a cache, ask: is the read too slow or too frequent, and can this 
 
 ## Where a cache can be
 
-| Place | Holds | Example |
-|---|---|---|
-| Browser or app | Files and answers for one user | Images, the last feed |
-| CDN | Files and public pages, near the users | Video segments, product images |
-| In the application | Results that one process uses often | Settings, price rules |
+| Place               | Holds                                          | Example                              |
+| ------------------- | ---------------------------------------------- | ------------------------------------ |
+| Browser or app      | Files and answers for one user                 | Images, the last feed                |
+| CDN                 | Files and public pages, near the users         | Video segments, product images       |
+| In the application  | Results that one process uses often            | Settings, price rules                |
 | Shared cache server | Results that all copies of the application use | Sessions, popular links, ready feeds |
-| In the database | Recently used data pages | Automatic |
+| In the database     | Recently used data pages                       | Automatic                            |
 
 ## How data gets in
 
@@ -32,12 +32,12 @@ Most designs use a time limit as a safety net and removal on change where fresh 
 
 ## How a cache fails
 
-| Failure | What occurs | Protection |
-|---|---|---|
-| The cache server is down | All reads go to the database at once | The database must survive the full load for a short time, or requests are limited |
-| A popular entry expires | Thousands of requests rebuild it at the same moment | Only one request rebuilds, the others wait or get the old value |
-| The cache hides a slow database | Nobody sees the problem until the cache fails | Measure the database without the cache |
-| The data is wrong and stays | Users see old data for the full time limit | A way to remove an entry by hand |
+| Failure                         | What occurs                                         | Protection                                                                        |
+| ------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| The cache server is down        | All reads go to the database at once                | The database must survive the full load for a short time, or requests are limited |
+| A popular entry expires         | Thousands of requests rebuild it at the same moment | Only one request rebuilds, the others wait or get the old value                   |
+| The cache hides a slow database | Nobody sees the problem until the cache fails       | Measure the database without the cache                                            |
+| The data is wrong and stays     | Users see old data for the full time limit          | A way to remove an entry by hand                                                  |
 
 A cache must never be the only place where data lives.
 
@@ -47,4 +47,4 @@ Write on the box what the cache holds and how old it can be: "Cache (popular lin
 
 ## Further reading
 
-- [Cache](https://en.wikipedia.org/wiki/Cache_(computing)) and [Cache stampede](https://en.wikipedia.org/wiki/Cache_stampede) on Wikipedia
+- [Cache](<https://en.wikipedia.org/wiki/Cache_(computing)>) and [Cache stampede](https://en.wikipedia.org/wiki/Cache_stampede) on Wikipedia

@@ -55,19 +55,19 @@
   --color-chart-active-dot: var(--chart-active-dot);
   --shadow: var(--shadow);
   @keyframes marquee {
-  0% {
-    transform: translateX(0%);
+    0% {
+      transform: translateX(0%);
     }
-  100% {
-    transform: translateX(-100%);
+    100% {
+      transform: translateX(-100%);
     }
   }
   @keyframes marquee2 {
-  0% {
-    transform: translateX(100%);
+    0% {
+      transform: translateX(100%);
     }
-  100% {
-    transform: translateX(0%);
+    100% {
+      transform: translateX(0%);
     }
   }
 }
@@ -100,11 +100,11 @@
   --destructive: oklch(0.55 0.24 27);
   --input: var(--border);
 
-  --chart-1: #5294FF;
-  --chart-2: #FF4D50;
-  --chart-3: #FACC00;
-  --chart-4: #05E17A;
-  --chart-5: #7A83FF;
+  --chart-1: #5294ff;
+  --chart-2: #ff4d50;
+  --chart-3: #facc00;
+  --chart-4: #05e17a;
+  --chart-5: #7a83ff;
   --chart-active-dot: #000;
 }
 
@@ -138,22 +138,28 @@
   html {
     @apply font-sans;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: var(--font-weight-heading);
   }
 }
-  body, .scrollbar {
-    --sb-track-color: #ffffff;
-    --sb-thumb-color: #000000;
+body,
+.scrollbar {
+  --sb-track-color: #ffffff;
+  --sb-thumb-color: #000000;
 }
-  .scrollbar::-webkit-scrollbar {
-    width: 16px;
+.scrollbar::-webkit-scrollbar {
+  width: 16px;
 }
-  .scrollbar::-webkit-scrollbar-track {
-    background: var(--sb-track-color);
+.scrollbar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
 }
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb-color);
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
 }
 
 @supports not selector(::-webkit-scrollbar) {

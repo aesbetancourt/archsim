@@ -93,7 +93,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "api-design",
     term: "API",
     category: "Building blocks",
-    definition: "The set of operations that a program offers to other programs, and the rules to call them.",
+    definition:
+      "The set of operations that a program offers to other programs, and the rules to call them.",
     example: "startRun(agentId, input) in the Agent Triggers question is an API.",
     match: [],
     wiki: "API",
@@ -136,7 +137,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "sync-async",
     term: "Synchronous call",
     category: "Communication",
-    definition: "A request where the caller waits for the answer before it continues. A solid arrow in the diagrams.",
+    definition:
+      "A request where the caller waits for the answer before it continues. A solid arrow in the diagrams.",
     example: "The app asks the booking service to reserve a slot and waits for yes or no.",
     match: ["synchronous", "call that waits"],
     wiki: "Synchronization_(computer_science)",
@@ -168,7 +170,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "messaging",
     term: "Message broker",
     category: "Communication",
-    definition: "A system that receives messages from senders and delivers each one to all the parts that asked for it.",
+    definition:
+      "A system that receives messages from senders and delivers each one to all the parts that asked for it.",
     example: "The message broker in the Chat Messaging answer.",
     match: ["broker"],
     wiki: "Message_broker",
@@ -178,7 +181,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "messaging",
     term: "Event",
     category: "Communication",
-    definition: "A message that says something occurred, for example 'order placed'. The sender does not know who reacts.",
+    definition:
+      "A message that says something occurred, for example 'order placed'. The sender does not know who reacts.",
     example: "'Post created' in the News Feed answer.",
     match: [],
     wiki: "Event-driven_architecture",
@@ -198,7 +202,8 @@ export const glossary: GlossaryTerm[] = [
     id: "webhook",
     term: "Webhook",
     category: "Communication",
-    definition: "A request that an external system sends to your system when something occurs there.",
+    definition:
+      "A request that an external system sends to your system when something occurs there.",
     example: "Gmail tells the trigger system that an inbox changed.",
     match: ["webhook", "change notice"],
     wiki: "Webhook",
@@ -227,7 +232,8 @@ export const glossary: GlossaryTerm[] = [
     id: "push-notification",
     term: "Push notification",
     category: "Communication",
-    definition: "A short message that Apple or Google delivers to a phone, also when the app is closed.",
+    definition:
+      "A short message that Apple or Google delivers to a phone, also when the app is closed.",
     example: "The push notifier wakes the phone of an offline user in the Chat Messaging answer.",
     match: ["push notif", "wake the phone", "wake phone"],
     wiki: "Push_technology",
@@ -248,7 +254,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "consistency",
     term: "Database transaction",
     category: "Data",
-    definition: "A group of changes that the database applies as a whole. All of them occur, or none of them.",
+    definition:
+      "A group of changes that the database applies as a whole. All of them occur, or none of them.",
     example: "'Change the payment state and add the ledger records' in the Payment System answer.",
     match: ["transaction"],
     wiki: "Database_transaction",
@@ -258,7 +265,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "data-stores",
     term: "Key-value store",
     category: "Data",
-    definition: "A simple database that finds a record by one key. It is fast and easy to split across many servers.",
+    definition:
+      "A simple database that finds a record by one key. It is fast and easy to split across many servers.",
     example: "The link store in the Link Shortener answer: the key is the short code.",
     match: ["key-value"],
     wiki: "Key–value_database",
@@ -279,7 +287,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "scaling-data",
     term: "Partition (shard)",
     category: "Data",
-    definition: "One part of a data set that is split across several servers, because it is too large for one.",
+    definition:
+      "One part of a data set that is split across several servers, because it is too large for one.",
     example: "The link store in the Link Shortener answer holds 6 billion links on many servers.",
     match: ["partition", "shard", "split across"],
     wiki: "Shard_(database_architecture)",
@@ -289,7 +298,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "scaling-data",
     term: "Replication",
     category: "Data",
-    definition: "To keep live copies of the same data on more than one server, so one failure does not lose it.",
+    definition:
+      "To keep live copies of the same data on more than one server, so one failure does not lose it.",
     example: "A second seat unit holds a live copy in the Front Row answer.",
     match: ["replicat", "live copy"],
     wiki: "Replication_(computing)",
@@ -299,8 +309,10 @@ export const glossary: GlossaryTerm[] = [
     learn: "consistency",
     term: "Eventual consistency",
     category: "Data",
-    definition: "Copies of data that agree only after a short delay. For a moment, two users can see different values.",
-    example: "The search index is some minutes behind the calendars in the Tutor Marketplace answer.",
+    definition:
+      "Copies of data that agree only after a short delay. For a moment, two users can see different values.",
+    example:
+      "The search index is some minutes behind the calendars in the Tutor Marketplace answer.",
     match: ["eventual consistency", "after a delay", "after a short delay"],
     wiki: "Eventual_consistency",
   },
@@ -309,7 +321,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "data-stores",
     term: "Search index",
     category: "Data",
-    definition: "A copy of data that is arranged so a search is fast. It is updated after the original data changes.",
+    definition:
+      "A copy of data that is arranged so a search is fast. It is updated after the original data changes.",
     example: "The search index in the Tutor Marketplace answer.",
     match: ["index"],
     wiki: "Search_engine_indexing",
@@ -339,8 +352,10 @@ export const glossary: GlossaryTerm[] = [
     id: "cursor",
     term: "Cursor",
     category: "Data",
-    definition: "A saved position in a list of changes. It answers 'what is new since my last visit?'.",
-    example: "The sync worker asks Gmail for all changes since its cursor in the Agent Triggers answer.",
+    definition:
+      "A saved position in a list of changes. It answers 'what is new since my last visit?'.",
+    example:
+      "The sync worker asks Gmail for all changes since its cursor in the Agent Triggers answer.",
     match: ["cursor"],
   },
   {
@@ -456,7 +471,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "observability",
     term: "Canary check",
     category: "Reliability",
-    definition: "A small test that runs all the time in the real system and shows a failure before customers see it.",
+    definition:
+      "A small test that runs all the time in the real system and shows a failure before customers see it.",
     example: "A test inbox that gets an email every few minutes in the Agent Triggers answer.",
     match: ["canary"],
   },
@@ -467,7 +483,8 @@ export const glossary: GlossaryTerm[] = [
     learn: "scalability",
     term: "Load balancer",
     category: "Scale and speed",
-    definition: "A part that spreads incoming requests across several identical copies of an application.",
+    definition:
+      "A part that spreads incoming requests across several identical copies of an application.",
     example: "The box in front of the link application in the Link Shortener answer.",
     match: ["load balancer"],
     wiki: "Load_balancing_(computing)",
@@ -559,7 +576,8 @@ export const glossary: GlossaryTerm[] = [
     id: "hash",
     term: "Hash",
     category: "Security",
-    definition: "A short, fixed-size value calculated from any input. The same input always gives the same value.",
+    definition:
+      "A short, fixed-size value calculated from any input. The same input always gives the same value.",
     example: "The alternative answer for the Link Shortener makes codes from a hash of the URL.",
     match: ["hash"],
     wiki: "Hash_function",
@@ -570,7 +588,8 @@ export const glossary: GlossaryTerm[] = [
     id: "architecture-characteristic",
     term: "Architecture characteristic",
     category: "Architecture practice",
-    definition: "A quality that a system must have, such as availability. It is not a feature. Also named non-functional requirement or quality attribute.",
+    definition:
+      "A quality that a system must have, such as availability. It is not a feature. Also named non-functional requirement or quality attribute.",
     example: "'Payment works during the lunch peak' is elasticity.",
     match: [],
     wiki: "Non-functional_requirement",
@@ -580,7 +599,8 @@ export const glossary: GlossaryTerm[] = [
     id: "architecture-style",
     term: "Architecture style",
     category: "Architecture practice",
-    definition: "The overall shape of a system: how many deployable parts it has and how they talk.",
+    definition:
+      "The overall shape of a system: how many deployable parts it has and how they talk.",
     example: "Microservices, event-driven, and modular monolith are styles.",
     match: [],
     wiki: "Architectural_pattern",
@@ -630,8 +650,10 @@ export const glossary: GlossaryTerm[] = [
     id: "bounded-context",
     term: "Bounded context",
     category: "Architecture practice",
-    definition: "An area of the business where each word has one exact meaning. A natural boundary for a module or a service.",
-    example: "'Product' means a box with a weight in the warehouse and a page with a price in the shop.",
+    definition:
+      "An area of the business where each word has one exact meaning. A natural boundary for a module or a service.",
+    example:
+      "'Product' means a box with a weight in the warehouse and a page with a price in the shop.",
     match: [],
     wiki: "Domain-driven_design",
     learn: "boundaries",
@@ -669,7 +691,8 @@ export const glossary: GlossaryTerm[] = [
     id: "c4-model",
     term: "C4 model",
     category: "Architecture practice",
-    definition: "A way to draw software at four levels of zoom: context, container, component, code.",
+    definition:
+      "A way to draw software at four levels of zoom: context, container, component, code.",
     example: "The diagrams in the worked examples are container diagrams.",
     match: [],
     wiki: "C4_model",
@@ -689,8 +712,10 @@ export const glossary: GlossaryTerm[] = [
     id: "strangler-fig",
     term: "Strangler fig",
     category: "Architecture practice",
-    definition: "A way to replace a system in steps: new functions take over requests one at a time, until the old system is empty.",
-    example: "A layer in front sends 'search' to the new system and all other requests to the old one.",
+    definition:
+      "A way to replace a system in steps: new functions take over requests one at a time, until the old system is empty.",
+    example:
+      "A layer in front sends 'search' to the new system and all other requests to the old one.",
     match: [],
     wiki: "Strangler_fig_pattern",
     learn: "evolution",
@@ -728,7 +753,8 @@ export const glossary: GlossaryTerm[] = [
     id: "application-architecture",
     term: "Application architecture",
     category: "Application design",
-    definition: "How the code inside one deployable part is organized. It is a different level from system architecture.",
+    definition:
+      "How the code inside one deployable part is organized. It is a different level from system architecture.",
     example: "Hexagonal structure inside one microservice.",
     match: [],
     learn: "code-architecture",
@@ -737,7 +763,8 @@ export const glossary: GlossaryTerm[] = [
     id: "hexagonal-architecture",
     term: "Hexagonal architecture",
     category: "Application design",
-    definition: "A code structure where the business logic talks to the outside only through ports, and adapters connect the ports to technology. Also named ports and adapters.",
+    definition:
+      "A code structure where the business logic talks to the outside only through ports, and adapters connect the ports to technology. Also named ports and adapters.",
     example: "The core defines OrderRepository. A PostgreSQL adapter implements it.",
     match: [],
     wiki: "Hexagonal_architecture_(software)",
@@ -747,7 +774,8 @@ export const glossary: GlossaryTerm[] = [
     id: "port",
     term: "Port",
     category: "Application design",
-    definition: "An interface at the edge of the application core. An input port offers a use case. An output port states what the core needs.",
+    definition:
+      "An interface at the edge of the application core. An input port offers a use case. An output port states what the core needs.",
     example: "OrderRepository, PaymentGateway.",
     match: [],
     learn: "hexagonal",
@@ -766,7 +794,8 @@ export const glossary: GlossaryTerm[] = [
     id: "dependency-inversion",
     term: "Dependency inversion",
     category: "Application design",
-    definition: "Business code defines the interface it needs, and technical code implements it. The technical code then depends on the business code.",
+    definition:
+      "Business code defines the interface it needs, and technical code implements it. The technical code then depends on the business code.",
     example: "The database adapter imports the core. The core does not import the adapter.",
     match: [],
     wiki: "Dependency_inversion_principle",
@@ -776,7 +805,8 @@ export const glossary: GlossaryTerm[] = [
     id: "clean-architecture",
     term: "Clean architecture",
     category: "Application design",
-    definition: "Rings around the business rules: entities, use cases, interface adapters, frameworks. Dependencies point to the center.",
+    definition:
+      "Rings around the business rules: entities, use cases, interface adapters, frameworks. Dependencies point to the center.",
     example: "A use case receives plain data, not a web request.",
     match: [],
     learn: "clean-onion",
@@ -785,7 +815,8 @@ export const glossary: GlossaryTerm[] = [
     id: "onion-architecture",
     term: "Onion architecture",
     category: "Application design",
-    definition: "The same idea as clean architecture with different names for the rings: domain model in the center, infrastructure outside.",
+    definition:
+      "The same idea as clean architecture with different names for the rings: domain model in the center, infrastructure outside.",
     example: "Infrastructure implements interfaces that the inner rings define.",
     match: [],
     learn: "clean-onion",
@@ -794,7 +825,8 @@ export const glossary: GlossaryTerm[] = [
     id: "use-case",
     term: "Use case",
     category: "Application design",
-    definition: "One action that the application offers. In code, an application service that coordinates the domain model and the ports.",
+    definition:
+      "One action that the application offers. In code, an application service that coordinates the domain model and the ports.",
     example: "PlaceOrder.",
     match: [],
     wiki: "Use_case",
@@ -842,7 +874,8 @@ export const glossary: GlossaryTerm[] = [
     id: "aggregate",
     term: "Aggregate",
     category: "Application design",
-    definition: "A group of objects that changes as one unit, through one root. It is a consistency boundary.",
+    definition:
+      "A group of objects that changes as one unit, through one root. It is a consistency boundary.",
     example: "An order with its lines.",
     match: [],
     learn: "domain-model",
@@ -860,7 +893,8 @@ export const glossary: GlossaryTerm[] = [
     id: "cqrs",
     term: "CQRS",
     category: "Application design",
-    definition: "Command query responsibility segregation: one model to change data and a different model to read it.",
+    definition:
+      "Command query responsibility segregation: one model to change data and a different model to read it.",
     example: "Posts are written in one store, and feeds are read from prepared lists.",
     match: [],
     wiki: "Command_Query_Responsibility_Segregation",
@@ -879,7 +913,8 @@ export const glossary: GlossaryTerm[] = [
     id: "rest",
     term: "REST",
     category: "Communication",
-    definition: "A style of API where resources have addresses and are changed with the standard HTTP operations.",
+    definition:
+      "A style of API where resources have addresses and are changed with the standard HTTP operations.",
     example: "GET /orders/42.",
     match: [],
     wiki: "REST",
@@ -889,7 +924,8 @@ export const glossary: GlossaryTerm[] = [
     id: "rpc",
     term: "RPC",
     category: "Communication",
-    definition: "Remote procedure call: the caller calls a named function on another service, as if it were local. gRPC is a common form.",
+    definition:
+      "Remote procedure call: the caller calls a named function on another service, as if it were local. gRPC is a common form.",
     example: "PlaceOrder(request).",
     match: [],
     wiki: "Remote_procedure_call",
@@ -927,7 +963,8 @@ export const glossary: GlossaryTerm[] = [
     id: "event-log",
     term: "Event log",
     category: "Communication",
-    definition: "An ordered list of events that is kept for a period. Each reader has its own position and can read it again.",
+    definition:
+      "An ordered list of events that is kept for a period. Each reader has its own position and can read it again.",
     example: "A new service reads the events of the last month to build its data.",
     match: [],
     learn: "messaging",
@@ -936,7 +973,8 @@ export const glossary: GlossaryTerm[] = [
     id: "acid",
     term: "ACID",
     category: "Data",
-    definition: "The four promises of a database transaction: atomic, consistent, isolated, durable.",
+    definition:
+      "The four promises of a database transaction: atomic, consistent, isolated, durable.",
     example: "Money leaves one account and arrives in the other, or neither occurs.",
     match: [],
     wiki: "ACID",
@@ -946,7 +984,8 @@ export const glossary: GlossaryTerm[] = [
     id: "cap-theorem",
     term: "CAP theorem",
     category: "Data",
-    definition: "When the network between copies breaks, a system must select between consistent data and an answer for each request.",
+    definition:
+      "When the network between copies breaks, a system must select between consistent data and an answer for each request.",
     example: "A seat store refuses requests. A feed shows old data.",
     match: [],
     wiki: "CAP_theorem",
@@ -966,7 +1005,8 @@ export const glossary: GlossaryTerm[] = [
     id: "saga",
     term: "Saga",
     category: "Data",
-    definition: "A sequence of local transactions in several services, with an action that reverses each step if a later step fails.",
+    definition:
+      "A sequence of local transactions in several services, with an action that reverses each step if a later step fails.",
     example: "Reserve the slot, charge the card, confirm. If the charge fails, release the slot.",
     match: [],
     wiki: "Long-running_transaction",
@@ -986,7 +1026,8 @@ export const glossary: GlossaryTerm[] = [
     id: "outbox",
     term: "Outbox",
     category: "Data",
-    definition: "A table where a service writes an event in the same transaction as the data change. A separate process publishes it.",
+    definition:
+      "A table where a service writes an event in the same transaction as the data change. A separate process publishes it.",
     example: "The order row and the 'order placed' event are saved together.",
     match: [],
     learn: "distributed-transactions",
@@ -995,7 +1036,8 @@ export const glossary: GlossaryTerm[] = [
     id: "leader-follower",
     term: "Leader and follower",
     category: "Data",
-    definition: "A form of replication where one server takes all writes and sends them to the copies.",
+    definition:
+      "A form of replication where one server takes all writes and sends them to the copies.",
     example: "Reads go to followers when the leader is busy.",
     match: [],
     learn: "scaling-data",
@@ -1013,7 +1055,8 @@ export const glossary: GlossaryTerm[] = [
     id: "relational-database",
     term: "Relational database",
     category: "Data",
-    definition: "A database of tables with rows and columns, joins between tables, and transactions.",
+    definition:
+      "A database of tables with rows and columns, joins between tables, and transactions.",
     example: "Orders and their lines in two tables.",
     match: [],
     wiki: "Relational_database",
@@ -1033,7 +1076,8 @@ export const glossary: GlossaryTerm[] = [
     id: "circuit-breaker",
     term: "Circuit breaker",
     category: "Reliability",
-    definition: "After several failed calls to a part, stop calling it for a period and fail immediately.",
+    definition:
+      "After several failed calls to a part, stop calling it for a period and fail immediately.",
     example: "The shop stops calls to a recommendation service that is down.",
     match: [],
     wiki: "Circuit_breaker_design_pattern",
@@ -1043,7 +1087,8 @@ export const glossary: GlossaryTerm[] = [
     id: "bulkhead",
     term: "Bulkhead",
     category: "Reliability",
-    definition: "A separate, limited share of resources for each dependency, so one slow dependency cannot use everything.",
+    definition:
+      "A separate, limited share of resources for each dependency, so one slow dependency cannot use everything.",
     example: "Ten connections for the payment provider, ten for the email provider.",
     match: [],
     learn: "resilience",
@@ -1072,7 +1117,8 @@ export const glossary: GlossaryTerm[] = [
     id: "chaos-engineering",
     term: "Chaos engineering",
     category: "Reliability",
-    definition: "To cause failures deliberately, in a controlled way, to see how the system reacts.",
+    definition:
+      "To cause failures deliberately, in a controlled way, to see how the system reacts.",
     example: "Stop one server during work hours and watch the alerts.",
     match: [],
     wiki: "Chaos_engineering",
@@ -1102,7 +1148,8 @@ export const glossary: GlossaryTerm[] = [
     id: "percentile",
     term: "Percentile",
     category: "Scale and speed",
-    definition: "A value that a given share of measurements is below. It shows the slow cases that an average hides.",
+    definition:
+      "A value that a given share of measurements is below. It shows the slow cases that an average hides.",
     example: "99% of requests finish in less than 300 milliseconds.",
     match: [],
     wiki: "Percentile",
@@ -1161,7 +1208,8 @@ export const glossary: GlossaryTerm[] = [
     id: "slo",
     term: "Service level objective (SLO)",
     category: "Operations",
-    definition: "A target for a measurement of what users experience. The measurement is the indicator (SLI).",
+    definition:
+      "A target for a measurement of what users experience. The measurement is the indicator (SLI).",
     example: "99.9% of redirects answer in less than 100 milliseconds, each month.",
     match: [],
     wiki: "Service-level_objective",
@@ -1181,7 +1229,8 @@ export const glossary: GlossaryTerm[] = [
     id: "error-budget",
     term: "Error budget",
     category: "Operations",
-    definition: "The amount of failure that an objective permits. When it is used, reliability work comes before new features.",
+    definition:
+      "The amount of failure that an objective permits. When it is used, reliability work comes before new features.",
     example: "99.9% each month permits about 43 minutes of failure.",
     match: [],
     learn: "observability",
@@ -1190,7 +1239,8 @@ export const glossary: GlossaryTerm[] = [
     id: "ci-cd",
     term: "CI/CD",
     category: "Operations",
-    definition: "Continuous integration and delivery: each change is built, tested, and deployed by automatic steps.",
+    definition:
+      "Continuous integration and delivery: each change is built, tested, and deployed by automatic steps.",
     example: "A merged change is in production in 20 minutes.",
     match: [],
     wiki: "CI/CD",
@@ -1200,7 +1250,8 @@ export const glossary: GlossaryTerm[] = [
     id: "blue-green",
     term: "Blue-green deployment",
     category: "Operations",
-    definition: "Start a full second environment with the new version, then move all traffic to it.",
+    definition:
+      "Start a full second environment with the new version, then move all traffic to it.",
     example: "Return to the old version in seconds if the new one fails.",
     match: [],
     wiki: "Blue–green_deployment",
@@ -1210,7 +1261,8 @@ export const glossary: GlossaryTerm[] = [
     id: "canary-release",
     term: "Canary release",
     category: "Operations",
-    definition: "Send a small share of users to a new version and watch the measurements before all users get it.",
+    definition:
+      "Send a small share of users to a new version and watch the measurements before all users get it.",
     example: "5% of traffic for one hour.",
     match: [],
     learn: "deployment",
@@ -1269,7 +1321,8 @@ export const glossary: GlossaryTerm[] = [
     id: "trust-boundary",
     term: "Trust boundary",
     category: "Security",
-    definition: "A line in a design where data crosses from a less trusted part to a more trusted part.",
+    definition:
+      "A line in a design where data crosses from a less trusted part to a more trusted part.",
     example: "The public internet to the API gateway.",
     match: [],
     wiki: "Trust_boundary",
@@ -1279,7 +1332,8 @@ export const glossary: GlossaryTerm[] = [
     id: "threat-model",
     term: "Threat model",
     category: "Security",
-    definition: "A structured list of what can go wrong with a design, and the decision for each item.",
+    definition:
+      "A structured list of what can go wrong with a design, and the decision for each item.",
     example: "'A bot can buy all tickets': prevent it with a waiting room.",
     match: [],
     wiki: "Threat_model",
@@ -1299,7 +1353,8 @@ export const glossary: GlossaryTerm[] = [
     id: "functional-requirement",
     term: "Functional requirement",
     category: "Architecture practice",
-    definition: "Something the system must do. It decides which components exist. An architecture characteristic says how well the system must do it.",
+    definition:
+      "Something the system must do. It decides which components exist. An architecture characteristic says how well the system must do it.",
     example: "'A customer pays online' is a functional requirement.",
     match: [],
     wiki: "Functional_requirement",

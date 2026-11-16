@@ -7,7 +7,16 @@ export type ChatMessage = { role: "user" | "helper"; text: string };
 
 // What the person works on when they ask a question.
 export type HelperContext =
-  | { kind: "kata"; kataId: string; scope: string; notes: string; characteristics: string; style: string; rationale: string; elements: SceneElement[] }
+  | {
+      kind: "kata";
+      kataId: string;
+      scope: string;
+      notes: string;
+      characteristics: string;
+      style: string;
+      rationale: string;
+      elements: SceneElement[];
+    }
   | { kind: "board"; title: string; notes: string; elements: SceneElement[] };
 
 export const helperSchema = {
@@ -49,14 +58,23 @@ export function helperSystemPrompt(kind: HelperContext["kind"]): string {
 
 // The cost and the open question of each palette piece in the diagram.
 function pieceNotes(elements: SceneElement[]): string {
-  const used = blocksNamed(elements.flatMap((element) => (element.type === "text" && element.text ? [element.text] : [])));
+  const used = blocksNamed(
+    elements.flatMap((element) => (element.type === "text" && element.text ? [element.text] : [])),
+  );
   if (used.length === 0) return "";
-  const lines = used.map((block) => `- ${block.name}: costs: ${block.cost} Open question: ${block.question}`);
+  const lines = used.map(
+    (block) => `- ${block.name}: costs: ${block.cost} Open question: ${block.question}`,
+  );
   return `\nStandard pieces in the diagram, each with its cost and the question a reviewer would ask about it:\n${lines.join("\n")}`;
 }
 
-export function helperPrompt(context: HelperContext, kata: Kata | undefined, messages: ChatMessage[]): string {
-  const list = (items: string[]) => (items.length ? items.map((item) => `- ${item}`).join("\n") : "(none stated)");
+export function helperPrompt(
+  context: HelperContext,
+  kata: Kata | undefined,
+  messages: ChatMessage[],
+): string {
+  const list = (items: string[]) =>
+    items.length ? items.map((item) => `- ${item}`).join("\n") : "(none stated)";
   const work =
     context.kind === "kata"
       ? `<kata>

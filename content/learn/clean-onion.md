@@ -28,12 +28,12 @@ The diagram shows the rings from the outside (left) to the center (right). The u
 
 ## How the names map
 
-| Hexagonal | Onion | Clean | Content |
-|---|---|---|---|
-| Domain model | Domain model | Entities | Business rules that are true for the whole company |
-| Use cases, application services | Application services | Use cases | The actions of this application |
-| Ports | Interfaces in the inner rings | Boundaries: input and output ports | What the core offers and needs |
-| Adapters | Infrastructure, UI | Interface adapters; frameworks and drivers | Everything technical |
+| Hexagonal                       | Onion                         | Clean                                      | Content                                            |
+| ------------------------------- | ----------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| Domain model                    | Domain model                  | Entities                                   | Business rules that are true for the whole company |
+| Use cases, application services | Application services          | Use cases                                  | The actions of this application                    |
+| Ports                           | Interfaces in the inner rings | Boundaries: input and output ports         | What the core offers and needs                     |
+| Adapters                        | Infrastructure, UI            | Interface adapters; frameworks and drivers | Everything technical                               |
 
 ## What clean architecture adds
 
@@ -45,12 +45,12 @@ The diagram shows the rings from the outside (left) to the center (right). The u
 
 Traditional [layered](/learn/layered) code also has rings in a sense: presentation, business, data access. The difference is the direction of one dependency.
 
-| | Traditional layers | Onion, clean, hexagonal |
-|---|---|---|
-| Business logic depends on | The data access layer | Nothing technical |
-| Data access depends on | The database | The business logic, through an interface |
-| To test business rules | You need a database, or heavy mocks | You need nothing |
-| To change the database | Business code changes | Only an adapter changes |
+|                           | Traditional layers                  | Onion, clean, hexagonal                  |
+| ------------------------- | ----------------------------------- | ---------------------------------------- |
+| Business logic depends on | The data access layer               | Nothing technical                        |
+| Data access depends on    | The database                        | The business logic, through an interface |
+| To test business rules    | You need a database, or heavy mocks | You need nothing                         |
+| To change the database    | Business code changes               | Only an adapter changes                  |
 
 In layered code, the database is the foundation and everything stands on it. In the other three, the business rules are the foundation.
 

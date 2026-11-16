@@ -16,13 +16,13 @@ A useful rule: a team should be able to deliver a change for its users without w
 
 ## Know who cares about what
 
-| Person | Cares about | Wants to hear |
-|---|---|---|
-| Business owner | Cost, time, risk, income | What it enables, what it costs, when it is ready |
-| Product manager | Features and dates | What becomes faster or possible |
-| Developers | A system they can understand and change | The reason, and where they have freedom |
-| Operations | Stability, alerts at night | How it fails and how it is repaired |
-| Security and legal | Data, access, the law | Where the data is and who can see it |
+| Person             | Cares about                             | Wants to hear                                    |
+| ------------------ | --------------------------------------- | ------------------------------------------------ |
+| Business owner     | Cost, time, risk, income                | What it enables, what it costs, when it is ready |
+| Product manager    | Features and dates                      | What becomes faster or possible                  |
+| Developers         | A system they can understand and change | The reason, and where they have freedom          |
+| Operations         | Stability, alerts at night              | How it fails and how it is repaired              |
+| Security and legal | Data, access, the law                   | Where the data is and who can see it             |
 
 Explain the same decision in a different way to each of them. This is not dishonest. It is translation.
 

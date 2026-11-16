@@ -33,11 +33,11 @@ export default async function CommunityPage({
         </p>
         <div className="flex flex-wrap gap-2">
           <LinkButton variant="neutral" size="sm" href={COMMUNITY_SOURCE.url}>
-              The collection on GitHub <ExternalLink />
-            </LinkButton>
+            The collection on GitHub <ExternalLink />
+          </LinkButton>
           <LinkButton variant="neutral" size="sm" href={COMMUNITY_SOURCE.site}>
-              The original website <ExternalLink />
-            </LinkButton>
+            The original website <ExternalLink />
+          </LinkButton>
           <LinkButton variant="ghost" size="sm" href="/community?refresh=1">
             <RefreshCw /> Download the list again
           </LinkButton>
@@ -47,7 +47,9 @@ export default async function CommunityPage({
       {error && (
         <Alert variant="destructive">
           <AlertTitle>The katas did not load.</AlertTitle>
-          <AlertDescription>{error} Make sure you are online, then open this page again.</AlertDescription>
+          <AlertDescription>
+            {error} Make sure you are online, then open this page again.
+          </AlertDescription>
         </Alert>
       )}
 
@@ -63,8 +65,8 @@ export default async function CommunityPage({
             </CardHeader>
             <CardFooter className="mt-auto gap-2">
               <LinkButton size="sm" href={`/kata/${kata.id}`}>
-                  Start <ArrowRight />
-                </LinkButton>
+                Start <ArrowRight />
+              </LinkButton>
               <LinkButton size="sm" variant="ghost" href={`/solve?kata=${kata.id}`}>
                 <Sparkles /> Get a worked answer
               </LinkButton>

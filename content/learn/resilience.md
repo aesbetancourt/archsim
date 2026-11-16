@@ -6,16 +6,16 @@ For each arrow in your diagram, ask: what occurs if the box at the end is slow, 
 
 ## The standard tools
 
-| Tool | What it does | Protects against |
-|---|---|---|
-| Timeout | Stops waiting after a fixed time | A slow part that holds its callers |
-| Retry with backoff | Tries again, with a longer wait each time | Short faults |
-| Circuit breaker | After several failures, stops calling for a period and fails immediately | Repeated calls to a part that is down |
-| Bulkhead | Gives each dependency its own limited share of resources | One slow dependency that uses all capacity |
-| Rate limit | Refuses requests above a limit | Overload from one caller |
-| Queue | Holds work until a worker is ready | Bursts, and a receiver that is down for a short time |
-| Fallback | Gives a simpler answer when the full one is not available | A dependency that is not essential |
-| Redundancy | Runs several copies in separate places | Loss of a machine or a data center |
+| Tool               | What it does                                                             | Protects against                                     |
+| ------------------ | ------------------------------------------------------------------------ | ---------------------------------------------------- |
+| Timeout            | Stops waiting after a fixed time                                         | A slow part that holds its callers                   |
+| Retry with backoff | Tries again, with a longer wait each time                                | Short faults                                         |
+| Circuit breaker    | After several failures, stops calling for a period and fails immediately | Repeated calls to a part that is down                |
+| Bulkhead           | Gives each dependency its own limited share of resources                 | One slow dependency that uses all capacity           |
+| Rate limit         | Refuses requests above a limit                                           | Overload from one caller                             |
+| Queue              | Holds work until a worker is ready                                       | Bursts, and a receiver that is down for a short time |
+| Fallback           | Gives a simpler answer when the full one is not available                | A dependency that is not essential                   |
+| Redundancy         | Runs several copies in separate places                                   | Loss of a machine or a data center                   |
 
 ## Rules for retries
 

@@ -2,11 +2,11 @@
 
 There are two ways to cut a system into parts.
 
-| | Technical partitioning | Domain partitioning |
-|---|---|---|
-| The parts are | Layers: screens, rules, data access | Business areas: orders, payments, menu |
-| A new business feature touches | Each layer | Usually one part |
-| Good for | Small systems, teams organized by skill | Systems that change often, teams organized by product |
+|                                | Technical partitioning                  | Domain partitioning                                   |
+| ------------------------------ | --------------------------------------- | ----------------------------------------------------- |
+| The parts are                  | Layers: screens, rules, data access     | Business areas: orders, payments, menu                |
+| A new business feature touches | Each layer                              | Usually one part                                      |
+| Good for                       | Small systems, teams organized by skill | Systems that change often, teams organized by product |
 
 Most modern designs divide by business area first. The reason is simple: the business asks for changes in business terms. "Add delivery partners" must land in one place.
 

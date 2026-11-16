@@ -1,6 +1,15 @@
 "use client";
 
-import { CircleCheck, KeyRound, LoaderCircle, type LucideIcon, Plug, PlugZap, Save, Terminal } from "lucide-react";
+import {
+  CircleCheck,
+  KeyRound,
+  LoaderCircle,
+  type LucideIcon,
+  Plug,
+  PlugZap,
+  Save,
+  Terminal,
+} from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -21,7 +30,8 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
     id: "opencode",
     title: "OpenCode",
     icon: Terminal,
-    description: "Uses the OpenCode login on this computer, in the same way as Claude Code. No API key in this app.",
+    description:
+      "Uses the OpenCode login on this computer, in the same way as Claude Code. No API key in this app.",
   },
   {
     id: "anthropic",
@@ -33,7 +43,8 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
     id: "openai-compatible",
     title: "OpenAI-compatible endpoint",
     icon: Plug,
-    description: "Uses a provider with an endpoint in the OpenAI format: Google Gemini, OpenRouter, OpenAI, or a local model.",
+    description:
+      "Uses a provider with an endpoint in the OpenAI format: Google Gemini, OpenRouter, OpenAI, or a local model.",
   },
 ];
 
@@ -44,7 +55,17 @@ const presets = [
   { name: "Ollama (local)", url: "http://localhost:11434/v1" },
 ];
 
-function Field({ id, label, hint, children }: { id: string; label: string; hint?: string; children: React.ReactNode }) {
+function Field({
+  id,
+  label,
+  hint,
+  children,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id}>{label}</Label>
@@ -133,7 +154,9 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
               {item.title}
               {mode === item.id && <CircleCheck className="size-4" />}
             </span>
-            <span className={mode === item.id ? "" : "text-muted-foreground"}>{item.description}</span>
+            <span className={mode === item.id ? "" : "text-muted-foreground"}>
+              {item.description}
+            </span>
           </button>
         ))}
       </div>
@@ -145,8 +168,17 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             <CardDescription>The app starts the claude command for each review.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Field id="claude-model" label="Model" hint="Leave empty to use your Claude Code default. Examples: opus, sonnet, fable.">
-              <Input id="claude-model" value={claudeModel} onChange={(event) => setClaudeModel(event.target.value)} placeholder="Default" />
+            <Field
+              id="claude-model"
+              label="Model"
+              hint="Leave empty to use your Claude Code default. Examples: opus, sonnet, fable."
+            >
+              <Input
+                id="claude-model"
+                value={claudeModel}
+                onChange={(event) => setClaudeModel(event.target.value)}
+                placeholder="Default"
+              />
             </Field>
           </CardContent>
         </Card>
@@ -157,8 +189,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           <CardHeader>
             <CardTitle>OpenCode</CardTitle>
             <CardDescription>
-              The app starts the opencode command for each review, with its read-only plan agent. The
-              diagram and your text go to the provider of the model you select.
+              The app starts the opencode command for each review, with its read-only plan agent.
+              The diagram and your text go to the provider of the model you select.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -167,7 +199,12 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
               label="Model"
               hint="In the form provider/model, for example anthropic/claude-sonnet-5-5. Leave empty to use your OpenCode default. Run opencode models in a terminal to see the list. Select a model that reads images."
             >
-              <Input id="opencode-model" value={openCodeModel} onChange={(event) => setOpenCodeModel(event.target.value)} placeholder="Default" />
+              <Input
+                id="opencode-model"
+                value={openCodeModel}
+                onChange={(event) => setOpenCodeModel(event.target.value)}
+                placeholder="Default"
+              />
             </Field>
           </CardContent>
         </Card>
@@ -177,18 +214,39 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
         <Card>
           <CardHeader>
             <CardTitle>Anthropic API</CardTitle>
-            <CardDescription>The diagram and your text go to the Anthropic API with your key.</CardDescription>
+            <CardDescription>
+              The diagram and your text go to the Anthropic API with your key.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Field
               id="anthropic-key"
               label="API key"
-              hint={saved.anthropic.keyHint ? `A key is saved (${saved.anthropic.keyHint}). Leave empty to keep it.` : "No key is saved."}
+              hint={
+                saved.anthropic.keyHint
+                  ? `A key is saved (${saved.anthropic.keyHint}). Leave empty to keep it.`
+                  : "No key is saved."
+              }
             >
-              <Input id="anthropic-key" type="password" autoComplete="off" value={anthropicKey} onChange={(event) => setAnthropicKey(event.target.value)} placeholder="sk-ant-…" />
+              <Input
+                id="anthropic-key"
+                type="password"
+                autoComplete="off"
+                value={anthropicKey}
+                onChange={(event) => setAnthropicKey(event.target.value)}
+                placeholder="sk-ant-…"
+              />
             </Field>
-            <Field id="anthropic-model" label="Model" hint="A model ID, for example claude-opus-5-5, claude-sonnet-5-5, or claude-haiku-5-5.">
-              <Input id="anthropic-model" value={anthropicModel} onChange={(event) => setAnthropicModel(event.target.value)} />
+            <Field
+              id="anthropic-model"
+              label="Model"
+              hint="A model ID, for example claude-opus-5-5, claude-sonnet-5-5, or claude-haiku-5-5."
+            >
+              <Input
+                id="anthropic-model"
+                value={anthropicModel}
+                onChange={(event) => setAnthropicModel(event.target.value)}
+              />
             </Field>
           </CardContent>
         </Card>
@@ -199,16 +257,31 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           <CardHeader>
             <CardTitle>OpenAI-compatible endpoint</CardTitle>
             <CardDescription>
-              The diagram and your text go to this provider. Select a model that reads images, or the
-              review uses only the text list of your diagram.
+              The diagram and your text go to this provider. Select a model that reads images, or
+              the review uses only the text list of your diagram.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Field id="base-url" label="Base URL" hint="The app adds /chat/completions to this URL.">
-              <Input id="base-url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://…/v1" />
+            <Field
+              id="base-url"
+              label="Base URL"
+              hint="The app adds /chat/completions to this URL."
+            >
+              <Input
+                id="base-url"
+                value={baseUrl}
+                onChange={(event) => setBaseUrl(event.target.value)}
+                placeholder="https://…/v1"
+              />
               <div className="flex flex-wrap gap-1.5">
                 {presets.map((preset) => (
-                  <Button key={preset.name} type="button" size="xs" variant="neutral" onClick={() => setBaseUrl(preset.url)}>
+                  <Button
+                    key={preset.name}
+                    type="button"
+                    size="xs"
+                    variant="neutral"
+                    onClick={() => setBaseUrl(preset.url)}
+                  >
                     {preset.name}
                   </Button>
                 ))}
@@ -217,12 +290,26 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             <Field
               id="openai-key"
               label="API key"
-              hint={saved.openaiCompatible.keyHint ? `A key is saved (${saved.openaiCompatible.keyHint}). Leave empty to keep it.` : "No key is saved. A local model does not need one."}
+              hint={
+                saved.openaiCompatible.keyHint
+                  ? `A key is saved (${saved.openaiCompatible.keyHint}). Leave empty to keep it.`
+                  : "No key is saved. A local model does not need one."
+              }
             >
-              <Input id="openai-key" type="password" autoComplete="off" value={openaiKey} onChange={(event) => setOpenaiKey(event.target.value)} />
+              <Input
+                id="openai-key"
+                type="password"
+                autoComplete="off"
+                value={openaiKey}
+                onChange={(event) => setOpenaiKey(event.target.value)}
+              />
             </Field>
             <Field id="openai-model" label="Model" hint="The model name as the provider writes it.">
-              <Input id="openai-model" value={openaiModel} onChange={(event) => setOpenaiModel(event.target.value)} />
+              <Input
+                id="openai-model"
+                value={openaiModel}
+                onChange={(event) => setOpenaiModel(event.target.value)}
+              />
             </Field>
           </CardContent>
         </Card>
@@ -246,8 +333,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
       </div>
 
       <p className="text-muted-foreground">
-        Keys are saved in data/settings.json on this computer, in plain text. Git ignores that
-        file. The page shows only the last four characters of a saved key.
+        Keys are saved in data/settings.json on this computer, in plain text. Git ignores that file.
+        The page shows only the last four characters of a saved key.
       </p>
     </div>
   );

@@ -8,12 +8,12 @@ A system can be fast and not scalable: quick for 100 users, down at 10,000. Deci
 
 ## Two ways to add capacity
 
-| | A larger machine (vertical) | More machines (horizontal) |
-|---|---|---|
-| Change to the application | None | It must be [stateless](/glossary#stateless) |
-| Limit | The largest machine you can buy | Very high |
-| A failure | Stops everything | Removes one copy |
-| Cost | Simple at first, then rises fast | More to operate |
+|                           | A larger machine (vertical)      | More machines (horizontal)                  |
+| ------------------------- | -------------------------------- | ------------------------------------------- |
+| Change to the application | None                             | It must be [stateless](/glossary#stateless) |
+| Limit                     | The largest machine you can buy  | Very high                                   |
+| A failure                 | Stops everything                 | Removes one copy                            |
+| Cost                      | Simple at first, then rises fast | More to operate                             |
 
 A larger machine is a good first step and is often enough. More machines need a [load balancer](/glossary#load-balancer) and an application that keeps no data in its own memory between requests.
 
@@ -30,16 +30,16 @@ Find the limit with numbers before you design around it. See [Capacity estimatio
 
 ## The standard moves
 
-| Problem | Move |
-|---|---|
-| The same data is read many times | [Cache](/learn/caching) |
-| Reads overload the database | Read from followers |
-| Large files slow the servers | Object storage and a CDN |
-| Work makes the user wait | Do it [in the background](/learn/sync-async) |
-| Load arrives in bursts | A queue in front of workers |
-| A read is a heavy calculation | Prepare the result at write time |
-| The data is too large for one server | Partition |
-| One part has much more load than the rest | Make it a separate deployment |
+| Problem                                   | Move                                         |
+| ----------------------------------------- | -------------------------------------------- |
+| The same data is read many times          | [Cache](/learn/caching)                      |
+| Reads overload the database               | Read from followers                          |
+| Large files slow the servers              | Object storage and a CDN                     |
+| Work makes the user wait                  | Do it [in the background](/learn/sync-async) |
+| Load arrives in bursts                    | A queue in front of workers                  |
+| A read is a heavy calculation             | Prepare the result at write time             |
+| The data is too large for one server      | Partition                                    |
+| One part has much more load than the rest | Make it a separate deployment                |
 
 Each move adds complexity. Apply them in the order that the numbers require, not all at once.
 
@@ -53,4 +53,4 @@ Do not design for a load the problem does not state. For the load it does state,
 
 ## Further reading
 
-- [Scalability](https://en.wikipedia.org/wiki/Scalability) and [Load balancing](https://en.wikipedia.org/wiki/Load_balancing_(computing)) on Wikipedia
+- [Scalability](https://en.wikipedia.org/wiki/Scalability) and [Load balancing](<https://en.wikipedia.org/wiki/Load_balancing_(computing)>) on Wikipedia

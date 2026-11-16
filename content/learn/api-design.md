@@ -4,12 +4,12 @@ An API is the part of a service that other teams depend on. The code behind it c
 
 ## The main forms
 
-| Form | How it works | Good for |
-|---|---|---|
-| REST over HTTP | Resources with addresses, and standard operations: read, create, change, delete | Public APIs, web and mobile clients |
-| RPC, for example gRPC | The caller calls a named function with typed data | Calls between internal services, where speed matters |
-| GraphQL | The client asks for exactly the fields it needs, in one request | Clients with many different screens |
-| Events | The service publishes facts. See [Messaging](/learn/messaging) | Reactions that do not need an answer |
+| Form                  | How it works                                                                    | Good for                                             |
+| --------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| REST over HTTP        | Resources with addresses, and standard operations: read, create, change, delete | Public APIs, web and mobile clients                  |
+| RPC, for example gRPC | The caller calls a named function with typed data                               | Calls between internal services, where speed matters |
+| GraphQL               | The client asks for exactly the fields it needs, in one request                 | Clients with many different screens                  |
+| Events                | The service publishes facts. See [Messaging](/learn/messaging)                  | Reactions that do not need an answer                 |
 
 The form matters less than the rules below.
 
@@ -24,13 +24,13 @@ The form matters less than the rules below.
 
 ## How to change an API
 
-| Change | Safe for old callers? |
-|---|---|
-| Add an optional field to a request | Yes |
-| Add a field to an answer | Yes, if callers ignore fields they do not know |
-| Add a new operation | Yes |
-| Remove or rename a field | No |
-| Change the meaning of a field | No, and it is the most dangerous, because nothing fails visibly |
+| Change                             | Safe for old callers?                                           |
+| ---------------------------------- | --------------------------------------------------------------- |
+| Add an optional field to a request | Yes                                                             |
+| Add a field to an answer           | Yes, if callers ignore fields they do not know                  |
+| Add a new operation                | Yes                                                             |
+| Remove or rename a field           | No                                                              |
+| Change the meaning of a field      | No, and it is the most dangerous, because nothing fails visibly |
 
 Make only safe changes when you can. For a change that is not safe, offer a new version next to the old one, tell the callers, measure who still uses the old one, and remove it only when nobody does. This takes months. Plan for it.
 

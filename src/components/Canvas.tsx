@@ -1,7 +1,10 @@
 "use client";
 
 import { Excalidraw } from "@excalidraw/excalidraw";
-import type { ExcalidrawImperativeAPI, ExcalidrawInitialDataState } from "@excalidraw/excalidraw/types";
+import type {
+  ExcalidrawImperativeAPI,
+  ExcalidrawInitialDataState,
+} from "@excalidraw/excalidraw/types";
 import { useTheme } from "next-themes";
 import { useCallback, useRef } from "react";
 import BlockPalette from "@/components/BlockPalette";
@@ -34,7 +37,11 @@ export default function Canvas({ onReady, initialData, onChange }: Props) {
           theme={resolvedTheme === "dark" ? "dark" : "light"}
           initialData={
             initialData
-              ? ({ elements: initialData.elements, files: initialData.files, scrollToContent: true } as ExcalidrawInitialDataState)
+              ? ({
+                  elements: initialData.elements,
+                  files: initialData.files,
+                  scrollToContent: true,
+                } as ExcalidrawInitialDataState)
               : undefined
           }
           onChange={onChange}

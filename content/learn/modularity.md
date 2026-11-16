@@ -12,12 +12,12 @@ A test: describe the part in one sentence with no "and". "Calculates the price o
 
 Coupling is how much one part depends on another. If a change in part A forces a change in part B, they are coupled.
 
-| Type of coupling | Example | Strength |
-|---|---|---|
-| Shared database tables | Two services read and write the same table | Very strong |
-| Shared code | Two services use one library of business rules | Strong |
-| Direct call that waits | A calls B and needs the answer to continue | Medium |
-| Message that does not wait | A publishes an event, B reacts later | Weak |
+| Type of coupling           | Example                                        | Strength    |
+| -------------------------- | ---------------------------------------------- | ----------- |
+| Shared database tables     | Two services read and write the same table     | Very strong |
+| Shared code                | Two services use one library of business rules | Strong      |
+| Direct call that waits     | A calls B and needs the answer to continue     | Medium      |
+| Message that does not wait | A publishes an event, B reacts later           | Weak        |
 
 Some coupling is necessary. A system with no coupling does nothing. The goal is to make coupling visible, deliberate, and as weak as the job permits.
 
@@ -36,5 +36,5 @@ The worst result is a system with many deployments that are strongly coupled: sh
 
 ## Further reading
 
-- [Cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and [Coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) on Wikipedia
+- [Cohesion](<https://en.wikipedia.org/wiki/Cohesion_(computer_science)>) and [Coupling](<https://en.wikipedia.org/wiki/Coupling_(computer_programming)>) on Wikipedia
 - [Connascence](https://en.wikipedia.org/wiki/Connascence), a more exact vocabulary for types of coupling

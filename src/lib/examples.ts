@@ -64,11 +64,13 @@ export const workedExamples: WorkedExample[] = [
       },
       {
         quote: "The company has a team of four developers.",
-        meaning: "Four people cannot operate many services. This sentence removes the expensive styles.",
+        meaning:
+          "Four people cannot operate many services. This sentence removes the expensive styles.",
       },
       {
         quote: "The owner wants to add delivery partners next year.",
-        meaning: "The design needs a clear place to connect partners later. It does not need them now.",
+        meaning:
+          "The design needs a clear place to connect partners later. It does not need them now.",
       },
     ],
     characteristics: [
@@ -112,9 +114,7 @@ export const workedExamples: WorkedExample[] = [
         { id: "messages", label: "Message\nprovider", col: 1, row: 3.9, external: true },
         { id: "db", label: "Database\n(tables owned per module)", col: 2, row: 3.9 },
       ],
-      groups: [
-        { id: "app", label: "One deployment", col: 0, row: 1.6, cols: 3, rows: 2 },
-      ],
+      groups: [{ id: "app", label: "One deployment", col: 0, row: 1.6, cols: 3, rows: 2 }],
       edges: [
         { from: "customer", to: "orders", label: "place order" },
         { from: "kitchen", to: "orders", label: "sync orders", both: true },
@@ -168,11 +168,13 @@ export const workedExamples: WorkedExample[] = [
       },
       {
         quote: "Bots try to buy tickets in bulk.",
-        meaning: "Part of the peak is hostile. The design needs a control point before the seat logic.",
+        meaning:
+          "Part of the peak is hostile. The design needs a control point before the seat logic.",
       },
       {
         quote: "Venue scanners must work when the venue network fails.",
-        meaning: "Ticket checks cannot call the central system. The scanner needs the data locally.",
+        meaning:
+          "Ticket checks cannot call the central system. The scanner needs the data locally.",
       },
     ],
     characteristics: [
@@ -383,7 +385,8 @@ export const workedExamples: WorkedExample[] = [
           "Access tokens expire. Provider subscriptions expire after some days and must be renewed. An admin can revoke access. Each of these stops a trigger with no error on the screen of anyone.",
       },
       {
-        quote: "Later, the same should work for Slack messages, Google Sheet rows and Jira tickets.",
+        quote:
+          "Later, the same should work for Slack messages, Google Sheet rows and Jira tickets.",
         meaning:
           "The core must know nothing about email. Each source needs to be a plug-in behind one contract.",
       },

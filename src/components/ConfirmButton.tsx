@@ -4,7 +4,15 @@ import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Props = {
   label: React.ReactNode;
@@ -21,7 +29,17 @@ type Props = {
 };
 
 // A button that asks for confirmation, then sends a DELETE request.
-export default function ConfirmButton({ label, title, description, confirmLabel, endpoint, redirectTo, size = "sm", variant = "neutral", ariaLabel }: Props) {
+export default function ConfirmButton({
+  label,
+  title,
+  description,
+  confirmLabel,
+  endpoint,
+  redirectTo,
+  size = "sm",
+  variant = "neutral",
+  ariaLabel,
+}: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -44,7 +62,9 @@ export default function ConfirmButton({ label, title, description, confirmLabel,
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant={variant} size={size} aria-label={ariaLabel} />}>{label}</DialogTrigger>
+      <DialogTrigger render={<Button variant={variant} size={size} aria-label={ariaLabel} />}>
+        {label}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

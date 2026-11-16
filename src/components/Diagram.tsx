@@ -35,7 +35,11 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
   const right = rect.cx + rect.hw;
   const top = rect.cy - rect.hh;
   const bottom = rect.cy + rect.hh;
-  const paint = { fill: shapeStyle[shape].color, className: "stroke-foreground/70", strokeWidth: 2 };
+  const paint = {
+    fill: shapeStyle[shape].color,
+    className: "stroke-foreground/70",
+    strokeWidth: 2,
+  };
 
   if (shape === "store") {
     // A cylinder: the body with a round bottom, and an ellipse on top.
@@ -61,14 +65,18 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
       </>
     );
   }
-  if (shape === "actor") return <ellipse cx={rect.cx} cy={rect.cy} rx={rect.hw} ry={rect.hh} {...paint} />;
+  if (shape === "actor")
+    return <ellipse cx={rect.cx} cy={rect.cy} rx={rect.hw} ry={rect.hh} {...paint} />;
   if (shape === "person") {
     // A figure of a person. The name is below it.
     const head = top + 7;
     return (
       <g className="stroke-foreground/70" strokeWidth={2} strokeLinecap="round">
         <circle cx={rect.cx} cy={head} r={6} fill={shapeStyle.person.color} />
-        <path d={`M ${rect.cx} ${head + 6} V ${head + 20} M ${rect.cx - 10} ${head + 12} H ${rect.cx + 10} M ${rect.cx} ${head + 20} l -8 10 M ${rect.cx} ${head + 20} l 8 10`} fill="none" />
+        <path
+          d={`M ${rect.cx} ${head + 6} V ${head + 20} M ${rect.cx - 10} ${head + 12} H ${rect.cx + 10} M ${rect.cx} ${head + 20} l -8 10 M ${rect.cx} ${head + 20} l 8 10`}
+          fill="none"
+        />
       </g>
     );
   }
@@ -85,7 +93,14 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
       />
       {shape === "device" && (
         // A line in the box, like the lower edge of a screen.
-        <line x1={left} y1={bottom - 7} x2={right} y2={bottom - 7} className="stroke-foreground/70" strokeWidth={2} />
+        <line
+          x1={left}
+          y1={bottom - 7}
+          x2={right}
+          y2={bottom - 7}
+          className="stroke-foreground/70"
+          strokeWidth={2}
+        />
       )}
     </>
   );
@@ -124,105 +139,124 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
 
   return (
     <figure className="mx-auto w-full space-y-2" style={{ maxWidth: width }}>
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="block w-full rounded-base border-2 bg-card"
-      role="img"
-      aria-label="Architecture diagram"
-    >
-      <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" className="fill-foreground/70" />
-        </marker>
-      </defs>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="block w-full rounded-base border-2 bg-card"
+        role="img"
+        aria-label="Architecture diagram"
+      >
+        <defs>
+          <marker
+            id="arrow"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path d="M0,0 L10,5 L0,10 z" className="fill-foreground/70" />
+          </marker>
+        </defs>
 
-      {groups.map((group) => (
-        <g key={group.id}>
-          <rect
-            x={group.left}
-            y={group.top}
-            width={group.width}
-            height={group.height}
-            rx={10}
-            className="fill-primary/5 stroke-primary"
-            strokeWidth={2}
-          />
-          <text x={group.left + 12} y={group.top + 18} fontSize={12} fontWeight={600} className="fill-primary">
-            {group.label}
-          </text>
-        </g>
-      ))}
-
-      {spec.edges.map((edge, index) => {
-        const from = rects.get(edge.from);
-        const to = rects.get(edge.to);
-        if (!from || !to) return null;
-        const dx = to.cx - from.cx;
-        const dy = to.cy - from.cy;
-        const start = borderPoint(from, dx, dy);
-        const end = borderPoint(to, -dx, -dy);
-        return (
-          <g key={index}>
-            <line
-              x1={start.x}
-              y1={start.y}
-              x2={end.x}
-              y2={end.y}
-              className="stroke-foreground/70"
+        {groups.map((group) => (
+          <g key={group.id}>
+            <rect
+              x={group.left}
+              y={group.top}
+              width={group.width}
+              height={group.height}
+              rx={10}
+              className="fill-primary/5 stroke-primary"
               strokeWidth={2}
-              strokeDasharray={edge.async ? "6 4" : undefined}
-              markerEnd="url(#arrow)"
-              markerStart={edge.both ? "url(#arrow)" : undefined}
             />
-            {edge.label && (
-              <text
-                x={(start.x + end.x) / 2}
-                y={(start.y + end.y) / 2}
-                fontSize={11}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="fill-foreground/80 stroke-card"
-                strokeWidth={5}
-                paintOrder="stroke"
-              >
-                {edge.label}
-              </text>
-            )}
-          </g>
-        );
-      })}
-
-      {spec.nodes.map((node) => {
-        const rect = rects.get(node.id)!;
-        const shape = shapeOf(node);
-        const lines = node.label.split("\n");
-        // The text of a cylinder is below its top. The text of a pipe is left of its round end.
-        const dx = shape === "pipe" ? -END / 2 : 0;
-        const dy = shape === "store" ? END / 2 : shape === "device" ? -3 : 0;
-        // The name of a person starts below the figure.
-        const lineY = (index: number) =>
-          shape === "person"
-            ? rect.cy - rect.hh + 52 + index * 15
-            : rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
-        return (
-          <g key={node.id}>
-            <NodeShape shape={shape} rect={rect} />
-            <text fontSize={12} textAnchor="middle" fill={shape === "person" ? undefined : "#000"} className={shape === "person" ? "fill-foreground" : undefined}>
-              {lines.map((line, index) => (
-                <tspan
-                  key={index}
-                  x={rect.cx + dx}
-                  y={lineY(index)}
-                  fontWeight={index === 0 ? 600 : 400}
-                >
-                  {line}
-                </tspan>
-              ))}
+            <text
+              x={group.left + 12}
+              y={group.top + 18}
+              fontSize={12}
+              fontWeight={600}
+              className="fill-primary"
+            >
+              {group.label}
             </text>
           </g>
-        );
-      })}
-    </svg>
+        ))}
+
+        {spec.edges.map((edge, index) => {
+          const from = rects.get(edge.from);
+          const to = rects.get(edge.to);
+          if (!from || !to) return null;
+          const dx = to.cx - from.cx;
+          const dy = to.cy - from.cy;
+          const start = borderPoint(from, dx, dy);
+          const end = borderPoint(to, -dx, -dy);
+          return (
+            <g key={index}>
+              <line
+                x1={start.x}
+                y1={start.y}
+                x2={end.x}
+                y2={end.y}
+                className="stroke-foreground/70"
+                strokeWidth={2}
+                strokeDasharray={edge.async ? "6 4" : undefined}
+                markerEnd="url(#arrow)"
+                markerStart={edge.both ? "url(#arrow)" : undefined}
+              />
+              {edge.label && (
+                <text
+                  x={(start.x + end.x) / 2}
+                  y={(start.y + end.y) / 2}
+                  fontSize={11}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="fill-foreground/80 stroke-card"
+                  strokeWidth={5}
+                  paintOrder="stroke"
+                >
+                  {edge.label}
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        {spec.nodes.map((node) => {
+          const rect = rects.get(node.id)!;
+          const shape = shapeOf(node);
+          const lines = node.label.split("\n");
+          // The text of a cylinder is below its top. The text of a pipe is left of its round end.
+          const dx = shape === "pipe" ? -END / 2 : 0;
+          const dy = shape === "store" ? END / 2 : shape === "device" ? -3 : 0;
+          // The name of a person starts below the figure.
+          const lineY = (index: number) =>
+            shape === "person"
+              ? rect.cy - rect.hh + 52 + index * 15
+              : rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
+          return (
+            <g key={node.id}>
+              <NodeShape shape={shape} rect={rect} />
+              <text
+                fontSize={12}
+                textAnchor="middle"
+                fill={shape === "person" ? undefined : "#000"}
+                className={shape === "person" ? "fill-foreground" : undefined}
+              >
+                {lines.map((line, index) => (
+                  <tspan
+                    key={index}
+                    x={rect.cx + dx}
+                    y={lineY(index)}
+                    fontWeight={index === 0 ? 600 : 400}
+                  >
+                    {line}
+                  </tspan>
+                ))}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
       <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         {used.map((shape) => (
           <span key={shape} className="flex items-center gap-1.5">

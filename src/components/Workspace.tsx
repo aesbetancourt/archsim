@@ -1,7 +1,16 @@
 "use client";
 
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { BookOpen, ChevronDown, ExternalLink, LoaderCircle, NotebookPen, PenTool, RotateCcw, Send } from "lucide-react";
+import {
+  BookOpen,
+  ChevronDown,
+  ExternalLink,
+  LoaderCircle,
+  NotebookPen,
+  PenTool,
+  RotateCcw,
+  Send,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,10 +22,24 @@ import ProblemText from "@/components/ProblemText";
 import SidePanel from "@/components/SidePanel";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { clearDraft, type Draft, loadDraft, saveDraft } from "@/lib/draft";
@@ -49,7 +72,11 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 // Open lessons in a new tab. The canvas keeps its content.
 function LessonLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <a href={href} target="_blank" className="inline-flex items-center gap-1 text-primary hover:underline">
+    <a
+      href={href}
+      target="_blank"
+      className="inline-flex items-center gap-1 text-primary hover:underline"
+    >
       {children} <ExternalLink className="size-3" />
     </a>
   );
@@ -100,13 +127,19 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   // This page keeps their plain text, for the help chat and for the saved attempt.
   useEffect(() => {
     const saved = loadDraft(kata.id);
-    /* eslint-disable react-hooks/set-state-in-effect */
+    /* oxlint-disable react/set-state-in-effect */
     const savedNotes = notesText(loadNotesHtml(kata.id));
     latest.current = { ...latest.current, notes: savedNotes };
     setNotes(savedNotes);
     if (saved) {
       // Set the newest answers first, so this read does not start a save.
-      latest.current = { scope: saved.scope, selected: saved.selected, style: saved.style, rationale: saved.rationale, notes: latest.current.notes };
+      latest.current = {
+        scope: saved.scope,
+        selected: saved.selected,
+        style: saved.style,
+        rationale: saved.rationale,
+        notes: latest.current.notes,
+      };
       savedScene.current = saved.scene;
       setScope(saved.scope);
       setSelected(saved.selected);
@@ -114,7 +147,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
       setRationale(saved.rationale);
     }
     setDraft(saved);
-    /* eslint-enable react-hooks/set-state-in-effect */
+    /* oxlint-enable react/set-state-in-effect */
   }, [kata.id]);
 
   const save = useCallback(() => {
@@ -242,7 +275,11 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
       const blob = await exportToBlob({
         elements,
         // Always export in the light theme. The reviewer reads this image.
-        appState: { exportBackground: true, viewBackgroundColor: "#ffffff", exportWithDarkMode: false },
+        appState: {
+          exportBackground: true,
+          viewBackgroundColor: "#ffffff",
+          exportWithDarkMode: false,
+        },
         files: api.current!.getFiles(),
         mimeType: "image/png",
       });
@@ -280,11 +317,17 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             <div className="flex items-center justify-between gap-2">
               <h1 className="text-xl font-semibold tracking-tight">{kata.title}</h1>
               <Badge variant={kata.interview || kata.source ? "neutral" : "neutral"}>
-                {kata.source ? "community kata" : kata.interview ? "interview question" : kata.difficulty}
+                {kata.source
+                  ? "community kata"
+                  : kata.interview
+                    ? "interview question"
+                    : kata.difficulty}
               </Badge>
             </div>
             <ProblemText kata={kata} />
-            {kata.note && <p className="border-l-2 border-primary pl-3 text-muted-foreground">{kata.note}</p>}
+            {kata.note && (
+              <p className="border-l-2 border-primary pl-3 text-muted-foreground">{kata.note}</p>
+            )}
             {kata.source && (
               <p className="text-muted-foreground">
                 From <LessonLink href={kata.source.url}>{kata.source.name}</LessonLink>
@@ -294,7 +337,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             <p className="flex flex-wrap gap-x-4 gap-y-1 rounded-md bg-muted p-3">
               <LessonLink href="/learn/method">How to do a kata</LessonLink>
               {hasExample && (
-                <LessonLink href={`/learn/examples/${kata.id}`}>A finished answer to this kata</LessonLink>
+                <LessonLink href={`/learn/examples/${kata.id}`}>
+                  A finished answer to this kata
+                </LessonLink>
               )}
             </p>
           </section>
@@ -314,10 +359,15 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                   : "The problem gives no list. Write the functions the system must have, your assumptions, and what you leave out."
               }
             />
-            <Textarea id="scope" rows={4} value={scope} onChange={(event) => setScope(event.target.value)} />
+            <Textarea
+              id="scope"
+              rows={4}
+              value={scope}
+              onChange={(event) => setScope(event.target.value)}
+            />
             <p className="text-muted-foreground">
-              These are the functional requirements: what the system does. Step 2 is about how well it
-              does it.
+              These are the functional requirements: what the system does. Step 2 is about how well
+              it does it.
             </p>
           </section>
 
@@ -327,7 +377,11 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               title="Driving characteristics"
               hint={`Select the few that drive the design: ${USUAL_CHARACTERISTICS} is usual, ${MAX_CHARACTERISTICS} is the limit. Then tie each one to a sentence in the kata.`}
             />
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Driving characteristics">
+            <div
+              className="flex flex-wrap gap-1.5"
+              role="group"
+              aria-label="Driving characteristics"
+            >
               {glossary.map((item) => {
                 const active = selected.some((entry) => entry.name === item.name);
                 return (
@@ -348,7 +402,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             </div>
             <p className="text-muted-foreground">
               {selected.length} of {MAX_CHARACTERISTICS} selected
-              {selected.length > USUAL_CHARACTERISTICS && ". Each one you add makes the design harder. Make sure each has a reason."}
+              {selected.length > USUAL_CHARACTERISTICS &&
+                ". Each one you add makes the design harder. Make sure each has a reason."}
             </p>
             {selected.map((item) => (
               <div key={item.name} className="space-y-1.5 rounded-base border-2 bg-background p-3">
@@ -484,8 +539,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                 <DialogHeader>
                   <DialogTitle>Start this kata again?</DialogTitle>
                   <DialogDescription>
-                    This removes your answers, your notes, and your diagram for this kata. You cannot get them back.
-                    Your reviewed attempts stay in the history.
+                    This removes your answers, your notes, and your diagram for this kata. You
+                    cannot get them back. Your reviewed attempts stay in the history.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -500,7 +555,11 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         </div>
       </SidePanel>
       <div className="flex min-w-0 flex-1 flex-col bg-card">
-        <div role="tablist" aria-label="Work area" className="flex items-center gap-2 border-b-2 px-3 py-2">
+        <div
+          role="tablist"
+          aria-label="Work area"
+          className="flex items-center gap-2 border-b-2 px-3 py-2"
+        >
           <Button
             role="tab"
             aria-selected={view === "notes"}
@@ -520,7 +579,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             <PenTool /> Diagram
           </Button>
           <span className="ml-auto text-xs text-muted-foreground">
-            {view === "notes" ? "Your notes are private. The review does not read them." : "The review reads this diagram."}
+            {view === "notes"
+              ? "Your notes are private. The review does not read them."
+              : "The review reads this diagram."}
           </span>
         </div>
         <div className="relative min-h-0 flex-1">
@@ -548,7 +609,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           kataId: kata.id,
           scope,
           notes,
-          characteristics: selected.map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`).join("\n"),
+          characteristics: selected
+            .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
+            .join("\n"),
           style,
           rationale,
           elements: slimElements(api.current?.getSceneElements() ?? []),

@@ -10,7 +10,15 @@ import { termsIn } from "@/lib/glossary";
 import { findExample, findKata } from "@/lib/library";
 import { getStyleLesson } from "@/lib/learn";
 
-function Step({ number, title, children }: { number: number; title: string; children: React.ReactNode }) {
+function Step({
+  number,
+  title,
+  children,
+}: {
+  number: number;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="space-y-4">
       <h2 className="flex items-center gap-3 text-xl font-semibold tracking-tight">
@@ -56,7 +64,11 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <Badge>Worked example</Badge>
           <Badge variant="neutral">{kata.difficulty}</Badge>
           {kata.interview && <Badge variant="neutral">interview question</Badge>}
-          {kata.custom && <Badge variant="neutral">your problem · answer written by {example.author ?? "an AI model"}</Badge>}
+          {kata.custom && (
+            <Badge variant="neutral">
+              your problem · answer written by {example.author ?? "an AI model"}
+            </Badge>
+          )}
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">{kata.title}</h1>
         <Alert>
@@ -110,7 +122,13 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <h2 className="font-medium">Terms used in this answer</h2>
           <div className="flex flex-wrap gap-1.5">
             {terms.map((entry) => (
-              <Badge key={entry.id} variant="neutral" render={<Link href={`/glossary#${entry.id}`} title={entry.definition} />}>{entry.term}</Badge>
+              <Badge
+                key={entry.id}
+                variant="neutral"
+                render={<Link href={`/glossary#${entry.id}`} title={entry.definition} />}
+              >
+                {entry.term}
+              </Badge>
             ))}
           </div>
         </section>
@@ -126,7 +144,10 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           ))}
         </ul>
         {example.assumptions && (
-          <BulletCard title="Assumptions, because the prompt gives none" items={example.assumptions} />
+          <BulletCard
+            title="Assumptions, because the prompt gives none"
+            items={example.assumptions}
+          />
         )}
       </Step>
 
@@ -151,7 +172,9 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
           <CardContent className="space-y-3">
             <p>{example.style.why}</p>
             {lesson && (
-              <LinkButton variant="neutral" size="sm" href={`/learn/${lesson.id}`}>Read the {lesson.name} lesson</LinkButton>
+              <LinkButton variant="neutral" size="sm" href={`/learn/${lesson.id}`}>
+                Read the {lesson.name} lesson
+              </LinkButton>
             )}
           </CardContent>
         </Card>
@@ -209,8 +232,8 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
       </Card>
 
       <LinkButton href={`/kata/${kata.id}`}>
-          Do this kata with your own design <ArrowRight />
-        </LinkButton>
+        Do this kata with your own design <ArrowRight />
+      </LinkButton>
     </main>
   );
 }

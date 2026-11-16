@@ -10,16 +10,16 @@ A data store is selected by how the data is read and written, not by its popular
 
 ## The main types
 
-| Type | Finds data by | Strong at | Weak at | Example use |
-|---|---|---|---|---|
-| Relational | Any column, joins between tables | Transactions, flexible queries | Very large size on many servers | Orders, payments, accounts |
-| Key-value | One key | Speed, simple split across servers | Any query that is not by key | Sessions, short links, caches |
-| Document | One key, plus fields in the document | Records with a flexible shape | Joins between documents | Product catalogs, profiles |
-| Wide-column | A key and a range in that key | Very large write volume | Flexible queries | Message history, sensor data |
-| Search index | Words and filters | Text search, ranking | It is not a safe main store | Product search |
-| Graph | Relations between records | "Friends of friends" queries | Simple bulk operations | Social graphs, fraud detection |
-| Object storage | A file name | Large files, low cost | Changes inside a file | Images, video, backups |
-| Time series | Time ranges | Measurements over time | General data | Metrics, monitoring |
+| Type           | Finds data by                        | Strong at                          | Weak at                         | Example use                    |
+| -------------- | ------------------------------------ | ---------------------------------- | ------------------------------- | ------------------------------ |
+| Relational     | Any column, joins between tables     | Transactions, flexible queries     | Very large size on many servers | Orders, payments, accounts     |
+| Key-value      | One key                              | Speed, simple split across servers | Any query that is not by key    | Sessions, short links, caches  |
+| Document       | One key, plus fields in the document | Records with a flexible shape      | Joins between documents         | Product catalogs, profiles     |
+| Wide-column    | A key and a range in that key        | Very large write volume            | Flexible queries                | Message history, sensor data   |
+| Search index   | Words and filters                    | Text search, ranking               | It is not a safe main store     | Product search                 |
+| Graph          | Relations between records            | "Friends of friends" queries       | Simple bulk operations          | Social graphs, fraud detection |
+| Object storage | A file name                          | Large files, low cost              | Changes inside a file           | Images, video, backups         |
+| Time series    | Time ranges                          | Measurements over time             | General data                    | Metrics, monitoring            |
 
 ## Rules that hold most of the time
 
