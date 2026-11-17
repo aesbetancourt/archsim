@@ -136,19 +136,24 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-3" role="radiogroup" aria-label="Connection">
+      <fieldset className="grid gap-3">
+        <legend className="sr-only">Connection</legend>
         {modes.map((item) => (
-          <button
+          <label
             key={item.id}
-            type="button"
-            role="radio"
-            aria-checked={mode === item.id}
-            onClick={() => setMode(item.id)}
             className={cn(
-              "rounded-base border-2 border-border bg-secondary-background p-4 text-left shadow-shadow transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+              "block cursor-pointer rounded-base border-2 border-border bg-secondary-background p-4 text-left shadow-shadow transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
               mode === item.id && "bg-main text-main-foreground",
             )}
           >
+            <input
+              type="radio"
+              name="connection"
+              value={item.id}
+              checked={mode === item.id}
+              onChange={() => setMode(item.id)}
+              className="sr-only"
+            />
             <span className="flex items-center gap-2 font-medium">
               <item.icon className="size-4" aria-hidden />
               {item.title}
@@ -157,9 +162,9 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             <span className={mode === item.id ? "" : "text-muted-foreground"}>
               {item.description}
             </span>
-          </button>
+          </label>
         ))}
-      </div>
+      </fieldset>
 
       {mode === "claude-code" && (
         <Card>

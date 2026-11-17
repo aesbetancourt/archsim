@@ -192,6 +192,8 @@ export default function NotesEditor({
           <Redo2 />
         </Tool>
       </div>
+      {/* A click in the margin also starts the editor. The keyboard reaches the editor with Tab. */}
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div
         className="relative min-h-0 flex-1 overflow-y-auto"
         onClick={() => editor.commands.focus()}

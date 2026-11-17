@@ -377,11 +377,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               title="Driving characteristics"
               hint={`Select the few that drive the design: ${USUAL_CHARACTERISTICS} is usual, ${MAX_CHARACTERISTICS} is the limit. Then tie each one to a sentence in the kata.`}
             />
-            <div
-              className="flex flex-wrap gap-1.5"
-              role="group"
-              aria-label="Driving characteristics"
-            >
+            <fieldset className="flex flex-wrap gap-1.5" aria-label="Driving characteristics">
               {glossary.map((item) => {
                 const active = selected.some((entry) => entry.name === item.name);
                 return (
@@ -399,7 +395,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                   </Button>
                 );
               })}
-            </div>
+            </fieldset>
             <p className="text-muted-foreground">
               {selected.length} of {MAX_CHARACTERISTICS} selected
               {selected.length > USUAL_CHARACTERISTICS &&
@@ -526,11 +522,11 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-            <span role="status">
+            <output>
               {saveState === "saved" && "Your work is saved in this browser."}
               {saveState === "pending" && "Saving your work."}
               {saveState === "error" && "The browser refused to save your work."}
-            </span>
+            </output>
             <Dialog open={confirmClear} onOpenChange={setConfirmClear}>
               <DialogTrigger render={<Button variant="ghost" size="xs" disabled={busy} />}>
                 <RotateCcw /> Start again

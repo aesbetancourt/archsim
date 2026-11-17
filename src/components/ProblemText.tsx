@@ -46,13 +46,16 @@ function Block({
   ranges.forEach(([start, end], index) => {
     if (start > position) parts.push(text.slice(position, start));
     parts.push(
-      <mark
-        key={index}
-        title="Click to remove this highlight"
-        className="cursor-pointer rounded-sm bg-[#ffe45c] px-0.5 text-black"
-        onClick={() => onRemove(index)}
-      >
-        {text.slice(start, end)}
+      <mark key={index} className="rounded-sm bg-[#ffe45c] px-0.5 text-black">
+        <button
+          type="button"
+          title="Click to remove this highlight"
+          aria-label={`Remove the highlight: ${text.slice(start, end)}`}
+          className="cursor-pointer text-left select-text focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-black"
+          onClick={() => onRemove(index)}
+        >
+          {text.slice(start, end)}
+        </button>
       </mark>,
     );
     position = end;
@@ -146,6 +149,8 @@ export default function ProblemText({ kata }: { kata: Kata }) {
   const total = Object.values(marks).reduce((sum, ranges) => sum + ranges.length, 0);
 
   return (
+    // These handlers only read the text selection. They do not start an action.
+    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions
     <div ref={root} className="space-y-3" onMouseUp={onSelect} onKeyUp={onSelect}>
       <p>{block("context", kata.context)}</p>
       {kata.details?.map((paragraph, index) => (

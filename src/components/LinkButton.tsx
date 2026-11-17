@@ -11,6 +11,8 @@ export default function LinkButton({ href, ...props }: Props) {
   return (
     <Button
       nativeButton={false}
+      // Button puts its children, the visible label, into this link.
+      // oxlint-disable-next-line jsx-a11y/anchor-has-content, jsx-a11y/control-has-associated-label
       render={external ? <a href={href} target="_blank" rel="noreferrer" /> : <Link href={href} />}
       {...props}
     />

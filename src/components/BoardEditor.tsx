@@ -140,9 +140,7 @@ export default function BoardEditor({ board }: { board: Board }) {
               <NotebookPen /> Notes
             </Button>
           </div>
-          <span className="ml-auto text-xs text-muted-foreground" role="status">
-            {statusText[status]}
-          </span>
+          <output className="ml-auto text-xs text-muted-foreground">{statusText[status]}</output>
         </div>
         <div className="relative min-h-0 flex-1">
           {/* The canvas stays loaded under the notepad, so the drawing is kept. */}

@@ -1,6 +1,5 @@
 import { ArrowRight, ExternalLink, Library, RefreshCw, Sparkles } from "lucide-react";
 import LinkButton from "@/components/LinkButton";
-import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { COMMUNITY_SOURCE, loadCommunity } from "@/lib/community";

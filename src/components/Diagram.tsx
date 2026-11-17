@@ -142,6 +142,8 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="block w-full rounded-base border-2 bg-card"
+        // An inline SVG needs role="img" to be one image for a screen reader.
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
         role="img"
         aria-label="Architecture diagram"
       >
