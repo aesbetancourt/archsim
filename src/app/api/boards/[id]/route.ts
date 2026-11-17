@@ -1,11 +1,13 @@
-import { deleteBoard, updateBoard, type Board } from "@/lib/boards";
+import { deleteBoard, updateBoard } from "@/lib/boards";
+import { boardUpdate, readBody } from "@/lib/requests";
 
 type Context = { params: Promise<{ id: string }> };
 
 // Save the title, the notes, and the drawing of a board.
 export async function PUT(request: Request, { params }: Context) {
   const { id } = await params;
-  const change = (await request.json()) as Pick<Board, "title" | "notes" | "scene">;
+  const change = await readBody(request, boardUpdate);
+  if (change instanceof Response) return change;
   try {
     const board = await updateBoard(id, change);
     if (!board) return Response.json({ error: "Unknown board." }, { status: 404 });

@@ -1,22 +1,16 @@
-import {
-  helperPrompt,
-  helperSchema,
-  helperSystemPrompt,
-  type ChatMessage,
-  type HelperContext,
-} from "@/lib/helper";
+import { helperPrompt, helperSchema, helperSystemPrompt } from "@/lib/helper";
 import { findKata } from "@/lib/library";
 import { runModel } from "@/lib/model";
+import { chatRequest, readBody } from "@/lib/requests";
 
 // The chat sends only the last messages. Older ones are dropped.
 const MAX_MESSAGES = 12;
 
 export async function POST(request: Request) {
-  const { context, messages } = (await request.json()) as {
-    context: HelperContext;
-    messages: ChatMessage[];
-  };
-  if (!messages?.length || messages[messages.length - 1].role !== "user") {
+  const body = await readBody(request, chatRequest);
+  if (body instanceof Response) return body;
+  const { context, messages } = body;
+  if (messages[messages.length - 1].role !== "user") {
     return Response.json({ error: "There is no question to answer." }, { status: 400 });
   }
   const kata = context.kind === "kata" ? await findKata(context.kataId) : undefined;

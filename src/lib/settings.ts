@@ -1,7 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export type Mode = "claude-code" | "opencode" | "anthropic" | "openai-compatible";
+export const modes = ["claude-code", "opencode", "anthropic", "openai-compatible"] as const;
+export type Mode = (typeof modes)[number];
 
 // The settings file is in the data folder. Git ignores that folder.
 // API keys are in plain text in this file. They must never go to the browser.

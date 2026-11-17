@@ -1,24 +1,13 @@
-import { readSettings, toPublic, writeSettings, type Mode, type Settings } from "@/lib/settings";
-
-const modes: Mode[] = ["claude-code", "opencode", "anthropic", "openai-compatible"];
-
-type Update = {
-  mode: Mode;
-  claudeCode: { model: string };
-  openCode?: { model: string };
-  anthropic: { apiKey: string; model: string };
-  openaiCompatible: { baseUrl: string; apiKey: string; model: string };
-};
+import { readBody, settingsUpdate } from "@/lib/requests";
+import { readSettings, toPublic, writeSettings, type Settings } from "@/lib/settings";
 
 export async function GET() {
   return Response.json(toPublic(await readSettings()));
 }
 
 export async function PUT(request: Request) {
-  const update = (await request.json()) as Update;
-  if (!modes.includes(update.mode)) {
-    return Response.json({ error: "Unknown mode." }, { status: 400 });
-  }
+  const update = await readBody(request, settingsUpdate);
+  if (update instanceof Response) return update;
   const current = await readSettings();
   // An empty key field means: keep the saved key.
   const next: Settings = {

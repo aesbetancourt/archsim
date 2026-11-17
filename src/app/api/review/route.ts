@@ -5,21 +5,10 @@ import { runModel } from "@/lib/model";
 import type { Kata } from "@/lib/katas";
 import { findKata } from "@/lib/library";
 import { reviewSchema, reviewerSystemPrompt, type Review } from "@/lib/rubric";
-import { describeScene, type SceneElement } from "@/lib/scene";
+import { readBody, reviewRequest, type ReviewRequest } from "@/lib/requests";
+import { describeScene } from "@/lib/scene";
 
-type Submission = {
-  kataId: string;
-  scope: string;
-  // The notes are saved with the attempt. They are not sent to the reviewer.
-  notes?: string;
-  characteristics: string;
-  style: string;
-  rationale: string;
-  diagramPng: string;
-  elements: SceneElement[];
-};
-
-function buildPrompt(kata: Kata, submission: Submission): string {
+function buildPrompt(kata: Kata, submission: ReviewRequest): string {
   const list = (items: string[]) => items.map((item) => `- ${item}`).join("\n");
   return `Review this architecture kata attempt.
 
@@ -53,12 +42,13 @@ ${submission.rationale || "(empty)"}
 }
 
 export async function POST(request: Request) {
-  const submission = (await request.json()) as Submission;
+  const submission = await readBody(request, reviewRequest);
+  if (submission instanceof Response) return submission;
   const kata = await findKata(submission.kataId);
   if (!kata) {
     return Response.json({ error: "Unknown kata." }, { status: 404 });
   }
-  const png = submission.diagramPng?.split("base64,")[1];
+  const png = submission.diagramPng.split("base64,")[1];
   if (!png) {
     return Response.json({ error: "The diagram is missing." }, { status: 400 });
   }

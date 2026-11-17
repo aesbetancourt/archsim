@@ -2,13 +2,15 @@ import { runModel } from "@/lib/model";
 import type { WorkedExample } from "@/lib/examples";
 import type { Kata } from "@/lib/katas";
 import { saveCustom } from "@/lib/library";
+import { readBody, solveRequest } from "@/lib/requests";
 import { cleanDiagram, solutionSchema, solverSystemPrompt } from "@/lib/solver";
 
 type Solution = { kata: Omit<Kata, "id">; example: Omit<WorkedExample, "kataId"> };
 
 export async function POST(request: Request) {
-  const { text } = (await request.json()) as { text?: string };
-  const problem = text?.trim() ?? "";
+  const body = await readBody(request, solveRequest);
+  if (body instanceof Response) return body;
+  const problem = body.text.trim();
   if (problem.length < 40) {
     return Response.json({ error: "The problem text is too short." }, { status: 400 });
   }
