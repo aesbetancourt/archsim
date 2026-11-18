@@ -1,4 +1,7 @@
 import { jsonFile } from "./json-file";
+import { competencies, type Story, type StoryFields } from "./stories";
+
+export type { Story, StoryFields } from "./stories";
 
 // A passage that the user highlighted on a learning page.
 export type Highlight = {
@@ -27,7 +30,12 @@ export type NoteDoc = {
   updatedAt: string;
 };
 
-export type Notebook = { documents: NoteDoc[]; pages: PageNote[]; highlights: Highlight[] };
+export type Notebook = {
+  documents: NoteDoc[];
+  pages: PageNote[];
+  highlights: Highlight[];
+  stories: Story[];
+};
 
 const UNTITLED = "Untitled note";
 
@@ -40,6 +48,7 @@ function normalize(value: unknown): Notebook {
     documents: list(saved.documents),
     pages: list(saved.pages),
     highlights: list(saved.highlights),
+    stories: list(saved.stories),
   };
   // An older notebook had one notes document. Keep it as the first general note.
   if (typeof saved.notes === "string" && saved.notes.trim()) {
@@ -123,5 +132,37 @@ export function updateDocument(
 export function deleteDocument(id: string): Promise<void> {
   return change((notebook) => {
     notebook.documents = notebook.documents.filter((item) => item.id !== id);
+  });
+}
+
+const cleanStory = (fields: StoryFields): StoryFields => ({
+  ...fields,
+  title: fields.title.trim() || "Untitled story",
+  competencies: fields.competencies.filter((item) =>
+    (competencies as readonly string[]).includes(item),
+  ),
+});
+
+export function createStory(fields: StoryFields): Promise<Story> {
+  return change((notebook) => {
+    const now = new Date().toISOString();
+    const story: Story = { ...cleanStory(fields), id: newId(), createdAt: now, updatedAt: now };
+    notebook.stories.push(story);
+    return story;
+  });
+}
+
+export function updateStory(id: string, fields: StoryFields): Promise<Story | undefined> {
+  return change((notebook) => {
+    const story = notebook.stories.find((item) => item.id === id);
+    if (!story) return undefined;
+    Object.assign(story, cleanStory(fields), { updatedAt: new Date().toISOString() });
+    return story;
+  });
+}
+
+export function deleteStory(id: string): Promise<void> {
+  return change((notebook) => {
+    notebook.stories = notebook.stories.filter((item) => item.id !== id);
   });
 }

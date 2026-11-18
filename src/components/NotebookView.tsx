@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import GeneralNotes from "@/components/GeneralNotes";
 import HighlightItem from "@/components/HighlightItem";
+import StoryBank from "@/components/StoryBank";
 import { Card } from "@/components/ui/card";
 import type { Highlight, Notebook, PageNote } from "@/lib/notebook";
 import { notesText } from "@/lib/notes";
@@ -67,61 +68,71 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
   const groups = byPage(notebook.pages, highlights);
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-2">
-      <section className="space-y-2" aria-labelledby="general-title">
-        <h2 id="general-title" className="text-xl font-semibold tracking-tight">
-          General notes
-        </h2>
-        <Card className="h-[36rem] overflow-hidden py-0">
-          <GeneralNotes initial={notebook.documents} />
-        </Card>
-      </section>
+    <div className="space-y-10">
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <section className="space-y-2" aria-labelledby="general-title">
+          <h2 id="general-title" className="text-xl font-semibold tracking-tight">
+            General notes
+          </h2>
+          <Card className="h-[36rem] overflow-hidden py-0">
+            <GeneralNotes initial={notebook.documents} />
+          </Card>
+        </section>
 
-      <section className="space-y-2" aria-labelledby="pages-title">
-        <h2 id="pages-title" className="text-xl font-semibold tracking-tight">
-          By page
+        <section className="space-y-2" aria-labelledby="pages-title">
+          <h2 id="pages-title" className="text-xl font-semibold tracking-tight">
+            By page
+          </h2>
+          {error && <p role="alert">{error}</p>}
+          {groups.length === 0 && (
+            <Card className="px-4">
+              <p className="flex items-center gap-2 text-muted-foreground">
+                <Highlighter className="size-4 shrink-0" aria-hidden />
+                Nothing yet. On a lesson, a worked example, or the glossary, highlight text or write
+                in the notebook on the right.
+              </p>
+            </Card>
+          )}
+          {groups.map((group) => (
+            <Card key={group.page} className="gap-3 px-4">
+              <Link
+                href={group.page}
+                className="flex items-center gap-1 font-medium text-primary hover:underline"
+              >
+                {group.title} <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+              {group.note && (
+                <div className="space-y-1">
+                  <h3 className="text-xs font-medium uppercase text-muted-foreground">Notes</h3>
+                  <p className="whitespace-pre-line">{notesText(group.note.html)}</p>
+                </div>
+              )}
+              {group.items.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-xs font-medium uppercase text-muted-foreground">
+                    Highlights
+                  </h3>
+                  <ul className="space-y-3">
+                    {group.items.map((item) => (
+                      <HighlightItem
+                        key={item.id}
+                        item={item}
+                        onChange={(note) => changeNote(item.id, note)}
+                        onRemove={() => remove(item.id)}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Card>
+          ))}
+        </section>
+      </div>
+      <section className="space-y-2" aria-labelledby="stories-title">
+        <h2 id="stories-title" className="text-xl font-semibold tracking-tight">
+          Story bank
         </h2>
-        {error && <p role="alert">{error}</p>}
-        {groups.length === 0 && (
-          <Card className="px-4">
-            <p className="flex items-center gap-2 text-muted-foreground">
-              <Highlighter className="size-4 shrink-0" aria-hidden />
-              Nothing yet. On a lesson, a worked example, or the glossary, highlight text or write
-              in the notebook on the right.
-            </p>
-          </Card>
-        )}
-        {groups.map((group) => (
-          <Card key={group.page} className="gap-3 px-4">
-            <Link
-              href={group.page}
-              className="flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              {group.title} <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
-            {group.note && (
-              <div className="space-y-1">
-                <h3 className="text-xs font-medium uppercase text-muted-foreground">Notes</h3>
-                <p className="whitespace-pre-line">{notesText(group.note.html)}</p>
-              </div>
-            )}
-            {group.items.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-xs font-medium uppercase text-muted-foreground">Highlights</h3>
-                <ul className="space-y-3">
-                  {group.items.map((item) => (
-                    <HighlightItem
-                      key={item.id}
-                      item={item}
-                      onChange={(note) => changeNote(item.id, note)}
-                      onRemove={() => remove(item.id)}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
-          </Card>
-        ))}
+        <StoryBank initial={notebook.stories} />
       </section>
     </div>
   );

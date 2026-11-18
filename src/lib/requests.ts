@@ -111,6 +111,17 @@ export const progressUpdate = z.object({
   done: z.boolean(),
 });
 
+const storyText = z.string().max(6_000);
+export const storyFields = z.object({
+  title: z.string().max(200),
+  situation: storyText,
+  task: storyText,
+  action: storyText,
+  result: storyText,
+  reflection: storyText,
+  competencies: z.array(z.string().max(100)).max(20),
+});
+
 export const documentCreate = z.object({ title: z.string().max(200).default("") });
 
 export const documentUpdate = z.object({ title: z.string().max(200), html: notes });

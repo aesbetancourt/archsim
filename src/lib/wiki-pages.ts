@@ -62,6 +62,12 @@ export const wikiSections: WikiSection[] = [
         "How to use 45 minutes: questions, numbers, design, and deep dives.",
         ["method", "estimation"],
       ),
+      article(
+        "behavioral-interviews",
+        "Behavioral interviews",
+        "The questions about your past work, and how to answer them with true stories.",
+        ["interview-format", "teams", "architect-role"],
+      ),
     ],
   },
   {

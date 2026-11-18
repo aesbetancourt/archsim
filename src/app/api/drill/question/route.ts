@@ -1,4 +1,5 @@
 import {
+  behavioralGradeSystemPrompt,
   buildQuestionPrompt,
   parseGrade,
   questionGradeSystemPrompt,
@@ -20,7 +21,11 @@ export async function POST(request: Request) {
   try {
     const { output, model } = await runModel({
       prompt: buildQuestionPrompt(question, body.answer),
-      systemPrompt: questionGradeSystemPrompt,
+      // A behavioral question is graded as a story, not as a design answer.
+      systemPrompt:
+        question.slug === "behavioral-interviews"
+          ? behavioralGradeSystemPrompt
+          : questionGradeSystemPrompt,
       schema: gradeSchema,
     });
     return Response.json({ grade: parseGrade(output), model });

@@ -1,215 +1,142 @@
 "use client";
 
 import { Highlighter } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { useHighlighter } from "@/components/useHighlighter";
 import type { Kata } from "@/lib/katas";
+import type { Highlight } from "@/lib/notebook";
 
-// The highlighted ranges of each text block, as [start, end] positions in the text.
-type Marks = Record<string, [number, number][]>;
+// Before the notebook, kata highlights were in the browser: [start, end] in each text block.
+const oldKey = (kataId: string) => `archsim:highlights:${kataId}`;
 
-const storageKey = (kataId: string) => `archsim:highlights:${kataId}`;
-
-// Join ranges that touch or overlap.
-function merge(ranges: [number, number][]): [number, number][] {
-  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
-  const result: [number, number][] = [];
-  for (const [start, end] of sorted) {
-    const last = result[result.length - 1];
-    if (last && start <= last[1]) last[1] = Math.max(last[1], end);
-    else result.push([start, end]);
-  }
-  return result;
-}
-
-// Count the characters from the start of a block to a point in it.
-function offsetIn(block: Element, node: Node, offset: number): number {
-  const range = document.createRange();
-  range.selectNodeContents(block);
-  range.setEnd(node, offset);
-  return range.toString().length;
-}
-
-function Block({
-  id,
-  text,
-  ranges,
-  onRemove,
-}: {
-  id: string;
-  text: string;
-  ranges: [number, number][];
-  onRemove: (index: number) => void;
-}) {
-  const parts: React.ReactNode[] = [];
-  let position = 0;
-  ranges.forEach(([start, end], index) => {
-    if (start > position) parts.push(text.slice(position, start));
-    parts.push(
-      <mark key={index} className="rounded-sm bg-[#ffe45c] px-0.5 text-black">
-        <button
-          type="button"
-          title="Click to remove this highlight"
-          aria-label={`Remove the highlight: ${text.slice(start, end)}`}
-          className="cursor-pointer text-left select-text focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-black"
-          onClick={() => onRemove(index)}
-        >
-          {text.slice(start, end)}
-        </button>
-      </mark>,
-    );
-    position = end;
-  });
-  if (position < text.length) parts.push(text.slice(position));
-  return <span data-block={id}>{parts}</span>;
-}
-
-// The text of a kata. The user can select text and highlight it.
-// Highlights are saved in this browser, for each kata.
+// The text of a kata. The user can select text to highlight it and add a note.
+// The highlights are saved in the notebook, like the highlights of the lessons.
 export default function ProblemText({ kata }: { kata: Kata }) {
-  const root = useRef<HTMLDivElement>(null);
-  const [marks, setMarks] = useState<Marks>({});
-  const [button, setButton] = useState<{ x: number; y: number } | null>(null);
+  const page = `/kata/${kata.id}`;
+  const { root, handlers, highlights, addHighlights, overlay } = useHighlighter({
+    page,
+    getTitle: () => `${kata.title} (kata)`,
+  });
 
+  // Move the old highlights of this browser to the notebook, one time.
+  const migrated = useRef("");
   useEffect(() => {
+    if (migrated.current === kata.id || !root.current) return;
+    migrated.current = kata.id;
+    let saved: unknown;
     try {
-      const saved = localStorage.getItem(storageKey(kata.id));
-      // oxlint-disable-next-line react/set-state-in-effect
-      if (saved) setMarks(JSON.parse(saved));
+      saved = JSON.parse(localStorage.getItem(oldKey(kata.id)) ?? "null");
     } catch {
-      // Storage is not available. Start with no highlights.
-    }
-  }, [kata.id]);
-
-  const update = useCallback(
-    (next: Marks) => {
-      setMarks(next);
-      try {
-        localStorage.setItem(storageKey(kata.id), JSON.stringify(next));
-      } catch {
-        // Storage is not available. The highlights last for this page only.
-      }
-    },
-    [kata.id],
-  );
-
-  // Show the highlight button above a selection in the kata text.
-  const onSelect = useCallback(() => {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed || !root.current?.contains(selection.anchorNode)) {
-      setButton(null);
       return;
     }
-    const box = selection.getRangeAt(0).getBoundingClientRect();
-    setButton({ x: box.left + box.width / 2, y: box.top });
-  }, []);
-
-  // Hide the button when the panel scrolls, because the selection moves.
-  useEffect(() => {
-    const hide = () => setButton(null);
-    window.addEventListener("scroll", hide, true);
-    return () => window.removeEventListener("scroll", hide, true);
-  }, []);
-
-  function highlight() {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed || !root.current) return;
-    const range = selection.getRangeAt(0);
-    const next: Marks = { ...marks };
-    // A selection can cover more than one block. Mark the selected part of each one.
-    for (const block of root.current.querySelectorAll("[data-block]")) {
-      if (!range.intersectsNode(block)) continue;
-      const length = block.textContent?.length ?? 0;
-      const start = block.contains(range.startContainer)
-        ? offsetIn(block, range.startContainer, range.startOffset)
-        : 0;
-      const end = block.contains(range.endContainer)
-        ? offsetIn(block, range.endContainer, range.endOffset)
-        : length;
-      if (end > start) {
-        const id = block.getAttribute("data-block")!;
-        next[id] = merge([...(next[id] ?? []), [start, end]]);
+    if (!saved || typeof saved !== "object") return;
+    const element = root.current;
+    const items: { blockId: string; range: [number, number]; text: string; start: number }[] = [];
+    for (const [blockId, ranges] of Object.entries(saved as Record<string, unknown>)) {
+      const block = element.querySelector(`[data-block="${blockId}"]`);
+      if (!block?.textContent || !Array.isArray(ranges)) continue;
+      // The position of the block in the text of the kata.
+      const before = document.createRange();
+      before.selectNodeContents(element);
+      before.setEndBefore(block);
+      const offset = before.toString().length;
+      for (const range of ranges) {
+        if (!Array.isArray(range) || range.length !== 2) continue;
+        const [start, end] = range as [number, number];
+        const text = block.textContent.slice(start, end).trim();
+        if (text) items.push({ blockId, range: [start, end], text, start: offset + start });
       }
     }
-    update(next);
-    selection.removeAllRanges();
-    setButton(null);
-  }
-
-  const block = (id: string, text: string) => (
-    <Block
-      id={id}
-      text={text}
-      ranges={marks[id] ?? []}
-      onRemove={(index) =>
-        update({ ...marks, [id]: (marks[id] ?? []).filter((_, position) => position !== index) })
+    if (items.length === 0) {
+      localStorage.removeItem(oldKey(kata.id));
+      return;
+    }
+    Promise.allSettled(
+      items.map(async (item) => {
+        const response = await fetch("/api/notebook/highlights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page,
+            title: `${kata.title} (kata)`,
+            text: item.text,
+            start: item.start,
+            note: "",
+          }),
+        });
+        if (!response.ok) throw new Error();
+        return (await response.json()) as Highlight;
+      }),
+    ).then((results) => {
+      addHighlights(
+        results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : [])),
+      );
+      // Keep only the highlights that did not move, so the next visit tries them again.
+      const left: Record<string, [number, number][]> = {};
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") return;
+        const { blockId, range } = items[index];
+        (left[blockId] ??= []).push(range);
+      });
+      try {
+        if (Object.keys(left).length === 0) localStorage.removeItem(oldKey(kata.id));
+        else localStorage.setItem(oldKey(kata.id), JSON.stringify(left));
+      } catch {
+        // Storage is not available. The highlights are in the notebook now.
       }
-    />
-  );
-  const total = Object.values(marks).reduce((sum, ranges) => sum + ranges.length, 0);
+    });
+  }, [kata.id, kata.title, page, root, addHighlights]);
+
+  const block = (id: string, text: string) => <span data-block={id}>{text}</span>;
 
   return (
-    // These handlers only read the text selection. They do not start an action.
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div ref={root} className="space-y-3" onMouseUp={onSelect} onKeyUp={onSelect}>
-      <p>{block("context", kata.context)}</p>
-      {kata.details?.map((paragraph, index) => (
-        <p key={index}>{block(`detail-${index}`, paragraph)}</p>
-      ))}
-      {kata.users && (
-        <p>
-          <span className="font-medium">Users:</span> {block("users", kata.users)}
-        </p>
-      )}
-      {kata.requirements.length > 0 && (
-        <div>
-          <h2 className="font-medium">Requirements</h2>
-          <ul className="list-disc pl-5 text-muted-foreground">
-            {kata.requirements.map((item, index) => (
-              <li key={index}>{block(`requirement-${index}`, item)}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {kata.constraints.length > 0 && (
-        <div>
-          <h2 className="font-medium">Constraints</h2>
-          <ul className="list-disc pl-5 text-muted-foreground">
-            {kata.constraints.map((item, index) => (
-              <li key={index}>{block(`constraint-${index}`, item)}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <p className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
+    <>
+      {/* These handlers only read the text selection. They do not start an action. */}
+      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div ref={root} className="space-y-3" {...handlers}>
+        <p>{block("context", kata.context)}</p>
+        {kata.details?.map((paragraph, index) => (
+          <p key={index}>{block(`detail-${index}`, paragraph)}</p>
+        ))}
+        {kata.users && (
+          <p>
+            <span className="font-medium">Users:</span> {block("users", kata.users)}
+          </p>
+        )}
+        {kata.requirements.length > 0 && (
+          <div>
+            <h2 className="font-medium">Requirements</h2>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              {kata.requirements.map((item, index) => (
+                <li key={index}>{block(`requirement-${index}`, item)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {kata.constraints.length > 0 && (
+          <div>
+            <h2 className="font-medium">Constraints</h2>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              {kata.constraints.map((item, index) => (
+                <li key={index}>{block(`constraint-${index}`, item)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <p className="mt-3 flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1">
           <Highlighter className="size-3" /> Select text to highlight it.
         </span>
-        {total > 0 && (
-          <button type="button" className="underline" onClick={() => update({})}>
-            Remove all {total} highlights
-          </button>
+        {highlights.length > 0 && (
+          <Link href="/notebook" className="underline">
+            {highlights.length} {highlights.length === 1 ? "highlight" : "highlights"} in the
+            notebook
+          </Link>
         )}
       </p>
-
-      {button && (
-        // The wrapper sets the position. The button uses a variant that does not move on hover.
-        <div
-          className="fixed z-50 -translate-x-1/2 -translate-y-full pb-1.5"
-          style={{ left: button.x, top: button.y }}
-        >
-          <Button
-            variant="noShadow"
-            size="xs"
-            className="hover:bg-foreground hover:text-background"
-            // Keep the selection when the user presses the button.
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={highlight}
-          >
-            <Highlighter /> Highlight
-          </Button>
-        </div>
-      )}
-    </div>
+      {overlay}
+    </>
   );
 }

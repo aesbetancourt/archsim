@@ -164,7 +164,7 @@ See [Offsets and replay](/learn/messaging#offsets-and-replay) for the consumer v
 
 ### Replication, in-sync replicas, and ACK settings
 
-Each partition has, for example, 3 replicas on 3 different brokers. Place them in different racks or availability zones, so one rack failure does not take all copies. The leader takes all writes and reads. Followers fetch from the leader, like consumers do. See [Replication](/learn/scaling-data#replication).
+Each partition has, for example, 3 replicas on 3 different brokers. Place them in different racks or availability zones, so one rack failure does not take all copies. The leader takes all writes, and by default all reads. Some brokers can let a consumer read from a follower near it. Followers fetch from the leader, like consumers do. See [Replication](/learn/scaling-data#replication).
 
 **In-sync replicas (ISR)** are the replicas that are close enough to the leader. A follower stays in the ISR while it does not fall behind for longer than a configured time, for example 30 seconds. A slow or dead follower leaves the ISR. It comes back when it catches up. The leader is always in the ISR.
 

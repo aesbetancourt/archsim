@@ -69,3 +69,26 @@ describe("notebook", () => {
     expect((await readNotebook()).pages).toEqual([]);
   });
 });
+
+describe("story bank", () => {
+  it("creates, updates, and deletes a story, and keeps only known competencies", async () => {
+    const { createStory, updateStory, deleteStory } = await import("./notebook");
+    const fields = {
+      title: " ",
+      situation: "S",
+      task: "T",
+      action: "A",
+      result: "R",
+      reflection: "L",
+      competencies: ["Saying no", "Not a competency"],
+    };
+    const story = await createStory(fields);
+    expect(story).toMatchObject({ title: "Untitled story", competencies: ["Saying no"] });
+
+    const updated = await updateStory(story.id, { ...fields, title: "The checkout freeze" });
+    expect(updated?.title).toBe("The checkout freeze");
+
+    await deleteStory(story.id);
+    expect((await readNotebook()).stories).toEqual([]);
+  });
+});

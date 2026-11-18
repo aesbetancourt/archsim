@@ -207,6 +207,24 @@
           "lesson": "interview-format#step-5-weak-points"
         }
       ]
+    },
+    {
+      "type": "rules",
+      "title": "Behavioral interviews",
+      "items": [
+        {
+          "text": "Answer a behavioral question with one true story: situation, task, action, result, and what you learned.",
+          "lesson": "behavioral-interviews#the-shape-of-a-good-answer"
+        },
+        {
+          "text": "Keep 8 to 12 stories ready. Say \"I\" for your actions, and give a number in the result.",
+          "lesson": "behavioral-interviews#build-a-story-bank"
+        },
+        {
+          "text": "End each story with one sentence about what you learned or would change. It shows judgment.",
+          "lesson": "behavioral-interviews#the-shape-of-a-good-answer"
+        }
+      ]
     }
   ]
 }

@@ -42,6 +42,8 @@ type Props<T extends { id: string }> = {
   answerLabel: (item: T) => string;
   rows?: number;
   reference: (item: T) => React.ReactNode;
+  // Optional tools above the answer box, for example to start from a saved story.
+  answerTools?: (item: T, setAnswer: (text: string) => void) => React.ReactNode;
 };
 
 type Session<T> = { queue: T[]; knew: number; missed: number };
@@ -68,6 +70,7 @@ export default function Drill<T extends { id: string }>({
   answerLabel,
   rows = 4,
   reference,
+  answerTools,
 }: Props<T>) {
   const [progress, setProgress] = useState<DrillProgress>({});
   const [filterIndex, setFilterIndex] = useState(initial);
@@ -217,6 +220,7 @@ export default function Drill<T extends { id: string }>({
                 {session.queue.length} left · {meta(current)}
               </span>
             </div>
+            {answerTools?.(current, setAnswer)}
             <Textarea
               value={answer}
               onChange={(event) => setAnswer(event.target.value)}

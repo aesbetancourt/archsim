@@ -58,6 +58,15 @@ export const lessonMeta: Record<string, LessonMeta> = {
       "Give senior answers that name the need, the option, and the cost.",
     ],
   },
+  "behavioral-interviews": {
+    level: "basic",
+    objectives: [
+      "Explain what a behavioral panel scores for senior and architect roles.",
+      "Structure an answer with STAR and a reflection in three minutes.",
+      "Build a story bank that covers each competency with true stories.",
+      'Avoid the common mistakes: all "we", no result, blame, and hero stories.',
+    ],
+  },
   characteristics: {
     level: "basic",
     objectives: [

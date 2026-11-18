@@ -14,14 +14,8 @@ import { useState } from "react";
 import { sectionIcon } from "@/components/section-icons";
 import { Input } from "@/components/ui/input";
 import type { Cheatsheet, LessonLink, SheetBlock } from "@/lib/cheatsheets";
+import { stem } from "@/lib/search";
 import { useProgress } from "@/lib/use-progress";
-
-// Remove a plural or "-y" end from a search word, so "retry" also finds "retries", and
-// "caches" also finds "cache". Short words stay as they are.
-export function stem(word: string): string {
-  if (word.length <= 4) return word;
-  return word.replace(/(ies|es|s|y)$/, "");
-}
 
 // Keep the parts of a block that match the search words. A table keeps the rows that match.
 function filterBlock(block: SheetBlock, words: string[]): SheetBlock | null {

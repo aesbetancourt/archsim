@@ -84,7 +84,7 @@ Repeat the assessment on a regular schedule, for example each quarter, and after
 
 ## Risk storming
 
-An architect alone sees only part of the risks. **Risk storming** is a collaborative exercise to find the risks of an architecture with a group. Fundamentals describes it in three steps: identification, consensus, and mitigation. Simon Brown, who created the C4 model, describes a similar exercise with the same name.
+An architect alone sees only part of the risks. **Risk storming** is a collaborative exercise to find the risks of an architecture with a group. Simon Brown, who also created the C4 model, created the technique. Fundamentals describes it in three steps: identification, consensus, and mitigation.
 
 ### Prepare
 

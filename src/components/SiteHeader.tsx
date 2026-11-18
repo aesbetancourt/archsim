@@ -16,6 +16,7 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
+import CommandPalette from "@/components/CommandPalette";
 import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -99,6 +100,7 @@ export default function SiteHeader() {
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">
+        <CommandPalette />
         <LinkButton variant="ghost" size="icon" href="/settings" aria-label="Settings">
           <Settings />
         </LinkButton>

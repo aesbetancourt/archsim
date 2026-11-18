@@ -19,6 +19,158 @@ Newman separates four ideas that people call "resilience", from the work of Davi
 
 Most of this page is robustness. The other three are about people and process as much as code. See [Incident response](/learn/incident-response).
 
+## A cascade, step by step
+
+Follow one checkout as a slow dependency stops all sales, and then add the patterns that keep it up. Use the buttons or the arrow keys.
+
+```walkthrough
+{
+  "title": "A ticket checkout survives a slow provider",
+  "metrics": [
+    { "id": "success", "label": "Checkout success", "unit": "%", "better": "higher" },
+    { "id": "threads", "label": "Threads in use", "unit": "of 200", "better": "lower" },
+    { "id": "p99", "label": "p99 checkout time", "unit": "ms", "better": "lower" },
+    { "id": "calls", "label": "Payment calls", "unit": "/s" }
+  ],
+  "diagram": {
+    "nodes": [
+      { "id": "buyers", "label": "Buyers", "shape": "actor", "col": 0, "row": 1.5 },
+      { "id": "checkout", "label": "Checkout\n(200 threads)", "shape": "box", "col": 1, "row": 1.5 },
+      { "id": "seats", "label": "Seat service", "shape": "box", "col": 2, "row": 0 },
+      { "id": "client", "label": "Payment client\n(own pool)", "shape": "module", "col": 2, "row": 1.5 },
+      { "id": "email", "label": "Email service", "shape": "box", "col": 2, "row": 3 },
+      { "id": "pay", "label": "Payment\nprovider", "shape": "external", "col": 3, "row": 1.5 },
+      { "id": "queue", "label": "Pay-later\nqueue", "shape": "pipe", "col": 3, "row": 3 }
+    ],
+    "edges": [
+      { "from": "buyers", "to": "checkout", "label": "checkout" },
+      { "from": "checkout", "to": "seats", "label": "hold seats" },
+      { "from": "checkout", "to": "pay", "label": "charge" },
+      { "from": "checkout", "to": "email", "label": "receipt" },
+      { "from": "checkout", "to": "client", "label": "charge" },
+      { "from": "client", "to": "pay", "label": "charge" },
+      { "from": "checkout", "to": "queue", "label": "pay later", "async": true },
+      { "from": "queue", "to": "pay", "label": "charge", "async": true }
+    ]
+  },
+  "steps": [
+    {
+      "kind": "problem",
+      "title": "A checkout with three calls",
+      "text": "A ticket seller sells concert seats. Each checkout holds the seats, charges the card, and sends a receipt. The checkout server has 200 threads, and each request uses one thread until it ends.\n\nAt 50 checkouts each second, a checkout takes about 0.8 s. So about 40 threads are busy at a time. Each of the three calls is an integration point.",
+      "key": "Each arrow to another part is a place where a failure can come in.",
+      "show": ["buyers", "checkout", "seats", "email", "pay"],
+      "flow": ["buyers>checkout", "checkout>seats", "checkout>pay", "checkout>email"],
+      "notes": { "checkout": "40 of 200 threads" },
+      "metrics": { "success": 99.9, "threads": 40, "p99": 900, "calls": 50 }
+    },
+    {
+      "kind": "problem",
+      "title": "The provider gets slow",
+      "text": "At 20:00, a big concert goes on sale. The payment provider does not stop. But each charge now takes 20 s, not 0.5 s.\n\nThe checkout waits for each charge with no time limit. To serve 50 checkouts each second, it now needs 1,000 threads. It has 200, and in about 4 s all of them wait for the provider.",
+      "key": "A slow part is more dangerous than a part that is down, because it holds its callers.",
+      "show": ["buyers", "checkout", "seats", "email", "pay"],
+      "flow": ["buyers>checkout", "checkout>pay"],
+      "focus": ["pay"],
+      "notes": { "pay": "charge: 20 s", "checkout": "200 of 200 threads" },
+      "metrics": { "success": 20, "threads": 200, "p99": 20000, "calls": 10 }
+    },
+    {
+      "kind": "failure",
+      "title": "The cascade",
+      "text": "New requests find no free thread. They wait in a line until the load balancer stops them after 60 s. Buyers click again, and the load goes up.\n\nThe seat service and the email service are healthy, but the checkout has no thread to call them. One slow provider has stopped all sales. This is a cascading failure: it moves back along the arrows to the callers.",
+      "key": "Without a time limit, a slow dependency takes all the threads of its callers.",
+      "show": ["buyers", "checkout", "seats", "email", "pay"],
+      "flow": ["buyers>checkout"],
+      "down": ["checkout"],
+      "notes": { "buyers": "click again", "seats": "healthy, no calls" },
+      "metrics": { "success": 2, "p99": 60000 }
+    },
+    {
+      "kind": "technique",
+      "title": "Add a timeout",
+      "text": "Give the charge call a timeout of 2 s. After 2 s, the checkout stops the wait, frees the thread, and tells the buyer to try again.\n\nNow a thread waits at most 2 s, so the checkout needs about 130 threads. It stays up. But only the charges that finish in 2 s succeed: roughly 30% of them.",
+      "key": "A timeout turns a slow failure into a fast one. Set it a little above the normal p99 of the call.",
+      "show": ["buyers", "checkout", "seats", "email", "pay"],
+      "flow": ["buyers>checkout", "checkout>pay"],
+      "focus": ["checkout"],
+      "notes": { "checkout": "timeout: 2 s" },
+      "metrics": { "success": 30, "threads": 130, "p99": 2400, "calls": 50 }
+    },
+    {
+      "kind": "technique",
+      "title": "A bulkhead for payments",
+      "text": "The charges still use the same threads as the rest of the site. When charges wait, seat maps and seat holds wait too.\n\nGive the charges their own pool of 20 threads. When the pool is full, a new charge fails at once. Fewer charges pass, roughly 10%. But the other threads stay free, and the provider gets less load.",
+      "key": "A bulkhead limits the damage of one dependency to its own share of resources.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client"],
+      "hide": ["checkout>pay"],
+      "flow": ["checkout>client", "client>pay"],
+      "focus": ["client"],
+      "notes": { "client": "20 of 20 threads" },
+      "metrics": { "success": 10, "threads": 40, "p99": 2100, "calls": 10 }
+    },
+    {
+      "kind": "technique",
+      "title": "The breaker opens",
+      "text": "Put a circuit breaker in the payment client. It starts closed: calls go through, and it counts the failures. When more than half of the calls fail in 10 s, it opens. While it is open, each charge fails at once, and no call goes to the provider.\n\nThe checkout no longer waits 2 s for a call that will probably fail. The provider gets 30 s with no load to recover. But now no buyer can pay.",
+      "key": "An open breaker fails fast and gives the dependency time to recover.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client"],
+      "hide": ["checkout>pay"],
+      "flow": ["buyers>checkout", "checkout>client"],
+      "focus": ["client"],
+      "notes": { "client": "breaker: open" },
+      "metrics": { "success": 0, "threads": 30, "p99": 300, "calls": 0 }
+    },
+    {
+      "kind": "technique",
+      "title": "A fallback: pay later",
+      "text": "When the breaker is open, the checkout does not show an error. It holds the seats for 30 minutes and puts the order in a pay-later queue. The buyer sees: \"Your seats are held. We will charge your card in the next 15 minutes.\"\n\nThis is a business decision, so ask the business first. Another fallback is \"pay at pickup\" at the box office. Test the fallback, because it runs only on a bad day.",
+      "key": "A fallback gives a smaller answer instead of an error. The business chooses which answer is acceptable.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client", "queue"],
+      "hide": ["checkout>pay"],
+      "flow": ["buyers>checkout", "checkout>seats", "checkout>queue"],
+      "focus": ["queue"],
+      "notes": { "client": "breaker: open", "queue": "orders wait for a charge" },
+      "metrics": { "success": 95, "p99": 400 }
+    },
+    {
+      "kind": "technique",
+      "title": "Half-open: a few test calls",
+      "text": "After 30 s, the breaker goes half-open. It lets a few trial charges go to the provider. If they fail, the breaker opens again for 30 s. If they succeed, it closes.\n\nThe provider is fast again. The three trial charges succeed in 0.5 s, and the breaker closes. New charges go to the provider again.",
+      "key": "Half-open tests the dependency with a small load before the full load returns.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client", "queue"],
+      "hide": ["checkout>pay"],
+      "flow": ["checkout>client", "client>pay"],
+      "focus": ["client"],
+      "notes": { "client": "breaker: half-open", "pay": "3 trial calls" },
+      "metrics": { "calls": 1 }
+    },
+    {
+      "kind": "technique",
+      "title": "Retry only the safe steps",
+      "text": "A worker now charges the orders in the queue. When a charge fails, it waits and tries again: 1 s, then 2 s, then 4 s. It adds a random part to each wait, called jitter, so the workers do not all retry at the same moment.\n\nRetry only a step that is safe to repeat. Each charge carries an idempotency key, so a repeat does not charge twice. A seat hold uses the order ID, so it is safe too. Do not retry a charge that has no key.",
+      "key": "Retry with backoff and jitter, and only where a repeat does no harm.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client", "queue"],
+      "hide": ["checkout>pay"],
+      "flow": ["checkout>client", "client>pay", "queue>pay"],
+      "focus": ["queue"],
+      "notes": { "client": "breaker: closed", "queue": "empties at 20/s" },
+      "metrics": { "success": 99, "threads": 40, "p99": 900, "calls": 70 }
+    },
+    {
+      "kind": "recap",
+      "title": "What you built",
+      "text": "The charge has a 2 s timeout and its own pool of 20 threads. A circuit breaker stops the calls when the provider fails, and tests it again after 30 s. While the breaker is open, orders wait in a queue. A worker charges them with backoff, jitter, and an idempotency key.\n\nWhen the provider gets slow again, sales continue. Some buyers wait a few minutes for the charge, but the site stays up.",
+      "key": "In a kata, ask of each arrow: what occurs when this part is slow? Then give that arrow a timeout, a limit, and a fallback.",
+      "show": ["buyers", "checkout", "seats", "email", "pay", "client", "queue"],
+      "hide": ["checkout>pay"],
+      "notes": { "client": "2 s, 20 threads, breaker" },
+      "metrics": { "success": 99.9, "calls": 50 }
+    }
+  ]
+}
+```
+
 ## The standard tools
 
 | Tool               | What it does                                                             | Protects against                                     |

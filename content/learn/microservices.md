@@ -1,6 +1,6 @@
 ## Where the style comes from
 
-James Lewis and Martin Fowler named and described the style in 2014. Richards and Ford trace its main idea to domain-driven design (Fundamentals of Software Architecture, the part on microservices architecture). The unit of the style is the **bounded context**: a part of the domain where one model and one language apply. Each service models one bounded context, or one part of one. See [Bounded contexts](/learn/bounded-contexts).
+James Lewis and Martin Fowler described the style and made it widely known in 2014. The name was already in use among architects from about 2011. Richards and Ford trace its main idea to domain-driven design (Fundamentals of Software Architecture, the part on microservices architecture). The unit of the style is the **bounded context**: a part of the domain where one model and one language apply. Each service models one bounded context, or one part of one. See [Bounded contexts](/learn/bounded-contexts).
 
 A service contains all that it needs to work: its code, its data, and its dependencies. It runs in its own process, usually in a container. This gives the property that Newman puts first (Building Microservices, the part on what microservices are): **independent deployability**. A team can change and release one service with no change to any other service.
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Drill, { type DrillFilter } from "@/components/Drill";
 import Prose from "@/components/Prose";
+import StoryPicker from "@/components/StoryPicker";
 import type { Question } from "@/lib/questions";
 import { useProgress } from "@/lib/use-progress";
 
@@ -20,6 +21,10 @@ export default function QuestionDrill({
       label: section,
       test: (question: Question) => question.section === section,
     })),
+    {
+      label: "Behavioral",
+      test: (question: Question) => question.slug === "behavioral-interviews",
+    },
     {
       label: "Finished lessons",
       test: (question: Question) => Boolean(done[question.slug]),
@@ -46,6 +51,9 @@ export default function QuestionDrill({
       placeholder="Answer as you would in the interview: your position, the reason, and the trade-off. Then one example."
       answerLabel={(question) => `Your answer to: ${question.question}`}
       rows={7}
+      answerTools={(question, setAnswer) =>
+        question.slug === "behavioral-interviews" ? <StoryPicker onPick={setAnswer} /> : null
+      }
       reference={(question) => (
         <>
           <h3 className="font-medium">The points of a strong answer</h3>

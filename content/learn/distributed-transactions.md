@@ -6,6 +6,155 @@ The first answer is always: can these two things be in one service with one data
 
 There are two families of answers. An atomic commit protocol, such as two-phase commit, makes several databases act as one transaction. A saga gives up the single transaction, and handles failure with more business steps. Most service architectures use sagas. You must still know two-phase commit, because interviewers ask why it is not the default.
 
+## A saga, step by step
+
+Follow one lesson booking through a saga with an orchestrator, from the happy path to three failures. The sections below explain each part in more detail. Use the buttons or the arrow keys.
+
+```walkthrough
+{
+  "title": "A tutor marketplace books a lesson",
+  "metrics": [
+    { "id": "state", "label": "Booking state" },
+    { "id": "slot", "label": "Slot status" },
+    { "id": "money", "label": "Money taken", "unit": "USD" },
+    { "id": "outbox", "label": "Messages in outbox" }
+  ],
+  "diagram": {
+    "nodes": [
+      { "id": "learner", "label": "Learner", "shape": "actor", "col": 0, "row": 1.25 },
+      { "id": "orch", "label": "Booking\norchestrator", "shape": "box", "col": 1, "row": 1.25 },
+      { "id": "sagadb", "label": "Booking DB\n(state, outbox)", "shape": "store", "col": 1, "row": 2.75 },
+      { "id": "tutors", "label": "Calendar\nservice", "shape": "box", "col": 2, "row": 0 },
+      { "id": "pay", "label": "Payment\nservice", "shape": "box", "col": 2, "row": 1.25 },
+      { "id": "relay", "label": "Outbox relay", "shape": "module", "col": 2, "row": 2.75 },
+      { "id": "msg", "label": "Message\nservice", "shape": "box", "col": 3, "row": 2.75 }
+    ],
+    "edges": [
+      { "from": "learner", "to": "orch", "label": "book lesson" },
+      { "from": "orch", "to": "sagadb", "label": "save state" },
+      { "from": "orch", "to": "tutors", "label": "hold / release" },
+      { "from": "orch", "to": "pay", "label": "charge" },
+      { "from": "orch", "to": "msg", "label": "LessonBooked", "async": true },
+      { "from": "sagadb", "to": "relay", "label": "new rows" },
+      { "from": "relay", "to": "msg", "label": "LessonBooked", "async": true }
+    ]
+  },
+  "steps": [
+    {
+      "kind": "problem",
+      "title": "One booking, three services",
+      "text": "A learner books a lesson with Ana, a tutor, on Tuesday at 17:00. The price is $40. The booking must hold the slot in the calendar service, charge the card in the payment service, and send a message to both people.\n\nEach service has its own database, so one transaction cannot cover all the steps. A booking orchestrator runs the steps in order, and it keeps the state of each booking in its own database.",
+      "key": "A saga is a sequence of local transactions. Each step has a compensation that undoes its business effect.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["learner>orch"],
+      "focus": ["orch"],
+      "metrics": { "state": "new", "slot": "free", "money": 0, "outbox": 0 }
+    },
+    {
+      "kind": "technique",
+      "title": "Hold the slot",
+      "text": "The orchestrator saves the booking as \"slot pending\". Then it asks the calendar service to hold the slot for 10 minutes.\n\nThe slot is held, not booked. Other learners see it as not available. If the saga stops, the hold ends by itself. This pending state is a semantic lock: the data shows that a saga works on it.",
+      "key": "Save the state before each step, so the orchestrator can continue after a crash.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>sagadb", "orch>tutors"],
+      "focus": ["tutors"],
+      "notes": { "tutors": "held for 10 min" },
+      "metrics": { "state": "slot held", "slot": "held" }
+    },
+    {
+      "kind": "technique",
+      "title": "Charge the learner",
+      "text": "The orchestrator saves \"charging\". Then it asks the payment service to charge $40, and the card is accepted.\n\nThe payment service commits the charge in its own database, and the orchestrator saves \"charged\". Each step commits at once. No lock crosses the services.",
+      "key": "Put the steps that can fail before the step that cannot be undone.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>sagadb", "orch>pay"],
+      "focus": ["pay"],
+      "notes": { "pay": "charged $40" },
+      "metrics": { "state": "charged", "money": 40 }
+    },
+    {
+      "kind": "technique",
+      "title": "Confirm and send the message",
+      "text": "The orchestrator tells the calendar service to change the hold to a booking. It saves \"confirmed\" and publishes the event LessonBooked. The message service reads the event and sends a message to the learner and to Ana.\n\nThe saga is complete. The happy path is easy. The design work is in the failure paths.",
+      "key": "A message to a person cannot be undone, so send it after the last step that can fail.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>tutors", "orch>msg"],
+      "focus": ["msg"],
+      "notes": { "tutors": "booked", "msg": "message to both" },
+      "metrics": { "state": "confirmed", "slot": "booked" }
+    },
+    {
+      "kind": "failure",
+      "title": "The charge fails",
+      "text": "A second learner books Ana's 18:00 slot. The hold succeeds. Then the payment service declines the card.\n\nThe slot is now held for a booking with no payment. Nothing rolls back by itself, because the hold is already committed. The orchestrator must undo the business effect of each step that succeeded.",
+      "key": "In a saga, a failed step leaves the earlier steps committed.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>pay"],
+      "focus": ["pay"],
+      "notes": { "pay": "card declined" },
+      "metrics": { "state": "charge failed", "slot": "held", "money": 0 },
+      "changes": ["New booking: the 18:00 slot"]
+    },
+    {
+      "kind": "technique",
+      "title": "Compensate: release the slot",
+      "text": "The orchestrator runs the compensations of the steps that succeeded, in reverse order. Here only the hold succeeded, so it asks the calendar service to release the slot. Then it saves \"cancelled\" and tells the learner that the card was declined.\n\nA compensation is a new action, not a rollback. For a short time, other learners saw the slot as taken. The release must succeed in the end, so the orchestrator retries it until it does.",
+      "key": "A compensation undoes the business effect with a new transaction. It must be safe to retry.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>tutors", "orch>learner"],
+      "focus": ["tutors"],
+      "notes": { "tutors": "slot released", "learner": "card declined" },
+      "metrics": { "state": "cancelled", "slot": "free" }
+    },
+    {
+      "kind": "failure",
+      "title": "A duplicate charge request",
+      "text": "A third learner books the 19:00 slot. The orchestrator sends the charge, and the payment service charges $40. But the reply is lost on the network, and the orchestrator gets a timeout.\n\nThe orchestrator cannot know if the charge occurred, so it sends the charge again. Without protection, the payment service charges a second time, and the learner pays $80.",
+      "key": "After a timeout, the caller cannot tell a lost request from a lost reply. So each step gets some requests twice.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>pay"],
+      "focus": ["pay"],
+      "notes": { "pay": "2 charges: $80" },
+      "metrics": { "state": "charging", "slot": "held", "money": 80 },
+      "changes": ["New booking: the 19:00 slot"]
+    },
+    {
+      "kind": "technique",
+      "title": "The idempotency key",
+      "text": "The orchestrator puts an idempotency key on each charge, for example \"booking-512-charge\". The key stays the same when it sends the request again. The payment service saves the key and the charge in one transaction.\n\nWhen the same key arrives again, the payment service does not charge. It returns the result of the first charge. The learner pays $40 once, and the orchestrator saves \"charged\".",
+      "key": "An idempotency key makes a repeat safe. The receiver returns the first result, not an error.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg"],
+      "flow": ["orch>pay"],
+      "focus": ["pay"],
+      "notes": { "pay": "same key: same result" },
+      "metrics": { "state": "charged", "money": 40 }
+    },
+    {
+      "kind": "technique",
+      "title": "The outbox",
+      "text": "The orchestrator saves \"confirmed\" and then publishes LessonBooked. If it crashes between these two actions, nobody gets a message. So it writes the event as a row in an outbox table, in the same transaction as the new state.\n\nAn outbox relay reads the new rows and publishes them. After a crash, it can publish a row twice. So the message service keeps the IDs of the events that it handled, and skips a repeat.",
+      "key": "With an outbox, the event is published if and only if the change was saved.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg", "relay"],
+      "hide": ["orch>msg"],
+      "flow": ["orch>sagadb", "sagadb>relay", "relay>msg"],
+      "focus": ["sagadb"],
+      "notes": { "sagadb": "state + outbox row", "msg": "skips known event IDs" },
+      "metrics": { "state": "confirmed", "slot": "booked", "outbox": 1 }
+    },
+    {
+      "kind": "recap",
+      "title": "What you built",
+      "text": "An orchestrator runs three steps: hold the slot, charge the card, confirm. It saves the state before each step. When the charge fails, it releases the slot. Each charge carries an idempotency key, so a repeat is safe.\n\nThe orchestrator writes each event to an outbox in the same transaction as the state. A relay publishes it, and the message service skips duplicates.",
+      "key": "In a kata, name the steps, the compensation of each step, the pending states, and where each idempotency key is checked.",
+      "show": ["learner", "orch", "sagadb", "tutors", "pay", "msg", "relay"],
+      "hide": ["orch>msg"],
+      "notes": { "relay": "row sent, marked done" },
+      "metrics": { "outbox": 0 }
+    }
+  ]
+}
+```
+
 ## Two-phase commit
 
 Two-phase commit (2PC) makes several databases commit together, or not at all. A coordinator runs it. Each database that takes part is a participant.

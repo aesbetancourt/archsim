@@ -1808,8 +1808,9 @@ export const glossary: GlossaryTerm[] = [
     term: "Risk storming",
     category: "Architecture practice",
     definition:
-      "A workshop where each person first marks risks on the architecture diagram alone. Then the group compares the marks and agrees on the risks.",
-    example: "Three developers each mark the payment provider of the lunch shop as a high risk.",
+      "A group exercise to find the risks of an architecture. Each person rates risks on the diagram alone, then the group agrees on each score and plans mitigations.",
+    example:
+      "One developer rates the routing service of the parcel service a 2, another a 6, and the talk shows a limit of the map provider.",
     match: ["risk storming", "risk-storming"],
     learn: "risk-assessment",
   },
@@ -1825,6 +1826,17 @@ export const glossary: GlossaryTerm[] = [
     learn: "risk-assessment",
   },
   {
+    id: "risk-assessment",
+    term: "Risk assessment",
+    category: "Architecture practice",
+    definition:
+      "A table that rates the risk of each driving characteristic in each area of the system. The row and column totals show where the risk is highest.",
+    example:
+      "Tracking gets a 9 for scalability, and its column has the highest total of the parcel service.",
+    match: ["risk assessment"],
+    learn: "risk-assessment",
+  },
+  {
     id: "atam",
     term: "Architecture tradeoff analysis method (ATAM)",
     category: "Architecture practice",
@@ -1834,17 +1846,39 @@ export const glossary: GlossaryTerm[] = [
       "Stakeholders of the parcel service rank 'show a parcel status in 1 second at peak' as the first scenario.",
     match: ["tradeoff analysis method", "trade-off analysis method"],
     wiki: "Architecture_tradeoff_analysis_method",
-    learn: "risk-assessment",
+    learn: "trade-offs",
   },
   {
     id: "layered-architecture",
     term: "Layered architecture",
     category: "Architecture practice",
     definition:
-      "A style that divides the code into technical layers, such as presentation, business rules, and data access. Each layer calls only the layer below it.",
+      "A style that divides one application into technical layers, such as presentation, business, and persistence. A request goes through each closed layer, so a layer calls only the layer below it.",
     example: "A small lunch shop application with screens, rules, and a data access layer.",
     match: ["layered architecture", "n-tier"],
     wiki: "Multitier_architecture",
+    learn: "layered",
+  },
+  {
+    id: "closed-open-layers",
+    term: "Closed and open layers",
+    category: "Architecture practice",
+    definition:
+      "A request must go through a closed layer and can skip an open layer. Each open layer adds direct dependencies and weakens the isolation.",
+    example:
+      "The parcel service opens its business layer for reads, so a report calls the persistence layer directly.",
+    match: ["closed layer", "open layer"],
+    learn: "layered",
+  },
+  {
+    id: "sinkhole-anti-pattern",
+    term: "Sinkhole anti-pattern",
+    category: "Architecture practice",
+    definition:
+      "Requests pass through the layers, and the middle layers only forward the call. About 20% of such requests is normal, and about 80% means that the layered style is a poor fit.",
+    example:
+      "A read of the list of depots goes through the business layer, which only calls the persistence layer.",
+    match: ["sinkhole"],
     learn: "layered",
   },
   {
@@ -1862,7 +1896,7 @@ export const glossary: GlossaryTerm[] = [
     term: "Microkernel architecture",
     category: "Architecture practice",
     definition:
-      "A style with a small core system and plug-ins that add features through a fixed contract.",
+      "A style with a core system that holds only the usual path, and plug-ins that each add one feature or variation through a fixed contract. Also named the plug-in architecture.",
     example: "The Notification Service answer, with one plug-in for each channel.",
     match: ["microkernel"],
     learn: "microkernel",
@@ -1872,7 +1906,7 @@ export const glossary: GlossaryTerm[] = [
     term: "Service-based architecture",
     category: "Architecture practice",
     definition:
-      "A style with one user interface, a few large domain services, and usually one shared database.",
+      "A distributed style with a separate user interface, about 4 to 12 coarse domain services, and usually one shared database. The services rarely call each other.",
     example: "The tutor marketplace as four services: search, booking, payments, and lessons.",
     match: ["service-based architecture"],
     learn: "service-based",
@@ -1882,7 +1916,7 @@ export const glossary: GlossaryTerm[] = [
     term: "Event-driven architecture",
     category: "Architecture practice",
     definition:
-      "A style where parts react to events asynchronously and do not call each other directly. It scales well and has loose coupling, but a workflow is hard to follow.",
+      "A style where components react to events asynchronously and do not wait for each other. It scales well and has loose coupling, but data agrees only after a delay and a flow is hard to test.",
     example:
       "'Order placed' in the lunch shop starts the kitchen, billing, and notifications at the same time.",
     match: ["event-driven"],
@@ -1890,11 +1924,22 @@ export const glossary: GlossaryTerm[] = [
     learn: "event-driven",
   },
   {
+    id: "broker-mediator-topology",
+    term: "Broker and mediator topology",
+    category: "Architecture practice",
+    definition:
+      "The two shapes of an event-driven system. In the broker topology, no part controls the flow. In the mediator topology, one mediator knows the steps and sends commands.",
+    example:
+      "A mediator in the lunch shop sends 'take payment', then starts the kitchen and loyalty steps in parallel.",
+    match: ["broker topology", "mediator topology", "event mediator"],
+    learn: "event-driven",
+  },
+  {
     id: "microservices",
     term: "Microservices",
     category: "Architecture practice",
     definition:
-      "A style of many small services that deploy independently. Each service owns one business function and its own data.",
+      "A style of many small services that deploy independently. Each service models one bounded context, or one part of it, and owns its data.",
     example:
       "The parcel service with separate services for booking, routing, tracking, and billing.",
     match: ["microservice"],
@@ -1913,11 +1958,32 @@ export const glossary: GlossaryTerm[] = [
     learn: "space-based",
   },
   {
+    id: "data-pump",
+    term: "Data pump",
+    category: "Architecture practice",
+    definition:
+      "In space-based architecture, a persistent queue that carries each change from a processing unit to the database. The unit does not wait for the database.",
+    example:
+      "A seat-selection unit puts 'seat held' on the pump, and a data writer updates the seat table later.",
+    match: ["data pump"],
+    learn: "space-based",
+  },
+  {
+    id: "data-collision",
+    term: "Data collision",
+    category: "Architecture practice",
+    definition:
+      "Two processing units change the same cached item before replication reaches the other, so one change is lost. The rate grows with the square of the update rate.",
+    example: "Two units each sell the last seat in row K within the same few milliseconds.",
+    match: ["data collision"],
+    learn: "space-based",
+  },
+  {
     id: "pipeline-architecture",
     term: "Pipeline architecture",
     category: "Architecture practice",
     definition:
-      "A style where data flows through a chain of filters connected by pipes, and each filter does one transformation. Also named pipes and filters.",
+      "A style where data flows in one direction through a chain of filters connected by pipes, and each filter does one task. Also named pipes and filters.",
     example: "Upload, transcode, make thumbnails, and publish in the video platform.",
     match: ["pipeline architecture", "pipes and filters", "pipe and filter"],
     wiki: "Pipeline_(software)",
@@ -1974,9 +2040,9 @@ export const glossary: GlossaryTerm[] = [
     term: "Test pyramid",
     category: "Application design",
     definition:
-      "A guide for the mix of tests: many fast unit tests, fewer integration tests, and few slow end-to-end tests.",
+      "A heuristic for the mix of tests: many fast unit tests, fewer service tests, and few slow end-to-end tests. The higher a test, the more confidence it gives and the slower it is.",
     example:
-      "The lunch shop has 800 unit tests, 60 integration tests, and 5 end-to-end checkout tests.",
+      "The ticket seller has thousands of unit tests, hundreds of service tests, and a few dozen end-to-end tests.",
     match: ["test pyramid", "testing pyramid"],
     learn: "testing-strategy",
   },
@@ -1988,6 +2054,17 @@ export const glossary: GlossaryTerm[] = [
       "A test of the whole running system through its real interface, as a user uses it. It is slow and breaks easily, so keep few of them.",
     example: "A browser test that books and pays for a lesson in the tutor marketplace.",
     match: ["end-to-end test"],
+    learn: "testing-strategy",
+  },
+  {
+    id: "flaky-test",
+    term: "Flaky test",
+    category: "Application design",
+    definition:
+      "A test that sometimes fails for a reason that is not a fault in the code, such as a timeout or old test data. Fix it at once or remove it from the gate.",
+    example:
+      "The checkout test of the ticket seller fails once in ten runs because the email service starts late.",
+    match: ["flaky test", "flaky"],
     learn: "testing-strategy",
   },
   {
@@ -2008,10 +2085,10 @@ export const glossary: GlossaryTerm[] = [
     term: "Consumer group",
     category: "Communication",
     definition:
-      "A set of consumers that share the partitions of a topic. Each message goes to one member of the group, and each group gets all messages.",
+      "A set of consumers that share the work of one subscriber. The broker gives each partition to one member, and each group gets all messages.",
     example: "Five billing workers in one group share the 10 partitions of 'order placed'.",
     match: ["consumer group"],
-    learn: "message-queue",
+    learn: "messaging",
   },
   {
     id: "offset",
@@ -2021,6 +2098,49 @@ export const glossary: GlossaryTerm[] = [
       "The position of a message in one partition of a log. A consumer commits its offset to record how far it has processed.",
     example: "After a crash, the billing worker starts again from its committed offset 4,120.",
     match: ["committed offset", "consumer offset"],
+    learn: "messaging",
+  },
+  {
+    id: "consumer-lag",
+    term: "Consumer lag",
+    category: "Communication",
+    definition:
+      "The distance between the newest offset of a partition and the offset of a consumer. A lag that grows means that the consumer is too slow.",
+    example:
+      "Alert when the invoice group is 50,000 messages behind, before the messages pass the retention period.",
+    match: ["consumer lag"],
+    learn: "messaging",
+  },
+  {
+    id: "in-sync-replica",
+    term: "In-sync replica (ISR)",
+    category: "Communication",
+    definition:
+      "A replica of a partition that is close enough to the leader. A message is committed when all in-sync replicas have it, and consumers read only committed messages.",
+    example:
+      "With ACK=all and a minimum ISR of 2 of 3, the broker refuses writes when only the leader is in sync.",
+    match: ["in-sync replica"],
+    learn: "message-queue",
+  },
+  {
+    id: "log-compaction",
+    term: "Log compaction",
+    category: "Communication",
+    definition:
+      "The broker keeps only the newest message for each key, and removes the older ones. A compacted topic works as a table of current values.",
+    example: "A compacted topic keeps the latest address of each customer.",
+    match: ["log compaction", "compacted topic"],
+    learn: "message-queue",
+  },
+  {
+    id: "idempotent-producer",
+    term: "Idempotent producer",
+    category: "Communication",
+    definition:
+      "A producer that sends a producer ID and a sequence number with each batch. The leader drops a batch that it already has, so a retry does not write a message twice.",
+    example:
+      "The first write worked but the answer was lost, so the producer retries, and the leader drops the copy.",
+    match: ["idempotent producer"],
     learn: "message-queue",
   },
   {
@@ -2178,6 +2298,18 @@ export const glossary: GlossaryTerm[] = [
     learn: "storage-engines",
   },
   {
+    id: "etl-elt",
+    term: "ETL and ELT",
+    category: "Data",
+    definition:
+      "Two ways to move operational data to an analytical store. ETL transforms the data before it loads it, and ELT loads the raw data and transforms it inside the warehouse.",
+    example:
+      "With ELT, the tutor marketplace keeps the raw bookings and runs a new SQL transformation on old data.",
+    match: ["extract, transform", "etl"],
+    wiki: "Extract,_transform,_load",
+    learn: "analytical-data",
+  },
+  {
     id: "data-warehouse",
     term: "Data warehouse",
     category: "Data",
@@ -2213,6 +2345,17 @@ export const glossary: GlossaryTerm[] = [
     learn: "analytical-data",
   },
   {
+    id: "lakehouse",
+    term: "Lakehouse",
+    category: "Data",
+    definition:
+      "A data lake with a table format, such as Apache Iceberg or Delta Lake, on top of its files. The format adds schemas, transactions, and versions, but it does not fix ownership.",
+    example:
+      "The booking files in object storage become an Iceberg table that analysts query with SQL.",
+    match: ["lakehouse"],
+    learn: "analytical-data",
+  },
+  {
     id: "data-mesh",
     term: "Data mesh",
     category: "Data",
@@ -2232,6 +2375,16 @@ export const glossary: GlossaryTerm[] = [
       "A data set that a domain team publishes for others, with an owner, a documented schema, quality targets, and access rules.",
     example: "'Daily lessons by subject' from the booking team of the tutor marketplace.",
     match: ["data product"],
+    learn: "analytical-data",
+  },
+  {
+    id: "data-product-quantum",
+    term: "Data product quantum (DPQ)",
+    category: "Data",
+    definition:
+      "A separate deployable part next to an operational service, owned by the same team, that holds the analytical form of its data. Readers use its output port, never the service database.",
+    example: "The booking team runs a booking history DPQ that gets booking events asynchronously.",
+    match: ["data product quantum"],
     learn: "analytical-data",
   },
 
@@ -2319,7 +2472,8 @@ export const glossary: GlossaryTerm[] = [
     category: "Data",
     definition:
       "Write only if the row still has the version that you read, and retry if not. Pessimistic locking instead locks the row when it reads it.",
-    example: "UPDATE rooms SET booked = booked + 1, version = 8 WHERE id = 12 AND version = 7.",
+    example:
+      "A booking updates the inventory row of one room type and date only WHERE version = 41, and retries when zero rows change.",
     match: ["optimistic lock", "pessimistic lock", "optimistic concurrency"],
     wiki: "Optimistic_concurrency_control",
     learn: "hotel-reservation",
@@ -2495,6 +2649,17 @@ export const glossary: GlossaryTerm[] = [
     learn: "batch-and-stream",
   },
   {
+    id: "late-event",
+    term: "Late event",
+    category: "Data",
+    definition:
+      "An event that arrives after the watermark closed its window. The job drops it, updates the closed window for a limited time, or sends it to a side output.",
+    example:
+      "A click at 10:02:58 arrives at 10:03:20, and the job emits a corrected count for 10:02.",
+    match: ["late event"],
+    learn: "ad-click-aggregation",
+  },
+  {
     id: "tumbling-window",
     term: "Tumbling window",
     category: "Data",
@@ -2557,8 +2722,20 @@ export const glossary: GlossaryTerm[] = [
     definition:
       "A set where each member has a score and the members stay in score order. It finds the rank of a member and the top members in logarithmic time.",
     example:
-      "A Redis sorted set holds the score of each player of the leaderboard. A large set uses a skip list inside.",
+      "ZREVRANK lb:2026-11 player:42 gives the rank of one player among 30 million in a Redis sorted set.",
     match: ["sorted set"],
+    learn: "leaderboard",
+  },
+  {
+    id: "skip-list",
+    term: "Skip list",
+    category: "Data",
+    definition:
+      "A sorted linked list with extra levels of links, where each higher level skips more nodes. A search starts at the top level and takes O(log n) steps on average.",
+    example:
+      "Redis keeps a sorted set in a hash table and a skip list, and each link stores how many nodes it skips.",
+    match: ["skip list"],
+    wiki: "Skip_list",
     learn: "leaderboard",
   },
   {
@@ -2600,10 +2777,32 @@ export const glossary: GlossaryTerm[] = [
     term: "Time-series database",
     category: "Data",
     definition:
-      "A database for measurements with a timestamp, stored in time order and compressed. It writes fast and summarizes data over time ranges.",
-    example: "Prometheus stores the request count of each service every 15 seconds.",
+      "A database for points with a timestamp, under a name and a set of labels. It appends the points to compressed blocks by time range, and finds series through an index on labels.",
+    example:
+      "Prometheus stores the request count of the checkout service every 10 seconds, in blocks of 2 hours.",
     match: ["time-series database", "time series database", "tsdb"],
     wiki: "Time_series_database",
+    learn: "metrics-monitoring",
+  },
+  {
+    id: "downsampling",
+    term: "Downsampling",
+    category: "Data",
+    definition:
+      "Replace many old points with one summary point for a longer interval. Keep the minimum, maximum, sum, and count, so the average and the peak stay visible.",
+    example:
+      "The monitoring system keeps 10-second points for 7 days, 1-minute points for 30 days, and 1-hour points for 1 year.",
+    match: ["downsampl"],
+    learn: "metrics-monitoring",
+  },
+  {
+    id: "cardinality",
+    term: "Cardinality",
+    category: "Data",
+    definition:
+      "The number of distinct time series in a metrics store. A label with unbounded values, such as a user ID, makes millions of series and can exhaust the memory of the index.",
+    example: "A user_id label on the request count of checkout makes one series for each user.",
+    match: ["cardinality"],
     learn: "metrics-monitoring",
   },
   {
@@ -2788,12 +2987,23 @@ export const glossary: GlossaryTerm[] = [
     term: "Erasure coding",
     category: "Reliability",
     definition:
-      "Split data into k data pieces and add m parity pieces. Any k of the k + m pieces can build the data again.",
+      "Split data into k data fragments and compute m parity fragments, each on a different node. Any k of the k + m fragments can build the data again.",
     example:
-      "8 + 4 coding survives the loss of any 4 nodes and uses 1.5 times the space, not 3 times.",
+      "6 + 3 coding survives the loss of any 3 fragments and needs 1.5 PB of disk for 1 PB of data, not 3 PB.",
     match: ["erasure cod"],
     wiki: "Erasure_code",
     learn: "object-storage",
+  },
+  {
+    id: "hot-warm-failover",
+    term: "Hot-warm failover",
+    category: "Reliability",
+    definition:
+      "A warm copy reads the same ordered input as the hot copy and computes the same state, but publishes nothing. When the hot copy fails, the warm copy continues from the next input.",
+    example:
+      "The warm matching engine of the exchange takes over at sequence number 1,042 with the same order books.",
+    match: ["hot-warm", "warm standby"],
+    learn: "stock-exchange",
   },
 
   // Scale and speed: distribution, limits, feeds, and markets
@@ -2930,10 +3140,21 @@ export const glossary: GlossaryTerm[] = [
     term: "Order book",
     category: "Scale and speed",
     definition:
-      "The list of all open buy and sell orders for one stock, sorted by price and then by arrival time.",
+      "The list of all open orders for one symbol, with two sides. Bids list the highest buy price first, and asks list the lowest sell price first.",
     example:
-      "An order to buy 100 shares at 10.02 waits in the book until a seller asks 10.02 or less.",
+      "An order to buy 100 shares at 20.02 waits in the book until a seller asks 20.02 or less.",
     match: ["order book"],
+    learn: "stock-exchange",
+  },
+  {
+    id: "price-time-priority",
+    term: "Price-time priority",
+    category: "Scale and speed",
+    definition:
+      "The rule for who trades first: the best price first, and at the same price, the order that arrived first. Arrival means the sequence number, not a clock.",
+    example:
+      "A buy at 20.02 fills the older 100 shares offered at 20.02 before the 400 shares that came later.",
+    match: ["price-time priority", "price time priority"],
     learn: "stock-exchange",
   },
   {
@@ -2952,7 +3173,7 @@ export const glossary: GlossaryTerm[] = [
     term: "Matching engine",
     category: "Scale and speed",
     definition:
-      "The part of an exchange that matches buy orders with sell orders in the order book, by price and then by time. It is deterministic, so a replica that replays the same input makes the same trades.",
+      "The part of an exchange that matches buy orders with sell orders in the order book, by price-time priority. It is deterministic, so a replica that replays the same input makes the same trades.",
     example: "A market order to buy 500 shares fills against the lowest sell orders first.",
     match: ["matching engine"],
     learn: "stock-exchange",
@@ -3058,7 +3279,7 @@ export const glossary: GlossaryTerm[] = [
     term: "Service mesh",
     category: "Building blocks",
     definition:
-      "A layer of proxies, usually a sidecar next to each service, that handles the traffic between services: encryption, retries, timeouts, and metrics.",
+      "A sidecar proxy next to each service, with one shared control plane that sets the policy for all calls. The sidecars handle encryption, retries, timeouts, and metrics.",
     example: "The mesh gives each parcel service mutual TLS with no change to the service code.",
     match: ["service mesh", "sidecar"],
     wiki: "Service_mesh",

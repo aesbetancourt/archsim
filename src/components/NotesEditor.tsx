@@ -145,7 +145,7 @@ export default function NotesEditor({
         className="flex flex-wrap items-center gap-1 border-b-2 px-3 py-1.5"
       >
         <Tool
-          label="Highlight"
+          label="Mark text"
           active={state.highlight}
           onClick={() => run().toggleHighlight().run()}
         >
