@@ -34,6 +34,12 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
       "Uses the OpenCode login on this computer, in the same way as Claude Code. No API key in this app.",
   },
   {
+    id: "opencode-go",
+    title: "OpenCode Go",
+    icon: KeyRound,
+    description: "Uses an OpenCode Go API key. Requests count against your Go plan limits.",
+  },
+  {
     id: "anthropic",
     title: "Anthropic API",
     icon: KeyRound,
@@ -80,6 +86,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   const [mode, setMode] = useState(initial.mode);
   const [claudeModel, setClaudeModel] = useState(initial.claudeCode.model);
   const [openCodeModel, setOpenCodeModel] = useState(initial.openCode.model);
+  const [goKey, setGoKey] = useState("");
+  const [goModel, setGoModel] = useState(initial.openCodeGo.model);
   const [anthropicKey, setAnthropicKey] = useState("");
   const [anthropicModel, setAnthropicModel] = useState(initial.anthropic.model);
   const [baseUrl, setBaseUrl] = useState(initial.openaiCompatible.baseUrl);
@@ -96,6 +104,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
         mode,
         claudeCode: { model: claudeModel },
         openCode: { model: openCodeModel },
+        openCodeGo: { apiKey: goKey, model: goModel },
         anthropic: { apiKey: anthropicKey, model: anthropicModel },
         openaiCompatible: { baseUrl, apiKey: openaiKey, model: openaiModel },
       }),
@@ -106,6 +115,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
       return false;
     }
     setSaved(body);
+    setGoKey("");
     setAnthropicKey("");
     setOpenaiKey("");
     return true;
@@ -209,6 +219,48 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
                 value={openCodeModel}
                 onChange={(event) => setOpenCodeModel(event.target.value)}
                 placeholder="Default"
+              />
+            </Field>
+          </CardContent>
+        </Card>
+      )}
+
+      {mode === "opencode-go" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>OpenCode Go</CardTitle>
+            <CardDescription>
+              The diagram and your text go to OpenCode Go with your key. Get the key in the OpenCode
+              Console after you subscribe to Go.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field
+              id="go-key"
+              label="API key"
+              hint={
+                saved.openCodeGo.keyHint
+                  ? `A key is saved (${saved.openCodeGo.keyHint}). Leave empty to keep it.`
+                  : "No key is saved."
+              }
+            >
+              <Input
+                id="go-key"
+                type="password"
+                autoComplete="off"
+                value={goKey}
+                onChange={(event) => setGoKey(event.target.value)}
+              />
+            </Field>
+            <Field
+              id="go-model"
+              label="Model"
+              hint="A Go model ID without the opencode-go/ prefix, for example kimi-k3 or deepseek-v4.1-flash. Select a model that reads images."
+            >
+              <Input
+                id="go-model"
+                value={goModel}
+                onChange={(event) => setGoModel(event.target.value)}
               />
             </Field>
           </CardContent>

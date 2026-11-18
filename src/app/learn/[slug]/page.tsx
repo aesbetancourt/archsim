@@ -1,7 +1,18 @@
-import { ArrowLeft, ArrowRight, CircleCheck, CircleHelp, Scale } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BarChart3,
+  CircleCheck,
+  CircleHelp,
+  Clock,
+  ListOrdered,
+  PlayCircle,
+  Scale,
+} from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BlockIcon from "@/components/BlockIcon";
+import { DoneBadge, LessonObjectives, MarkDone } from "@/components/LessonProgress";
 import Prose from "@/components/Prose";
 import StyleLessonBody from "@/components/StyleLessonBody";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +27,15 @@ import {
 } from "@/components/ui/table";
 import { blockGroups, blocksIn } from "@/lib/blocks";
 import { characteristics, kataSteps, styleLessons } from "@/lib/learn";
-import { getWikiPage, headingId, headings, neighbors, readArticle } from "@/lib/wiki";
+import { lessonMeta, levelLabel } from "@/lib/lesson-meta";
+import {
+  getWikiPage,
+  headingId,
+  headings,
+  neighbors,
+  readArticle,
+  readingMinutes,
+} from "@/lib/wiki";
 
 const ratingColumns = [
   { key: "simplicity", label: "Simplicity" },
@@ -234,19 +253,47 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
   const page = getWikiPage(slug);
   if (!page) notFound();
 
-  const markdown = page.kind === "article" ? await readArticle(slug) : undefined;
+  // An article is Markdown only. A custom page can also have a Markdown file, which shows after
+  // the part that its component draws.
+  const markdown = await readArticle(slug);
   if (page.kind === "article" && !markdown) notFound();
   const lesson = page.kind === "style" ? styleLessons.find((item) => item.id === slug) : undefined;
   const contents = markdown ? headings(markdown) : [];
   const related = (page.related ?? []).map(getWikiPage).filter((item) => item !== undefined);
   const { previous, next } = neighbors(slug);
+  const meta = lessonMeta[slug];
+  const walkthroughs = markdown?.match(/^```walkthrough$/gm)?.length ?? 0;
 
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">
-      <header className="space-y-2 border-b pb-4">
+      <header className="space-y-3 border-b pb-4">
         <h1 className="text-3xl font-semibold tracking-tight">{page.title}</h1>
         <p className="text-base text-muted-foreground">{page.summary}</p>
+        <div className="flex flex-wrap gap-1.5">
+          <Badge variant="neutral">
+            <Clock className="size-3.5" aria-hidden /> {readingMinutes(page, markdown)} min
+          </Badge>
+          {meta && (
+            <Badge variant="neutral">
+              <BarChart3 className="size-3.5" aria-hidden /> {levelLabel[meta.level]}
+            </Badge>
+          )}
+          {contents.length > 0 && (
+            <Badge variant="neutral">
+              <ListOrdered className="size-3.5" aria-hidden /> {contents.length} sections
+            </Badge>
+          )}
+          {walkthroughs > 0 && (
+            <Badge variant="neutral">
+              <PlayCircle className="size-3.5" aria-hidden />{" "}
+              {walkthroughs === 1 ? "Walkthrough" : `${walkthroughs} walkthroughs`}
+            </Badge>
+          )}
+          <DoneBadge slug={slug} />
+        </div>
       </header>
+
+      {meta && <LessonObjectives slug={slug} objectives={meta.objectives} />}
 
       {contents.length > 2 && (
         <nav aria-label="Contents" className="inline-block rounded-base border-2 bg-card px-4 py-3">
@@ -263,12 +310,13 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
         </nav>
       )}
 
-      {markdown && <Prose markdown={markdown} />}
+      {page.kind === "article" && markdown && <Prose markdown={markdown} />}
       {page.kind === "method" && <Method />}
       {page.kind === "characteristics" && <Characteristics />}
       {page.kind === "styles" && <Styles />}
       {page.kind === "blocks" && <Blocks />}
       {lesson && <StyleLessonBody lesson={lesson} />}
+      {page.kind !== "article" && markdown && <Prose markdown={markdown} />}
 
       {related.length > 0 && (
         <section className="space-y-2">
@@ -285,6 +333,8 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
           </ul>
         </section>
       )}
+
+      <MarkDone slug={slug} />
 
       <nav aria-label="Reading order" className="flex justify-between gap-4 border-t pt-4">
         {previous ? (

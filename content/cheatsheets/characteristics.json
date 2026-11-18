@@ -1,0 +1,263 @@
+{
+  "section": "Characteristics",
+  "summary": "Which qualities drive the design, and which words in a kata point to each one.",
+  "blocks": [
+    {
+      "type": "choose",
+      "title": "Signals of load and uptime",
+      "items": [
+        {
+          "when": "\"Must continue to work when…\", or money lost each minute down",
+          "use": "Availability",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Large or growing user numbers, plans to expand",
+          "use": "Scalability",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Load that jumps: a sale opens, a storm, the lunch hour",
+          "use": "Elasticity",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "\"Real time\", \"immediately\", users who wait on a screen",
+          "use": "Performance",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Weak networks, external systems that go offline",
+          "use": "Fault tolerance",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "A small team, a small budget, a short deadline",
+          "use": "Simplicity",
+          "lesson": "characteristics"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Signals of data, rules, and change",
+      "items": [
+        {
+          "when": "\"Must never sell one seat twice\", money, stock, legal records",
+          "use": "Data consistency",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Payments, health data, personal data, bots",
+          "use": "Security",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Law, regulators, disputes, \"records each…\"",
+          "use": "Auditability",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Frequent changes, many teams, staged rollouts",
+          "use": "Deployability",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "\"Next year we want to add…\", new countries, new partners",
+          "use": "Extensibility",
+          "lesson": "characteristics"
+        },
+        {
+          "when": "Existing systems, partners, several external parties",
+          "use": "Interoperability",
+          "lesson": "characteristics"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Characteristics that are easy to mix up",
+      "columns": ["Characteristic", "The system…"],
+      "rows": [
+        ["Availability", "Is up when users need it"],
+        ["Fault tolerance", "Continues, possibly with fewer functions, when one part fails"],
+        ["Scalability", "Handles more users or data as the business grows"],
+        ["Elasticity", "Handles sudden peaks, then releases the capacity"],
+        ["Performance", "Answers fast"]
+      ],
+      "lesson": "characteristics"
+    },
+    {
+      "type": "rules",
+      "title": "Rules of thumb",
+      "items": [
+        {
+          "text": "A characteristic is a quality of the system, not a feature.",
+          "lesson": "characteristics"
+        },
+        {
+          "text": "\"Customers pay online\" is a feature. \"Payment works during the lunch peak\" is elasticity.",
+          "lesson": "characteristics"
+        },
+        {
+          "text": "The characteristics you select decide the style.",
+          "lesson": "characteristics"
+        },
+        {
+          "text": "Other names for characteristics: non-functional requirements and quality attributes.",
+          "lesson": "characteristics"
+        },
+        {
+          "text": "Select the few that drive the design, and tie each one to a sentence in the kata.",
+          "lesson": "method"
+        },
+        {
+          "text": "Three is the usual number. The app lets you select up to five.",
+          "lesson": "method"
+        },
+        {
+          "text": "A design that tries to be good at everything is good at nothing.",
+          "lesson": "method"
+        },
+        {
+          "text": "Compare options against the three driving characteristics, plus cost and team skills.",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select a fitness function",
+      "items": [
+        {
+          "when": "Modules must change and deploy alone",
+          "use": "A cycle check, for example ArchUnit",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "Domain code must not import web code",
+          "use": "A layer rule, for example dependency-cruiser",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "A latency target must hold before each release",
+          "use": "A p99 threshold in a pipeline load test",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "Latency must hold under real traffic",
+          "use": "An SLO with an error budget alert",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "Dependencies can have known weaknesses",
+          "use": "A dependency scan on each build",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "No service must read the tables of another service",
+          "use": "A check of database users against tables",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        },
+        {
+          "when": "Requests must succeed when one copy stops",
+          "use": "A scheduled test that stops one copy",
+          "lesson": "measuring-characteristics#examples-of-fitness-functions"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Measure and protect",
+      "items": [
+        {
+          "text": "Turn each important characteristic into a number. Then put an automatic check on the number.",
+          "lesson": "measuring-characteristics#why-measure-a-characteristic"
+        },
+        {
+          "text": "Write down implicit characteristics, such as security, when the system needs more than the normal level.",
+          "lesson": "measuring-characteristics#explicit-and-implicit-characteristics"
+        },
+        {
+          "text": "Use percentiles, not averages. An average hides the slow requests.",
+          "lesson": "measuring-characteristics#three-kinds-of-measure"
+        },
+        {
+          "text": "State the load with each target. \"p99 below 300 ms\" means nothing without it.",
+          "lesson": "measuring-characteristics#three-kinds-of-measure"
+        },
+        {
+          "text": "Break a composite, such as agility, into parts that you can measure. Give each part a target.",
+          "lesson": "measuring-characteristics#make-the-definition-exact"
+        },
+        {
+          "text": "Agree on each definition with the team and the business. Record it in an ADR.",
+          "lesson": "measuring-characteristics#make-the-definition-exact"
+        },
+        {
+          "text": "A build test is atomic, triggered, and static. A p99 alert in production is continual and dynamic.",
+          "lesson": "measuring-characteristics#fitness-functions"
+        },
+        {
+          "text": "Run the checks in the same build as the tests. Make each failure explain the rule and the reason.",
+          "lesson": "measuring-characteristics#how-to-introduce-fitness-functions"
+        },
+        {
+          "text": "Write the characteristics for each quantum. Only the parts that need a strict target pay for it.",
+          "lesson": "measuring-characteristics#scope-characteristics-per-quantum"
+        },
+        {
+          "text": "A rule only in a document breaks in months. A measure that becomes a target stops being useful.",
+          "lesson": "measuring-characteristics#failure-modes"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Three kinds of measure",
+      "columns": ["Kind", "Supports", "Example measures"],
+      "rows": [
+        [
+          "Operational",
+          "Performance, scalability, availability",
+          "Latency percentiles, error rate, uptime"
+        ],
+        [
+          "Structural",
+          "Maintainability, testability, modularity",
+          "Cyclomatic complexity, cycles between modules, coupling"
+        ],
+        [
+          "Process",
+          "Deployability, testability, agility",
+          "Deploy frequency, time to deploy, failed deploys, test coverage"
+        ]
+      ],
+      "lesson": "measuring-characteristics#three-kinds-of-measure"
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Characteristics that drive the structure",
+          "value": "Usually three to seven",
+          "note": "Name the top three.",
+          "lesson": "measuring-characteristics#explicit-and-implicit-characteristics"
+        },
+        {
+          "label": "Cyclomatic complexity of a function",
+          "value": "1, plus 1 for each decision",
+          "note": "Each if, loop, case, &&, or || is a decision.",
+          "lesson": "measuring-characteristics#three-kinds-of-measure"
+        },
+        {
+          "label": "Complexity limit for each function",
+          "value": "About 10",
+          "note": "McCabe's rule of thumb. Teams often set a lower limit.",
+          "lesson": "measuring-characteristics#three-kinds-of-measure"
+        }
+      ]
+    }
+  ]
+}

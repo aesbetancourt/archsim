@@ -14,6 +14,10 @@ export async function PUT(request: Request) {
     mode: update.mode,
     claudeCode: { model: update.claudeCode.model.trim() },
     openCode: { model: update.openCode?.model.trim() ?? current.openCode.model },
+    openCodeGo: {
+      apiKey: update.openCodeGo?.apiKey.trim() || current.openCodeGo.apiKey,
+      model: update.openCodeGo?.model.trim() || current.openCodeGo.model,
+    },
     anthropic: {
       apiKey: update.anthropic.apiKey.trim() || current.anthropic.apiKey,
       model: update.anthropic.model.trim() || current.anthropic.model,

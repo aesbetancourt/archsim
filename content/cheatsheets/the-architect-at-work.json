@@ -1,0 +1,349 @@
+{
+  "section": "The architect at work",
+  "summary": "How to draw a system, find and rate its risks, change it while it is in use, get decisions accepted, design the teams, and what to read next.",
+  "blocks": [
+    {
+      "type": "table",
+      "title": "C4 levels of zoom",
+      "columns": ["Level", "Shows", "Reader"],
+      "rows": [
+        ["1. Context", "Your system as one box, its users and neighbors", "Everyone"],
+        [
+          "2. Container",
+          "Deployable parts: applications, databases, queues",
+          "Architects and developers"
+        ],
+        ["3. Component", "Main parts inside one container", "The team that builds it"],
+        ["4. Code", "Classes and functions", "Rarely drawn"]
+      ],
+      "lesson": "diagrams#the-c4-model"
+    },
+    {
+      "type": "rules",
+      "title": "Draw a readable diagram",
+      "items": [
+        {
+          "text": "Draw level 2 for a kata or an interview. In a real project, draw level 1 first.",
+          "lesson": "diagrams#the-c4-model"
+        },
+        {
+          "text": "Give each box a name and a job: \"Orders (takes and tracks orders)\", not \"Service A\".",
+          "lesson": "diagrams#rules-for-a-readable-diagram"
+        },
+        {
+          "text": "Give each arrow a verb label and a direction from the part that starts the action.",
+          "lesson": "diagrams#rules-for-a-readable-diagram"
+        },
+        {
+          "text": "Use a solid line for a call that waits. Use a dashed line for a message.",
+          "lesson": "diagrams#rules-for-a-readable-diagram"
+        },
+        {
+          "text": "Show where data lives and who owns it. Make external systems look different.",
+          "lesson": "diagrams#rules-for-a-readable-diagram"
+        },
+        {
+          "text": "Use one level of zoom in one diagram.",
+          "lesson": "diagrams#rules-for-a-readable-diagram"
+        },
+        {
+          "text": "Use a sequence diagram for a hard flow, such as a payment timeout.",
+          "lesson": "diagrams#different-diagrams-for-different-questions"
+        },
+        {
+          "text": "In a kata, attach each arrow to two shapes, so the connection is real.",
+          "lesson": "diagrams#in-a-kata"
+        },
+        {
+          "text": "Before you draw, write down who reads the diagram and what question it answers.",
+          "lesson": "diagrams#the-purpose-of-a-diagram"
+        },
+        {
+          "text": "Sketch first. Make a clean version only when the design is stable.",
+          "lesson": "diagrams#start-with-low-fidelity"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Change a system in use",
+      "items": [
+        {
+          "when": "You must replace an old system",
+          "use": "Small reversible steps, not one rewrite",
+          "lesson": "evolution#never-plan-a-full-rewrite-as-one-step"
+        },
+        {
+          "when": "You replace an old system function by function",
+          "use": "Strangler fig",
+          "lesson": "evolution#the-strangler-fig"
+        },
+        {
+          "when": "You replace one part that other code calls",
+          "use": "Branch by abstraction",
+          "lesson": "evolution#other-techniques-for-change-in-steps"
+        },
+        {
+          "when": "You must trust the new results before you switch",
+          "use": "Parallel run",
+          "lesson": "evolution#other-techniques-for-change-in-steps"
+        },
+        {
+          "when": "A structure changes and its users must move",
+          "use": "Expand and contract",
+          "lesson": "evolution#other-techniques-for-change-in-steps"
+        },
+        {
+          "when": "The new path must start with a few users",
+          "use": "Feature flags",
+          "lesson": "evolution#other-techniques-for-change-in-steps"
+        },
+        {
+          "when": "An architecture rule must not decay",
+          "use": "A fitness function, run with the tests",
+          "lesson": "evolution#fitness-functions"
+        },
+        {
+          "when": "You must find the debt that costs most",
+          "use": "Change frequency combined with change difficulty",
+          "lesson": "evolution#technical-debt"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Risk, migration, and technical debt",
+      "items": [
+        {
+          "text": "Rate each risk as impact times likelihood, each from 1 to 3. A score of 6 to 9 is high.",
+          "lesson": "risk-assessment#the-risk-matrix"
+        },
+        {
+          "text": "In risk storming, each person rates the risks alone first. Then the group discusses the disagreements.",
+          "lesson": "risk-assessment#risk-storming"
+        },
+        {
+          "text": "A mitigation moves risk. A new cache lowers a scalability risk and adds an availability risk.",
+          "lesson": "risk-assessment#risk-direction"
+        },
+        {
+          "text": "\"Accept\" is a valid response. Record it with a name and a date in a decision record.",
+          "lesson": "risk-assessment#risk-storming"
+        },
+        {
+          "text": "In a strangler fig, the hard part is the data. Each piece needs one owner while both run.",
+          "lesson": "evolution#the-strangler-fig"
+        },
+        {
+          "text": "A rule that is only in a document is broken in months. A rule that fails the build stays.",
+          "lesson": "evolution#fitness-functions"
+        },
+        {
+          "text": "Pay back debt in the parts that change often. Debt in untouched code costs nothing.",
+          "lesson": "evolution#technical-debt"
+        },
+        {
+          "text": "\"The architecture is bad\" gets no budget. Connect the change to a business result.",
+          "lesson": "evolution#how-to-argue-for-a-change"
+        },
+        {
+          "text": "Count a migration as done only when the old part is gone. Budget for its removal.",
+          "lesson": "evolution#options-and-old-systems"
+        },
+        {
+          "text": "Avoid dual writes. Give each piece of data one owner, and copy it through events.",
+          "lesson": "evolution#failure-modes-of-a-migration"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Teams and agreement",
+      "items": [
+        {
+          "text": "Conway's law: organizations build systems that copy their own communication structure.",
+          "lesson": "teams#conway-s-law"
+        },
+        {
+          "text": "Parts owned by different teams need clear, stable interfaces.",
+          "lesson": "teams#conway-s-law"
+        },
+        {
+          "text": "To get independent services, create teams that each own one service from start to production.",
+          "lesson": "teams#conway-s-law"
+        },
+        {
+          "text": "Explain the same decision in a different way to each person. It is translation, not dishonesty.",
+          "lesson": "teams#know-who-cares-about-what"
+        },
+        {
+          "text": "Bring two or three options, with the trade-offs, and a recommendation.",
+          "lesson": "teams#how-to-get-a-decision-accepted"
+        },
+        {
+          "text": "Use numbers: \"four seconds for the order page\", not \"too slow\".",
+          "lesson": "teams#how-to-get-a-decision-accepted"
+        },
+        {
+          "text": "Disagree, and then commit. Say your concern clearly once.",
+          "lesson": "teams#how-to-get-a-decision-accepted"
+        },
+        {
+          "text": "Give developers the reason, not only the rule.",
+          "lesson": "teams#how-to-get-a-decision-accepted"
+        },
+        {
+          "text": "Demonstration defeats discussion. Build a small test of both options, and measure the result.",
+          "lesson": "teams#negotiate-with-each-group"
+        },
+        {
+          "text": "Ask each person for an opinion directly, not \"any objections?\".",
+          "lesson": "teams#warning-signs-in-a-team"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "What to read",
+      "items": [
+        {
+          "when": "You start, and want the base of this app",
+          "use": "Fundamentals of Software Architecture",
+          "lesson": "reading-list#core"
+        },
+        {
+          "when": "You want to know how databases and replication really work",
+          "use": "Designing Data-Intensive Applications",
+          "lesson": "reading-list#core"
+        },
+        {
+          "when": "You split services and data, with sagas",
+          "use": "Software Architecture: The Hard Parts",
+          "lesson": "reading-list#distributed-systems-and-services"
+        },
+        {
+          "when": "You want to know how systems fail in production",
+          "use": "Release It!",
+          "lesson": "reading-list#distributed-systems-and-services"
+        },
+        {
+          "when": "You need bounded contexts and a shared business language",
+          "use": "Domain-Driven Design",
+          "lesson": "reading-list#design-and-domain"
+        },
+        {
+          "when": "You need service levels, error budgets, and alerts",
+          "use": "Site Reliability Engineering",
+          "lesson": "reading-list#operations"
+        },
+        {
+          "when": "You want team structure and architecture to fit",
+          "use": "Team Topologies",
+          "lesson": "reading-list#people-and-organization"
+        },
+        {
+          "when": "You prepare for the classic interview questions",
+          "use": "System Design Interview",
+          "lesson": "reading-list#for-interviews"
+        },
+        {
+          "when": "You need evidence that links delivery practice to business results",
+          "use": "Accelerate",
+          "lesson": "reading-list#operations"
+        },
+        {
+          "when": "You want modules that hide complexity",
+          "use": "A Philosophy of Software Design",
+          "lesson": "reading-list#design-and-domain"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select a team type and interaction mode",
+      "items": [
+        {
+          "when": "A team delivers value for one stream of work",
+          "use": "A stream-aligned team",
+          "lesson": "team-topologies#the-four-team-types"
+        },
+        {
+          "when": "A part needs rare, deep specialist knowledge",
+          "use": "A complicated-subsystem team",
+          "lesson": "team-topologies#the-four-team-types"
+        },
+        {
+          "when": "Several teams repeat deployment and monitoring work",
+          "use": "A platform team, run as a product",
+          "lesson": "team-topologies#the-four-team-types"
+        },
+        {
+          "when": "Teams must learn a new skill or practice",
+          "use": "An enabling team that then steps back",
+          "lesson": "team-topologies#the-four-team-types"
+        },
+        {
+          "when": "Two teams discover a new boundary or technology",
+          "use": "Collaboration, for a defined period",
+          "lesson": "team-topologies#the-three-interaction-modes"
+        },
+        {
+          "when": "A capability is stable and well understood",
+          "use": "X-as-a-Service",
+          "lesson": "team-topologies#the-three-interaction-modes"
+        },
+        {
+          "when": "One team helps another learn or remove obstacles",
+          "use": "Facilitating",
+          "lesson": "team-topologies#the-three-interaction-modes"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Design the teams",
+      "items": [
+        {
+          "text": "Reverse Conway maneuver: change the team structure first, to get the architecture you want.",
+          "lesson": "team-topologies#conway-s-law-and-the-reverse-conway-maneuver"
+        },
+        {
+          "text": "The maneuver fails if the new teams still share one database and one release.",
+          "lesson": "team-topologies#conway-s-law-and-the-reverse-conway-maneuver"
+        },
+        {
+          "text": "Most teams must be stream-aligned. The other three types exist to reduce their load.",
+          "lesson": "team-topologies#the-four-team-types"
+        },
+        {
+          "text": "Keep a team long-lived and small: up to about 7 to 9 people.",
+          "lesson": "team-topologies#why-team-structure-is-an-architecture-decision"
+        },
+        {
+          "text": "Limit the responsibilities of a team to what fits its cognitive load.",
+          "lesson": "team-topologies#cognitive-load"
+        },
+        {
+          "text": "Give each domain to one team. A team with a complex domain owns no other domain.",
+          "lesson": "team-topologies#cognitive-load"
+        },
+        {
+          "text": "Each service adds deployment, monitoring, and on-call load. Twenty small services can cost more than one.",
+          "lesson": "team-topologies#cognitive-load"
+        },
+        {
+          "text": "Time-box collaboration. Move to X-as-a-Service when the boundary is clear.",
+          "lesson": "team-topologies#the-three-interaction-modes"
+        },
+        {
+          "text": "Start with the thinnest viable platform. It can be a wiki page or a set of templates.",
+          "lesson": "team-topologies#thinnest-viable-platform"
+        },
+        {
+          "text": "Use the business domain as the default fracture plane.",
+          "lesson": "team-topologies#team-first-boundaries-and-fracture-planes"
+        }
+      ]
+    }
+  ]
+}

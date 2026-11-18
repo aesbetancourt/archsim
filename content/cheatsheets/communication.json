@@ -1,0 +1,336 @@
+{
+  "section": "Communication",
+  "summary": "Decide when a part waits for an answer, how messages travel, and how to keep an API safe to change.",
+  "blocks": [
+    {
+      "type": "choose",
+      "title": "Select how parts talk",
+      "items": [
+        {
+          "when": "The caller cannot continue without the answer",
+          "use": "A synchronous call",
+          "lesson": "sync-async#when-to-wait"
+        },
+        {
+          "when": "The work can occur later, or the caller does not care who reacts",
+          "use": "An asynchronous message",
+          "lesson": "sync-async#when-not-to-wait"
+        },
+        {
+          "when": "Load arrives in bursts",
+          "use": "A queue, so workers process steadily",
+          "lesson": "sync-async#when-not-to-wait"
+        },
+        {
+          "when": "Work must be done one time: \"convert this video\"",
+          "use": "A queue",
+          "lesson": "messaging#two-shapes"
+        },
+        {
+          "when": "Several parts react to one fact: \"order placed\"",
+          "use": "A topic (publish and subscribe)",
+          "lesson": "messaging#two-shapes"
+        },
+        {
+          "when": "Volume is very high, or a new subscriber must see old events",
+          "use": "A log",
+          "lesson": "messaging#two-shapes"
+        },
+        {
+          "when": "Related messages must stay in order",
+          "use": "The same key, so the same partition",
+          "lesson": "messaging#order"
+        },
+        {
+          "when": "Each message is an independent task, and times vary a lot",
+          "use": "A message broker (RabbitMQ, SQS style)",
+          "lesson": "messaging#two-kinds-of-broker"
+        },
+        {
+          "when": "The user needs a result, but the work takes long",
+          "use": "202 Accepted and a status resource",
+          "lesson": "sync-async#asynchronous-answers-to-a-user"
+        },
+        {
+          "when": "A live screen: chat, delivery tracking",
+          "use": "A push over WebSocket or server-sent events",
+          "lesson": "sync-async#asynchronous-answers-to-a-user"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select an API form",
+      "items": [
+        {
+          "when": "Public APIs, web and mobile clients",
+          "use": "REST over HTTP",
+          "lesson": "api-design#the-main-forms"
+        },
+        {
+          "when": "Calls between internal services, where speed matters",
+          "use": "RPC, for example gRPC",
+          "lesson": "api-design#the-main-forms"
+        },
+        {
+          "when": "Clients with many different screens",
+          "use": "GraphQL",
+          "lesson": "api-design#the-main-forms"
+        },
+        {
+          "when": "Reactions that do not need an answer",
+          "use": "Events",
+          "lesson": "api-design#the-main-forms"
+        },
+        {
+          "when": "Several services need one address for clients",
+          "use": "An API gateway, with no business rules",
+          "lesson": "api-design#the-api-gateway"
+        },
+        {
+          "when": "Each kind of client needs data in its own shape",
+          "use": "A backend for frontend (BFF) for each client",
+          "lesson": "api-design#the-api-gateway"
+        },
+        {
+          "when": "Exact data is essential, such as money to a ledger",
+          "use": "A strict contract",
+          "lesson": "api-design#strict-and-loose-contracts"
+        },
+        {
+          "when": "Services change at different speeds",
+          "use": "A loose contract, with consumer-driven contract tests",
+          "lesson": "api-design#strict-and-loose-contracts"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Calls and messages",
+      "items": [
+        {
+          "text": "For a user request, do the minimum that makes the action true, answer, then do the rest in the background.",
+          "lesson": "sync-async#when-not-to-wait"
+        },
+        {
+          "text": "A chain A to B to C to D, each up 99.9%, is up only about 99.6%.",
+          "lesson": "sync-async#the-cost-of-a-chain-of-calls"
+        },
+        {
+          "text": "Long synchronous chains are the most common fault. Join parts that always call each other, or keep a copy.",
+          "lesson": "sync-async#the-cost-of-a-chain-of-calls"
+        },
+        {
+          "text": "Asynchronous work needs a \"pending\" state in the user interface and somebody who watches the queue.",
+          "lesson": "sync-async#what-asynchronous-work-requires"
+        },
+        {
+          "text": "Design for \"at least once\". Make each receiver safe to repeat.",
+          "lesson": "messaging#delivery-promises"
+        },
+        {
+          "text": "Name events in the past tense. An \"event\" named \"SendEmail\" is a command.",
+          "lesson": "messaging#commands-and-events"
+        },
+        {
+          "text": "After some attempts, move a message that always fails to a dead-letter list.",
+          "lesson": "messaging#what-goes-wrong"
+        },
+        {
+          "text": "A total order over all messages is very expensive and almost never necessary.",
+          "lesson": "messaging#order"
+        },
+        {
+          "text": "The number of partitions limits the parallel work. A hot key makes a hot partition.",
+          "lesson": "messaging#partitions-and-consumer-groups"
+        },
+        {
+          "text": "Give each queue a maximum size. A queue with no limit hides an overload until the disk is full.",
+          "lesson": "messaging#backpressure"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "API rules",
+      "items": [
+        {
+          "text": "Design the API from the side of the caller. Do not expose your tables.",
+          "lesson": "api-design#rules-for-a-good-api"
+        },
+        {
+          "text": "Accept an idempotency key on each operation that creates or changes something.",
+          "lesson": "api-design#rules-for-a-good-api"
+        },
+        {
+          "text": "Return lists in pages, with a cursor. A list with no limit fails in production.",
+          "lesson": "api-design#rules-for-a-good-api"
+        },
+        {
+          "text": "Errors must tell the caller whose fault it was, and if the caller can try again.",
+          "lesson": "api-design#rules-for-a-good-api"
+        },
+        {
+          "text": "Adding is safe. Removing or renaming a field is not safe.",
+          "lesson": "api-design#how-to-change-an-api"
+        },
+        {
+          "text": "Changing the meaning of a field is the most dangerous change, because nothing fails visibly.",
+          "lesson": "api-design#how-to-change-an-api"
+        },
+        {
+          "text": "For a change that is not safe, offer a new version next to the old one. Plan for months.",
+          "lesson": "api-design#how-to-change-an-api"
+        },
+        {
+          "text": "Hyrum's law: with enough callers, each behavior that they can see becomes a dependency.",
+          "lesson": "api-design#an-api-is-a-promise"
+        },
+        {
+          "text": "Make an unsafe change in safe steps: expand, migrate the callers, then contract.",
+          "lesson": "api-design#how-to-change-an-api"
+        },
+        {
+          "text": "Be a tolerant reader: ignore unknown fields, but reject data that breaks the rules you use.",
+          "lesson": "api-design#how-to-change-an-api"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Delivery promises",
+      "columns": ["Promise", "Lost work", "Duplicates"],
+      "rows": [
+        ["At most once", "Can occur", "None"],
+        ["At least once", "None", "Can occur"],
+        [
+          "Exactly once",
+          "None",
+          "Not a delivery promise: at least once, and the receiver detects repeats"
+        ]
+      ],
+      "lesson": "messaging#delivery-promises"
+    },
+    {
+      "type": "choose",
+      "title": "Select a data format",
+      "items": [
+        {
+          "when": "A public API",
+          "use": "JSON, because reach matters more than size",
+          "lesson": "encoding-and-evolution#json-xml-and-csv"
+        },
+        {
+          "when": "Services that you own, inside one organization",
+          "use": "A binary format with a schema",
+          "lesson": "encoding-and-evolution#json-xml-and-csv"
+        },
+        {
+          "when": "Schemas are generated, for example from database tables",
+          "use": "Avro",
+          "lesson": "encoding-and-evolution#binary-formats-with-a-schema"
+        },
+        {
+          "when": "Data lives a few seconds inside one process",
+          "use": "A language-specific format, such as pickle",
+          "lesson": "encoding-and-evolution#language-specific-formats"
+        },
+        {
+          "when": "Large integer IDs in JSON",
+          "use": "Send the IDs as strings",
+          "lesson": "encoding-and-evolution#json-xml-and-csv"
+        },
+        {
+          "when": "Events on a topic that many services read",
+          "use": "A schema registry that checks each change",
+          "lesson": "encoding-and-evolution#dataflow-through-messages"
+        },
+        {
+          "when": "A field must get a new meaning",
+          "use": "A new field with a new name",
+          "lesson": "encoding-and-evolution#failure-modes"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Schema evolution",
+      "items": [
+        {
+          "text": "Backward compatibility: new code reads old data. Forward compatibility: old code reads new data.",
+          "lesson": "encoding-and-evolution#two-directions-of-compatibility"
+        },
+        {
+          "text": "A rolling upgrade needs both directions, because old and new code run at the same time.",
+          "lesson": "encoding-and-evolution#two-directions-of-compatibility"
+        },
+        {
+          "text": "Add only optional fields with a default and a new tag. Never add a required field.",
+          "lesson": "encoding-and-evolution#safe-and-unsafe-changes"
+        },
+        {
+          "text": "Never reuse the tag of a removed field. Reserve it.",
+          "lesson": "encoding-and-evolution#safe-and-unsafe-changes"
+        },
+        {
+          "text": "A change of meaning, such as grams to kilograms, passes every compatibility check.",
+          "lesson": "encoding-and-evolution#safe-and-unsafe-changes"
+        },
+        {
+          "text": "Protocol Buffers and Thrift identify a field by its tag. Avro needs the writer's schema to read.",
+          "lesson": "encoding-and-evolution#binary-formats-with-a-schema"
+        },
+        {
+          "text": "Data outlives code. New code must read old rows for a long time.",
+          "lesson": "encoding-and-evolution#dataflow-through-databases"
+        },
+        {
+          "text": "The data layer must keep unknown fields. Else old code deletes new data when it writes back.",
+          "lesson": "encoding-and-evolution#dataflow-through-databases"
+        },
+        {
+          "text": "Never decode language-specific bytes from a source that you do not trust.",
+          "lesson": "encoding-and-evolution#language-specific-formats"
+        },
+        {
+          "text": "A network call can get no answer. Then you do not know if the action ran.",
+          "lesson": "encoding-and-evolution#dataflow-through-services"
+        }
+      ]
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Chain of 10 calls, each up 99.9%",
+          "value": "99.0%, about 3.6 days down a year",
+          "lesson": "sync-async#the-cost-of-a-chain-of-calls"
+        },
+        {
+          "label": "Two copies, each up 99%",
+          "value": "About 99.99%",
+          "note": "Only if their failures are independent.",
+          "lesson": "sync-async#the-cost-of-a-chain-of-calls"
+        },
+        {
+          "label": "Size added by Base64",
+          "value": "About one third",
+          "lesson": "encoding-and-evolution#json-xml-and-csv"
+        },
+        {
+          "label": "JavaScript reads integers with errors above",
+          "value": "2^53",
+          "note": "Send large IDs as strings.",
+          "lesson": "encoding-and-evolution#json-xml-and-csv"
+        },
+        {
+          "label": "Usual broker limit for one message",
+          "value": "Roughly one megabyte",
+          "note": "Use a claim check for a larger payload.",
+          "lesson": "messaging#patterns-for-workers"
+        }
+      ]
+    }
+  ]
+}

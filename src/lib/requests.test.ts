@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { chatRequest, readBody, reviewRequest, settingsUpdate } from "./requests";
+import {
+  chatRequest,
+  drillGradeRequest,
+  readBody,
+  reviewRequest,
+  settingsUpdate,
+} from "./requests";
 
 const post = (body: string) => new Request("http://localhost/api", { method: "POST", body });
 
@@ -87,5 +93,21 @@ describe("request schemas", () => {
       openaiCompatible: { ...settings.openaiCompatible, baseUrl: "file:///etc" },
     };
     expect(settingsUpdate.safeParse(file).success).toBe(false);
+  });
+});
+
+describe("drillGradeRequest", () => {
+  it("accepts a term ID and an answer", () => {
+    expect(drillGradeRequest.safeParse({ termId: "port", answer: "An interface." }).success).toBe(
+      true,
+    );
+  });
+
+  it.each([
+    ["an empty answer", { termId: "port", answer: "   " }],
+    ["a missing term ID", { termId: "", answer: "An interface." }],
+    ["a very long answer", { termId: "port", answer: "x".repeat(4_001) }],
+  ])("rejects %s", (_name, body) => {
+    expect(drillGradeRequest.safeParse(body).success).toBe(false);
   });
 });

@@ -1,14 +1,16 @@
+import StudyLayout from "@/components/StudyLayout";
 import WikiSidebar from "@/components/WikiSidebar";
 
 export default function LearnLayout({ children }: LayoutProps<"/learn">) {
   return (
     <div className="flex flex-1">
       <aside className="hidden w-64 shrink-0 border-r-2 bg-card md:block">
-        <div className="sticky top-0 max-h-dvh overflow-y-auto p-4">
+        <div className="sticky top-0 h-[calc(100dvh-3.5rem)] overflow-y-auto p-4">
           <WikiSidebar />
         </div>
       </aside>
-      <div className="min-w-0 flex-1">{children}</div>
+      {/* The page text, with highlights, and the notebook on the right. */}
+      <StudyLayout>{children}</StudyLayout>
     </div>
   );
 }

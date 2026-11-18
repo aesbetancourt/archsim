@@ -27,6 +27,9 @@ type Props = {
   // Called with the plain text of the notes after each change.
   onTextChange?: (text: string) => void;
   label?: string;
+  placeholder?: string;
+  // Less space around the text, for a narrow column.
+  compact?: boolean;
 };
 
 function Tool({
@@ -69,7 +72,10 @@ export default function NotesEditor({
   onHtmlChange,
   onTextChange,
   label = "Notes for this kata",
+  compact = false,
+  placeholder = "Think here before you draw. What does the system do? What is hard? What are your questions and assumptions?",
 }: Props) {
+  const space = compact ? "px-4 py-3" : "px-8 py-6";
   const editor = useEditor({
     extensions: [StarterKit, Highlight],
     content:
@@ -82,7 +88,7 @@ export default function NotesEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "notes-editor mx-auto min-h-full max-w-3xl px-8 py-6 outline-none",
+        class: `notes-editor mx-auto min-h-full max-w-3xl outline-none ${space}`,
         "aria-label": label,
       },
     },
@@ -199,9 +205,10 @@ export default function NotesEditor({
         onClick={() => editor.commands.focus()}
       >
         {state.empty && (
-          <p className="pointer-events-none absolute inset-x-0 mx-auto max-w-3xl px-8 py-6 text-[0.95rem] leading-7 text-muted-foreground">
-            Think here before you draw. What does the system do? What is hard? What are your
-            questions and assumptions?
+          <p
+            className={`pointer-events-none absolute inset-x-0 mx-auto max-w-3xl text-[0.95rem] leading-7 text-muted-foreground ${space}`}
+          >
+            {placeholder}
           </p>
         )}
         <EditorContent editor={editor} className="h-full" />

@@ -1,0 +1,127 @@
+import { jsonFile } from "./json-file";
+
+// A passage that the user highlighted on a learning page.
+export type Highlight = {
+  id: string;
+  // The path of the page, for example /learn/caching.
+  page: string;
+  // The title of the page when the user made the highlight.
+  title: string;
+  // The highlighted text. The page finds the passage again with this text if the page changes.
+  text: string;
+  // The position of the passage in the text of the page.
+  start: number;
+  note: string;
+  createdAt: string;
+};
+
+// The notes of one learning page, as HTML.
+export type PageNote = { page: string; title: string; html: string; updatedAt: string };
+
+// A general note, not tied to a page. The user gives it a title, for example "Questions".
+export type NoteDoc = {
+  id: string;
+  title: string;
+  html: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Notebook = { documents: NoteDoc[]; pages: PageNote[]; highlights: Highlight[] };
+
+const UNTITLED = "Untitled note";
+
+const newId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+const list = <T>(value: unknown): T[] => (Array.isArray(value) ? value : []);
+
+function normalize(value: unknown): Notebook {
+  const saved = (value ?? {}) as Partial<Notebook> & { notes?: unknown };
+  const notebook: Notebook = {
+    documents: list(saved.documents),
+    pages: list(saved.pages),
+    highlights: list(saved.highlights),
+  };
+  // An older notebook had one notes document. Keep it as the first general note.
+  if (typeof saved.notes === "string" && saved.notes.trim()) {
+    const now = new Date().toISOString();
+    notebook.documents.unshift({
+      id: newId(),
+      title: "General notes",
+      html: saved.notes,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+  return notebook;
+}
+
+const store = jsonFile("notebook.json", normalize);
+export const readNotebook = store.read;
+const change = store.change;
+
+export function addHighlight(
+  input: Pick<Highlight, "page" | "title" | "text" | "start" | "note">,
+): Promise<Highlight> {
+  return change((notebook) => {
+    const highlight: Highlight = { ...input, id: newId(), createdAt: new Date().toISOString() };
+    notebook.highlights.push(highlight);
+    return highlight;
+  });
+}
+
+export function updateHighlightNote(id: string, note: string): Promise<Highlight | undefined> {
+  return change((notebook) => {
+    const highlight = notebook.highlights.find((item) => item.id === id);
+    if (highlight) highlight.note = note;
+    return highlight;
+  });
+}
+
+export function removeHighlight(id: string): Promise<void> {
+  return change((notebook) => {
+    notebook.highlights = notebook.highlights.filter((item) => item.id !== id);
+  });
+}
+
+// Save the notes of a page. Empty notes remove the entry.
+export function savePageNote(input: Pick<PageNote, "page" | "title" | "html">): Promise<void> {
+  return change((notebook) => {
+    notebook.pages = notebook.pages.filter((item) => item.page !== input.page);
+    if (input.html.trim()) notebook.pages.push({ ...input, updatedAt: new Date().toISOString() });
+  });
+}
+
+export function createDocument(title: string): Promise<NoteDoc> {
+  return change((notebook) => {
+    const now = new Date().toISOString();
+    const document: NoteDoc = {
+      id: newId(),
+      title: title.trim() || UNTITLED,
+      html: "",
+      createdAt: now,
+      updatedAt: now,
+    };
+    notebook.documents.push(document);
+    return document;
+  });
+}
+
+export function updateDocument(
+  id: string,
+  update: Pick<NoteDoc, "title" | "html">,
+): Promise<NoteDoc | undefined> {
+  return change((notebook) => {
+    const document = notebook.documents.find((item) => item.id === id);
+    if (!document) return undefined;
+    document.title = update.title.trim() || UNTITLED;
+    document.html = update.html;
+    document.updatedAt = new Date().toISOString();
+    return document;
+  });
+}
+
+export function deleteDocument(id: string): Promise<void> {
+  return change((notebook) => {
+    notebook.documents = notebook.documents.filter((item) => item.id !== id);
+  });
+}

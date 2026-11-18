@@ -1,0 +1,239 @@
+{
+  "section": "Inside one application",
+  "summary": "How to organize the code inside one deployable part, so that business rules stay free of technical details.",
+  "blocks": [
+    {
+      "type": "choose",
+      "title": "Select a structure for one code base",
+      "items": [
+        {
+          "when": "Simple data in, data out, few rules",
+          "use": "Plain layers",
+          "lesson": "code-architecture#how-to-select"
+        },
+        {
+          "when": "Real business rules that will live for years",
+          "use": "Hexagonal, or clean or onion",
+          "lesson": "code-architecture#how-to-select"
+        },
+        {
+          "when": "Many features that are mostly independent",
+          "use": "Vertical slices, alone or inside a hexagonal core",
+          "lesson": "code-architecture#how-to-select"
+        },
+        {
+          "when": "Complex rules about what is valid",
+          "use": "Domain model patterns",
+          "lesson": "code-architecture#how-to-select"
+        },
+        {
+          "when": "Reads and writes have very different needs",
+          "use": "CQRS, at the lowest level that works",
+          "lesson": "cqrs-event-sourcing#cqrs"
+        },
+        {
+          "when": "History is the product, as in a ledger",
+          "use": "Event sourcing, in that one part only",
+          "lesson": "cqrs-event-sourcing#event-sourcing"
+        },
+        {
+          "when": "Two things must be consistent at each moment",
+          "use": "One aggregate",
+          "lesson": "domain-model#aggregates-the-important-one-for-architects"
+        },
+        {
+          "when": "A short delay between two things is acceptable",
+          "use": "Two aggregates and a domain event",
+          "lesson": "domain-model#aggregates-the-important-one-for-architects"
+        },
+        {
+          "when": "The only need is a stream of changes for other services",
+          "use": "An outbox or CDC, not event sourcing",
+          "lesson": "cqrs-event-sourcing#when-to-say-no"
+        },
+        {
+          "when": "The only need is an audit trail",
+          "use": "An append-only audit table",
+          "lesson": "cqrs-event-sourcing#when-to-say-no"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Rules of thumb",
+      "items": [
+        {
+          "text": "Business rules must not depend on technical details.",
+          "lesson": "code-architecture#why-the-second-level-matters-to-an-architect"
+        },
+        {
+          "text": "Code in the core imports nothing from an adapter, a framework, or a database library.",
+          "lesson": "hexagonal#the-one-rule"
+        },
+        {
+          "text": "Check the direction of dependencies automatically, with an architecture test or a lint rule.",
+          "lesson": "dependencies#how-to-keep-the-direction-of-dependencies"
+        },
+        {
+          "text": "Keep one composition root at the edge. It creates and connects parts, and decides nothing.",
+          "lesson": "dependencies#the-composition-root"
+        },
+        {
+          "text": "Make each dependency an interface (a port), not a concrete class. Then a test can replace it.",
+          "lesson": "dependencies#depend-on-an-interface-not-a-class"
+        },
+        {
+          "text": "Share code between slices when it must change together, not because it looks similar.",
+          "lesson": "vertical-slices#the-hard-part-shared-code"
+        },
+        {
+          "text": "One transaction changes one aggregate. One aggregate refers to another only by its ID.",
+          "lesson": "domain-model#aggregates-the-important-one-for-architects"
+        },
+        {
+          "text": "Use value objects freely. They are the cheapest and most useful domain model pattern.",
+          "lesson": "domain-model#value-objects"
+        },
+        {
+          "text": "Make a remote call outside the transaction. Record the state before and after the call.",
+          "lesson": "hexagonal#transaction-boundaries"
+        },
+        {
+          "text": "Always map between the core and the public API, and between the core and published messages.",
+          "lesson": "hexagonal#mapping-between-the-core-and-the-adapters"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Common mistakes",
+      "items": [
+        {
+          "text": "\"Hexagonal or microservices?\" They are not alternatives. They are two different levels.",
+          "lesson": "code-architecture#two-levels-with-one-word"
+        },
+        {
+          "text": "A port that copies the technology, such as `SqlOrderPort.executeQuery`. A port speaks the language of the business.",
+          "lesson": "hexagonal#common-mistakes"
+        },
+        {
+          "text": "Business rules in adapters, such as a controller that decides if an order is valid.",
+          "lesson": "hexagonal#common-mistakes"
+        },
+        {
+          "text": "Framework annotations in the domain model. The core then depends on the framework.",
+          "lesson": "hexagonal#common-mistakes"
+        },
+        {
+          "text": "An aggregate that is too large, such as a customer that contains all its orders.",
+          "lesson": "domain-model#aggregates-the-important-one-for-architects"
+        },
+        {
+          "text": "A test full of mocks. It breaks when you refactor, also when the behavior is correct.",
+          "lesson": "dependencies#test-doubles"
+        },
+        {
+          "text": "Two vocabularies, such as onion and clean, mixed in one code base.",
+          "lesson": "clean-onion#when-to-use-which-name"
+        },
+        {
+          "text": "CQRS or event sourcing as the default, or because \"it scales\" with no number.",
+          "lesson": "cqrs-event-sourcing#when-to-say-no"
+        },
+        {
+          "text": "Entity services: one service for each table, with create, read, update, delete. They hide no decision.",
+          "lesson": "deep-modules#a-service-is-a-module-with-a-network-between"
+        },
+        {
+          "text": "An anemic domain model: domain names, only getters and setters, and all rules in services.",
+          "lesson": "domain-model#the-anemic-domain-model"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "One idea, three vocabularies",
+      "columns": ["Hexagonal", "Onion", "Clean"],
+      "rows": [
+        ["Domain model", "Domain model", "Entities"],
+        ["Use cases", "Application services", "Use cases"],
+        ["Ports", "Interfaces in the inner rings", "Input and output ports"],
+        ["Adapters", "Infrastructure, UI", "Interface adapters; frameworks and drivers"]
+      ],
+      "lesson": "clean-onion#how-the-names-map"
+    },
+    {
+      "type": "table",
+      "title": "Test doubles",
+      "columns": ["Double", "What it does"],
+      "rows": [
+        ["Stub", "Returns fixed answers, with no logic"],
+        ["Fake", "A working but simplified implementation"],
+        ["Mock", "Records the calls, and the test checks them"],
+        ["Spy", "A real or fake object that also records the calls"]
+      ],
+      "lesson": "dependencies#test-doubles"
+    },
+    {
+      "type": "rules",
+      "title": "Deep modules",
+      "items": [
+        {
+          "text": "Complexity is anything that makes a system hard to understand or change. It is not size.",
+          "lesson": "deep-modules#why-complexity-is-the-real-enemy"
+        },
+        {
+          "text": "A deep module has a simple interface and a lot of functionality behind it.",
+          "lesson": "deep-modules#deep-and-shallow-modules"
+        },
+        {
+          "text": "The interface is the cost to each caller. The implementation is the benefit.",
+          "lesson": "deep-modules#deep-and-shallow-modules"
+        },
+        {
+          "text": "A small unit is good only when it hides something. Many tiny classes add interfaces.",
+          "lesson": "deep-modules#deep-and-shallow-modules"
+        },
+        {
+          "text": "Put code that shares knowledge in one module, not one module for each step in time.",
+          "lesson": "deep-modules#information-hiding-and-information-leakage"
+        },
+        {
+          "text": "A pass-through method or gateway only forwards calls. It adds an interface and hides nothing.",
+          "lesson": "deep-modules#different-layer-different-abstraction"
+        },
+        {
+          "text": "Pull complexity down. A simple interface is more important than a simple implementation.",
+          "lesson": "deep-modules#pull-complexity-downward"
+        },
+        {
+          "text": "Define errors out of existence, but never hide an error that the caller must know.",
+          "lesson": "deep-modules#define-errors-out-of-existence"
+        },
+        {
+          "text": "Design each important module twice, with very different approaches. Then compare them.",
+          "lesson": "deep-modules#design-it-twice"
+        },
+        {
+          "text": "Write the interface comment first. A long, hard comment shows an interface that is too complex.",
+          "lesson": "deep-modules#comments-and-names"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Three symptoms of complexity",
+      "columns": ["Symptom", "What it is", "Main cause"],
+      "rows": [
+        ["Change amplification", "A small change needs edits in many places", "Dependencies"],
+        ["Cognitive load", "You must know a lot to change code safely", "Obscurity"],
+        [
+          "Unknown unknowns",
+          "Not clear what to change. Found in production. The worst one",
+          "A dependency that nobody can see"
+        ]
+      ],
+      "lesson": "deep-modules#the-three-symptoms"
+    }
+  ]
+}

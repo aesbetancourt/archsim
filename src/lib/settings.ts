@@ -1,7 +1,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export const modes = ["claude-code", "opencode", "anthropic", "openai-compatible"] as const;
+export const modes = [
+  "claude-code",
+  "opencode",
+  "opencode-go",
+  "anthropic",
+  "openai-compatible",
+] as const;
 export type Mode = (typeof modes)[number];
 
 // The settings file is in the data folder. Git ignores that folder.
@@ -10,6 +16,7 @@ export type Settings = {
   mode: Mode;
   claudeCode: { model: string };
   openCode: { model: string };
+  openCodeGo: { apiKey: string; model: string };
   anthropic: { apiKey: string; model: string };
   openaiCompatible: { baseUrl: string; apiKey: string; model: string };
 };
@@ -20,6 +27,7 @@ const defaultSettings: Settings = {
   mode: "claude-code",
   claudeCode: { model: "" },
   openCode: { model: "" },
+  openCodeGo: { apiKey: "", model: "kimi-k3" },
   anthropic: { apiKey: "", model: "claude-opus-5-5" },
   openaiCompatible: { baseUrl: "", apiKey: "", model: "" },
 };
@@ -31,6 +39,7 @@ export async function readSettings(): Promise<Settings> {
       mode: saved.mode ?? defaultSettings.mode,
       claudeCode: { ...defaultSettings.claudeCode, ...saved.claudeCode },
       openCode: { ...defaultSettings.openCode, ...saved.openCode },
+      openCodeGo: { ...defaultSettings.openCodeGo, ...saved.openCodeGo },
       anthropic: { ...defaultSettings.anthropic, ...saved.anthropic },
       openaiCompatible: { ...defaultSettings.openaiCompatible, ...saved.openaiCompatible },
     };
@@ -49,6 +58,7 @@ export type PublicSettings = {
   mode: Mode;
   claudeCode: { model: string };
   openCode: { model: string };
+  openCodeGo: { keyHint: string; model: string };
   anthropic: { keyHint: string; model: string };
   openaiCompatible: { baseUrl: string; keyHint: string; model: string };
 };
@@ -60,6 +70,7 @@ export function toPublic(settings: Settings): PublicSettings {
     mode: settings.mode,
     claudeCode: settings.claudeCode,
     openCode: settings.openCode,
+    openCodeGo: { keyHint: hint(settings.openCodeGo.apiKey), model: settings.openCodeGo.model },
     anthropic: { keyHint: hint(settings.anthropic.apiKey), model: settings.anthropic.model },
     openaiCompatible: {
       baseUrl: settings.openaiCompatible.baseUrl,

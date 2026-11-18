@@ -1,29 +1,41 @@
 import { BookA } from "lucide-react";
 import Link from "next/link";
 import GlossaryList from "@/components/GlossaryList";
+import StudyLayout from "@/components/StudyLayout";
 import { glossary } from "@/lib/glossary";
 
 export default function GlossaryPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">
-      <header className="space-y-3">
-        <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
-          <BookA className="size-7 shrink-0 text-primary" aria-hidden />
-          Glossary
-        </h1>
-        <p className="max-w-2xl text-base text-muted-foreground">
-          {glossary.length} terms from the katas, the worked answers, and the Learn pages, in plain
-          words. Each term has an example. Most have a link to a lesson and to Wikipedia.
-        </p>
-        <p className="text-muted-foreground">
-          The architecture styles and characteristics have their own lessons on the{" "}
-          <Link href="/learn" className="text-primary hover:underline">
-            Learn page
-          </Link>
-          .
-        </p>
-      </header>
-      <GlossaryList />
-    </main>
+    <div className="flex flex-1">
+      <StudyLayout>
+        <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">
+          <header className="space-y-3">
+            <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight">
+              <BookA className="size-7 shrink-0 text-primary" aria-hidden />
+              Glossary
+            </h1>
+            <p className="max-w-2xl text-base text-muted-foreground">
+              {glossary.length} terms from the katas, the worked answers, and the Learn pages, in
+              plain words. Each term has an example. Most have a link to a lesson and to Wikipedia.
+            </p>
+            <p className="text-muted-foreground">
+              To learn the terms, use the{" "}
+              <Link href="/drill" className="text-primary hover:underline">
+                vocabulary drill
+              </Link>
+              .
+            </p>
+            <p className="text-muted-foreground">
+              The architecture styles and characteristics have their own lessons on the{" "}
+              <Link href="/learn" className="text-primary hover:underline">
+                Learn page
+              </Link>
+              .
+            </p>
+          </header>
+          <GlossaryList />
+        </main>
+      </StudyLayout>
+    </div>
   );
 }
