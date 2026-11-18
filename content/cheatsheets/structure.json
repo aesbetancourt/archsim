@@ -1,0 +1,437 @@
+{
+  "section": "Structure",
+  "summary": "Decide how to divide a system, how many deployments and quanta it has, its style, and its pieces.",
+  "blocks": [
+    {
+      "type": "table",
+      "title": "Architecture styles compared",
+      "columns": ["Style", "Topology", "Scalability", "Main cost", "How it fails"],
+      "rows": [
+        [
+          "Layered",
+          "Closed technical layers in one unit",
+          "Low",
+          "A feature change often touches every layer",
+          "Sinkholes, and layer rules that decay without checks"
+        ],
+        [
+          "Modular monolith",
+          "Domain modules in one unit, a schema each",
+          "Low",
+          "All modules scale and fail together",
+          "Unchecked imports or a shared schema make a ball of mud"
+        ],
+        [
+          "Microkernel",
+          "A core, plug-ins, a registry, one contract",
+          "Low",
+          "The plug-in contract is hard to change",
+          "The core grows by accident. A bad plug-in stops the core"
+        ],
+        [
+          "Service-based",
+          "A UI, 4 to 12 coarse services, one shared database",
+          "Medium",
+          "The shared database is a shared point of failure",
+          "A slow database or a long query slows all services"
+        ],
+        [
+          "Event-driven",
+          "A broker (no central part) or a mediator",
+          "High",
+          "The flow is hard to follow, test, and debug",
+          "Slow consumers, poison messages, silent stops"
+        ],
+        [
+          "Microservices",
+          "One service for each bounded context, with its own data",
+          "High",
+          "High operating cost, hard cross-service transactions",
+          "Cascading failures, retry storms, data copies that drift"
+        ],
+        [
+          "Space-based",
+          "Processing units with in-memory caches, data pumps to a database",
+          "High",
+          "Complex and expensive to build and operate",
+          "Data collisions, a pump backlog that grows"
+        ],
+        [
+          "Pipeline",
+          "Filters and one-way pipes, usually one unit",
+          "Low",
+          "A poor fit for interactive work",
+          "One slow filter or one bad record stops the run"
+        ]
+      ],
+      "lesson": "styles"
+    },
+    {
+      "type": "choose",
+      "title": "Select a style",
+      "items": [
+        {
+          "when": "One set of characteristics fits all parts of the system",
+          "use": "A monolithic style",
+          "lesson": "styles#a-decision-procedure"
+        },
+        {
+          "when": "Parts need different characteristics, and you accept the network costs",
+          "use": "A distributed style, after you find the quanta",
+          "lesson": "styles#monolithic-and-distributed-styles"
+        },
+        {
+          "when": "The team is small, the budget is tight, or the problem is not yet clear",
+          "use": "Layered",
+          "lesson": "layered#when-it-is-a-good-first-style"
+        },
+        {
+          "when": "You want business boundaries without the cost of a distributed system",
+          "use": "Modular monolith (the usual default)",
+          "lesson": "modular-monolith#domain-partitioning-in-one-deployment"
+        },
+        {
+          "when": "A stable core has many variations, such as one rule set per country",
+          "use": "Microkernel",
+          "lesson": "microkernel#the-core-system-and-the-plug-ins"
+        },
+        {
+          "when": "Business areas need some independence, and microservices cost too much",
+          "use": "Service-based",
+          "lesson": "service-based#why-it-is-a-pragmatic-choice"
+        },
+        {
+          "when": "Work arrives in bursts, or one occurrence starts many independent reactions",
+          "use": "Event-driven",
+          "lesson": "event-driven#request-based-or-event-based"
+        },
+        {
+          "when": "Many teams, uneven load, and mature operations",
+          "use": "Microservices",
+          "lesson": "microservices#what-the-style-requires"
+        },
+        {
+          "when": "Load peaks are extreme and hard to predict, such as a major ticket sale",
+          "use": "Space-based",
+          "lesson": "space-based#the-problem-it-solves"
+        },
+        {
+          "when": "The problem is one-way data processing: import, convert, enrich, export",
+          "use": "Pipeline",
+          "lesson": "pipeline#pipes-and-filters"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select a topology or a variant",
+      "items": [
+        {
+          "when": "An event flow is short, and new reactions are added often",
+          "use": "Broker topology",
+          "lesson": "event-driven#broker-topology"
+        },
+        {
+          "when": "An event flow has many steps, and the business must know when it completes",
+          "use": "Mediator topology",
+          "lesson": "event-driven#mediator-topology"
+        },
+        {
+          "when": "Service-based, and a schema change must not break every service",
+          "use": "Partition the database and entity libraries by domain",
+          "lesson": "service-based#database-variants"
+        },
+        {
+          "when": "One service-based service needs its own availability or scale",
+          "use": "Give it its own database",
+          "lesson": "service-based#database-variants"
+        },
+        {
+          "when": "Space-based data is small and changes rarely, such as a venue map",
+          "use": "A replicated cache in each unit",
+          "lesson": "space-based#replicated-or-distributed-cache"
+        },
+        {
+          "when": "Space-based data is large, or has a high update rate, such as seat holds",
+          "use": "A distributed cache",
+          "lesson": "space-based#replicated-or-distributed-cache"
+        },
+        {
+          "when": "Customers or partners write their own plug-ins",
+          "use": "Load plug-ins at run time",
+          "lesson": "microkernel#plug-ins-at-compile-time-and-at-run-time"
+        },
+        {
+          "when": "About 80% of the requests in a layered system are sinkholes",
+          "use": "Vertical slices, or an open business layer",
+          "lesson": "layered#the-sinkhole-anti-pattern"
+        },
+        {
+          "when": "Modules need separate data, but one database to operate",
+          "use": "A schema and a user per module",
+          "lesson": "modular-monolith#a-database-schema-for-each-module"
+        },
+        {
+          "when": "Dozens of services need the same logs, retries, and secure connections",
+          "use": "A sidecar, or a service mesh",
+          "lesson": "microservices#operational-reuse-the-sidecar-and-the-service-mesh"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Divide the system",
+      "items": [
+        {
+          "when": "The business asks for changes in business terms",
+          "use": "Divide by business area first",
+          "lesson": "boundaries#divide-by-business-area"
+        },
+        {
+          "when": "One word means different things to different people",
+          "use": "A boundary (a bounded context)",
+          "lesson": "boundaries#how-to-find-the-areas"
+        },
+        {
+          "when": "Two areas must write the same table",
+          "use": "Probably one area",
+          "lesson": "boundaries#how-to-find-the-areas"
+        },
+        {
+          "when": "One piece differs in load, change rate, uptime, security, or owner",
+          "use": "Split it into its own part",
+          "lesson": "boundaries#how-large-must-a-part-be"
+        },
+        {
+          "when": "Pieces share one transaction, call each other always, or change together",
+          "use": "Keep them together",
+          "lesson": "boundaries#how-large-must-a-part-be"
+        },
+        {
+          "when": "You need separate scale, fault isolation, separate releases, or different technology",
+          "use": "Distributed parts",
+          "lesson": "distributed#what-you-get-in-return"
+        },
+        {
+          "when": "You start a system and no reason to distribute is real yet",
+          "use": "Modular monolith, then move modules out",
+          "lesson": "distributed#how-to-decide"
+        },
+        {
+          "when": "Two experts argue about what one word means",
+          "use": "Probably two bounded contexts",
+          "lesson": "bounded-contexts#ubiquitous-language"
+        },
+        {
+          "when": "Most requests go through a chain of three or more synchronous calls",
+          "use": "Join the services (nano-services)",
+          "lesson": "service-granularity#the-problems-of-nano-services"
+        },
+        {
+          "when": "Forces to split and to join conflict for one candidate",
+          "use": "Turn each force into a business result",
+          "lesson": "service-granularity#how-to-balance-the-forces"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Integrate two bounded contexts",
+      "items": [
+        {
+          "when": "The upstream model is poor, old, or foreign, and your model matters",
+          "use": "Anticorruption layer",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "The upstream team will not change, and its model is good enough",
+          "use": "Conformist",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "Many consumers need the same integration",
+          "use": "Open host service",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "Contexts need a shared, documented exchange format, often between companies",
+          "use": "Published language",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "The shared part is small, stable, and truly the same in both",
+          "use": "Shared kernel",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "The upstream team is willing and able to listen",
+          "use": "Customer-supplier",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "The integration costs more than the value it gives",
+          "use": "Separate ways",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "An old system has no clear model, and you cannot fix it now",
+          "use": "Big ball of mud, with a boundary",
+          "lesson": "bounded-contexts#the-relationship-patterns"
+        },
+        {
+          "when": "The context is the core domain",
+          "use": "Build it, and protect it with an ACL",
+          "lesson": "bounded-contexts#distillation-core-supporting-generic"
+        },
+        {
+          "when": "The subdomain is generic, such as login or card payments",
+          "use": "Buy it, and conform to it",
+          "lesson": "bounded-contexts#distillation-core-supporting-generic"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Split a monolith",
+      "items": [
+        {
+          "when": "Changes break other areas, but no part needs separate scale or releases",
+          "use": "A modular monolith first",
+          "lesson": "decomposing-a-monolith#why-and-when-to-split"
+        },
+        {
+          "when": "The packages roughly follow business areas",
+          "use": "Component-based decomposition",
+          "lesson": "decomposing-a-monolith#is-the-code-ready-to-split"
+        },
+        {
+          "when": "The code is a big ball of mud",
+          "use": "Tactical forking: copy, then delete",
+          "lesson": "decomposing-a-monolith#tactical-forking"
+        },
+        {
+          "when": "Outside callers reach the function directly",
+          "use": "Strangler fig",
+          "lesson": "decomposing-a-monolith#moving-code-out-the-migration-patterns"
+        },
+        {
+          "when": "The function is deep inside the monolith",
+          "use": "Branch by abstraction",
+          "lesson": "decomposing-a-monolith#moving-code-out-the-migration-patterns"
+        },
+        {
+          "when": "A mistake is expensive, such as a calculation of prices or pay",
+          "use": "Parallel run",
+          "lesson": "decomposing-a-monolith#moving-code-out-the-migration-patterns"
+        },
+        {
+          "when": "The monolith has no events to publish",
+          "use": "Change data capture",
+          "lesson": "decomposing-a-monolith#moving-code-out-the-migration-patterns"
+        },
+        {
+          "when": "You select the first part to move",
+          "use": "An edge part that fixes a problem",
+          "lesson": "decomposing-a-monolith#where-to-start"
+        },
+        {
+          "when": "You move the code before the data",
+          "use": "A plan to finish the data split",
+          "lesson": "decomposing-a-monolith#the-order-of-code-and-data"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select a building block",
+      "items": [
+        {
+          "when": "A service needs more than one copy, for load or availability",
+          "use": "Load balancer",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "Many services are behind one public API",
+          "use": "API gateway",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "Work is slow or comes in peaks, and the user does not wait",
+          "use": "Message queue and worker",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "Many parts react to the same event, and that list will grow",
+          "use": "Pub/sub topic",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "Data has relations and must stay correct",
+          "use": "Relational database (the safe default)",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "Reads are much more frequent than writes, and the primary is the limit",
+          "use": "Read replica",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "The same data is read many times for each write, and slightly old answers are acceptable",
+          "use": "Cache",
+          "lesson": "building-blocks"
+        },
+        {
+          "when": "The system keeps large files",
+          "use": "Object storage, not the database",
+          "lesson": "building-blocks"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Rules and warnings",
+      "items": [
+        {
+          "text": "Make each part highly cohesive, and keep coupling between the parts low.",
+          "lesson": "modularity#the-question"
+        },
+        {
+          "text": "Shared database tables are the strongest coupling. A message that does not wait is the weakest.",
+          "lesson": "modularity#coupling"
+        },
+        {
+          "text": "Start with larger parts, and split only for a reason.",
+          "lesson": "boundaries#how-large-must-a-part-be"
+        },
+        {
+          "text": "Take three likely business changes. If each usually touches one part, the boundaries are good.",
+          "lesson": "boundaries#a-test-for-your-boundaries"
+        },
+        {
+          "text": "A characteristic belongs to a quantum. Separate quanta let each part pay only for its needs.",
+          "lesson": "architecture-quantum#why-an-architect-needs-it"
+        },
+        {
+          "text": "Services that share one database are one quantum, however many deployments they have.",
+          "lesson": "architecture-quantum#a-shared-database-makes-one-quantum"
+        },
+        {
+          "text": "A distributed monolith has the operating cost of microservices and the change cost of a monolith.",
+          "lesson": "modularity#the-distributed-monolith"
+        },
+        {
+          "text": "A network call looks like a function call. It can have a third result: you do not know.",
+          "lesson": "distributed#what-a-network-adds"
+        },
+        {
+          "text": "The entity trap: one component for each table leaves the business workflow with no home.",
+          "lesson": "boundaries#the-entity-trap"
+        },
+        {
+          "text": "Check layer and module rules with a fitness function in each build. Without checks, they decay within months.",
+          "lesson": "modular-monolith#how-to-enforce-the-boundaries"
+        }
+      ]
+    }
+  ]
+}

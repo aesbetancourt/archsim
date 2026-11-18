@@ -1,0 +1,340 @@
+{
+  "section": "Reliability and operations",
+  "summary": "Decide how a design survives faults and load, how you know and test that it works, how you change it safely, and how a team responds to an outage.",
+  "blocks": [
+    {
+      "type": "choose",
+      "title": "Fix a failure, capacity, or test problem",
+      "items": [
+        {
+          "when": "A slow part holds its callers",
+          "use": "A timeout",
+          "lesson": "resilience#the-standard-tools"
+        },
+        {
+          "when": "Repeated calls go to a part that is down",
+          "use": "A circuit breaker",
+          "lesson": "resilience#the-standard-tools"
+        },
+        {
+          "when": "One slow dependency uses all capacity",
+          "use": "A bulkhead",
+          "lesson": "resilience#the-standard-tools"
+        },
+        {
+          "when": "A dependency that is not essential is not available",
+          "use": "A fallback: a simpler answer",
+          "lesson": "resilience#the-standard-tools"
+        },
+        {
+          "when": "A stub in a service test can drift from the real service",
+          "use": "A consumer-driven contract, run by the provider",
+          "lesson": "testing-strategy#consumer-driven-contracts"
+        },
+        {
+          "when": "Reads overload the database",
+          "use": "Read from followers",
+          "lesson": "scalability#the-standard-moves"
+        },
+        {
+          "when": "Load arrives in bursts",
+          "use": "A queue in front of workers",
+          "lesson": "scalability#the-standard-moves"
+        },
+        {
+          "when": "The data is too large for one server",
+          "use": "Partition",
+          "lesson": "scalability#the-standard-moves"
+        },
+        {
+          "when": "Requests above capacity arrive at the edge",
+          "use": "Shed load: refuse the extra with 503",
+          "lesson": "resilience#the-stability-patterns"
+        },
+        {
+          "when": "A slow consumer inside the system falls behind",
+          "use": "Back pressure: a limited queue",
+          "lesson": "resilience#the-stability-patterns"
+        }
+      ]
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Seconds in a day",
+          "value": "About 100,000",
+          "note": "Exact: 86,400.",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "1 million actions each day",
+          "value": "About 12 each second",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "1 billion actions each day",
+          "value": "About 12,000 each second",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "Peak load",
+          "value": "Often 2 to 10 times the average",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "A round trip in the same data center",
+          "value": "About 0.5 milliseconds",
+          "note": "Rough guide. Use it to compare options.",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "A simple database query",
+          "value": "1 to 10 milliseconds",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "A call between continents",
+          "value": "100 to 200 milliseconds",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "Error budget of an SLO of 99.9% each month",
+          "value": "About 43 minutes of failure",
+          "lesson": "observability#service-levels"
+        },
+        {
+          "label": "Downtime each month at 99.99%",
+          "value": "About 4.3 minutes",
+          "note": "Each added 9 divides the downtime by ten.",
+          "lesson": "estimation#numbers-to-remember"
+        },
+        {
+          "label": "Planned load on a server at peak",
+          "value": "About 60 to 70% of capacity",
+          "note": "Queue wait rises sharply near the limit.",
+          "lesson": "scalability#where-systems-run-out"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "The four calculations",
+      "columns": ["Calculation", "How"],
+      "rows": [
+        ["Requests each second", "Users × actions each day ÷ 100,000, then × peak factor"],
+        ["Reads against writes", "Many reads: cache. Many writes: queues and partitioning"],
+        ["Storage", "Records each day × record size × days to keep × copies"],
+        ["Bandwidth", "Requests each second × answer size"]
+      ],
+      "lesson": "estimation#the-four-calculations"
+    },
+    {
+      "type": "rules",
+      "title": "Design rules",
+      "items": [
+        {
+          "text": "\"Slow\" is worse than \"down\". A slow part holds its callers until they have no capacity.",
+          "lesson": "resilience#the-starting-point"
+        },
+        {
+          "text": "Retry at one level only. Three levels of three retries make one failure 27 calls.",
+          "lesson": "resilience#rules-for-retries"
+        },
+        {
+          "text": "Retry only operations that are safe to repeat. Wait longer each time, add a random part, set a maximum.",
+          "lesson": "resilience#rules-for-retries"
+        },
+        {
+          "text": "For each box of which there is only one, add a second or state why you accept the risk.",
+          "lesson": "resilience#single-points-of-failure"
+        },
+        {
+          "text": "The limit is usually the database, not the application servers.",
+          "lesson": "scalability#where-systems-run-out"
+        },
+        {
+          "text": "Measure percentiles, not averages. An average hides the slow requests.",
+          "lesson": "scalability#measure-the-slow-requests"
+        },
+        {
+          "text": "Do the estimate in the first ten minutes. Write units, and state what the result means.",
+          "lesson": "estimation#rules"
+        },
+        {
+          "text": "Test each integration point against a harness that fails on purpose: no answer, slow bytes, wrong formats.",
+          "lesson": "testing-strategy#cross-functional-tests"
+        },
+        {
+          "text": "Every wait has a limit. Every resource has an owner and a size.",
+          "lesson": "stability-antipatterns#the-stability-patterns"
+        },
+        {
+          "text": "Use a retry budget of about 10% of traffic. Retry a timeout or a 503, not a 400.",
+          "lesson": "resilience#rules-for-retries"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Operations and security",
+      "items": [
+        {
+          "text": "Give each request an ID at the entry point, and pass it to each part.",
+          "lesson": "observability#three-kinds-of-data"
+        },
+        {
+          "text": "Select the SLO from what users need. Each added \"9\" costs much more.",
+          "lesson": "observability#service-levels"
+        },
+        {
+          "text": "Alert on what users feel. Each alert must need an action from a person now.",
+          "lesson": "observability#alerts"
+        },
+        {
+          "text": "\"No events\" looks like \"all is well\". Use a signal that must arrive, such as a canary check.",
+          "lesson": "observability#the-silent-failure"
+        },
+        {
+          "text": "Change the database in steps: add the column, use it, remove the old one later.",
+          "lesson": "deployment#what-every-strategy-requires"
+        },
+        {
+          "text": "Check access for each record, in the service that owns the data.",
+          "lesson": "security#two-words-to-keep-apart"
+        },
+        {
+          "text": "Fail closed: when a check cannot be made, refuse.",
+          "lesson": "security#principles"
+        },
+        {
+          "text": "Mark test accounts and orders in production. Exclude them from reports. Never charge a real card.",
+          "lesson": "testing-strategy#testing-in-production"
+        },
+        {
+          "text": "Make rollback the default first action for a bad release. It needs no diagnosis.",
+          "lesson": "deployment#rollback-and-roll-forward"
+        },
+        {
+          "text": "A JWT is signed, not encrypted. Do not put secrets or sensitive personal data in it.",
+          "lesson": "security#tokens-and-jwt"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Release strategies",
+      "columns": ["Strategy", "Good at", "Cost"],
+      "rows": [
+        ["Rolling", "Simple, no extra machines", "Two versions run together"],
+        [
+          "Blue-green",
+          "Immediate return to the old version",
+          "Double the machines during the release"
+        ],
+        ["Canary", "Few users affected by a problem", "Needs good measurements"],
+        [
+          "Feature flag",
+          "Release with no deployment, fast switch-off",
+          "Flags must be removed later"
+        ]
+      ],
+      "lesson": "deployment#release-strategies"
+    },
+    {
+      "type": "table",
+      "title": "Stability antipatterns",
+      "columns": ["Antipattern", "What you see", "What stops it"],
+      "rows": [
+        [
+          "Integration points",
+          "Calls that hang, odd errors from another system",
+          "Timeouts, circuit breakers, a test harness"
+        ],
+        [
+          "Cascading failures",
+          "A healthy layer fails after the layer below it fails",
+          "Timeouts, circuit breakers, fallbacks"
+        ],
+        [
+          "Chain reactions",
+          "Identical servers fail one after another",
+          "Bulkheads, fix the leak, spare capacity"
+        ],
+        [
+          "Blocked threads",
+          "Process is up, but throughput is zero",
+          "Timeouts on every wait, bulkheads"
+        ],
+        [
+          "Unbalanced capacities",
+          "The back end fails when the front end scales out",
+          "Pools sized from back-end capacity, back pressure, shed load"
+        ],
+        [
+          "Dogpile",
+          "Load spikes at deploy, on the hour, or at cache expiry",
+          "Random jitter, staggered starts, request coalescing"
+        ],
+        [
+          "Force multiplier",
+          "Automation removes or changes much of the fleet",
+          "A governor on automated change"
+        ],
+        [
+          "Unbounded result sets",
+          "Memory or response time grows with data age",
+          "A limit on every query, pagination"
+        ]
+      ],
+      "lesson": "stability-antipatterns#what-you-see-and-what-stops-it"
+    },
+    {
+      "type": "rules",
+      "title": "Incidents, delivery, and tests",
+      "items": [
+        {
+          "text": "Stop the bleeding first: roll back, turn off a flag, or move traffic. Find the cause later.",
+          "lesson": "incident-response#effective-troubleshooting"
+        },
+        {
+          "text": "Ask \"what changed?\". A recent change is the most common cause of an incident.",
+          "lesson": "incident-response#effective-troubleshooting"
+        },
+        {
+          "text": "Declare an incident early: a second team must help, customers see it, or one hour passes.",
+          "lesson": "incident-response#managing-incidents"
+        },
+        {
+          "text": "Keep end-to-end tests to a few core journeys. An end-to-end gate on all services couples their releases.",
+          "lesson": "testing-strategy#the-problems-of-end-to-end-tests"
+        },
+        {
+          "text": "Keep postmortems blameless. Give each action item an owner, a priority, and a ticket.",
+          "lesson": "incident-response#blameless-postmortems"
+        },
+        {
+          "text": "Keep toil and other operations work at or below 50% of the team's time.",
+          "lesson": "incident-response#eliminating-toil"
+        },
+        {
+          "text": "Measure the four key metrics together: lead time, deployment frequency, change failure rate, time to restore.",
+          "lesson": "delivery-performance#the-four-key-metrics"
+        },
+        {
+          "text": "Speed and stability go together. The best teams are better on all four metrics.",
+          "lesson": "delivery-performance#speed-and-stability-go-together"
+        },
+        {
+          "text": "An external change approval board did not reduce change failures. Peer review and automated tests worked better.",
+          "lesson": "delivery-performance#the-capabilities"
+        },
+        {
+          "text": "Services that must deploy together are a distributed monolith, often slower than the monolith they replaced.",
+          "lesson": "delivery-performance#architecture-and-delivery-performance"
+        }
+      ]
+    }
+  ]
+}

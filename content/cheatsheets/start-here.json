@@ -1,0 +1,212 @@
+{
+  "section": "Start here",
+  "summary": "How an architect decides, records the reason, and runs a kata or a 45-minute interview.",
+  "blocks": [
+    {
+      "type": "table",
+      "title": "A kata in five steps",
+      "columns": ["Step", "What to do"],
+      "rows": [
+        ["1. Read for what is hard", "Find the two or three hard sentences. Set the scope."],
+        [
+          "2. Select the characteristics",
+          "Select the few that drive the design. Tie each to a kata sentence."
+        ],
+        ["3. Select a style", "Select the simplest style that supports the characteristics."],
+        ["4. Draw the components", "One job for each box. Show data owners. Label each arrow."],
+        ["5. State the trade-offs", "Write what the design is bad at, and where it fails first."]
+      ],
+      "lesson": "method"
+    },
+    {
+      "type": "choose",
+      "title": "When you see this, do this",
+      "items": [
+        {
+          "when": "A decision is expensive to change later",
+          "use": "It is architecture. The architect decides.",
+          "lesson": "architect-role#the-job-in-one-sentence"
+        },
+        {
+          "when": "A decision is about one class or one module pattern",
+          "use": "Let the team that writes the code decide",
+          "lesson": "architect-role#what-is-yours-to-decide"
+        },
+        {
+          "when": "Two options seem equal",
+          "use": "The one that is easier to change later",
+          "lesson": "trade-offs#the-word-least-worst"
+        },
+        {
+          "when": "A decision is cheap to delay and you will know more later",
+          "use": "Delay it. Say what you wait for.",
+          "lesson": "trade-offs#common-mistakes"
+        },
+        {
+          "when": "A decision is hard to reverse, or the team argued about it",
+          "use": "Write an ADR",
+          "lesson": "decision-records#rules-that-make-adrs-useful"
+        },
+        {
+          "when": "The interviewer has no answer to your question",
+          "use": "State an assumption",
+          "lesson": "interview-format#step-1-questions"
+        },
+        {
+          "when": "You select the part for the deep dive",
+          "use": "The hardest part. Say why it is hardest.",
+          "lesson": "interview-format#step-4-go-deep"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Analyze a trade-off",
+      "items": [
+        {
+          "text": "If you cannot name the cost of your choice, your analysis is not finished.",
+          "lesson": "architect-role#how-architects-think"
+        },
+        {
+          "text": "State the decision as a question. A vague question gives a vague answer.",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        },
+        {
+          "text": "List two or three real options. Include the simplest one, even if you expect to reject it.",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        },
+        {
+          "text": "Score each option as better, worse, or the same. Write one sentence of reason for each score.",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        },
+        {
+          "text": "Write: \"We select A because of X. We accept Y. We will look again if Z occurs.\"",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        },
+        {
+          "text": "A design with no stated cost is a sales text.",
+          "lesson": "trade-offs#common-mistakes"
+        },
+        {
+          "text": "\"Large companies use microservices\" is not a reason. Their constraints are not yours.",
+          "lesson": "trade-offs#common-mistakes"
+        },
+        {
+          "text": "Team size, budget, deadline, and the law decide more than the technology does.",
+          "lesson": "architect-role#how-architects-think"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Architecture decision records",
+      "items": [
+        {
+          "text": "An ADR holds one decision and its reason. Keep ADRs with the code, with a number for each.",
+          "lesson": "decision-records#what-it-is"
+        },
+        {
+          "text": "An ADR has five parts: title, status, context, decision, and consequences.",
+          "lesson": "decision-records#the-format"
+        },
+        {
+          "text": "One page is the usual limit. A longer ADR probably holds more than one decision.",
+          "lesson": "decision-records#the-format"
+        },
+        {
+          "text": "Write the consequences that hurt. A future reader needs them.",
+          "lesson": "decision-records#rules-that-make-adrs-useful"
+        },
+        {
+          "text": "Never edit an accepted ADR to change the decision. Write a new ADR that replaces it.",
+          "lesson": "decision-records#rules-that-make-adrs-useful"
+        },
+        {
+          "text": "The rationale box in a kata is a small ADR: forces, decision, and consequences.",
+          "lesson": "decision-records#in-a-kata-or-an-interview"
+        }
+      ]
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Length of a system design interview",
+          "value": "45 minutes",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Ask questions and set the scope",
+          "value": "Minutes 0 to 8",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Estimate",
+          "value": "Minutes 8 to 12",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Draw the main design",
+          "value": "Minutes 12 to 25",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Go deep on one or two hard parts",
+          "value": "Minutes 25 to 40",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Weak points and operation",
+          "value": "Minutes 40 to 45",
+          "lesson": "interview-format#a-plan-for-45-minutes"
+        },
+        {
+          "label": "Driving characteristics to select",
+          "value": "Usually three",
+          "note": "The app lets you select up to five.",
+          "lesson": "method"
+        },
+        {
+          "label": "Options in a trade-off analysis",
+          "value": "Two or three",
+          "lesson": "trade-offs#a-method-in-five-steps"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Interview mistakes",
+      "items": [
+        {
+          "text": "Do not start to draw immediately. Ask what you need for the design first.",
+          "lesson": "interview-format#step-1-questions"
+        },
+        {
+          "text": "Think aloud. A correct diagram drawn in silence usually does worse.",
+          "lesson": "interview-format#what-the-interviewer-looks-for"
+        },
+        {
+          "text": "Do not design for a scale that the problem did not ask for.",
+          "lesson": "interview-format#common-mistakes"
+        },
+        {
+          "text": "Say what job each part does. A product name like Kafka is not enough.",
+          "lesson": "interview-format#common-mistakes"
+        },
+        {
+          "text": "Put a name on each box and a label on each arrow: does the caller wait?",
+          "lesson": "interview-format#step-3-the-main-design"
+        },
+        {
+          "text": "Do not defend the design when the interviewer shows a problem. A hint is a gift.",
+          "lesson": "interview-format#common-mistakes"
+        },
+        {
+          "text": "Finish with what fails first, why you accepted it, and what you would look at next.",
+          "lesson": "interview-format#step-5-weak-points"
+        }
+      ]
+    }
+  ]
+}

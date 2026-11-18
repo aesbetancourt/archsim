@@ -2,6 +2,22 @@ import BlockIcon from "@/components/BlockIcon";
 import { diagramShapes, type DiagramShape, shapeOf, shapeStyle } from "@/lib/diagram-shapes";
 import type { DiagramSpec } from "@/lib/examples";
 
+// What a walkthrough step shows of a diagram. Without a view, the diagram shows all of it.
+export type DiagramView = {
+  visible: Set<string>;
+  // The positions of the visible arrows in spec.edges.
+  edges: Set<number>;
+  flows: { edge: number; reverse: boolean }[];
+  focus: Set<string>;
+  down: Set<string>;
+  notes: Record<string, string>;
+  // A new value starts the packet animations again.
+  step: number;
+};
+
+const FADE = { transition: "opacity 400ms ease" };
+const PACKET_SECONDS = 1.6;
+
 const CELL_W = 270;
 const CELL_H = 110;
 const BOX_W = 170;
@@ -106,8 +122,37 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
   );
 }
 
+// A short note above a node, in a rounded label.
+function Note({ x, y, text }: { x: number; y: number; text: string }) {
+  const width = text.length * 6.4 + 16;
+  return (
+    <g>
+      <rect
+        x={x - width / 2}
+        y={y - 20}
+        width={width}
+        height={20}
+        rx={10}
+        className="fill-card stroke-primary"
+        strokeWidth={1.5}
+      />
+      <text
+        x={x}
+        y={y - 6}
+        fontSize={11}
+        fontWeight={600}
+        textAnchor="middle"
+        className="fill-foreground"
+      >
+        {text}
+      </text>
+    </g>
+  );
+}
+
 // Draw a diagram from a grid description, with a legend of the forms it uses.
-export default function Diagram({ spec }: { spec: DiagramSpec }) {
+export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: DiagramView }) {
+  const shown = (id: string) => !view || view.visible.has(id);
   const rects = new Map<string, Rect>();
   for (const node of spec.nodes) {
     // A person is taller than a box, because the name is below the figure.
@@ -162,7 +207,11 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
         </defs>
 
         {groups.map((group) => (
-          <g key={group.id}>
+          <g
+            key={group.id}
+            style={{ ...FADE, opacity: shown(group.id) ? 1 : 0 }}
+            aria-hidden={!shown(group.id)}
+          >
             <rect
               x={group.left}
               y={group.top}
@@ -192,19 +241,48 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
           const dy = to.cy - from.cy;
           const start = borderPoint(from, dx, dy);
           const end = borderPoint(to, -dx, -dy);
+          const visible = !view || view.edges.has(index);
+          const flow = view?.flows.find((item) => item.edge === index);
+          // An arrow to a part that failed carries nothing.
+          const broken = view && (view.down.has(edge.from) || view.down.has(edge.to));
+          const [a, b] = flow?.reverse ? [end, start] : [start, end];
           return (
-            <g key={index}>
+            <g
+              key={index}
+              style={{ ...FADE, opacity: visible ? (broken ? 0.3 : 1) : 0 }}
+              aria-hidden={!visible}
+            >
               <line
                 x1={start.x}
                 y1={start.y}
                 x2={end.x}
                 y2={end.y}
-                className="stroke-foreground/70"
-                strokeWidth={2}
+                className={flow ? "stroke-primary" : "stroke-foreground/70"}
+                strokeWidth={flow ? 3 : 2}
                 strokeDasharray={edge.async ? "6 4" : undefined}
                 markerEnd="url(#arrow)"
                 markerStart={edge.both ? "url(#arrow)" : undefined}
               />
+              {/* The label is after the packets, so the packets pass under it. */}
+              {flow &&
+                visible &&
+                // Two packets on each active arrow. A user who asks for less motion sees only the
+                // colored arrow.
+                [0, PACKET_SECONDS / 2].map((delay) => (
+                  <circle
+                    key={`${view?.step}-${delay}`}
+                    r={5}
+                    className="fill-primary stroke-card motion-reduce:hidden"
+                    strokeWidth={2}
+                  >
+                    <animateMotion
+                      dur={`${PACKET_SECONDS}s`}
+                      begin={`${delay}s`}
+                      repeatCount="indefinite"
+                      path={`M ${a.x} ${a.y} L ${b.x} ${b.y}`}
+                    />
+                  </circle>
+                ))}
               {edge.label && (
                 <text
                   x={(start.x + end.x) / 2}
@@ -235,26 +313,67 @@ export default function Diagram({ spec }: { spec: DiagramSpec }) {
             shape === "person"
               ? rect.cy - rect.hh + 52 + index * 15
               : rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
+          const down = view?.down.has(node.id);
+          const note = view?.notes[node.id];
           return (
-            <g key={node.id}>
-              <NodeShape shape={shape} rect={rect} />
-              <text
-                fontSize={12}
-                textAnchor="middle"
-                fill={shape === "person" ? undefined : "#000"}
-                className={shape === "person" ? "fill-foreground" : undefined}
-              >
-                {lines.map((line, index) => (
-                  <tspan
-                    key={index}
-                    x={rect.cx + dx}
-                    y={lineY(index)}
-                    fontWeight={index === 0 ? 600 : 400}
-                  >
-                    {line}
-                  </tspan>
-                ))}
-              </text>
+            <g
+              key={node.id}
+              style={{ ...FADE, opacity: shown(node.id) ? 1 : 0 }}
+              aria-hidden={!shown(node.id)}
+            >
+              {view?.focus.has(node.id) && (
+                <rect
+                  x={rect.cx - rect.hw - 6}
+                  y={rect.cy - rect.hh - 6}
+                  width={rect.hw * 2 + 12}
+                  height={rect.hh * 2 + 12}
+                  rx={10}
+                  fill="none"
+                  className="stroke-primary"
+                  strokeWidth={3}
+                />
+              )}
+              <g opacity={down ? 0.45 : 1}>
+                <NodeShape shape={shape} rect={rect} />
+                <text
+                  fontSize={12}
+                  textAnchor="middle"
+                  fill={shape === "person" ? undefined : "#000"}
+                  className={shape === "person" ? "fill-foreground" : undefined}
+                >
+                  {lines.map((line, index) => (
+                    <tspan
+                      key={index}
+                      x={rect.cx + dx}
+                      y={lineY(index)}
+                      fontWeight={index === 0 ? 600 : 400}
+                    >
+                      {line}
+                    </tspan>
+                  ))}
+                </text>
+              </g>
+              {down && (
+                // A red badge with a cross on the corner of a part that failed. The name stays
+                // readable.
+                <g>
+                  <circle
+                    cx={rect.cx + rect.hw - 2}
+                    cy={rect.cy - rect.hh + 2}
+                    r={11}
+                    fill="#e03131"
+                    className="stroke-card"
+                    strokeWidth={2}
+                  />
+                  <path
+                    d={`M ${rect.cx + rect.hw - 7} ${rect.cy - rect.hh - 3} l 10 10 m 0 -10 l -10 10`}
+                    stroke="#fff"
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                  />
+                </g>
+              )}
+              {note && <Note x={rect.cx} y={rect.cy - rect.hh - 10} text={note} />}
             </g>
           );
         })}

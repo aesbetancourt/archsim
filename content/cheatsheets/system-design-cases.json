@@ -1,0 +1,446 @@
+{
+  "section": "System design cases",
+  "summary": "The hard part of each classic case, the choices that come back in many cases, and the rules they share.",
+  "blocks": [
+    {
+      "type": "table",
+      "title": "Infrastructure cases in one line",
+      "columns": ["Case", "The hard part", "The key technique"],
+      "rows": [
+        [
+          "Rate limiter",
+          "A shared count that is fast and close to exact",
+          "Token bucket, atomic increment or script in Redis"
+        ],
+        [
+          "Key-value store",
+          "Stay available when nodes fail or the network splits",
+          "Replicas on a ring, quorums, vector clocks, gossip"
+        ],
+        [
+          "Unique IDs",
+          "Unique, time-sortable, 64 bits, with no central counter",
+          "Snowflake-style: time + machine ID + sequence"
+        ],
+        [
+          "URL shortener",
+          "Codes that never collide, and fast redirects",
+          "Base 62 of a unique ID, a cache on the read path"
+        ],
+        [
+          "Web crawler",
+          "Politeness, repeat work, and spider traps",
+          "Per-host queues, Bloom filter, a page budget for each host"
+        ],
+        [
+          "Notification system",
+          "Bursts, failing providers, and duplicate sends",
+          "A queue for each channel and priority, notification IDs"
+        ],
+        [
+          "Message queue",
+          "Order, durability, and replay at a high write rate",
+          "Partitioned append-only log, ISR replicas, committed offsets"
+        ],
+        [
+          "Object storage",
+          "Durable petabytes, and billions of names",
+          "Separate metadata and data, erasure coding, checksums"
+        ],
+        [
+          "Metrics and alerting",
+          "Millions of series, constant writes, bursty reads",
+          "Time-series database, delta encoding, downsampling, alert grouping"
+        ],
+        [
+          "Ad click aggregation",
+          "Exact counts in time windows, with late events",
+          "Event-time windows, watermarks, idempotent writes, batch reconciliation"
+        ]
+      ],
+      "lesson": "rate-limiter"
+    },
+    {
+      "type": "table",
+      "title": "Product cases in one line",
+      "columns": ["Case", "The hard part", "The key technique"],
+      "rows": [
+        [
+          "News feed",
+          "Posts from accounts with millions of followers",
+          "Hybrid fanout: push for most, pull for celebrities"
+        ],
+        [
+          "Autocomplete",
+          "An answer before the next key press",
+          "Trie with the top 5 at each node, built in batches"
+        ],
+        [
+          "Chat system",
+          "Push to receivers, one order, no lost messages",
+          "WebSocket, a sequence for each conversation, device cursors"
+        ],
+        [
+          "Video platform",
+          "Delivery cost and a fast start",
+          "Pre-signed upload, transcoding DAG, adaptive bitrate, CDN"
+        ],
+        [
+          "File sync",
+          "Few bytes sent, conflicts, never lose a version",
+          "Content-hashed blocks, strong metadata, conflicted copies"
+        ],
+        [
+          "Payment system",
+          "Exactly one effect when calls fail in the middle",
+          "Idempotency keys, double-entry ledger, reconciliation"
+        ],
+        [
+          "Proximity service",
+          "A fast search in two dimensions",
+          "Geohash cells, a 3 × 3 block, a cache for each cell"
+        ],
+        [
+          "Hotel reservation",
+          "No double booking from retries or races",
+          "Idempotency key, conditional update, CHECK constraint"
+        ],
+        [
+          "Leaderboard",
+          "The rank of any player, in real time",
+          "Redis sorted set, with win events as the truth"
+        ],
+        [
+          "Stock exchange",
+          "Matching in microseconds, in one agreed order",
+          "Sequencer, one thread, event log, hot-warm engines"
+        ]
+      ],
+      "lesson": "news-feed"
+    },
+    {
+      "type": "choose",
+      "title": "Push, pull, and connections",
+      "items": [
+        {
+          "when": "Most authors, with normal follower counts",
+          "use": "Fanout on write (push)",
+          "lesson": "news-feed#deep-dives"
+        },
+        {
+          "when": "A celebrity, for example above 1 million followers",
+          "use": "Fanout on read, merged at read time",
+          "lesson": "news-feed#deep-dives"
+        },
+        {
+          "when": "A chat group of up to about 100 members",
+          "use": "Fan-out on write to each inbox",
+          "lesson": "chat-system#deep-dives"
+        },
+        {
+          "when": "A group of thousands, or a broadcast channel",
+          "use": "Fan-out on read from the conversation",
+          "lesson": "chat-system#deep-dives"
+        },
+        {
+          "when": "The server pushes often, and both sides send",
+          "use": "WebSocket, with long polling as fallback",
+          "lesson": "chat-system#deep-dives"
+        },
+        {
+          "when": "Rare, one-way \"something changed\" signals",
+          "use": "Long polling",
+          "lesson": "file-sync#deep-dives"
+        },
+        {
+          "when": "A popular video",
+          "use": "Serve it from the CDN",
+          "lesson": "video-platform#deep-dives"
+        },
+        {
+          "when": "A long-tail video that few people watch",
+          "use": "Serve it from your own origin",
+          "lesson": "video-platform#deep-dives"
+        },
+        {
+          "when": "Consumers must read at their own speed, and replay",
+          "use": "Pull, with long polling",
+          "lesson": "message-queue#deep-dives"
+        },
+        {
+          "when": "Metrics come from short jobs or from sources behind firewalls",
+          "use": "Push, or a push gateway with pull",
+          "lesson": "metrics-monitoring#deep-dives"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select an algorithm or a format",
+      "items": [
+        {
+          "when": "A public API, where real clients send bursts",
+          "use": "Token bucket",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "when": "A downstream system that cannot take bursts",
+          "use": "Leaking bucket",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "when": "A simple limit, where the window edge effect is acceptable",
+          "use": "Fixed window counter",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "when": "An exact limit, with memory for each request",
+          "use": "Sliding window log",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "when": "Small memory and a limit that is close to exact",
+          "use": "Sliding window counter",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "when": "Short codes that never collide, with one insert",
+          "use": "Base 62 of a unique ID",
+          "lesson": "url-shortener#deep-dives"
+        },
+        {
+          "when": "The same long URL must give the same code, with no extra index",
+          "use": "Hash, then a collision check",
+          "lesson": "url-shortener#trade-offs-and-alternatives"
+        },
+        {
+          "when": "The link owner pays for click analytics",
+          "use": "302 redirect, not 301",
+          "lesson": "url-shortener#deep-dives"
+        },
+        {
+          "when": "A nearby search, and owner changes must show in seconds",
+          "use": "Geohash in a cache or a database",
+          "lesson": "proximity-service#deep-dives"
+        },
+        {
+          "when": "Density varies a lot, and changes can wait for a rebuild",
+          "use": "A quadtree in memory on each server",
+          "lesson": "proximity-service#trade-offs-and-alternatives"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Place data, make IDs, and keep counts",
+      "items": [
+        {
+          "when": "Servers come and go, as in a cache cluster",
+          "use": "Hash ring with virtual nodes",
+          "lesson": "consistent-hashing#trade-offs-and-alternatives"
+        },
+        {
+          "when": "You need range queries",
+          "use": "Range partitioning, not a hash",
+          "lesson": "consistent-hashing#trade-offs-and-alternatives"
+        },
+        {
+          "when": "IDs must be 64 bits and time-sortable, with no central counter",
+          "use": "Snowflake-style IDs",
+          "lesson": "unique-ids#deep-dives"
+        },
+        {
+          "when": "The 64-bit requirement is soft",
+          "use": "UUID version 7",
+          "lesson": "unique-ids#trade-offs-and-alternatives"
+        },
+        {
+          "when": "Messages must keep one order inside a conversation",
+          "use": "A sequence number for each conversation",
+          "lesson": "chat-system#deep-dives"
+        },
+        {
+          "when": "Carts, likes, or sessions during a network split",
+          "use": "AP: accept writes, merge them later",
+          "lesson": "key-value-store#deep-dives"
+        },
+        {
+          "when": "Balances, stock counts, locks, or unique names",
+          "use": "CP: refuse writes without a majority",
+          "lesson": "key-value-store#deep-dives"
+        },
+        {
+          "when": "Payment state, ledger, and wallet at a modest load",
+          "use": "One database, one transaction",
+          "lesson": "payment-system#trade-offs-and-alternatives"
+        },
+        {
+          "when": "Bookings compete for the last rooms of one night",
+          "use": "One conditional update, plus a CHECK constraint",
+          "lesson": "hotel-reservation#deep-dives"
+        },
+        {
+          "when": "The live rank of any player among millions",
+          "use": "A sorted set: a skip list with counts",
+          "lesson": "leaderboard#deep-dives"
+        }
+      ]
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Keys that move from N to N + 1 servers",
+          "value": "Modulo: almost all. Ring: about 1/(N + 1)",
+          "lesson": "consistent-hashing#estimates"
+        },
+        {
+          "label": "Error in the share of a server, with 100 virtual nodes",
+          "value": "About 10%",
+          "note": "1 point: about 100%. 400 points: about 5%.",
+          "lesson": "consistent-hashing#deep-dives"
+        },
+        {
+          "label": "Fixed window counter at a window edge",
+          "value": "Up to 2 times the limit",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "label": "Snowflake bits: sign, time, data center, machine, sequence",
+          "value": "1, 41, 5, 5, and 12 bits",
+          "note": "41 bits of milliseconds last about 69 years. 4,096 IDs each millisecond for each machine.",
+          "lesson": "unique-ids#deep-dives"
+        },
+        {
+          "label": "Quorum rule, so a read sees the latest confirmed write",
+          "value": "W + R > N",
+          "note": "The usual balance is N = 3, W = 2, R = 2.",
+          "lesson": "key-value-store#deep-dives"
+        },
+        {
+          "label": "Bloom filter with about 10 bits for each key",
+          "value": "About 1% false positives",
+          "note": "Never a false negative.",
+          "lesson": "web-crawler#deep-dives"
+        },
+        {
+          "label": "Values of a 7-character base 62 code",
+          "value": "About 3.5 trillion",
+          "note": "Each extra character multiplies the space by 62.",
+          "lesson": "url-shortener#estimates"
+        },
+        {
+          "label": "Idle connections that one well-tuned server holds",
+          "value": "On the order of 100,000",
+          "note": "Open connections, not CPU, set the number of chat servers.",
+          "lesson": "chat-system#estimates"
+        },
+        {
+          "label": "Disk overhead: 3 copies, against erasure coding 6 + 3",
+          "value": "200% against 50%",
+          "note": "Erasure coding overhead is m ÷ k. 6 + 3 survives the loss of any 3.",
+          "lesson": "object-storage#deep-dives"
+        },
+        {
+          "label": "A read from main memory, against a round trip in a data center",
+          "value": "About 100 ns against some hundreds of µs",
+          "note": "Rough orders of magnitude, through a normal network stack.",
+          "lesson": "stock-exchange#estimates"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Rules that the cases share",
+      "items": [
+        {
+          "text": "Add a part only when a measured problem asks for it. Name the new problem that it brings.",
+          "lesson": "scale-step-by-step#the-question"
+        },
+        {
+          "text": "Put slow work on a queue, and answer the user at once.",
+          "lesson": "scale-step-by-step#the-steps"
+        },
+        {
+          "text": "Exactly once is at-least-once delivery plus idempotent receivers. Apply it on every hop.",
+          "lesson": "payment-system#deep-dives"
+        },
+        {
+          "text": "Make the idempotency key from the business intent, not from the attempt.",
+          "lesson": "payment-system#deep-dives"
+        },
+        {
+          "text": "Give urgent and bulk messages separate queues and workers, so a login code never waits.",
+          "lesson": "notification-system#deep-dives"
+        },
+        {
+          "text": "When reads far outnumber writes, design the read path first, with a cache in front.",
+          "lesson": "url-shortener#estimates"
+        },
+        {
+          "text": "Compute the answers of a read-heavy path in advance, such as a top 5 list at each trie node.",
+          "lesson": "autocomplete#trade-offs-and-alternatives"
+        },
+        {
+          "text": "Make the store and the device cursors the truth. A push to a device is only the fast path.",
+          "lesson": "chat-system#deep-dives"
+        },
+        {
+          "text": "Keep the raw events as the system of record. Counts are derived, and you can compute them again.",
+          "lesson": "ad-click-aggregation#deep-dives"
+        },
+        {
+          "text": "Write the bytes first, then the metadata. Bytes with no name are harmless. A name with no bytes is not.",
+          "lesson": "object-storage#deep-dives"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Traps to avoid",
+      "items": [
+        {
+          "text": "Read, then write, on a shared counter is a race. Use an atomic increment or a script, not a lock.",
+          "lesson": "rate-limiter#deep-dives"
+        },
+        {
+          "text": "Consistent hashing balances keys, not requests. A hot key needs a cache, copies, or a split.",
+          "lesson": "consistent-hashing#trade-offs-and-alternatives"
+        },
+        {
+          "text": "A clock that goes back can repeat IDs. Wait for a small step. Refuse and alert for a large one.",
+          "lesson": "unique-ids#deep-dives"
+        },
+        {
+          "text": "Last write wins silently drops data. Detect the conflict, and keep both versions, for example as a conflicted copy.",
+          "lesson": "file-sync#deep-dives"
+        },
+        {
+          "text": "Offset pagination shows posts again when new posts arrive. Use a cursor with a time-sortable ID.",
+          "lesson": "news-feed#deep-dives"
+        },
+        {
+          "text": "A plain BFS crawl floods one host. Use one queue for each host, with a delay between downloads.",
+          "lesson": "web-crawler#deep-dives"
+        },
+        {
+          "text": "A PSP timeout is an unknown state, not a failure. Retry with the same idempotency key.",
+          "lesson": "payment-system#deep-dives"
+        },
+        {
+          "text": "Never use floating-point numbers for money. Store integers in the smallest unit, with a currency code.",
+          "lesson": "payment-system#deep-dives"
+        },
+        {
+          "text": "A label with unbounded values, such as a user ID, makes millions of series. Reject such labels.",
+          "lesson": "metrics-monitoring#deep-dives"
+        },
+        {
+          "text": "With ACK all, an ISR of only the leader protects nothing. Set a minimum ISR, such as 2 of 3.",
+          "lesson": "message-queue#deep-dives"
+        }
+      ]
+    }
+  ]
+}

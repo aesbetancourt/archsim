@@ -1,0 +1,367 @@
+{
+  "section": "Data",
+  "summary": "How to select and split data stores, keep data correct under concurrency and failure, scale reads and writes, and feed analysis.",
+  "blocks": [
+    {
+      "type": "choose",
+      "title": "Select a data store",
+      "items": [
+        {
+          "when": "Orders, payments, accounts, or flexible queries",
+          "use": "A relational database (the default)",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "You find each record by one key",
+          "use": "A key-value store",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Records with a flexible shape, such as product catalogs",
+          "use": "A document store",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Very large write volume, found by key and range",
+          "use": "A wide-column store",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Text search and ranking",
+          "use": "A search index, never the main store",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "\"Friends of friends\" queries, fraud detection",
+          "use": "A graph database",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Large files: images, video, backups",
+          "use": "Object storage",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Measurements over time, such as metrics",
+          "use": "A time series database",
+          "lesson": "data-stores#the-main-types"
+        },
+        {
+          "when": "Many writes: event logs, metrics, messages, sensor data",
+          "use": "A store built on an LSM-tree",
+          "lesson": "storage-engines#lsm-tree-or-b-tree"
+        },
+        {
+          "when": "Reports and analysis over a long history",
+          "use": "A column-oriented data warehouse",
+          "lesson": "data-stores#oltp-and-olap"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Select a pattern for a data problem",
+      "items": [
+        {
+          "when": "Several records must change together",
+          "use": "A transaction in one database",
+          "lesson": "consistency#transactions-and-acid"
+        },
+        {
+          "when": "One action changes data in two services",
+          "use": "First, try to move the boundary",
+          "lesson": "distributed-transactions#the-problem"
+        },
+        {
+          "when": "The two services must stay separate",
+          "use": "A saga with a compensation for each step",
+          "lesson": "distributed-transactions#saga"
+        },
+        {
+          "when": "A service saves data and must publish an event",
+          "use": "An outbox in the same transaction",
+          "lesson": "distributed-transactions#the-outbox"
+        },
+        {
+          "when": "A request can arrive twice",
+          "use": "An idempotency key",
+          "lesson": "distributed-transactions#idempotency"
+        },
+        {
+          "when": "Many domains and teams, and the central data team is a bottleneck",
+          "use": "A data mesh, with data products",
+          "lesson": "analytical-data#comparing-the-approaches"
+        },
+        {
+          "when": "Too many reads, or a server can be lost",
+          "use": "Replication",
+          "lesson": "scaling-data#two-tools-for-two-problems"
+        },
+        {
+          "when": "Too much data, or too many writes",
+          "use": "Partitioning (sharding)",
+          "lesson": "scaling-data#two-tools-for-two-problems"
+        },
+        {
+          "when": "Users accept results that are hours old, such as a daily report",
+          "use": "A batch job",
+          "lesson": "batch-and-stream#in-a-kata"
+        },
+        {
+          "when": "Results must be fresh in seconds, such as a live seat map",
+          "use": "A stream job",
+          "lesson": "batch-and-stream#in-a-kata"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Protect correctness under concurrency and failure",
+      "items": [
+        {
+          "when": "Two requests read, change, and write back one value",
+          "use": "An atomic update or a version column",
+          "lesson": "transactions-isolation#lost-updates"
+        },
+        {
+          "when": "A check, then an insert: \"is the slot free? Then book it\"",
+          "use": "A constraint, a lock, or serializable isolation",
+          "lesson": "transactions-isolation#write-skew-and-phantoms"
+        },
+        {
+          "when": "A report or a backup must see one consistent state",
+          "use": "Snapshot isolation (MVCC)",
+          "lesson": "transactions-isolation#snapshot-isolation-and-mvcc"
+        },
+        {
+          "when": "Only one worker at a time can write to a resource",
+          "use": "A lease with a fencing token",
+          "lesson": "clocks-and-failures#leases-and-fencing-tokens"
+        },
+        {
+          "when": "Events from several machines need an order",
+          "use": "Version numbers or one sequencer, not timestamps",
+          "lesson": "clocks-and-failures#design-rules"
+        },
+        {
+          "when": "Nodes must agree on a leader or a lock owner",
+          "use": "Consensus, through etcd or ZooKeeper",
+          "lesson": "consensus#what-to-use-them-for"
+        },
+        {
+          "when": "You read another service's data often, it changes rarely, and some seconds old is acceptable",
+          "use": "Column schema replication, updated by events",
+          "lesson": "data-ownership#how-a-service-reads-data-it-does-not-own"
+        },
+        {
+          "when": "Another service's data changes often, and the read is not on a hot path",
+          "use": "Interservice communication: ask the owner",
+          "lesson": "data-ownership#how-a-service-reads-data-it-does-not-own"
+        },
+        {
+          "when": "Several services write to the same table",
+          "use": "One owner: split the table, or delegate",
+          "lesson": "data-ownership#who-owns-each-table"
+        },
+        {
+          "when": "The database and a search index must stay in step",
+          "use": "CDC or an outbox, not dual writes",
+          "lesson": "batch-and-stream#stream-processing"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Rules of thumb",
+      "items": [
+        {
+          "text": "A relational database is the default. Select another type when you can say what it cannot do.",
+          "lesson": "data-stores#rules-that-hold-most-of-the-time"
+        },
+        {
+          "text": "Each piece of data has one main store. A cache or a search index is a copy.",
+          "lesson": "data-stores#rules-that-hold-most-of-the-time"
+        },
+        {
+          "text": "One service or module writes each store. Others ask the owner.",
+          "lesson": "data-stores#rules-that-hold-most-of-the-time"
+        },
+        {
+          "text": "Keep data that must change together in one database. Transactions there are cheap and reliable.",
+          "lesson": "consistency#transactions-and-acid"
+        },
+        {
+          "text": "Make the CAP choice for each kind of data, not once for the whole system.",
+          "lesson": "consistency#the-cap-theorem"
+        },
+        {
+          "text": "For eventual consistency, say which data can be old, for how long, and what the user sees.",
+          "lesson": "consistency#how-to-talk-about-it-in-a-design"
+        },
+        {
+          "text": "Other users can see the half-done state of a saga. Show it as a real \"pending\" state.",
+          "lesson": "distributed-transactions#saga"
+        },
+        {
+          "text": "An outbox can publish an event more than once. Receivers must tolerate repeats.",
+          "lesson": "distributed-transactions#the-outbox"
+        },
+        {
+          "text": "PostgreSQL, Oracle, and SQL Server default to read committed. Write down the level each critical transaction needs.",
+          "lesson": "transactions-isolation#failure-modes-and-traps"
+        },
+        {
+          "text": "A copy of another service's data is read-only. Only the owner writes to it.",
+          "lesson": "data-ownership#failure-modes"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Caches, partitions, and analytics: warnings",
+      "items": [
+        {
+          "text": "A cache must never be the only place where data lives.",
+          "lesson": "caching#how-a-cache-fails"
+        },
+        {
+          "text": "When the cache stops, the database must survive the full load for a short time.",
+          "lesson": "caching#how-a-cache-fails"
+        },
+        {
+          "text": "Analytical tools must never read a service database. Use events, a published view, or a data product.",
+          "lesson": "analytical-data#how-an-architect-connects-operational-and-analytical-data"
+        },
+        {
+          "text": "When a popular entry expires, let only one request rebuild it. The others wait or get the old value.",
+          "lesson": "caching#how-a-cache-fails"
+        },
+        {
+          "text": "Use a time limit as a safety net, and removal on change where fresh data matters.",
+          "lesson": "caching#how-data-gets-out"
+        },
+        {
+          "text": "A stopped pipeline shows old data as current. Add freshness checks that alert.",
+          "lesson": "analytical-data#failure-modes"
+        },
+        {
+          "text": "Select a partition key that keeps one request in one partition and spreads the load evenly.",
+          "lesson": "scaling-data#partitioning"
+        },
+        {
+          "text": "Watch for hot keys. One famous account or popular event can overload its partition.",
+          "lesson": "scaling-data#partitioning"
+        },
+        {
+          "text": "A cache key must contain every input that changes the answer, such as language or region.",
+          "lesson": "caching#cache-keys-and-versioning"
+        },
+        {
+          "text": "Do not select a server by \"hash mod n\". A change of n moves almost every key.",
+          "lesson": "scaling-data#rebalancing"
+        }
+      ]
+    },
+    {
+      "type": "numbers",
+      "title": "Numbers to know",
+      "items": [
+        {
+          "label": "Partitioning in the order of scaling steps",
+          "value": "The last of 6 steps",
+          "note": "After indexes, larger server, cache, read followers, separate store.",
+          "lesson": "scaling-data#order-of-steps"
+        },
+        {
+          "label": "Time for failover to a new leader",
+          "value": "Seconds to minutes",
+          "note": "The design must say what the application does then.",
+          "lesson": "scaling-data#replication"
+        },
+        {
+          "label": "Saga steps where choreography gets hard to change",
+          "value": "More than 3 or 4",
+          "lesson": "distributed-transactions#saga"
+        },
+        {
+          "label": "Node failures that a majority quorum survives",
+          "value": "3 nodes: 1. 5 nodes: 2.",
+          "note": "Use an odd number. An even number adds cost, not fault tolerance.",
+          "lesson": "clocks-and-failures#the-truth-is-defined-by-the-majority"
+        },
+        {
+          "label": "Drift of a quartz clock at 200 parts per million",
+          "value": "About 17 seconds a day",
+          "lesson": "clocks-and-failures#two-kinds-of-clock"
+        },
+        {
+          "label": "Clock accuracy with NTP over the internet",
+          "value": "Tens of milliseconds at best",
+          "note": "A broken NTP setup can be wrong by minutes.",
+          "lesson": "clocks-and-failures#two-kinds-of-clock"
+        },
+        {
+          "label": "Usual replication lag of a follower",
+          "value": "Under a second; minutes under load",
+          "lesson": "scaling-data#replication-lag"
+        },
+        {
+          "label": "Page size of a B-tree",
+          "value": "4 KB to 16 KB",
+          "note": "The branching factor is usually several hundred.",
+          "lesson": "storage-engines#b-trees"
+        },
+        {
+          "label": "Connection limit of a relational database",
+          "value": "A few hundred to a few thousand",
+          "note": "A rough range. Each service instance keeps a pool.",
+          "lesson": "data-ownership#reasons-to-split-the-disintegrators"
+        },
+        {
+          "label": "Write rate of a coordination service",
+          "value": "Tens of thousands each second",
+          "note": "Small writes, not millions. A rough range.",
+          "lesson": "consensus#what-to-use-them-for"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Strong and eventual consistency",
+      "columns": ["Aspect", "Strong", "Eventual"],
+      "rows": [
+        [
+          "Promise",
+          "A read returns the latest confirmed write",
+          "A read can return an old value for a short time"
+        ],
+        [
+          "Cost",
+          "Slower. Stops if copies cannot reach each other",
+          "The application must tolerate old data"
+        ],
+        ["Prefer for", "Money, stock, seats", "Feeds, catalogs, counters"]
+      ],
+      "lesson": "consistency#copies-and-delay"
+    },
+    {
+      "type": "table",
+      "title": "Isolation levels",
+      "columns": ["Level", "Prevents", "Still allows"],
+      "rows": [
+        [
+          "Read committed",
+          "Dirty reads and dirty writes",
+          "Read skew, lost updates, write skew, phantoms"
+        ],
+        [
+          "Snapshot isolation",
+          "Also read skew",
+          "Write skew. Lost updates in some products, such as MySQL InnoDB"
+        ],
+        ["Serializable", "All of these anomalies", "None. The cost is waits or aborts"]
+      ],
+      "lesson": "transactions-isolation#the-isolation-levels-compared"
+    }
+  ]
+}

@@ -62,6 +62,7 @@ The reviewer, the tutor chat, and the worked answers all use one connection that
 | -------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------- |
 | Claude Code                | The `claude` command and its login on your computer                                           | No                           |
 | OpenCode                   | The `opencode` command and its login on your computer                                         | No                           |
+| OpenCode Go                | An OpenCode Go API key                                                                        | Yes                          |
 | Anthropic API              | An Anthropic API key                                                                          | Yes                          |
 | OpenAI-compatible endpoint | Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with this API format | Yes, except for local models |
 
@@ -69,7 +70,7 @@ Each review records which model wrote it, so scores from different models stay d
 
 ## Run it
 
-You need Node.js 20.9 or later, pnpm, and one of the four connections above.
+You need Node.js 20.9 or later, pnpm, and one of the connections above.
 
 ```bash
 git clone https://github.com/aesbetancourt/archsim.git
@@ -88,7 +89,7 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
 - **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`), and [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
-- **No database.** Attempts, boards, settings, and your own problems are plain files in a `data/` folder that git ignores. Highlights and notes in progress are in the browser.
+- **No database.** Attempts, boards, the notebook, settings, and your own problems are plain files in a `data/` folder that git ignores. Kata highlights and notes in progress are in the browser.
 
 ```mermaid
 flowchart LR
@@ -96,9 +97,10 @@ flowchart LR
   B --> C{Connection<br/>from Settings}
   C --> D[Claude Code]
   C --> E[OpenCode]
+  C --> I[OpenCode Go]
   C --> F[Anthropic API]
   C --> G[OpenAI-compatible<br/>endpoint]
-  D & E & F & G -->|scores and feedback as JSON| H[Review page<br/>and history]
+  D & E & I & F & G -->|scores and feedback as JSON| H[Review page<br/>and history]
 ```
 
 The reviewer has read-only access. In the two command-line modes, the app starts the tool in the folder of one attempt, with file edits and shell commands turned off.

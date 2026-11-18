@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -184,10 +185,19 @@ async function viaAnthropic(call: ModelCall, settings: Settings): Promise<ModelR
   }
 }
 
+// An endpoint in the OpenAI chat format.
+type ChatEndpoint = {
+  // The name in error messages, for example "OpenCode Go".
+  label: string;
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+  headers?: Record<string, string>;
+};
+
 // One connection for each provider that has an endpoint in the OpenAI chat format.
-async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise<ModelResult> {
-  const { baseUrl, apiKey, model } = settings.openaiCompatible;
-  if (!baseUrl || !model) throw new Error("The base URL and the model are not set. Open Settings.");
+async function viaChatCompletions(call: ModelCall, endpoint: ChatEndpoint): Promise<ModelResult> {
+  const { label, baseUrl, apiKey, model, headers } = endpoint;
   const provider = createOpenAICompatible({
     name: "openaiCompatible",
     baseURL: baseUrl.replace(/\/+$/, ""),
@@ -195,7 +205,8 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
     supportsStructuredOutputs: true,
   });
   const messages = await userMessages(call);
-  const common = { model: provider(model), messages, timeout: TIMEOUT_MS };
+  // Headers on the call, not on the provider. The AI SDK replaces a user agent on the provider.
+  const common = { model: provider(model), messages, headers, timeout: TIMEOUT_MS };
 
   try {
     try {
@@ -220,7 +231,7 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
     });
     const stopped = finishError(result.finishReason);
     if (stopped) throw stopped;
-    if (!result.text) throw new Error("The provider returned no text.");
+    if (!result.text) throw new Error(`${label} returned no text.`);
     return { output: parseJson(result.text), model: result.response.modelId || model };
   } catch (thrown) {
     const error = unwrap(thrown);
@@ -228,19 +239,44 @@ async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise
     if (noObject) throw noObject;
     if (APICallError.isInstance(error)) {
       if (error.statusCode === 401 || error.statusCode === 403) {
-        throw new Error("The provider rejected the API key. Check the key in Settings.");
+        throw new Error(`${label} rejected the API key. Check the key in Settings.`);
       }
       const detail = (error.responseBody ?? error.message).slice(0, 300);
-      throw new Error(`The provider answered ${error.statusCode ?? "with an error"}: ${detail}`);
+      throw new Error(`${label} answered ${error.statusCode ?? "with an error"}: ${detail}`);
     }
     throw error;
   }
+}
+
+async function viaOpenAICompatible(call: ModelCall, settings: Settings): Promise<ModelResult> {
+  const { baseUrl, apiKey, model } = settings.openaiCompatible;
+  if (!baseUrl || !model) throw new Error("The base URL and the model are not set. Open Settings.");
+  return viaChatCompletions(call, { label: "The provider", baseUrl, apiKey, model });
+}
+
+// OpenCode Go translates each text model to the OpenAI chat format.
+const OPENCODE_GO_URL = "https://opencode.ai/inference/go/openai/v1";
+
+async function viaOpenCodeGo(call: ModelCall, settings: Settings): Promise<ModelResult> {
+  const { apiKey, model } = settings.openCodeGo;
+  if (!apiKey || !model)
+    throw new Error("The OpenCode Go API key and model are not set. Open Settings.");
+  return viaChatCompletions(call, {
+    label: "OpenCode Go",
+    baseUrl: process.env.OPENCODE_GO_BASE_URL || OPENCODE_GO_URL,
+    apiKey,
+    model,
+    // OpenCode Go rejects a request without a session ID. Each call is one conversation.
+    // It also asks each client to send its own name.
+    headers: { "x-opencode-session": randomUUID(), "user-agent": "archsim/0.1" },
+  });
 }
 
 // Send a prompt to the model that is selected in Settings. Return its structured answer.
 export async function runModel(call: ModelCall): Promise<ModelResult> {
   const settings = await readSettings();
   if (settings.mode === "opencode") return viaOpenCode(call, settings);
+  if (settings.mode === "opencode-go") return viaOpenCodeGo(call, settings);
   if (settings.mode === "anthropic") return viaAnthropic(call, settings);
   if (settings.mode === "openai-compatible") return viaOpenAICompatible(call, settings);
   return viaClaudeCode(call, settings);

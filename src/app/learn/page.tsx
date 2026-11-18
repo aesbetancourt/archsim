@@ -1,31 +1,9 @@
-import {
-  Activity,
-  ArrowLeftRight,
-  BookOpen,
-  Boxes,
-  Code,
-  Compass,
-  Database,
-  GraduationCap,
-  ListChecks,
-  type LucideIcon,
-  Users,
-} from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import Link from "next/link";
+import { sectionIcon } from "@/components/section-icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { wikiPages } from "@/lib/wiki";
 import { wikiSections } from "@/lib/wiki-pages";
-
-const sectionIcons: Record<string, LucideIcon> = {
-  "Start here": Compass,
-  Characteristics: ListChecks,
-  Structure: Boxes,
-  "Inside one application": Code,
-  Data: Database,
-  Communication: ArrowLeftRight,
-  "Reliability and operations": Activity,
-  "The architect at work": Users,
-};
 
 export default function LearnPage() {
   return (
@@ -47,7 +25,7 @@ export default function LearnPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {wikiSections.map((section) => {
-          const Icon = sectionIcons[section.title] ?? BookOpen;
+          const Icon = sectionIcon(section.title);
           return (
             <Card key={section.title}>
               <CardHeader>

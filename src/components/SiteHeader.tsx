@@ -6,7 +6,11 @@ import {
   GraduationCap,
   Library,
   Lightbulb,
+  MessageCircleQuestion,
+  NotebookPen,
   PencilRuler,
+  Repeat,
+  ScrollText,
   Settings,
   Sparkles,
   Target,
@@ -51,12 +55,30 @@ const learn = [
     icon: <Blocks />,
   },
   {
+    href: "/learn/cheatsheets",
+    title: "Cheatsheets",
+    description: "The key facts of each section, on one page.",
+    icon: <ScrollText />,
+  },
+  {
     href: "/learn/examples",
     title: "Worked examples",
     description: "Finished katas, step by step.",
     icon: <Lightbulb />,
   },
   { href: "/glossary", title: "Glossary", description: "Terms in plain words.", icon: <BookA /> },
+  {
+    href: "/drill",
+    title: "Vocabulary drill",
+    description: "Explain the terms, with spaced repetition.",
+    icon: <Repeat />,
+  },
+  {
+    href: "/drill/questions",
+    title: "Question drill",
+    description: "Answer the interview questions, with an AI check.",
+    icon: <MessageCircleQuestion />,
+  },
 ];
 
 export default function SiteHeader() {
@@ -71,6 +93,9 @@ export default function SiteHeader() {
         <NavMenu label="Learn" icon={<GraduationCap />} items={learn} />
         <LinkButton variant="ghost" size="sm" href="/scratchpad">
           <PencilRuler /> Scratchpad
+        </LinkButton>
+        <LinkButton variant="ghost" size="sm" href="/notebook">
+          <NotebookPen /> Notebook
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">

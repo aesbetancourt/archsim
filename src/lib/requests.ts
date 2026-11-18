@@ -62,6 +62,18 @@ export const chatRequest = z.object({
 
 export const solveRequest = z.object({ text: z.string().max(100_000) });
 
+// One explanation in the vocabulary drill. The server looks up the reference by the term ID.
+export const drillGradeRequest = z.object({
+  termId: z.string().min(1).max(100),
+  answer: z.string().trim().min(1, "Write an explanation first.").max(4_000),
+});
+
+// One answer in the question drill. The server looks up the reference by the question ID.
+export const questionGradeRequest = z.object({
+  questionId: z.string().min(1).max(200),
+  answer: z.string().trim().min(1, "Write an answer first.").max(8_000),
+});
+
 export const boardUpdate = z.object({
   title: z.string().max(200),
   notes,
@@ -71,6 +83,38 @@ export const boardUpdate = z.object({
   }),
 });
 
+export const highlightCreate = z.object({
+  page: z.string().startsWith("/").max(500),
+  title: z.string().max(500),
+  // Do not trim the text here. The start position is for the text as it is.
+  text: z
+    .string()
+    .max(5_000)
+    .refine((value) => value.trim().length > 0, "Select some text first."),
+  start: z.number().int().min(0),
+  note: z.string().max(MAX_TEXT).default(""),
+});
+
+export const highlightUpdate = z.object({ note: z.string().max(MAX_TEXT) });
+
+export const pageNoteUpdate = z.object({
+  page: z.string().startsWith("/").max(500),
+  title: z.string().max(500),
+  html: notes,
+});
+
+export const progressUpdate = z.object({
+  slug: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .max(100),
+  done: z.boolean(),
+});
+
+export const documentCreate = z.object({ title: z.string().max(200).default("") });
+
+export const documentUpdate = z.object({ title: z.string().max(200), html: notes });
+
 const httpUrl = z.url({ protocol: /^https?$/ });
 const model = z.string().max(200);
 const key = z.string().max(1_000);
@@ -79,6 +123,7 @@ export const settingsUpdate = z.object({
   mode: z.enum(modes),
   claudeCode: z.object({ model }),
   openCode: z.object({ model }).optional(),
+  openCodeGo: z.object({ apiKey: key, model }).optional(),
   anthropic: z.object({ apiKey: key, model }),
   openaiCompatible: z.object({
     baseUrl: z

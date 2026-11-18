@@ -77,6 +77,7 @@ function useSettings(mode: Settings["mode"], anthropicModel = "claude-opus-5-5")
     mode,
     claudeCode: { model: "" },
     openCode: { model: "" },
+    openCodeGo: { apiKey: "go-key", model: "kimi-k3" },
     anthropic: { apiKey: "sk-test", model: anthropicModel },
     openaiCompatible: { baseUrl: `${baseUrl}/v1/`, apiKey: "key", model: "my-model" },
   });
@@ -105,6 +106,7 @@ beforeAll(async () => {
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   vi.stubEnv("ANTHROPIC_BASE_URL", `${baseUrl}/v1`);
+  vi.stubEnv("OPENCODE_GO_BASE_URL", `${baseUrl}/go/v1`);
 
   const dir = await mkdtemp(path.join(os.tmpdir(), "archsim-test-"));
   imagePath = path.join(dir, "diagram.png");
@@ -234,5 +236,41 @@ describe("OpenAI-compatible connection", () => {
     reply = () => chatCompletion("I cannot do that.");
 
     await expect(call()).rejects.toThrow("The model did not return valid JSON.");
+  });
+});
+
+describe("OpenCode Go connection", () => {
+  it("sends the key, a session ID, and the app name", async () => {
+    useSettings("opencode-go");
+    reply = () => chatCompletion('{"ok":true}');
+
+    await expect(call()).resolves.toEqual({ output: { ok: true }, model: "served-model" });
+
+    const { url, headers, body } = requests[0];
+    expect(url).toBe("/go/v1/chat/completions");
+    expect(headers.authorization).toBe("Bearer go-key");
+    expect(headers["x-opencode-session"]).toMatch(/^[0-9a-f-]{36}$/);
+    expect(headers["user-agent"]).toMatch(/^archsim\//);
+    expect((body as RequestBody & { model: string }).model).toBe("kimi-k3");
+  });
+
+  it("names OpenCode Go when it rejects the key", async () => {
+    useSettings("opencode-go");
+    reply = () => error(401);
+
+    await expect(call()).rejects.toThrow(
+      "OpenCode Go rejected the API key. Check the key in Settings.",
+    );
+  });
+
+  it("requires an API key", async () => {
+    useSettings("opencode-go");
+    vi.mocked(readSettings).mockResolvedValue({
+      ...(await readSettings()),
+      openCodeGo: { apiKey: "", model: "kimi-k3" },
+    });
+
+    await expect(call()).rejects.toThrow("The OpenCode Go API key and model are not set.");
+    expect(requests).toHaveLength(0);
   });
 });

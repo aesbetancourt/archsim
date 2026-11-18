@@ -2,12 +2,28 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Diagram from "@/components/Diagram";
+import Walkthrough from "@/components/Walkthrough";
+import { parseWalkthrough } from "@/lib/walkthrough";
 import { headingId } from "@/lib/wiki-pages";
 
 function text(children: React.ReactNode): string {
   if (typeof children === "string") return children;
   if (Array.isArray(children)) return children.map(text).join("");
   return "";
+}
+
+// A walkthrough code block. A block that is not valid shows the problem, so the author can fix it.
+function WalkthroughBlock({ source }: { source: string }) {
+  const result = parseWalkthrough(source);
+  if (result.ok) return <Walkthrough walkthrough={result.walkthrough} />;
+  return (
+    <p
+      role="alert"
+      className="rounded-base border-2 border-[#e03131] bg-card p-3 font-mono text-sm"
+    >
+      {result.error}
+    </p>
+  );
 }
 
 // Draw the Markdown text of an article in the style of the app.
@@ -57,10 +73,21 @@ export default function Prose({
               {children}
             </blockquote>
           ),
-          // A "diagram" code block holds a diagram description in JSON.
-          pre: ({ children }) => <>{children}</>,
+          // A "diagram" code block holds a diagram description in JSON. Other code blocks are code.
+          pre: ({ node, children }) => {
+            const first = node?.children[0];
+            const className = first?.type === "element" ? String(first.properties.className) : "";
+            if (/language-(diagram|walkthrough)/.test(className)) return <>{children}</>;
+            return (
+              <pre className="overflow-x-auto rounded-base border-2 bg-card p-4 font-mono text-[0.85em] leading-6 [&_code]:bg-transparent [&_code]:p-0">
+                {children}
+              </pre>
+            );
+          },
           code: ({ className, children }) =>
-            className === "language-diagram" ? (
+            className === "language-walkthrough" ? (
+              <WalkthroughBlock source={text(children)} />
+            ) : className === "language-diagram" ? (
               <Diagram spec={JSON.parse(text(children))} />
             ) : (
               <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">

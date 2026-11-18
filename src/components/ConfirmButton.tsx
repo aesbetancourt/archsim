@@ -26,6 +26,8 @@ type Props = {
   size?: React.ComponentProps<typeof Button>["size"];
   variant?: React.ComponentProps<typeof Button>["variant"];
   ariaLabel?: string;
+  // Called after the request, in place of a new load of the page.
+  onDone?: () => void;
 };
 
 // A button that asks for confirmation, then sends a DELETE request.
@@ -39,6 +41,7 @@ export default function ConfirmButton({
   size = "sm",
   variant = "neutral",
   ariaLabel,
+  onDone,
 }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -56,6 +59,7 @@ export default function ConfirmButton({
     }
     setOpen(false);
     setBusy(false);
+    if (onDone) return onDone();
     if (redirectTo) router.push(redirectTo);
     router.refresh();
   }

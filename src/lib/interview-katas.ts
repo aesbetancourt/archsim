@@ -122,6 +122,166 @@ export const interviewKatas: Kata[] = [
       "Card data must not be stored by the shop.",
     ],
   },
+  {
+    id: "proximity-search",
+    title: "Proximity Search",
+    difficulty: "medium",
+    interview: true,
+    context:
+      "Design the search of a city guide app. A user asks for cafés, pharmacies, or garages near the current location, and gets a list with the nearest first.",
+    users:
+      "25 million users each day, 8 searches each. 15 million places worldwide. Searches peak at five times the average on weekend evenings.",
+    requirements: [
+      "A search with a radius of 1, 3, or 15 km answers in less than 150 milliseconds.",
+      "Results can be filtered by category and by 'open now'.",
+      "A user in a village with few places still gets useful results.",
+      "A place owner can add or change a place. The change shows in search within 24 hours.",
+    ],
+    constraints: [
+      "Places are very dense in city centers and almost absent in rural areas.",
+      "User locations in the European Union must stay in an EU region.",
+    ],
+  },
+  {
+    id: "distributed-queue",
+    title: "Distributed Message Queue",
+    difficulty: "hard",
+    interview: true,
+    context:
+      "Design a distributed message queue for a company with many teams. Producers write messages to topics. Many independent consumer groups read them, and a group can read old messages again.",
+    users:
+      "5 billion messages each day, 500 bytes on average. Each message is read by 4 consumer groups. Traffic peaks at three times the average.",
+    requirements: [
+      "Messages with the same key are read in the order they were written.",
+      "Messages stay for 3 days, so a consumer can replay them.",
+      "A producer can select between lowest latency and no message loss.",
+      "The cluster can grow without downtime.",
+    ],
+    constraints: [
+      "Brokers and whole racks fail without warning.",
+      "A payment team cannot lose a message after the producer gets an acknowledgement.",
+    ],
+  },
+  {
+    id: "metrics-platform",
+    title: "Metrics Platform",
+    difficulty: "medium",
+    interview: true,
+    context:
+      "Design the internal metrics platform of a company. It collects numbers such as processor load, request rate, and error rate from all servers and services, shows them on dashboards, and pages engineers when a rule fires.",
+    users:
+      "50,000 servers and containers, 150 time series on each, one sample every 15 seconds. 2,000 engineers and 10,000 alert rules.",
+    requirements: [
+      "A new point shows on dashboards and in alerts within 30 seconds.",
+      "Full detail stays for 14 days. Lower detail stays for 2 years.",
+      "One failure that triggers hundreds of alerts sends one grouped page to each team.",
+      "Alerts go to a pager, email, and a chat app.",
+    ],
+    constraints: [
+      "Many batch jobs live for less than one minute.",
+      "The platform must keep alerting when the systems it watches are down.",
+    ],
+  },
+  {
+    id: "ad-click-counter",
+    title: "Ad Click Counter",
+    difficulty: "hard",
+    interview: true,
+    context:
+      "Design the click counting of an ad network. Advertisers see the clicks on each ad almost in real time, and the counts decide how much they pay.",
+    users:
+      "2 billion clicks each day, 3 million active ads. Peaks reach eight times the average during big sports events.",
+    requirements: [
+      "Advertisers see clicks for each ad for each minute, at most 2 minutes late.",
+      "A dashboard shows the 50 most clicked ads in the last 5 minutes.",
+      "Each valid click counts exactly once in the invoice.",
+      "Counts can be filtered by country and by device type.",
+    ],
+    constraints: [
+      "Phones send clicks up to one hour late after they lose the network.",
+      "One campaign can get 15% of all clicks.",
+    ],
+  },
+  {
+    id: "hotel-booking",
+    title: "Hotel Booking",
+    difficulty: "medium",
+    interview: true,
+    context:
+      "Design the booking system of a hotel chain. A guest searches for a city and dates, selects a room type, pays, and gets a confirmation.",
+    users:
+      "9,000 hotels with 1.2 million rooms. About 250,000 bookings each day and 50 searches for each booking. A seasonal sale opens at 10:00 and brings 30 times the normal booking rate for 20 minutes.",
+    requirements: [
+      "The chain never sells more rooms than its overbooking rule allows. The rule is 8% above capacity, and each hotel can change it.",
+      "A guest who presses 'Book' twice gets one reservation and one charge.",
+      "A search for a city and dates answers in less than 300 milliseconds.",
+      "A guest can cancel up to 48 hours before arrival and gets a refund.",
+    ],
+    constraints: [
+      "Payment goes through an external provider. A request to it can time out with no answer.",
+      "Partner booking sites copy the availability every five minutes and sell the same rooms.",
+    ],
+  },
+  {
+    id: "game-leaderboard",
+    title: "Game Leaderboard",
+    difficulty: "medium",
+    interview: true,
+    context:
+      "Design the leaderboard of an online racing game. Players get points for each race. The game shows the best players and the rank of each player.",
+    users:
+      "120 million players each month and 25 million each day. Each daily player finishes 12 races a day and opens the leaderboard 5 times a day.",
+    requirements: [
+      "The game shows the top 100 players, and each player sees their rank with the 10 players above and below.",
+      "New points show in the rank within two seconds.",
+      "There is one global board and one board for each country. All boards start again each Monday.",
+      "Two players with equal points are ordered by who reached the score first.",
+    ],
+    constraints: [
+      "Points come only from the race servers, never from the game on the phone.",
+      "A crash must not lose the points of the current week.",
+    ],
+  },
+  {
+    id: "object-store",
+    title: "Object Store",
+    difficulty: "hard",
+    interview: true,
+    context:
+      "Design an object storage service for a cloud provider. Customers create buckets, upload files of any size, and download them by name.",
+    users:
+      "250 PB of customer data after two years, in about 8 billion objects. Most objects are smaller than 100 KB. Some backups are larger than 1 TB. At the peak, 60,000 reads and 15,000 writes each second.",
+    requirements: [
+      "A stored object is not lost when a disk, a server, or one data center fails.",
+      "Customers set access rules for each bucket and can list objects by name prefix.",
+      "An upload of a 1 TB file can continue after a lost connection.",
+      "Customers can turn on versions for a bucket and restore a deleted object.",
+    ],
+    constraints: [
+      "The disk budget is at most 1.6 times the size of the customer data.",
+      "The region has three data centers, and disks fail every day.",
+    ],
+  },
+  {
+    id: "stock-exchange",
+    title: "Stock Exchange",
+    difficulty: "hard",
+    interview: true,
+    context:
+      "Design an electronic stock exchange. Brokers send buy and sell orders. The exchange matches them, reports each trade, and publishes prices to the market.",
+    users:
+      "6,000 listed symbols and 400 broker connections. 3 billion order messages in a trading day of 8 hours, with bursts of 20 times the average at the open.",
+    requirements: [
+      "Orders match by best price first, and by arrival time at the same price.",
+      "The time from an order in to its acknowledgement out is below 100 microseconds at the 99th percentile.",
+      "All subscribers receive each market data update at the same moment.",
+      "Regulators can replay any trading day and get the same trades.",
+    ],
+    constraints: [
+      "An accepted order must survive the failure of any one server. A failover takes less than three seconds.",
+      "A broker must not be able to place an order that it cannot pay for.",
+    ],
+  },
 ];
 
 export const interviewExamples: WorkedExample[] = [
