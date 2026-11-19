@@ -8,11 +8,12 @@ import {
   Cloud,
   Plug,
   PlugZap,
+  RefreshCw,
   Save,
   Terminal,
   Volume2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -125,6 +126,42 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   const [vertexProject, setVertexProject] = useState(initial.vertex.projectId);
   const [vertexLocation, setVertexLocation] = useState(initial.vertex.location);
   const [vertexModel, setVertexModel] = useState(initial.vertex.model);
+  // The models that Vertex AI offers for the project and the location in the form.
+  const [vertexModels, setVertexModels] = useState<{ gemini: string[]; claude: string[] } | null>(
+    null,
+  );
+  const [vertexModelsError, setVertexModelsError] = useState("");
+  const [vertexLoading, setVertexLoading] = useState(false);
+  // "Other model" shows a text field, for a model ID that is not in the list.
+  const [vertexOther, setVertexOther] = useState(false);
+
+  async function loadVertexModels() {
+    setVertexLoading(true);
+    setVertexModelsError("");
+    const query = new URLSearchParams({ project: vertexProject, location: vertexLocation });
+    try {
+      const response = await fetch(`/api/vertex/models?${query}`);
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error ?? "Vertex AI did not list the models.");
+      setVertexModels(body);
+    } catch (error) {
+      setVertexModelsError((error as Error).message);
+      setVertexModels(null);
+    }
+    setVertexLoading(false);
+  }
+
+  // Load the list when the Vertex AI card opens.
+  useEffect(() => {
+    if (mode === "vertex" && vertexModels === null && !vertexLoading && !vertexModelsError) {
+      void loadVertexModels();
+    }
+    // Load again only when the card opens. A change of the project or location has its button.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
+
+  const listed = vertexModels ? [...vertexModels.gemini, ...vertexModels.claude] : [];
+  const showOther = vertexOther || (vertexModels !== null && !listed.includes(vertexModel));
   const [speechEngine, setSpeechEngine] = useState(initial.readAloud.engine);
   const [projectId, setProjectId] = useState(initial.readAloud.googleProjectId);
   const [voice, setVoice] = useState(initial.readAloud.googleVoice);
@@ -482,15 +519,72 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             <Field
               id="vertex-model"
               label="Model"
-              hint="A Gemini model, for example gemini-3.8-flash, or a Claude model such as claude-sonnet-5-5. A Claude model must be enabled in the Model Garden of the project first."
+              hint={
+                vertexModelsError ||
+                "Gemini models work at once. A Claude model must be enabled in the Model Garden of the project first, and can need a region such as us-east5."
+              }
             >
-              <Input
-                id="vertex-model"
-                value={vertexModel}
-                onChange={(event) => setVertexModel(event.target.value)}
-                autoComplete="off"
-                spellCheck={false}
-              />
+              <div className="flex gap-2">
+                <select
+                  id="vertex-model"
+                  value={showOther ? "__other" : vertexModel}
+                  onChange={(event) => {
+                    if (event.target.value === "__other") {
+                      setVertexOther(true);
+                    } else {
+                      setVertexOther(false);
+                      setVertexModel(event.target.value);
+                    }
+                  }}
+                  disabled={vertexLoading}
+                  className="flex h-10 w-full rounded-base border border-edge bg-card px-3 text-sm"
+                >
+                  {vertexModels === null && !showOther && (
+                    <option value={vertexModel}>
+                      {vertexLoading ? "Loading the models…" : vertexModel}
+                    </option>
+                  )}
+                  {vertexModels && vertexModels.gemini.length > 0 && (
+                    <optgroup label="Gemini">
+                      {vertexModels.gemini.map((id) => (
+                        <option key={id} value={id}>
+                          {id}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                  {vertexModels && vertexModels.claude.length > 0 && (
+                    <optgroup label="Claude (enable in the Model Garden first)">
+                      {vertexModels.claude.map((id) => (
+                        <option key={id} value={id}>
+                          {id}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                  <option value="__other">Other model…</option>
+                </select>
+                <Button
+                  type="button"
+                  variant="neutral"
+                  onClick={() => void loadVertexModels()}
+                  disabled={vertexLoading}
+                  title="List the models again, for the project and the location above"
+                >
+                  {vertexLoading ? <LoaderCircle className="animate-spin" /> : <RefreshCw />}
+                  List
+                </Button>
+              </div>
+              {showOther && (
+                <Input
+                  aria-label="Model ID"
+                  value={vertexModel}
+                  onChange={(event) => setVertexModel(event.target.value)}
+                  placeholder="gemini-4-neon"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+              )}
             </Field>
           </CardContent>
         </Card>

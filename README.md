@@ -115,7 +115,7 @@ Vertex AI uses the same Google Cloud login as the Google voices, so it needs no 
 1. Turn on the Vertex AI API in a Google Cloud project.
 2. Run `gcloud auth application-default login` one time on your computer.
 3. In Settings, select **Google Vertex AI**. Enter the project ID, or leave it empty to use the project of the Google voices, then the quota project of your login.
-4. Enter a model, for example `gemini-3.8-flash`, and click **Save and test the connection**.
+4. Select a model in the list. The app asks Vertex AI which models your project and location have. Gemini and Claude are in separate groups, and **Other model…** takes any model ID. Then click **Save and test the connection**.
 
 A Claude model on Vertex AI, such as `claude-sonnet-5-5`, must first be enabled in the Model Garden of the project, and can need a region such as `us-east5`. Google bills the project for each call.
 

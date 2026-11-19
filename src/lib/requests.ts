@@ -171,6 +171,17 @@ export const settingsUpdate = z.object({
     .optional(),
 });
 
+// The project and the location for the list of Vertex AI models. An empty project means: use the
+// project in Settings.
+export const vertexModelsQuery = z.object({
+  project: googleProjectId.default(""),
+  location: z
+    .string()
+    .trim()
+    .regex(/^[a-z][a-z0-9-]{1,30}$/, "This is not a Google Cloud location.")
+    .default("global"),
+});
+
 // One sentence for the read-aloud player. Google accepts at most 5,000 bytes in one request.
 export const speechRequest = z.object({ text: z.string().trim().min(1).max(1_000) });
 
