@@ -46,6 +46,13 @@
         --serif: "Literata", Georgia, serif;
         --mono: ui-monospace, "SF Mono", Menlo, monospace;
         --print: none;
+        /* The controls that float over the page: the contents button and the GitHub pill. */
+        --float: var(--glass);
+        --float-ink: var(--glass-ink);
+        --float-hover: var(--charcoal);
+        /* The dark surfaces that float: the contents panel and the chapter ribbon. */
+        --panel: rgba(20, 18, 14, 0.94);
+        --panel-edge: rgba(238, 229, 208, 0.18);
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
@@ -59,6 +66,12 @@
           --crit: #d9654f;
           /* A white print is too bright on charcoal. Show it as an old, dim print. */
           --print: sepia(0.35) brightness(0.78) contrast(1.05);
+          /* On a dark page, a dark control disappears. Use ivory, as the main button does. */
+          --float: #e9dfc8;
+          --float-ink: #14120e;
+          --float-hover: #fbf4e4;
+          --panel: rgba(40, 36, 29, 0.96);
+          --panel-edge: rgba(238, 229, 208, 0.3);
           color-scheme: dark;
         }
       }
@@ -67,6 +80,8 @@
       }
       html {
         scroll-behavior: smooth;
+        /* The plate and the contents button float over the top of the page. */
+        scroll-padding-top: 6.5rem;
       }
       body {
         margin: 0;
@@ -135,60 +150,332 @@
         font-size: 0.8em;
       }
 
-      /* Masthead */
+      /* Masthead: a title plate and a round contents button that float over the page */
       .masthead {
-        border-bottom: 1px solid var(--rule);
-      }
-      .masthead .wrap {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 30;
         display: flex;
-        align-items: baseline;
+        align-items: flex-start;
         justify-content: space-between;
-        gap: 1.5rem;
-        padding-block: 1.1rem;
+        gap: 1rem;
+        padding: 1.4rem max(1.5rem, calc((100vw - 74rem) / 2 + 1.5rem)) 0;
+        pointer-events: none;
+      }
+      .masthead > * {
+        pointer-events: auto;
+      }
+      .plate {
+        display: grid;
+        gap: 0.15rem;
+        padding: 0.55rem 0.95rem 0.6rem;
+        background: color-mix(in srgb, var(--mat) 88%, transparent);
+        border: 1px solid var(--rule);
+        border-radius: 2px;
+        box-shadow:
+          0 1px 0 var(--rule),
+          0 10px 30px -18px rgba(15, 13, 10, 0.45);
+        backdrop-filter: blur(6px);
+        text-decoration: none;
+      }
+      .plate-kicker,
+      .contents-label,
+      .contents-kicker,
+      .pill,
+      .ribbon {
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-variant-numeric: lining-nums;
+      }
+      .plate-kicker {
+        color: var(--ink-soft);
       }
       .wordmark {
         font-family: var(--display);
-        font-size: 1.6rem;
+        font-size: 1.45rem;
         font-weight: 600;
         letter-spacing: 0.01em;
-        text-decoration: none;
+        line-height: 1.15;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.45rem;
       }
       /* The mark: the wheel of a charrette, the same as the icon of the app. */
       .wordmark svg {
-        width: 1.35rem;
-        height: 1.35rem;
+        width: 1.2rem;
+        height: 1.2rem;
       }
-      .wordmark .hub {
+      .wordmark .hub,
+      .contents-wheel .hub {
         fill: var(--crit);
       }
-      .masthead nav {
+      .masthead-tools {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem 1.4rem;
-        font-size: 1.02rem;
+        align-items: flex-start;
+        gap: 0.9rem;
       }
-      .masthead nav a {
+      .pill {
+        margin-top: 0.95rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: var(--float);
+        color: var(--float-ink);
+        text-decoration: none;
+        backdrop-filter: blur(6px);
+      }
+      .pill:hover {
+        background: var(--float-hover);
+      }
+      .contents-toggle {
+        display: grid;
+        justify-items: center;
+        gap: 0.35rem;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--ink);
+        font: inherit;
+        cursor: pointer;
+      }
+      .contents-wheel {
+        display: grid;
+        place-items: center;
+        width: 3.6rem;
+        height: 3.6rem;
+        border-radius: 50%;
+        background: var(--float);
+        color: var(--float-ink);
+        box-shadow: 0 10px 30px -14px rgba(15, 13, 10, 0.6);
+        backdrop-filter: blur(6px);
+        transition: background 0.2s;
+      }
+      /* The wheel turns as the page scrolls, like the cart on its way to the crit. */
+      .contents-wheel svg {
+        width: 1.9rem;
+        height: 1.9rem;
+        transform: rotate(var(--turn, 0deg));
+      }
+      .contents-toggle:hover .contents-wheel {
+        background: var(--float-hover);
+      }
+      .contents-label {
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        background: var(--float);
+        color: var(--float-ink);
+        font-size: 0.6rem;
+      }
+
+      /* The contents: the sections as stops on the rim of a wheel */
+      .contents {
+        position: fixed;
+        inset: 6.4rem max(1.5rem, calc((100vw - 74rem) / 2 + 1.5rem)) auto auto;
+        width: min(44rem, calc(100vw - 2rem));
+        max-height: calc(100svh - 8rem);
+        overflow: auto;
+        margin: 0;
+        padding: 1.4rem 1.6rem 1.2rem;
+        border: 1px solid var(--panel-edge);
+        border-radius: 2px;
+        background: var(--panel);
+        color: var(--glass-ink);
+        box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+      }
+      .contents::backdrop {
+        background: rgba(15, 13, 10, 0.25);
+      }
+      .contents-kicker {
+        color: rgba(238, 229, 208, 0.62);
+      }
+      .contents-body {
+        display: grid;
+        grid-template-columns: 15rem 1fr;
+        align-items: center;
+        gap: 1.6rem;
+        margin-top: 0.8rem;
+      }
+      .contents-map {
+        position: relative;
+        aspect-ratio: 1;
+      }
+      .contents-map svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: rgba(238, 229, 208, 0.55);
+      }
+      .contents-map .rim {
+        stroke-width: 3;
+      }
+      .contents-map .rim-inner {
+        stroke-width: 0.8;
+        stroke-dasharray: 2 5;
+      }
+      .contents-map .spokes {
+        stroke-width: 1.6;
+      }
+      .contents-map .hub {
+        fill: #d9654f;
+        stroke: rgba(238, 229, 208, 0.7);
+      }
+      .stop {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        min-width: 2.1rem;
+        height: 2.1rem;
+        padding-inline: 0.3rem;
+        translate: -50% -50%;
+        border: 1px solid rgba(238, 229, 208, 0.5);
+        border-radius: 999px;
+        background: #1c1914;
+        color: var(--glass-ink);
+        font-size: 0.72rem;
+        font-variant-numeric: lining-nums;
+        text-decoration: none;
+        transition: background 0.15s;
+      }
+      .stop:hover,
+      .stop[aria-current] {
+        background: #d9654f;
+        border-color: #d9654f;
+        color: #14120e;
+      }
+      .contents-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        columns: 2;
+        column-gap: 1.4rem;
+      }
+      .contents-list li {
+        break-inside: avoid;
+      }
+      .contents-list a {
+        display: grid;
+        grid-template-columns: 2.4rem 1fr;
+        padding: 0.4rem 0;
+        border-top: 1px solid rgba(238, 229, 208, 0.12);
         text-decoration: none;
       }
-      .masthead nav a:hover {
-        text-decoration: underline;
+      .contents-list .num {
+        grid-row: span 2;
+        color: rgba(238, 229, 208, 0.55);
+        font-size: 0.78rem;
+        font-variant-numeric: lining-nums;
+        padding-top: 0.2rem;
+      }
+      .contents-list .name {
+        font-family: var(--display);
+        font-size: 1.08rem;
+        line-height: 1.3;
+      }
+      .contents-list .about {
+        font-size: 0.82rem;
+        line-height: 1.35;
+        color: rgba(238, 229, 208, 0.62);
+      }
+      .contents-list a:hover .name,
+      .contents-list a[aria-current] .name {
+        color: #e88a76;
+      }
+      .contents-list a[aria-current] .num {
+        color: #e88a76;
+      }
+      .contents-foot {
+        display: inline-block;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: var(--glass-ink);
+      }
+
+      /* The chapter ribbon at the bottom: where you are, and the way on */
+      .ribbon {
+        position: fixed;
+        left: 50%;
+        bottom: 1.1rem;
+        z-index: 30;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 1.2rem;
+        width: min(36rem, calc(100vw - 2rem));
+        padding: 0.6rem 1rem;
+        border: 1px solid var(--panel-edge);
+        border-radius: 2px;
+        background: var(--panel);
+        color: var(--glass-ink);
+        box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        translate: -50% 160%;
+        opacity: 0;
+        transition:
+          translate 0.35s ease,
+          opacity 0.35s ease;
+      }
+      .ribbon[hidden] {
+        display: none;
+      }
+      .ribbon.is-shown {
+        translate: -50% 0;
+        opacity: 1;
+      }
+      .ribbon a {
+        text-decoration: none;
+      }
+      .ribbon a:hover {
+        color: #e88a76;
+      }
+      .ribbon-back {
+        justify-self: start;
+      }
+      .ribbon-next {
+        justify-self: end;
+      }
+      .ribbon-now {
+        display: grid;
+        justify-items: center;
+        gap: 0.15rem;
+        min-width: 11rem;
+      }
+      .ribbon-num {
+        color: rgba(238, 229, 208, 0.6);
+      }
+      .ribbon-name {
+        font-family: var(--display);
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        text-transform: none;
+      }
+      .ribbon-line {
+        position: relative;
+        width: 100%;
+        height: 1px;
+        margin-top: 0.2rem;
+        background: rgba(238, 229, 208, 0.25);
+      }
+      .ribbon-line i {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--done, 0%);
+        background: #e88a76;
+        transition: width 0.35s ease;
       }
 
       /* Hero: the tagline on paper, beside the engraving of the charrette */
       .hero {
         display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-        min-height: min(52rem, calc(100svh - 4rem));
+        min-height: min(56rem, 100svh);
         border-bottom: 1px solid var(--rule);
       }
       .hero-text {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 4rem clamp(1.5rem, 5vw, 5rem) 4rem max(1.5rem, calc((100vw - 74rem) / 2 + 1.5rem));
+        padding: 8rem clamp(1.5rem, 5vw, 5rem) 4rem max(1.5rem, calc((100vw - 74rem) / 2 + 1.5rem));
       }
       .entry {
         max-width: 30rem;
@@ -711,8 +998,45 @@
         body {
           font-size: 1.125rem;
         }
-        .masthead nav a:not(.keep) {
+        .plate-kicker,
+        .pill,
+        .contents-label {
           display: none;
+        }
+        .masthead {
+          padding-top: 0.9rem;
+        }
+        .plate {
+          padding: 0.4rem 0.75rem;
+          background: var(--mat);
+        }
+        .contents-wheel {
+          width: 3rem;
+          height: 3rem;
+        }
+        .contents {
+          inset: 4.8rem 1rem auto;
+          width: auto;
+          max-height: calc(100svh - 6rem);
+        }
+        .contents-body {
+          grid-template-columns: 1fr;
+        }
+        .contents-map {
+          width: min(15rem, 100%);
+          justify-self: center;
+        }
+        .contents-list {
+          columns: 1;
+        }
+        .ribbon-back,
+        .ribbon-next {
+          font-size: 0;
+          letter-spacing: 0;
+        }
+        .ribbon-back span,
+        .ribbon-next span:last-child {
+          font-size: 1rem;
         }
         section {
           padding-block: 3.5rem;
@@ -726,6 +1050,10 @@
         html {
           scroll-behavior: auto;
         }
+        .ribbon,
+        .ribbon-line i {
+          transition: none;
+        }
         .engraving img {
           animation: none;
         }
@@ -737,8 +1065,9 @@
   </head>
   <body>
     <header class="masthead">
-      <div class="wrap">
-        <a class="wordmark" href="#top">
+      <a class="plate" href="#top">
+        <span class="plate-kicker">Draw · Defend · Face the crit</span>
+        <span class="wordmark">
           <svg viewBox="0 0 32 32" aria-hidden="true">
             <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
               <circle cx="16" cy="16" r="12" />
@@ -749,16 +1078,157 @@
             </g>
           </svg>
           Charrette
-        </a>
-        <nav aria-label="Sections">
-          <a href="#ritual">The ritual</a>
-          <a href="#method">The method</a>
-          <a href="#learn">Learn</a>
-          <a href="#providers">Providers</a>
-          <a href="#run">Run it</a>
-          <a class="keep" href="https://github.com/aesbetancourt/charrette">GitHub</a>
-        </nav>
+        </span>
+      </a>
+      <div class="masthead-tools">
+        <a class="pill" href="https://github.com/aesbetancourt/charrette"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+        <button
+          class="contents-toggle"
+          type="button"
+          popovertarget="contents"
+          aria-label="Open the contents"
+        >
+          <span class="contents-wheel"
+            ><svg viewBox="0 0 32 32" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                <circle cx="16" cy="16" r="12" />
+                <line x1="5.2" y1="16" x2="26.8" y2="16" />
+                <line x1="10.6" y1="6.65" x2="21.4" y2="25.35" />
+                <line x1="21.4" y1="6.65" x2="10.6" y2="25.35" />
+                <circle class="hub" cx="16" cy="16" r="3" stroke-width="1.8" />
+              </g></svg
+          ></span>
+          <span class="contents-label">Contents</span>
+        </button>
       </div>
+      <nav class="contents" id="contents" popover aria-label="Contents">
+        <p class="contents-kicker">The plan of the page</p>
+        <div class="contents-body">
+          <div class="contents-map">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <circle class="rim" cx="150" cy="150" r="120" />
+              <circle class="rim-inner" cx="150" cy="150" r="110" />
+              <g class="spokes">
+                <line x1="150.0" y1="30.0" x2="150.0" y2="270.0" />
+                <line x1="220.5" y1="52.9" x2="79.5" y2="247.1" />
+                <line x1="264.1" y1="112.9" x2="35.9" y2="187.1" />
+                <line x1="264.1" y1="187.1" x2="35.9" y2="112.9" />
+                <line x1="220.5" y1="247.1" x2="79.5" y2="52.9" />
+              </g>
+              <circle class="hub" cx="150" cy="150" r="16" />
+            </svg>
+            <a class="stop" href="#ritual" style="left: 50%; top: 10%" aria-label="I. The ritual"
+              >I</a
+            >
+            <a
+              class="stop"
+              href="#method"
+              style="left: 73.5%; top: 17.6%"
+              aria-label="II. The method"
+              >II</a
+            >
+            <a class="stop" href="#crit" style="left: 88%; top: 37.6%" aria-label="III. The crit"
+              >III</a
+            >
+            <a class="stop" href="#blocks" style="left: 88%; top: 62.4%" aria-label="IV. The pieces"
+              >IV</a
+            >
+            <a
+              class="stop"
+              href="#practice"
+              style="left: 73.5%; top: 82.4%"
+              aria-label="V. Practice"
+              >V</a
+            >
+            <a class="stop" href="#learn" style="left: 50%; top: 90%" aria-label="VI. Learn">VI</a>
+            <a class="stop" href="#study" style="left: 26.5%; top: 82.4%" aria-label="VII. Study"
+              >VII</a
+            >
+            <a
+              class="stop"
+              href="#interview"
+              style="left: 12%; top: 62.4%"
+              aria-label="VIII. The interview"
+              >VIII</a
+            >
+            <a
+              class="stop"
+              href="#providers"
+              style="left: 12%; top: 37.6%"
+              aria-label="IX. Providers"
+              >IX</a
+            >
+            <a class="stop" href="#run" style="left: 26.5%; top: 17.6%" aria-label="X. Run it">X</a>
+          </div>
+          <ol class="contents-list">
+            <li>
+              <a href="#ritual"
+                ><span class="num">I</span><span class="name">The ritual</span
+                ><span class="about">Draw it, defend it, face the crit.</span></a
+              >
+            </li>
+            <li>
+              <a href="#method"
+                ><span class="num">II</span><span class="name">The method</span
+                ><span class="about">One kata, five steps, one review.</span></a
+              >
+            </li>
+            <li>
+              <a href="#crit"
+                ><span class="num">III</span><span class="name">The crit</span
+                ><span class="about">Scores with the evidence from your work.</span></a
+              >
+            </li>
+            <li>
+              <a href="#blocks"
+                ><span class="num">IV</span><span class="name">The pieces</span
+                ><span class="about">Building blocks, and what each one costs.</span></a
+              >
+            </li>
+            <li>
+              <a href="#practice"
+                ><span class="num">V</span><span class="name">Practice</span
+                ><span class="about">Katas, a tutor, and your own problems.</span></a
+              >
+            </li>
+            <li>
+              <a href="#learn"
+                ><span class="num">VI</span><span class="name">Learn</span
+                ><span class="about">96 lessons in eleven sections.</span></a
+              >
+            </li>
+            <li>
+              <a href="#study"
+                ><span class="num">VII</span><span class="name">Study</span
+                ><span class="about">Read aloud, search, and the notebook.</span></a
+              >
+            </li>
+            <li>
+              <a href="#interview"
+                ><span class="num">VIII</span><span class="name">The interview</span
+                ><span class="about">The clock and the drills.</span></a
+              >
+            </li>
+            <li>
+              <a href="#providers"
+                ><span class="num">IX</span><span class="name">Providers</span
+                ><span class="about">The AI connection that you already have.</span></a
+              >
+            </li>
+            <li>
+              <a href="#run"
+                ><span class="num">X</span><span class="name">Run it</span
+                ><span class="about">Start it on your computer.</span></a
+              >
+            </li>
+          </ol>
+        </div>
+        <a class="contents-foot" href="https://github.com/aesbetancourt/charrette"
+          >Get it on GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
     </header>
 
     <main id="top">
@@ -937,7 +1407,7 @@
           </ol>
         </section>
 
-        <section>
+        <section id="crit">
           <div class="split">
             <div>
               <h2>A crit that shows its evidence</h2>
@@ -997,7 +1467,7 @@
           </div>
         </section>
 
-        <section>
+        <section id="practice">
           <h2>Built for practice</h2>
           <dl class="features">
             <div>
@@ -1118,7 +1588,7 @@
           </div>
         </section>
 
-        <section>
+        <section id="interview">
           <h2>Get ready for the interview</h2>
           <dl class="features">
             <div>
@@ -1274,5 +1744,80 @@ pnpm dev</pre>
         </div>
       </div>
     </footer>
+    <nav class="ribbon" aria-label="Where you are on the page" hidden>
+      <a class="ribbon-back" href="#top"><span aria-hidden="true">←</span> Back</a>
+      <a class="ribbon-now" href="#top" aria-live="polite">
+        <span class="ribbon-num"></span>
+        <span class="ribbon-name"></span>
+        <span class="ribbon-line"><i></i></span>
+      </a>
+      <a class="ribbon-next" href="#ritual"
+        ><span class="ribbon-next-label">Continue</span> <span aria-hidden="true">→</span></a
+      >
+    </nav>
+
+    <script>
+      // The contents and the chapter ribbon. The page works without this script.
+      (() => {
+        const contents = document.getElementById("contents");
+        const ribbon = document.querySelector(".ribbon");
+        const hero = document.querySelector(".hero");
+        const links = [...contents.querySelectorAll(".contents-list a")];
+        const sections = links.map((link) => document.querySelector(link.getAttribute("href")));
+        const stops = [...contents.querySelectorAll(".stop")];
+        const still = matchMedia("(prefers-reduced-motion: reduce)");
+        // Close the contents after a jump.
+        contents.addEventListener("click", (event) => {
+          if (event.target.closest("a") && contents.hidePopover) contents.hidePopover();
+        });
+        ribbon.hidden = false;
+        let current = -2;
+        function update() {
+          const line = innerHeight * 0.35;
+          let index = -1;
+          sections.forEach((section, n) => {
+            if (section && section.getBoundingClientRect().top <= line) index = n;
+          });
+          const max = document.documentElement.scrollHeight - innerHeight;
+          const progress = max > 0 ? scrollY / max : 0;
+          document.documentElement.style.setProperty(
+            "--turn",
+            still.matches ? "0deg" : `${progress * 360}deg`,
+          );
+          ribbon.classList.toggle(
+            "is-shown",
+            hero.getBoundingClientRect().bottom < innerHeight * 0.5,
+          );
+          if (index === current) return;
+          current = index;
+          const at = Math.max(index, 0);
+          const [num, name] = [
+            links[at].querySelector(".num").textContent,
+            links[at].querySelector(".name").textContent,
+          ];
+          const last = links[links.length - 1].querySelector(".num").textContent;
+          ribbon.querySelector(".ribbon-num").textContent = `${num} of ${last}`;
+          ribbon.querySelector(".ribbon-name").textContent = name;
+          ribbon.style.setProperty("--done", `${((at + 1) / links.length) * 100}%`);
+          ribbon.querySelector(".ribbon-now").setAttribute("href", links[at].getAttribute("href"));
+          ribbon
+            .querySelector(".ribbon-back")
+            .setAttribute("href", index > 0 ? links[index - 1].getAttribute("href") : "#top");
+          const next = links[index + 1];
+          ribbon
+            .querySelector(".ribbon-next")
+            .setAttribute("href", next ? next.getAttribute("href") : "#top");
+          ribbon.querySelector(".ribbon-next-label").textContent = next ? "Continue" : "To the top";
+          [...links, ...stops].forEach((link) => link.removeAttribute("aria-current"));
+          if (index >= 0) {
+            links[index].setAttribute("aria-current", "location");
+            stops[index].setAttribute("aria-current", "location");
+          }
+        }
+        addEventListener("scroll", update, { passive: true });
+        addEventListener("resize", update);
+        update();
+      })();
+    </script>
   </body>
 </html>
