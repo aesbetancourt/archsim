@@ -41,7 +41,25 @@ Draw two axes: value up, effort to the right. Put each item in one of four boxes
 | Fill-ins   | Low   | Low    | Do them when there is spare time        |
 | Money pits | Low   | High   | Do not do them                          |
 
-Example: "save the last address" is a quick win. "A live map of the driver" is a big bet.
+How to use it:
+
+1. Agree what "value" means for this period, for example "more repeat orders". Without one goal, each person scores their own goal.
+2. Score the value of each item from 1 to 5, with product.
+3. Score the effort from 1 to 5, with the engineers who will build it.
+4. Put each item in its box. A score of 3 or more is high.
+5. Challenge each quick win: "Is the effort really low? Who checked?"
+
+Example: the parcel tracking app. The goal this quarter is fewer calls to support.
+
+| Item                                   | Value | Effort | Box       | Why                                                 |
+| -------------------------------------- | ----- | ------ | --------- | --------------------------------------------------- |
+| Save the last delivery address         | 3     | 1      | Quick win | Fewer wrong addresses, a small form change          |
+| A delivery window on the tracking page | 5     | 2      | Quick win | "When does it come?" is the top support call        |
+| A live map of the driver               | 4     | 5      | Big bet   | Fewer calls, but needs GPS data from drivers        |
+| A dark theme                           | 1     | 1      | Fill-in   | Users asked for it, but it does not cut calls       |
+| A chatbot for all questions            | 2     | 5      | Money pit | Most calls are about time, which the window answers |
+
+The team starts with the delivery window. It plans the live map as a big bet, and splits it: first a map for the last three stops only. The chatbot is dropped for now, because the window answers the same calls at a much lower cost.
 
 **Strengths.** It is fast and visual.
 
@@ -58,7 +76,28 @@ MoSCoW puts each item in one of four categories for a fixed release or time box:
 
 Dai Clegg created MoSCoW at Oracle in 1994. The DSDM agile method later adopted it. DSDM guidance says that Must haves must take no more than about 60% of the effort. The rest is a buffer. If the team falls behind, it drops Could haves first, and the Musts still ship.
 
-Example: for a first release of parcel tracking, "see the current status" is a Must. "Notifications by text message" is a Should. "A delivery photo" is a Could. "A live map" is Won't this time.
+How to use it:
+
+1. Fix the time box first: the release date and the team's capacity.
+2. Put each item in a category, with the stakeholders in the room.
+3. Test each Must: "If this is missing, do we cancel the release?" If not, move it down.
+4. Add the effort of the Musts. Keep it at or below about 60% of the capacity.
+5. Write the Won't items down, so nobody expects them.
+
+Example: the first release of parcel tracking. The team has 20 person-weeks before the launch.
+
+| Item                          | First proposal | After the test  | Effort (weeks) |
+| ----------------------------- | -------------- | --------------- | -------------- |
+| See the current status        | Must           | Must            | 6              |
+| Enter a tracking number       | Must           | Must            | 2              |
+| Sign in with a user account   | Must           | Should          | 4              |
+| Notifications by text message | Should         | Should          | 3              |
+| A delivery photo              | Could          | Could           | 3              |
+| A live map                    | Could          | Won't this time | 10             |
+
+Sales first called the user account a Must. The team asked: "Without an account, do we cancel the launch?" No: a tracking number is enough to see the status. So the account moved to Should.
+
+The Musts now take 8 of 20 weeks, which is 40%. The Shoulds take 7 weeks more. That leaves 5 weeks as a buffer, so the Could item fits if nothing goes wrong. If the team falls behind, it drops the delivery photo first, then a Should. The Musts still ship.
 
 **Strengths.** It is easy to explain to stakeholders, and "Won't this time" makes the scope explicit.
 
@@ -139,9 +178,49 @@ Noriaki Kano described how features relate to satisfaction. The categories:
 
 Delighters become basic over time. A delivery photo surprised users once. Now many users expect it.
 
+**How to use it: the Kano survey.** For each feature, ask users two questions:
+
+- "How do you feel if the app **has** this feature?"
+- "How do you feel if the app **does not have** this feature?"
+
+Each answer is one of five: I like it, I expect it, I am neutral, I can live with it, I dislike it. The pair of answers gives the category. The four main rules:
+
+| If the app has it…                          | If the app does not have it…                   | Category    |
+| ------------------------------------------- | ---------------------------------------------- | ----------- |
+| I like it                                   | I dislike it                                   | Performance |
+| I like it                                   | Neutral, or I can live with it, or I expect it | Delighter   |
+| I expect it, neutral, or I can live with it | I dislike it                                   | Basic       |
+| Neutral, or I can live with it              | Neutral, or I can live with it                 | Indifferent |
+
+Other pairs show a question that the user did not understand, for example "I like it" to both. Count the answers of all users, and give each feature its most common category.
+
+Example: 20 users of the parcel app answer for three features.
+
+| Feature                           | Basic | Performance | Delighter | Indifferent | Result      |
+| --------------------------------- | ----- | ----------- | --------- | ----------- | ----------- |
+| The tracking number works         | 16    | 3           | 0         | 1           | Basic       |
+| A more exact delivery time        | 3     | 13          | 2         | 2           | Performance |
+| A photo of the parcel at the door | 2     | 3           | 11        | 4           | Delighter   |
+
+So the team makes sure that tracking never fails. It puts steady work into a more exact delivery time. It adds the photo as one small delighter. It does not build three more delighters while the delivery time is still vague.
+
 Kano helps you balance a release, not rank single items. Make sure the basics work first. Then invest in performance, and add a few delighters.
 
-A related tool is **opportunity scoring**, from Anthony Ulwick's outcome-driven innovation. Users rate how important an outcome is and how satisfied they are today. A high importance with low satisfaction marks an opportunity.
+A related tool is **opportunity scoring**, from Anthony Ulwick's outcome-driven innovation. Users rate how important an outcome is and how satisfied they are today, each from 0 to 10. Ulwick's formula:
+
+**Opportunity = importance + (importance − satisfaction)**
+
+If satisfaction is higher than importance, the part in brackets counts as 0. A score above 10 marks an opportunity. A score above 15 marks a strong one.
+
+Example: average answers from parcel app users.
+
+| Outcome the user wants                | Importance | Satisfaction | Calculation | Score |
+| ------------------------------------- | ---------- | ------------ | ----------- | ----- |
+| Know the hour when the parcel arrives | 9          | 2            | 9 + (9 − 2) | 16    |
+| Change the address after the order    | 7          | 3            | 7 + (7 − 3) | 11    |
+| See the parcel's route on a map       | 5          | 6            | 5 + 0       | 5     |
+
+The delivery hour is the strong opportunity. Changing the address is an opportunity too, but a smaller one. The route map scores low: users find it nice, but they are already satisfied without it. This matches the value-and-effort example above, from a different direction.
 
 ### Choose a method
 

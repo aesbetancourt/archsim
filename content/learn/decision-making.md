@@ -80,6 +80,93 @@ Notes on each:
 
 Recommendation: for most product and architecture decisions, use a single owner with advice, written down as DACI. Use consent for team agreements, such as working rules. Keep consensus for the few decisions that need active support from each member. This is an opinion: teams with a flat culture use consent much more.
 
+### DACI in practice
+
+How to use it:
+
+1. Write the decision as one question.
+2. Name one person for each role, before the work starts. Put the names at the top of a short document.
+3. The Driver collects the facts and the options, and asks each Contributor for input by a date.
+4. The Approver decides, in a meeting or in writing.
+5. The Driver writes the result in the document and tells the Informed people.
+
+Example: the garden tool shop from the [worked example](#worked-example-build-or-buy-search) must decide: "Do we stop support for mobile app versions older than two years?" About 6% of users still have an old version, and each release must still test it.
+
+| Role         | Who                       | What they do in this decision                                         |
+| ------------ | ------------------------- | --------------------------------------------------------------------- |
+| Driver       | The mobile tech lead      | Writes the document, gets the usage data, and sets the date: 12 March |
+| Approver     | The head of product       | Makes the decision                                                    |
+| Contributors | Support lead              | Says how many tickets the old versions cause                          |
+|              | Security engineer         | Says that the old versions use an old encryption library              |
+|              | Marketing lead            | Says how to tell the users, and how many orders the 6% make           |
+| Informed     | Customer service, finance | Must know the date, to answer customers and to plan revenue           |
+
+The document has one page:
+
+```text
+Decision:      Do we stop support for app versions older than two years?
+Driver:        Mobile tech lead       Approver: Head of product
+Contributors:  Support, security, marketing      Informed: Customer service, finance
+Decide by:     12 March
+Options:       A. Keep the support   B. Stop in 3 months, with a message in the app
+               C. Stop now
+Recommendation: B. The old versions cause 30% of the crash reports and use an old
+               encryption library. The 6% of users get three months and a clear message.
+Decision:      (the Approver writes it here, with the date)
+```
+
+On 12 March, the Approver selects B. The Driver writes the decision in the document, and tells customer service and finance the date. Nobody asks later "who agreed to this?", because the names were there from the start.
+
+### RAPID in practice
+
+How to use it:
+
+1. The **Recommend** person writes a proposal.
+2. They ask the **Input** people for facts and risks. Input is advice. It does not bind.
+3. They get the **Agree** people to sign off. An Agree person can block. Then the Recommend person changes the proposal, or takes the conflict to the Decide person.
+4. The **Decide** person makes the final call.
+5. The **Perform** people do the work.
+
+Example: a bank wants to replace the password reset by text message with a reset in the bank's app.
+
+| Role      | Who                                | Their part                                                           |
+| --------- | ---------------------------------- | -------------------------------------------------------------------- |
+| Recommend | Product manager for accounts       | Writes the proposal: reset in the app, with a face check             |
+| Input     | Fraud team, support, user research | Fraud: text messages are often stolen. Support: 9,000 resets a month |
+| Agree     | Compliance                         | Must confirm that the face check follows the law on biometric data   |
+| Decide    | Head of digital channels           | Makes the final call                                                 |
+| Perform   | Mobile team, web team              | Build and release the new flow                                       |
+
+Compliance does not agree. Biometric data needs the user's consent, so users must be able to refuse the face check. The product manager adds a reset by a letter with a code, and compliance agrees. Then the head of digital channels decides. The Agree role found the problem before the build, not after the launch. This is why large companies with legal limits use RAPID.
+
+### Consent in practice
+
+How to use it:
+
+1. One person reads the proposal.
+2. **Questions round.** Each person asks questions to understand it. No opinions yet.
+3. **Reaction round.** Each person says what they think, once.
+4. **Objection round.** Each person answers: "Do you see a reason why this causes harm, or why we cannot safely try it?"
+5. Change the proposal to remove each real objection. Then ask again.
+
+Example: a team proposes "each code review starts within one working day".
+
+- **A preference, not an objection:** "I prefer four hours." The proposal is still safe to try.
+- **A real objection:** "The on-call engineer cannot do reviews in an on-call week. The rule makes them fail it." This is a harm.
+
+The team changes the proposal: "...except for the engineer who is on call." Nobody objects, so the rule starts. The team agrees to look at it again in one month. A new rule is a two-way door.
+
+### The advice process in practice
+
+How to use it:
+
+1. Write what you want to decide, and why.
+2. Ask for advice from the people who the decision affects, and from the experts.
+3. Decide. You do not have to follow each piece of advice.
+4. Tell everyone what you decided, whose advice you asked for, and what you did with it.
+
+Example: an engineer wants to add a shared library for feature flags. They ask three teams that will use it, the platform lead, and security. The platform lead advises against a new library, because one exists. The engineer reads that library, finds it fits, and decides to use it. The note to the teams says: "I asked mobile, web, checkout, platform, and security. Platform showed me the existing library. I will use it, not a new one." Each person can see that their advice was heard.
+
 ## Disagree and commit
 
 The phrase is often linked to Intel under Andy Grove. In High Output Management, Grove describes three stages: free discussion, a clear decision, and full support. Bezos used "disagree and commit" in his 2016 letter, with a case where he disagreed with a team and committed to its plan.
@@ -102,6 +189,22 @@ Commit is more than silence. It means:
 - You do not reopen the decision without new information.
 - You explain the decision to your team fairly, without "they decided this".
 - You watch for the agreed signal to revisit, and raise it when it appears.
+
+### An example
+
+In the [search decision](#worked-example-build-or-buy-search), the platform lead prefers to run an open-source engine. Before the decision, in the meeting, they say:
+
+> "I recommend option B. A hosted service costs about three times more after two years, and we cannot change the ranking much. If the vendor can show an EU region and a one-year contract, my main concern goes away. Please put the cost concern in the record."
+
+This follows the five steps: before the decision, once, about the option, with what would change their mind, and on the record.
+
+The head of product selects C. After the meeting, the platform lead:
+
+- Builds the search interface so that the hosted service works well. They do not build it so that it fails and proves them right.
+- Tells their team: "We use a hosted service for one year. The reason is the spring date. I preferred to run our own, and the cost is in the record."
+- Sets an alert for the agreed signal: a yearly license above the cost of one engineer.
+
+Ten months later, the license is near that limit. The platform lead brings the new numbers. That is not reopening the decision. It is the agreed trigger.
 
 Commit does not apply to a decision that is unsafe, illegal, or unethical. Escalate those.
 

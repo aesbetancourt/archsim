@@ -70,6 +70,45 @@ Example decision for a tutor marketplace: how does the booking service know if a
 
 These three cover the space: ask each time, copy, or merge. A fourth option, "use a cache", is not a new option. It is a version of the second. The MECE test stops you from comparing a real option with a slight variant of itself.
 
+### How to build a MECE list
+
+1. Write the decision as one question.
+2. Find the one thing that the options differ in. In the example above, it is where the booking service gets the tutor's free time: it asks, it keeps a copy, or it owns the data.
+3. Write one option for each answer to that thing.
+4. **Test "exclusive".** For each pair, ask: "Can we do both at once?" If yes, they are not two options. Merge them, or split the question.
+5. **Test "exhaustive".** Ask: "Why not just X?" for the obvious ideas, and add "do nothing" if it is real. If an idea does not fit any option, the list has a gap.
+6. Put each variant under its parent option. Compare the parents first, then the variants of the winner.
+
+### Example: from a messy list to a MECE list
+
+A team asks: "How do we tell customers that their order changed?" The first list from the meeting:
+
+- Email
+- A text message
+- Use a queue
+- Push notifications
+- A notification service
+- Kafka
+- Do nothing
+
+The tests show the problem. "Email" and "use a queue" can both be true at once: an email can travel on a queue. So the list mixes two decisions:
+
+- **Which channel reaches the customer?** Email, text message, push notification.
+- **How does the order service hand off the message?** Call a sender directly, put the message on a queue, or publish an event that a notification service reads.
+
+Now each list is MECE on its own. Kafka is not a new option. It is a variant of "publish an event". "A notification service" is a variant of the same option.
+
+| Question | Option                        | Variants                          |
+| -------- | ----------------------------- | --------------------------------- |
+| Hand-off | A. Call a sender directly     |                                   |
+|          | B. Put the message on a queue | A managed queue, a database table |
+|          | C. Publish an event           | Kafka, a cloud event bus          |
+| Channel  | Email                         |                                   |
+|          | Text message                  |                                   |
+|          | Push notification             |                                   |
+
+"Do nothing" fits neither list: it answers a third question, "Do we tell customers at all?". Ask that question first. If the answer is yes, decide the hand-off with a trade-off analysis. The channel is a product decision, and it can be more than one.
+
 ## Avoid out-of-context decisions
 
 An out-of-context decision copies a conclusion from another place without its reason. "Shared libraries are bad in microservices." "Never use a distributed transaction." Each rule was true somewhere, for some reason.

@@ -47,6 +47,19 @@ Marty Cagan, in Inspired, names four risks that each product idea has. A good te
 
 The architect owns much of feasibility, and helps with viability. A popular feature that costs more to run than it earns is not viable.
 
+How to use it: for one idea, ask the four questions. Write the answer you have now, and the cheapest test for the risk that worries you most.
+
+Example: in the [Lunch Rush](#example-lunch-rush) sandwich chain, the idea is "a message to the customer when the order is ready".
+
+| Risk        | The question for this idea                                       | What we know now                 | Cheapest test                                                    |
+| ----------- | ---------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------- |
+| Value       | Do customers want it, or do they come at the pickup time anyway? | Customers complain about waiting | Ask 10 customers at the counter how they know the order is ready |
+| Usability   | Do they see the message in time, while at their desk?            | Nothing                          | A paper test: show the message on a phone, ask what they do next |
+| Feasibility | Does the kitchen know when an order is really ready?             | Staff do not mark orders as done | Watch one kitchen for one lunch hour                             |
+| Viability   | Can the chain pay for the text messages?                         | A text costs about $0.01         | 2,000 orders a day × $0.01 = $20 a day. Acceptable               |
+
+The feasibility risk is the largest. If the kitchen does not mark orders as done, the message is wrong, and a wrong message is worse than none. So the team tests that first, in one kitchen, before any code.
+
 ## From strategy to backlog
 
 Product work goes from a long-term picture to the next task in five levels:
@@ -104,9 +117,53 @@ An A/B test shows two versions to two groups of users and compares one metric. I
 
 Without a valid A/B test, use interviews, a pilot in a few shops, or a comparison before and after.
 
+How to plan one, before it starts:
+
+1. **Hypothesis.** What change, for which users, moves which metric, and why.
+2. **Main metric.** One number decides.
+3. **Guardrails.** The numbers that must not get worse.
+4. **Size and duration.** How many users each group needs, so a real difference shows. Calculate this first.
+5. **Decision rule.** What result means "ship", "drop", or "test again". Do not change it while the test runs.
+
+Example: Lunch Rush adds an "order the same again" button to the receipt.
+
+- **Hypothesis:** first-time online customers order again more often, because the second order takes one tap.
+- **Main metric:** the share of first-time online customers who order again within 30 days. Today it is 40%. The team wants to find a rise to 45%.
+- **Guardrails:** refunds, and orders that are not ready on time.
+- **Size:** a simple rule of thumb for a share gives about 16 × p × (1 − p) ÷ d² users in each group, with p the current share and d the difference to find. That is 16 × 0.4 × 0.6 ÷ 0.05² ≈ 1,540 users in each group, or about 3,100 in total.
+- **Duration:** the chain gets about 800 first-time online customers each week, so the test needs about four weeks. Each user then needs 30 more days for the result.
+- **Decision rule:** ship if the button group is at least 3 points higher and no guardrail is worse.
+
+The size step shows a limit early. To find a rise of only 2 points, the test needs about six times more users: about 19,200, which is almost six months of new customers. A pilot in a few shops is the better tool for that.
+
 ### The opportunity solution tree
 
 Teresa Torres, in Continuous Discovery Habits, gives a tree. The root is the desired outcome. Under it are opportunities: needs, pain points, and wishes. Under each are possible solutions, and under each solution are tests of its assumptions. The tree stops a jump from an outcome to one favorite feature.
+
+How to use it:
+
+1. Put one outcome at the top. Use a key result, not a feature.
+2. Find the opportunities in interviews with customers. Write each one in the customer's words.
+3. Select one opportunity to work on now.
+4. List at least three solutions for it, so you compare and do not fall in love with the first one.
+5. For each solution, write its riskiest assumption and a small test.
+
+Example: Lunch Rush, with one key result as the outcome.
+
+```text
+Outcome: 40% of first-time online customers order again within 30 days
+├── Opportunity: "My order was not ready when I came"          ← selected
+│   ├── Solution: a message when the order is ready
+│   │   └── Test: does the kitchen know when it is ready? Watch one lunch hour.
+│   ├── Solution: give a later pickup time at the peak
+│   │   └── Test: do customers accept a later time? Show it in five shops.
+│   └── Solution: a shelf for paid orders near the door
+│       └── Test: does the shelf help? Try it in one shop for a week.
+├── Opportunity: "I could not find my usual sandwich on the menu"
+└── Opportunity: "Paying at the counter takes as long as the queue"
+```
+
+The team selected the first opportunity, because interviews showed it most often. The shelf turned out to be the cheapest solution that worked. Without the tree, the team would probably have built the message first, because it was the first idea.
 
 ## Product metrics
 
