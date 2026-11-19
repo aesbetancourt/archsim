@@ -42,7 +42,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 - **Practice under time.** A clock in the kata panel copies the time box of an interview: 20, 30, 45, or 60 minutes. It shows the phase that an interviewer expects now: clarify by minute 5, a first design from end to end by minute 15, then deep dives, then the wrap-up. A soft tone marks the end of each phase.
 - **A drawing canvas.** An embedded [Excalidraw](https://excalidraw.com) canvas, the same kind of tool used in real interviews.
 - **Building blocks.** A palette above the canvas with 48 standard components in seven groups, three kinds of connection, five boundaries, and five small patterns. Stored data is a cylinder and a message channel is a pipe, as in the usual notation. Drag a piece to the canvas. A Learn page says what each piece costs you.
-- **Auto-save.** Your answers, notes, and diagram for each kata are saved in the browser as you work. The home page lists the katas in progress. Kata highlights go to the notebook.
+- **Auto-save.** Your answers, notes, and diagram for each kata are saved in the browser as you work. The home page lists the katas in progress. To start a kata again, remove it from that list. The app keeps your reviewed attempts and your highlights. Kata highlights go to the notebook.
 - **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts, gives hints, and asks about the pieces you used. It does not hand you the design.
 - **Solve a problem.** Paste any problem text, for example an interview question you had. The app writes a worked answer with the five-step method and adds the problem to your katas.
 - **The Architectural Katas collection.** The app reads Ted Neward's public kata collection, so you can practice on about 40 more problems.
@@ -65,6 +65,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Study
 
+- **A guide to the app.** The Guide page shows how to use Charrette. It explains a first session, the practice loop, and the study loop. It gives a normal week and a four-week plan for interview preparation. It also lists the keyboard shortcuts and where the app saves your work. Open it with the help icon in the top bar.
 - **Search.** Press Cmd+K or Ctrl+K on any page. It finds lessons, sections, cases, katas, terms, cheatsheets, interview questions, and your notes.
 - **Highlights and the notebook.** Select text in a lesson to highlight it and add a note. A sidebar holds the notes for each page. The Notebook page collects all highlights, page notes, and general notes.
 - **Progress.** Mark a lesson as done. The sidebar shows how many lessons are done in each section.
