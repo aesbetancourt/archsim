@@ -3,6 +3,8 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createAnthropic, type AnthropicLanguageModelOptions } from "@ai-sdk/anthropic";
+import { createVertex } from "@ai-sdk/google-vertex";
+import { createVertexAnthropic } from "@ai-sdk/google-vertex/anthropic";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import {
   APICallError,
@@ -16,6 +18,7 @@ import {
   RetryError,
   type UserContent,
 } from "ai";
+import { GoogleAuth } from "google-auth-library";
 import { runClaude } from "./claude";
 import { runOpenCode } from "./opencode";
 import { readSettings, type Settings } from "./settings";
@@ -272,6 +275,74 @@ async function viaOpenCodeGo(call: ModelCall, settings: Settings): Promise<Model
   });
 }
 
+// The Google Cloud project for Vertex AI: the one in Settings, then the one of the Google voices,
+// then the quota project of the gcloud login on this computer.
+async function vertexProject(settings: Settings): Promise<string> {
+  const chosen = settings.vertex.projectId || settings.readAloud.googleProjectId;
+  if (chosen) return chosen;
+  try {
+    return await new GoogleAuth().getProjectId();
+  } catch {
+    throw new Error(
+      "There is no Google Cloud project. Enter a project ID in Settings, or log in with: gcloud auth application-default login",
+    );
+  }
+}
+
+// Google Vertex AI: Gemini models, and Claude models that are enabled in the Model Garden of the
+// project. It uses the gcloud login on this computer, as the Google voices do. No API key.
+async function viaVertex(call: ModelCall, settings: Settings): Promise<ModelResult> {
+  const { location, model } = settings.vertex;
+  if (!model) throw new Error("The Vertex AI model is not set. Open Settings.");
+  const project = await vertexProject(settings);
+  const claude = model.startsWith("claude-");
+  const provider = claude
+    ? createVertexAnthropic({ project, location })
+    : createVertex({ project, location });
+
+  try {
+    const result = await generateText({
+      model: provider(model),
+      system: call.systemPrompt,
+      messages: await userMessages(call),
+      output: outputSchema(call),
+      maxOutputTokens: 16000,
+      timeout: TIMEOUT_MS,
+    });
+    const stopped = finishError(result.finishReason);
+    if (stopped) throw stopped;
+    return { output: result.output, model: result.response.modelId || model };
+  } catch (thrown) {
+    const error = unwrap(thrown);
+    const noObject = noObjectError(error);
+    if (noObject) throw noObject;
+    if (APICallError.isInstance(error)) {
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        throw new Error(
+          `Vertex AI refused the request in project "${project}". Turn on the Vertex AI API in the project, and log in with: gcloud auth application-default login`,
+        );
+      }
+      if (error.statusCode === 404) {
+        throw new Error(
+          claude
+            ? `Vertex AI has no model "${model}" in "${location}" for project "${project}". Enable the Claude model in the Model Garden of the project first.`
+            : `Vertex AI has no model "${model}" in "${location}". Check the model and the location in Settings.`,
+        );
+      }
+      if (error.statusCode === 429) {
+        throw new Error("Vertex AI quota reached. Wait a moment, then try again.");
+      }
+      throw new Error(`Vertex AI error ${error.statusCode ?? ""}: ${error.message}`);
+    }
+    if (error instanceof Error && /Could not load the default credentials/i.test(error.message)) {
+      throw new Error(
+        "There is no Google Cloud login on this computer. Run: gcloud auth application-default login",
+      );
+    }
+    throw error;
+  }
+}
+
 // Send a prompt to the model that is selected in Settings. Return its structured answer.
 export async function runModel(call: ModelCall): Promise<ModelResult> {
   const settings = await readSettings();
@@ -279,5 +350,6 @@ export async function runModel(call: ModelCall): Promise<ModelResult> {
   if (settings.mode === "opencode-go") return viaOpenCodeGo(call, settings);
   if (settings.mode === "anthropic") return viaAnthropic(call, settings);
   if (settings.mode === "openai-compatible") return viaOpenAICompatible(call, settings);
+  if (settings.mode === "vertex") return viaVertex(call, settings);
   return viaClaudeCode(call, settings);
 }

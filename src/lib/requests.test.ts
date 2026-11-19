@@ -95,6 +95,17 @@ describe("request schemas", () => {
     expect(settingsUpdate.safeParse(file).success).toBe(false);
   });
 
+  it("accepts Vertex AI settings and rejects a location that is not valid", () => {
+    const vertex = (location: string) => ({
+      ...settings,
+      mode: "vertex",
+      vertex: { projectId: "", location, model: "gemini-3.8-flash" },
+    });
+    expect(settingsUpdate.parse(vertex(" us-east5 ")).vertex?.location).toBe("us-east5");
+    expect(settingsUpdate.safeParse(vertex("global")).success).toBe(true);
+    expect(settingsUpdate.safeParse(vertex("../etc")).success).toBe(false);
+  });
+
   const readAloud = (googleProjectId: string, googleVoice = "en-US-Chirp3-HD-Charon") => ({
     ...settings,
     readAloud: { engine: "google", googleProjectId, googleVoice },

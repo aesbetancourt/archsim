@@ -27,6 +27,9 @@ export async function PUT(request: Request) {
       apiKey: update.openaiCompatible.apiKey.trim() || current.openaiCompatible.apiKey,
       model: update.openaiCompatible.model.trim(),
     },
+    vertex: update.vertex
+      ? { ...update.vertex, model: update.vertex.model.trim() || current.vertex.model }
+      : current.vertex,
     readAloud: update.readAloud ?? current.readAloud,
   };
   await writeSettings(next);

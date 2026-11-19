@@ -7,6 +7,7 @@ export const modes = [
   "opencode-go",
   "anthropic",
   "openai-compatible",
+  "vertex",
 ] as const;
 export type Mode = (typeof modes)[number];
 
@@ -26,8 +27,13 @@ export type Settings = {
   openCodeGo: { apiKey: string; model: string };
   anthropic: { apiKey: string; model: string };
   openaiCompatible: { baseUrl: string; apiKey: string; model: string };
+  // Google Vertex AI uses the gcloud login on this computer, as the Google voices do. An empty
+  // project ID means: the project of the Google voices, then the quota project of the login.
+  vertex: Vertex;
   readAloud: ReadAloud;
 };
+
+type Vertex = { projectId: string; location: string; model: string };
 
 const FILE = path.join(process.cwd(), "data", "settings.json");
 
@@ -38,6 +44,7 @@ const defaultSettings: Settings = {
   openCodeGo: { apiKey: "", model: "kimi-k3" },
   anthropic: { apiKey: "", model: "claude-opus-5-5" },
   openaiCompatible: { baseUrl: "", apiKey: "", model: "" },
+  vertex: { projectId: "", location: "global", model: "gemini-3.8-flash" },
   readAloud: { engine: "browser", googleProjectId: "", googleVoice: "en-US-Chirp3-HD-Charon" },
 };
 
@@ -51,6 +58,7 @@ export async function readSettings(): Promise<Settings> {
       openCodeGo: { ...defaultSettings.openCodeGo, ...saved.openCodeGo },
       anthropic: { ...defaultSettings.anthropic, ...saved.anthropic },
       openaiCompatible: { ...defaultSettings.openaiCompatible, ...saved.openaiCompatible },
+      vertex: { ...defaultSettings.vertex, ...saved.vertex },
       readAloud: { ...defaultSettings.readAloud, ...saved.readAloud },
     };
   } catch {
@@ -71,6 +79,7 @@ export type PublicSettings = {
   openCodeGo: { keyHint: string; model: string };
   anthropic: { keyHint: string; model: string };
   openaiCompatible: { baseUrl: string; keyHint: string; model: string };
+  vertex: Vertex;
   readAloud: ReadAloud;
 };
 
@@ -88,6 +97,7 @@ export function toPublic(settings: Settings): PublicSettings {
       keyHint: hint(settings.openaiCompatible.apiKey),
       model: settings.openaiCompatible.model,
     },
+    vertex: settings.vertex,
     readAloud: settings.readAloud,
   };
 }

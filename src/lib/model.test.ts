@@ -80,6 +80,7 @@ function useSettings(mode: Settings["mode"], anthropicModel = "claude-opus-5-5")
     openCodeGo: { apiKey: "go-key", model: "kimi-k3" },
     anthropic: { apiKey: "sk-test", model: anthropicModel },
     openaiCompatible: { baseUrl: `${baseUrl}/v1/`, apiKey: "key", model: "my-model" },
+    vertex: { projectId: "", location: "global", model: "gemini-3.8-flash" },
     readAloud: { engine: "browser", googleProjectId: "", googleVoice: "en-US-Chirp3-HD-Charon" },
   });
 }

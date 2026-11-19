@@ -84,13 +84,14 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 The reviewer, the tutor chat, and the worked answers all use one connection that you select in Settings. No provider is required by the design.
 
-| Mode                       | What it uses                                                                                  | API key in the app           |
-| -------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------- |
-| Claude Code                | The `claude` command and its login on your computer                                           | No                           |
-| OpenCode                   | The `opencode` command and its login on your computer                                         | No                           |
-| OpenCode Go                | An OpenCode Go API key                                                                        | Yes                          |
-| Anthropic API              | An Anthropic API key                                                                          | Yes                          |
-| OpenAI-compatible endpoint | Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with this API format | Yes, except for local models |
+| Mode                       | What it uses                                                                                                                        | API key in the app           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Claude Code                | The `claude` command and its login on your computer                                                                                 | No                           |
+| OpenCode                   | The `opencode` command and its login on your computer                                                                               | No                           |
+| OpenCode Go                | An OpenCode Go API key                                                                                                              | Yes                          |
+| Anthropic API              | An Anthropic API key                                                                                                                | Yes                          |
+| OpenAI-compatible endpoint | Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with this API format                                       | Yes, except for local models |
+| Google Vertex AI           | Gemini models, or Claude models enabled in the Model Garden, in your Google Cloud project, with the `gcloud` login on your computer | No                           |
 
 Each review records which model wrote it, so scores from different models stay distinguishable. A review needs a model that can read images and return structured JSON.
 
@@ -106,6 +107,17 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). The default connection is Claude Code. To use a different one, open Settings with the gear icon.
+
+### Use Google Vertex AI
+
+Vertex AI uses the same Google Cloud login as the Google voices, so it needs no API key:
+
+1. Turn on the Vertex AI API in a Google Cloud project.
+2. Run `gcloud auth application-default login` one time on your computer.
+3. In Settings, select **Google Vertex AI**. Enter the project ID, or leave it empty to use the project of the Google voices, then the quota project of your login.
+4. Enter a model, for example `gemini-3.8-flash`, and click **Save and test the connection**.
+
+A Claude model on Vertex AI, such as `claude-sonnet-5-5`, must first be enabled in the Model Garden of the project, and can need a region such as `us-east5`. Google bills the project for each call.
 
 ### Read aloud with Google voices
 
@@ -138,14 +150,15 @@ flowchart LR
   C --> I[OpenCode Go]
   C --> F[Anthropic API]
   C --> G[OpenAI-compatible<br/>endpoint]
-  D & E & I & F & G -->|scores and feedback as JSON| H[Review page<br/>and history]
+  C --> V[Google<br/>Vertex AI]
+  D & E & I & F & G & V -->|scores and feedback as JSON| H[Review page<br/>and history]
 ```
 
 The reviewer has read-only access. In the two command-line modes, the app starts the tool in the folder of one attempt, with file edits and shell commands turned off.
 
 ## Things to know
 
-- **It is a local, single-user tool.** There is no login and no hosted version. Your data stays on your computer, except for what you send to the model provider you selected. With Google voices, the lesson text also goes to Google Cloud.
+- **It is a local, single-user tool.** There is no login and no hosted version. Your data stays on your computer, except for what you send to the model provider you selected. With Google voices, the lesson text also goes to Google Cloud. With Vertex AI, your diagram and text go to your Google Cloud project.
 - **The lessons and worked examples are written with AI and are not reviewed by an expert.** Treat each one as a reasoned answer, not as an authority. The reading list in the app points to the books that are.
 - **Scores are a guide.** They are useful to compare your own attempts over time, with the same model.
 

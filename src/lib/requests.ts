@@ -127,6 +127,11 @@ export const documentCreate = z.object({ title: z.string().max(200).default("") 
 export const documentUpdate = z.object({ title: z.string().max(200), html: notes });
 
 const httpUrl = z.url({ protocol: /^https?$/ });
+// An empty project ID means: use a default project. See the settings file.
+const googleProjectId = z
+  .string()
+  .trim()
+  .regex(/^([a-z][a-z0-9-]{4,28}[a-z0-9])?$/, "This is not a Google Cloud project ID.");
 const model = z.string().max(200);
 const key = z.string().max(1_000);
 
@@ -144,13 +149,20 @@ export const settingsUpdate = z.object({
     apiKey: key,
     model,
   }),
+  vertex: z
+    .object({
+      projectId: googleProjectId,
+      location: z
+        .string()
+        .trim()
+        .regex(/^[a-z][a-z0-9-]{1,30}$/, "This is not a Google Cloud location."),
+      model,
+    })
+    .optional(),
   readAloud: z
     .object({
       engine: z.enum(speechEngines),
-      googleProjectId: z
-        .string()
-        .trim()
-        .regex(/^([a-z][a-z0-9-]{4,28}[a-z0-9])?$/, "This is not a Google Cloud project ID."),
+      googleProjectId,
       googleVoice: z
         .string()
         .trim()

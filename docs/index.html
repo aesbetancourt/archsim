@@ -6,7 +6,7 @@
     <title>Charrette: draw it, defend it, face the crit</title>
     <meta
       name="description"
-      content="Practice software architecture with katas. Draw a design, defend your trade-offs, and get a critique from an AI reviewer. Works with Claude Code, OpenCode, the Anthropic API, and any OpenAI-compatible provider."
+      content="Practice software architecture with katas. Draw a design, defend your trade-offs, and get a critique from an AI reviewer. Works with Claude Code, OpenCode, the Anthropic API, Google Vertex AI, and any OpenAI-compatible provider."
     />
     <meta property="og:title" content="Charrette: draw it, defend it, face the crit" />
     <meta
@@ -1185,6 +1185,14 @@
                   </td>
                   <td>Yes, except for local models</td>
                 </tr>
+                <tr>
+                  <th scope="row">Google Vertex AI</th>
+                  <td>
+                    Gemini, or Claude from the Model Garden, in your Google Cloud project, with the
+                    <code>gcloud</code> login on your computer
+                  </td>
+                  <td>No</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -1194,7 +1202,7 @@
           <h2>Run it</h2>
           <p class="measure soft" style="margin-top: 1rem">
             Charrette runs on your computer. You need Node.js 20.9 or later, pnpm, and one of the
-            five connections above.
+            six connections above.
           </p>
           <pre>
 git clone https://github.com/aesbetancourt/charrette.git

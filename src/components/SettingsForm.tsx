@@ -5,6 +5,7 @@ import {
   KeyRound,
   LoaderCircle,
   type LucideIcon,
+  Cloud,
   Plug,
   PlugZap,
   Save,
@@ -54,6 +55,13 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
     icon: Plug,
     description:
       "Uses a provider with an endpoint in the OpenAI format: Google Gemini, OpenRouter, OpenAI, or a local model.",
+  },
+  {
+    id: "vertex",
+    title: "Google Vertex AI",
+    icon: Cloud,
+    description:
+      "Uses Gemini or Claude models in your Google Cloud project, with your gcloud login. No API key.",
   },
 ];
 
@@ -114,6 +122,9 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   const [baseUrl, setBaseUrl] = useState(initial.openaiCompatible.baseUrl);
   const [openaiKey, setOpenaiKey] = useState("");
   const [openaiModel, setOpenaiModel] = useState(initial.openaiCompatible.model);
+  const [vertexProject, setVertexProject] = useState(initial.vertex.projectId);
+  const [vertexLocation, setVertexLocation] = useState(initial.vertex.location);
+  const [vertexModel, setVertexModel] = useState(initial.vertex.model);
   const [speechEngine, setSpeechEngine] = useState(initial.readAloud.engine);
   const [projectId, setProjectId] = useState(initial.readAloud.googleProjectId);
   const [voice, setVoice] = useState(initial.readAloud.googleVoice);
@@ -131,6 +142,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
         openCodeGo: { apiKey: goKey, model: goModel },
         anthropic: { apiKey: anthropicKey, model: anthropicModel },
         openaiCompatible: { baseUrl, apiKey: openaiKey, model: openaiModel },
+        vertex: { projectId: vertexProject, location: vertexLocation, model: vertexModel },
         readAloud: { engine: speechEngine, googleProjectId: projectId, googleVoice: voice },
       }),
     });
@@ -420,6 +432,64 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
                 id="openai-model"
                 value={openaiModel}
                 onChange={(event) => setOpenaiModel(event.target.value)}
+              />
+            </Field>
+          </CardContent>
+        </Card>
+      )}
+
+      {mode === "vertex" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Google Vertex AI</CardTitle>
+            <CardDescription>
+              The diagram and your text go to Vertex AI in your Google Cloud project. It uses the
+              gcloud login on this computer, as the Google voices do. Google bills the project.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field
+              id="vertex-project"
+              label="Google Cloud project ID"
+              hint={`The Vertex AI API must be on in the project. Leave empty to use ${
+                projectId
+                  ? `the project of the Google voices (${projectId})`
+                  : "the quota project of your login"
+              }. Log in one time with: gcloud auth application-default login`}
+            >
+              <Input
+                id="vertex-project"
+                value={vertexProject}
+                onChange={(event) => setVertexProject(event.target.value)}
+                placeholder={projectId || "my-project-id"}
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </Field>
+            <Field
+              id="vertex-location"
+              label="Location"
+              hint="global works for most Gemini models. A Claude model can need a region, for example us-east5."
+            >
+              <Input
+                id="vertex-location"
+                value={vertexLocation}
+                onChange={(event) => setVertexLocation(event.target.value)}
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </Field>
+            <Field
+              id="vertex-model"
+              label="Model"
+              hint="A Gemini model, for example gemini-3.8-flash, or a Claude model such as claude-sonnet-5-5. A Claude model must be enabled in the Model Garden of the project first."
+            >
+              <Input
+                id="vertex-model"
+                value={vertexModel}
+                onChange={(event) => setVertexModel(event.target.value)}
+                autoComplete="off"
+                spellCheck={false}
               />
             </Field>
           </CardContent>
