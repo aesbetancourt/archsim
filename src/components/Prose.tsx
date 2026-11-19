@@ -10,6 +10,7 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import rehypeHighlight, { type Options as HighlightOptions } from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import { BookmarkButton } from "@/components/Bookmarks";
 import CodeBlock from "@/components/CodeBlock";
 import Diagram from "@/components/Diagram";
 import TableFrame from "@/components/TableFrame";
@@ -71,14 +72,17 @@ export default function Prose({
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[highlight]}
         components={{
-          h2: ({ children }) => (
-            <h2
-              id={headingId(text(children))}
-              className="scroll-mt-6 border-b pb-1 pt-4 text-2xl font-semibold"
-            >
-              {children}
-            </h2>
-          ),
+          h2: ({ children }) => {
+            const label = text(children);
+            const id = headingId(label);
+            return (
+              <h2 id={id} className="scroll-mt-6 border-b pb-1 pt-4 text-2xl font-semibold">
+                {children}
+                {/* An empty id is the whole page, so a section needs its own id. */}
+                {id && <BookmarkButton anchor={id} heading={label} />}
+              </h2>
+            );
+          },
           h3: ({ children }) => <h3 className="pt-2 text-base font-semibold">{children}</h3>,
           ul: ({ children }) => <ul className="list-disc space-y-1.5 pl-6">{children}</ul>,
           ol: ({ children }) => <ol className="list-decimal space-y-1.5 pl-6">{children}</ol>,

@@ -18,6 +18,20 @@ export type Highlight = {
   createdAt: string;
 };
 
+// A place on a learning page that the user wants to find again: the page, or one section of it.
+export type Bookmark = {
+  id: string;
+  // The path of the page, for example /learn/caching.
+  page: string;
+  // The title of the page when the user made the bookmark.
+  title: string;
+  // The text of the heading.
+  heading: string;
+  // The id of the section heading, for example "eviction". It is empty for the whole page.
+  anchor: string;
+  createdAt: string;
+};
+
 // The notes of one learning page, as HTML.
 export type PageNote = { page: string; title: string; html: string; updatedAt: string };
 
@@ -34,6 +48,7 @@ export type Notebook = {
   documents: NoteDoc[];
   pages: PageNote[];
   highlights: Highlight[];
+  bookmarks: Bookmark[];
   stories: Story[];
 };
 
@@ -48,6 +63,7 @@ function normalize(value: unknown): Notebook {
     documents: list(saved.documents),
     pages: list(saved.pages),
     highlights: list(saved.highlights),
+    bookmarks: list(saved.bookmarks),
     stories: list(saved.stories),
   };
   // An older notebook had one notes document. Keep it as the first general note.
@@ -89,6 +105,27 @@ export function updateHighlightNote(id: string, note: string): Promise<Highlight
 export function removeHighlight(id: string): Promise<void> {
   return change((notebook) => {
     notebook.highlights = notebook.highlights.filter((item) => item.id !== id);
+  });
+}
+
+// Add a bookmark. A second bookmark for the same place returns the first one.
+export function addBookmark(
+  input: Pick<Bookmark, "page" | "title" | "heading" | "anchor">,
+): Promise<Bookmark> {
+  return change((notebook) => {
+    const found = notebook.bookmarks.find(
+      (item) => item.page === input.page && item.anchor === input.anchor,
+    );
+    if (found) return found;
+    const bookmark: Bookmark = { ...input, id: newId(), createdAt: new Date().toISOString() };
+    notebook.bookmarks.push(bookmark);
+    return bookmark;
+  });
+}
+
+export function removeBookmark(id: string): Promise<void> {
+  return change((notebook) => {
+    notebook.bookmarks = notebook.bookmarks.filter((item) => item.id !== id);
   });
 }
 

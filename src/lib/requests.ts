@@ -97,6 +97,16 @@ export const highlightCreate = z.object({
 
 export const highlightUpdate = z.object({ note: z.string().max(MAX_TEXT) });
 
+export const bookmarkCreate = z.object({
+  page: z.string().startsWith("/").max(500),
+  title: z.string().max(500),
+  heading: z.string().max(500),
+  anchor: z
+    .string()
+    .regex(/^[a-z0-9-]*$/)
+    .max(200),
+});
+
 export const pageNoteUpdate = z.object({
   page: z.string().startsWith("/").max(500),
   title: z.string().max(500),

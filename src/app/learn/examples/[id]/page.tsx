@@ -1,4 +1,5 @@
 import { ArrowRight, Lightbulb } from "lucide-react";
+import { BookmarkButton } from "@/components/Bookmarks";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -70,7 +71,10 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
             </Badge>
           )}
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight">{kata.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {kata.title}
+          <BookmarkButton anchor="" heading={kata.title} />
+        </h1>
         <Alert>
           <Lightbulb />
           <AlertTitle>This is one good answer, not the answer.</AlertTitle>

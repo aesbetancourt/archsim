@@ -16,9 +16,10 @@ export default async function NotebookPage() {
           Notebook
         </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
-          The place to keep your study in order. General notes are for a topic. The notes and
-          highlights of a page are in the sidebar of that page, and here they are together. The
-          notebook is saved in data/notebook.json on this computer.
+          The place to keep your study in order. Bookmarks take you back to a lesson or a section.
+          General notes are for a topic. The notes and highlights of a page are in the sidebar of
+          that page, and here they are together. The notebook is saved in data/notebook.json on this
+          computer.
         </p>
       </header>
       <NotebookView notebook={notebook} />

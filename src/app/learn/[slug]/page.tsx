@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BlockIcon from "@/components/BlockIcon";
+import { BookmarkButton } from "@/components/Bookmarks";
 import { DoneBadge, LessonObjectives, MarkDone } from "@/components/LessonProgress";
 import Prose from "@/components/Prose";
 import StyleLessonBody from "@/components/StyleLessonBody";
@@ -305,7 +306,10 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">
       <header className="space-y-3 border-b pb-4">
-        <h1 className="text-3xl font-semibold tracking-tight">{page.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {page.title}
+          <BookmarkButton anchor="" heading={page.title} />
+        </h1>
         <p className="text-base text-muted-foreground">{page.summary}</p>
         <div className="flex flex-wrap gap-1.5">
           <Badge variant="neutral">

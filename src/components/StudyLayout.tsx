@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { BookmarksProvider } from "@/components/Bookmarks";
 import NotebookSidebar from "@/components/NotebookSidebar";
 import ReadAloud from "@/components/ReadAloud";
 import { useHighlighter } from "@/components/useHighlighter";
@@ -15,7 +16,7 @@ export default function StudyLayout({ children }: { children: React.ReactNode })
     useHighlighter({ page });
 
   return (
-    <>
+    <BookmarksProvider page={page} getTitle={pageTitle}>
       <div className="flex min-w-0 flex-1">
         {/* These handlers only read the text selection. The sidebar has all the actions. */}
         {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions */}
@@ -33,6 +34,6 @@ export default function StudyLayout({ children }: { children: React.ReactNode })
       </div>
       {overlay}
       <ReadAloud root={root} page={page} />
-    </>
+    </BookmarksProvider>
   );
 }

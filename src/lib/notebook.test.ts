@@ -3,9 +3,11 @@ import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  addBookmark,
   createDocument,
   deleteDocument,
   readNotebook,
+  removeBookmark,
   savePageNote,
   updateDocument,
 } from "./notebook";
@@ -90,5 +92,23 @@ describe("story bank", () => {
 
     await deleteStory(story.id);
     expect((await readNotebook()).stories).toEqual([]);
+  });
+});
+
+describe("bookmarks", () => {
+  it("adds a bookmark once, and removes it", async () => {
+    const input = {
+      page: "/learn/caching",
+      title: "Caching",
+      heading: "Eviction",
+      anchor: "eviction",
+    };
+    const first = await addBookmark(input);
+    const again = await addBookmark(input);
+    expect(again.id).toBe(first.id);
+    expect((await readNotebook()).bookmarks).toHaveLength(1);
+
+    await removeBookmark(first.id);
+    expect((await readNotebook()).bookmarks).toEqual([]);
   });
 });
