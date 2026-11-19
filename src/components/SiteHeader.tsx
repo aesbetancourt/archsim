@@ -84,19 +84,32 @@ const learn = [
 
 export default function SiteHeader() {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-6 border-b bg-card px-6">
+    // The spaces are smaller below 1024px, so the bar fits a narrow window without a side scroll.
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card px-4 lg:gap-6 lg:px-6">
       <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
         <DraftingCompass className="size-5 text-primary" />
         Charrette
       </Link>
-      <nav className="flex items-center gap-1">
+      <nav className="flex min-w-0 items-center gap-1">
         <NavMenu label="Practice" icon={<Target />} items={practice} />
         <NavMenu label="Learn" icon={<GraduationCap />} items={learn} />
-        <LinkButton variant="ghost" size="sm" href="/scratchpad">
-          <PencilRuler /> Scratchpad
+        <LinkButton
+          variant="ghost"
+          size="sm"
+          href="/scratchpad"
+          aria-label="Scratchpad"
+          title="Scratchpad"
+        >
+          <PencilRuler /> <span className="hidden md:inline">Scratchpad</span>
         </LinkButton>
-        <LinkButton variant="ghost" size="sm" href="/notebook">
-          <NotebookPen /> Notebook
+        <LinkButton
+          variant="ghost"
+          size="sm"
+          href="/notebook"
+          aria-label="Notebook"
+          title="Notebook"
+        >
+          <NotebookPen /> <span className="hidden md:inline">Notebook</span>
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">

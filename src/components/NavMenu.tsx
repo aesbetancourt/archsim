@@ -24,8 +24,11 @@ export default function NavMenu({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="sm" />}>
-        {icon} {label} <ChevronDown />
+      <DropdownMenuTrigger
+        render={<Button variant="ghost" size="sm" aria-label={label} title={label} />}
+      >
+        {/* On a narrow window, only the icon shows. */}
+        {icon} <span className="hidden md:inline">{label}</span> <ChevronDown />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-72">
         {items.map((item) => (
