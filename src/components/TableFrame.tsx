@@ -32,7 +32,7 @@ export default function TableFrame({ children }: { children: React.ReactNode }) 
       <div className="relative">
         <div
           ref={frame}
-          className="overflow-x-auto rounded-base border-2 border-border bg-card shadow-shadow"
+          className="overflow-x-auto border-t-2 border-b border-t-foreground border-b-edge bg-card"
         >
           {children}
         </div>

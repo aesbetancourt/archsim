@@ -118,7 +118,7 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
               <li
                 key={competency}
                 className={cn(
-                  "rounded-base border-2 px-2 py-0.5 text-xs",
+                  "rounded-base border px-2 py-0.5 text-xs",
                   count > 0
                     ? "border-border bg-main text-main-foreground"
                     : "border-dashed text-muted-foreground",
@@ -147,7 +147,7 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
           }}
         />
       ) : stories.length === 0 ? (
-        <p className="flex items-center gap-2 rounded-base border-2 border-dashed px-4 py-3 text-muted-foreground">
+        <p className="flex items-center gap-2 rounded-base border border-dashed px-4 py-3 text-muted-foreground">
           <BookUser className="size-4 shrink-0" aria-hidden /> No stories yet. Start with the
           project you are most proud of, and a decision that went wrong.
         </p>
@@ -158,7 +158,7 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
               <button
                 type="button"
                 onClick={() => setOpenId(story.id)}
-                className="h-full w-full cursor-pointer rounded-base border-2 border-border bg-secondary-background px-3 py-2 text-left hover:bg-main hover:text-main-foreground"
+                className="h-full w-full cursor-pointer rounded-base border border-border bg-secondary-background px-3 py-2 text-left hover:bg-main hover:text-main-foreground"
               >
                 <span className="block font-medium">{story.title}</span>
                 <span className="block truncate text-xs opacity-80">
@@ -207,7 +207,7 @@ function StoryEditor({
   }
 
   return (
-    <div className="space-y-3 rounded-base border-2 bg-secondary-background p-4">
+    <div className="space-y-3 rounded-base border bg-secondary-background p-4">
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"

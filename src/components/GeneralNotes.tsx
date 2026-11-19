@@ -80,7 +80,7 @@ export default function GeneralNotes({
   const sorted = [...documents].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center justify-between gap-2 border-b-2 px-3 py-2">
+      <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
         <p className="text-muted-foreground">
           Notes for each topic, not for one page. For example: questions, or a summary.
         </p>
@@ -105,7 +105,7 @@ export default function GeneralNotes({
                   <button
                     type="button"
                     onClick={() => setOpenId(item.id)}
-                    className="w-full cursor-pointer rounded-base border-2 border-border bg-secondary-background px-3 py-2 text-left hover:bg-main hover:text-main-foreground"
+                    className="w-full cursor-pointer rounded-base border border-border bg-secondary-background px-3 py-2 text-left hover:bg-main hover:text-main-foreground"
                   >
                     <span className="flex items-center gap-2 font-medium">
                       <FileText className="size-4 shrink-0" aria-hidden />
@@ -146,7 +146,7 @@ function OpenNote({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center gap-1 border-b-2 px-2 py-2">
+      <div className="flex items-center gap-1 border-b px-2 py-2">
         <Button
           variant="ghost"
           size="icon"

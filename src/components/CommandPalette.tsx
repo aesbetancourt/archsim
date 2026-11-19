@@ -135,7 +135,7 @@ export default function CommandPalette() {
           className="top-[15%] translate-y-0 gap-0 p-0 sm:max-w-2xl"
         >
           <DialogTitle className="sr-only">Search</DialogTitle>
-          <div className="flex items-center gap-2 border-b-2 px-4">
+          <div className="flex items-center gap-2 border-b px-4">
             <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
             <input
               // oxlint-disable-next-line jsx-a11y/no-autofocus
@@ -221,7 +221,7 @@ export default function CommandPalette() {
               </div>
             ))}
           </div>
-          <p className="border-t-2 px-4 py-2 text-xs text-muted-foreground">
+          <p className="border-t px-4 py-2 text-xs text-muted-foreground">
             ↑ ↓ to move · Enter to open · Esc to close
           </p>
         </DialogContent>

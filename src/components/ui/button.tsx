@@ -6,20 +6,24 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-background transition-colors gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50",
   {
     variants: {
+      // The folio style, as on the website: the main action is ink, and it turns red chalk on hover.
       variant: {
         default:
-          "text-main-foreground bg-main border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
-        noShadow: "text-main-foreground bg-main border-2 border-border",
+          "bg-foreground text-background border border-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground",
+        // A selected item: the ochre wash with an ink edge.
+        noShadow: "bg-main text-main-foreground border border-edge",
         neutral:
-          "bg-secondary-background text-foreground border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+          "bg-transparent text-foreground border border-edge hover:bg-secondary-background hover:border-primary hover:text-primary",
         // Added for this app: a flat button for the top bar and for secondary actions.
         ghost:
-          "text-foreground border-2 border-transparent hover:border-border hover:bg-secondary-background",
+          "text-foreground border border-transparent hover:bg-secondary-background hover:text-primary",
         reverse:
-          "text-main-foreground bg-main border-2 border-border hover:translate-x-reverseBoxShadowX hover:translate-y-reverseBoxShadowY hover:shadow-shadow",
+          "bg-foreground text-background border border-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground",
+        // A tab: underlined when it is selected, as the sections of a book.
+        tab: "rounded-none border-0 border-b-2 border-transparent bg-transparent px-1 text-muted-foreground hover:text-foreground aria-selected:border-foreground aria-selected:font-semibold aria-selected:text-foreground",
       },
       size: {
         default: "h-10 px-4 py-2",

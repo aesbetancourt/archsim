@@ -56,7 +56,7 @@ function Tool({
       onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
       className={cn(
-        "flex size-8 items-center justify-center rounded-base border-2 border-transparent hover:border-border disabled:opacity-40 [&_svg]:size-4",
+        "flex size-8 items-center justify-center rounded-base border border-transparent hover:border-border disabled:opacity-40 [&_svg]:size-4",
         active && "border-border bg-main text-main-foreground",
       )}
     >
@@ -142,7 +142,7 @@ export default function NotesEditor({
       <div
         role="toolbar"
         aria-label="Text format"
-        className="flex flex-wrap items-center gap-1 border-b-2 px-3 py-1.5"
+        className="flex flex-wrap items-center gap-1 border-b px-3 py-1.5"
       >
         <Tool
           label="Mark text"

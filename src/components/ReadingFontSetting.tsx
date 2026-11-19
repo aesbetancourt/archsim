@@ -63,8 +63,8 @@ export default function ReadingFontSetting() {
             <label
               key={item.id}
               className={cn(
-                "block cursor-pointer rounded-base border-2 border-border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
-                font === item.id ? "bg-main text-main-foreground" : "bg-secondary-background",
+                "block cursor-pointer rounded-base border border-border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
+                font === item.id ? "choice-on" : "bg-secondary-background",
               )}
             >
               <input

@@ -50,7 +50,7 @@ export default function SidePanel({ widthClass, onToggle, children }: Props) {
     <div className="relative z-30 shrink-0">
       <aside
         className={cn(
-          "flex h-full flex-col border-r-2 bg-card text-sm leading-relaxed",
+          "flex h-full flex-col border-r bg-card text-sm leading-relaxed",
           widthClass,
           hidden && "hidden",
         )}

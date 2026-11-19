@@ -4,7 +4,7 @@ import WikiSidebar from "@/components/WikiSidebar";
 export default function LearnLayout({ children }: LayoutProps<"/learn">) {
   return (
     <div className="flex flex-1">
-      <aside className="hidden w-64 shrink-0 border-r-2 bg-card md:block">
+      <aside className="hidden w-64 shrink-0 border-r bg-card md:block">
         <div className="sticky top-0 h-[calc(100dvh-3.5rem)] overflow-y-auto p-4">
           <WikiSidebar />
         </div>

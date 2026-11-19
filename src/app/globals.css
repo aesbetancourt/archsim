@@ -17,6 +17,7 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-edge: var(--edge);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -43,14 +44,17 @@
   --color-secondary-background: var(--secondary-background);
   --color-main-foreground: var(--main-foreground);
   --color-overlay: var(--overlay);
-  --spacing-boxShadowX: 3px;
-  --spacing-boxShadowY: 3px;
-  --spacing-reverseBoxShadowX: -3px;
-  --spacing-reverseBoxShadowY: -3px;
-  --radius-base: 5px;
+  /* The folio style has no offset shadows, so the hover moves are zero. */
+  --spacing-boxShadowX: 0px;
+  --spacing-boxShadowY: 0px;
+  --spacing-reverseBoxShadowX: 0px;
+  --spacing-reverseBoxShadowY: 0px;
+  --radius-base: 2px;
   --font-weight-base: 500;
   --font-weight-heading: 700;
   --shadow-shadow: var(--shadow);
+  /* A soft shadow only for things that float over the page: menus, dialogs, and the player. */
+  --shadow-float: var(--float);
   --animate-marquee: marquee 5s linear infinite;
   --animate-marquee2: marquee2 5s linear infinite;
   --color-chart-active-dot: var(--chart-active-dot);
@@ -74,9 +78,10 @@
 }
 
 /*
-  The atelier palette, the same as the website: ivory paper, ink, an ochre wash for the selected
-  and main controls, and red chalk for links and icons. Each text color has a contrast of at least
-  4.5:1 on the backgrounds that it is used on (WCAG AA).
+  The atelier palette and the folio style, the same as the website: ivory paper, ink, an ochre
+  wash for selected items, red chalk for links and icons, hairline borders, and no offset shadows.
+  Each text color has a contrast of at least 4.5:1 on the backgrounds that it is used on (WCAG AA).
+  The borders of the controls use the ink, for a contrast of at least 3:1.
 */
 :root {
   --background: #ece3cf;
@@ -84,10 +89,12 @@
   --foreground: #1b1812;
   --main: #d8b56c;
   --main-foreground: #1b1812;
-  --border: #1b1812;
+  --border: rgb(27 24 18 / 0.3);
+  --edge: rgb(27 24 18 / 0.7);
   --ring: #1b1812;
-  --overlay: rgb(15 13 10 / 0.8);
-  --shadow: 3px 3px 0px 0px var(--border);
+  --overlay: rgb(15 13 10 / 0.6);
+  --shadow: none;
+  --float: 0 12px 32px -10px rgb(15 13 10 / 0.3), 0 2px 6px rgb(15 13 10 / 0.1);
   --radius: 0.625rem;
 
   --card: var(--secondary-background);
@@ -119,9 +126,11 @@
   --foreground: #eee5d0;
   --main: #d8b56c;
   --main-foreground: #1b1812;
-  --border: #000000;
+  --border: rgb(238 229 208 / 0.22);
+  --edge: rgb(238 229 208 / 0.6);
   --ring: #eee5d0;
-  --shadow: 3px 3px 0px 0px var(--border);
+  --shadow: none;
+  --float: 0 12px 32px -10px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.4);
 
   --primary: #e07a62;
   --primary-foreground: #1b1812;
@@ -171,6 +180,28 @@ body,
 [data-reading="sans"] {
   --app-font: var(--font-geist-sans), system-ui, sans-serif;
 }
+/* A selected choice card: a pale ochre wash with an ink bar on the left, so the selection does
+   not depend on the color alone. */
+.choice-on {
+  background-color: color-mix(in srgb, var(--main) 32%, var(--secondary-background));
+  border-color: var(--edge);
+  box-shadow: inset 4px 0 0 var(--foreground);
+  color: var(--foreground);
+}
+
+/* The plate mark: a second hairline inside a card, as on a printed plate. */
+.plate-mark {
+  position: relative;
+}
+.plate-mark::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
 /* The text of a lesson, slightly larger, with more space between the lines. */
 .reading {
   font-size: 1.0625rem;

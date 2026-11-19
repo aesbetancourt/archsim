@@ -97,7 +97,7 @@ export default function NotebookSidebar({
         <Button
           variant="neutral"
           size="sm"
-          className="fixed right-4 bottom-4 z-40 hidden lg:inline-flex"
+          className="fixed right-4 bottom-4 z-40 hidden lg:inline-flex shadow-float"
           onClick={() => setOpen(true)}
         >
           <PanelRightOpen /> Notebook
@@ -108,23 +108,23 @@ export default function NotebookSidebar({
         variant="neutral"
         size="sm"
         href="/notebook"
-        className="fixed right-4 bottom-4 z-40 lg:hidden"
+        className="fixed right-4 bottom-4 z-40 lg:hidden shadow-float"
       >
         <NotebookPen /> Notebook
       </LinkButton>
 
       <aside
         aria-label="Notebook"
-        className={cn("hidden w-80 shrink-0 border-l-2 bg-card xl:w-96", open && "lg:block")}
+        className={cn("hidden w-80 shrink-0 border-l bg-card xl:w-96", open && "lg:block")}
       >
         {/* The height leaves space for the site header, so the bottom is visible before a scroll. */}
         <div className="sticky top-0 flex h-[calc(100dvh-3.5rem)] flex-col text-sm">
-          <div className="flex items-center gap-1 border-b-2 px-3 py-2">
+          <div className="flex items-center gap-1 border-b px-3 py-2">
             <div role="tablist" aria-label="Notebook" className="flex items-center gap-1">
               <Button
                 role="tab"
                 aria-selected={tab === "page"}
-                variant={tab === "page" ? "noShadow" : "ghost"}
+                variant="tab"
                 size="sm"
                 onClick={() => setTab("page")}
               >
@@ -133,7 +133,7 @@ export default function NotebookSidebar({
               <Button
                 role="tab"
                 aria-selected={tab === "general"}
-                variant={tab === "general" ? "noShadow" : "ghost"}
+                variant="tab"
                 size="sm"
                 onClick={() => setTab("general")}
               >
@@ -159,7 +159,7 @@ export default function NotebookSidebar({
             </div>
             <section
               aria-labelledby="page-highlights"
-              className="max-h-[45%] shrink-0 overflow-y-auto border-t-2 p-3"
+              className="max-h-[45%] shrink-0 overflow-y-auto border-t p-3"
             >
               <h2 id="page-highlights" className="mb-2 font-medium">
                 Highlights{highlights.length > 0 && ` (${highlights.length})`}
@@ -189,7 +189,7 @@ export default function NotebookSidebar({
             <GeneralNotes compact />
           </div>
 
-          <Link href="/notebook" className="border-t-2 px-3 py-2 text-primary hover:underline">
+          <Link href="/notebook" className="border-t px-3 py-2 text-primary hover:underline">
             Open the whole notebook
           </Link>
         </div>

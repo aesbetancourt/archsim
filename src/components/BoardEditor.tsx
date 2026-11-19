@@ -100,7 +100,7 @@ export default function BoardEditor({ board }: { board: Board }) {
   return (
     <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
       <div className="flex min-w-0 flex-1 flex-col bg-card">
-        <div className="flex items-center gap-2 border-b-2 px-3 py-2">
+        <div className="flex items-center gap-2 border-b px-3 py-2">
           <LinkButton
             variant="ghost"
             size="sm"
@@ -124,7 +124,7 @@ export default function BoardEditor({ board }: { board: Board }) {
             <Button
               role="tab"
               aria-selected={view === "diagram"}
-              variant={view === "diagram" ? "noShadow" : "ghost"}
+              variant="tab"
               size="sm"
               onClick={() => setView("diagram")}
             >
@@ -133,7 +133,7 @@ export default function BoardEditor({ board }: { board: Board }) {
             <Button
               role="tab"
               aria-selected={view === "notes"}
-              variant={view === "notes" ? "noShadow" : "ghost"}
+              variant="tab"
               size="sm"
               onClick={() => setView("notes")}
             >

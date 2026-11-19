@@ -186,7 +186,7 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
     <figure className="mx-auto w-full space-y-2" style={{ maxWidth: width }}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="block w-full rounded-base border-2 bg-card"
+        className="block w-full rounded-base border bg-card"
         // An inline SVG needs role="img" to be one image for a screen reader.
         // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
         role="img"

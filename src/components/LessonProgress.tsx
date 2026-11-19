@@ -24,7 +24,7 @@ export function LessonObjectives({ slug, objectives }: { slug: string; objective
   return (
     <section
       aria-labelledby="objectives-title"
-      className="space-y-2 rounded-base border-2 bg-card px-4 py-3"
+      className="plate-mark space-y-2 rounded-base border bg-card px-5 py-4"
     >
       <h2 id="objectives-title" className="flex items-center gap-2 font-medium">
         <Target className="size-4 text-primary" aria-hidden /> You will learn to
@@ -63,7 +63,7 @@ export function MarkDone({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-base border-2 bg-card px-4 py-3">
+    <div className="flex flex-wrap items-center gap-3 rounded-base border bg-card px-4 py-3">
       {finished ? (
         <>
           <p className="flex flex-1 items-center gap-2 font-medium">

@@ -206,8 +206,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           <label
             key={item.id}
             className={cn(
-              "block cursor-pointer rounded-base border-2 border-border bg-secondary-background p-4 text-left shadow-shadow transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
-              mode === item.id && "bg-main text-main-foreground",
+              "block cursor-pointer rounded-base border border-border bg-secondary-background p-4 text-left shadow-shadow transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
+              mode === item.id && "choice-on",
             )}
           >
             <input
@@ -445,10 +445,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
               <label
                 key={item.id}
                 className={cn(
-                  "block cursor-pointer rounded-base border-2 border-border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
-                  speechEngine === item.id
-                    ? "bg-main text-main-foreground"
-                    : "bg-secondary-background",
+                  "block cursor-pointer rounded-base border border-border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
+                  speechEngine === item.id ? "choice-on" : "bg-secondary-background",
                 )}
               >
                 <input
@@ -490,7 +488,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
                   id="gcp-voice"
                   value={voice}
                   onChange={(event) => setVoice(event.target.value)}
-                  className="flex h-10 w-full rounded-base border-2 border-border bg-secondary-background px-3 text-sm"
+                  className="flex h-10 w-full rounded-base border border-border bg-secondary-background px-3 text-sm"
                 >
                   {googleVoices.map((item) => (
                     <option key={item.id} value={item.id}>

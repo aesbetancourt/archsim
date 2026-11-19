@@ -239,7 +239,7 @@ export default function WikiSidebar() {
                 <Chevron open={open} />
               </button>
               {open && (
-                <ul id={listId} className="mt-0.5 mb-2 ml-[1.1rem] space-y-0.5 border-l-2 pl-2">
+                <ul id={listId} className="mt-0.5 mb-2 ml-[1.1rem] space-y-0.5 border-l pl-2">
                   {nodes.map(({ page, children }) => {
                     const childHere = children.some((child) => hrefOf(child) === pathname);
                     const subKey = pageKey(page.slug);
@@ -271,7 +271,7 @@ export default function WikiSidebar() {
                           )}
                         </div>
                         {children.length > 0 && subOpen && (
-                          <ul className="mt-0.5 mb-1 ml-3 space-y-0.5 border-l-2 border-dashed pl-2">
+                          <ul className="mt-0.5 mb-1 ml-3 space-y-0.5 border-l border-dashed pl-2">
                             {children.map((child) => (
                               <li key={child.slug}>
                                 <PageLink
@@ -300,7 +300,7 @@ export default function WikiSidebar() {
           <p className="px-2 text-muted-foreground">No page has this name.</p>
         )}
 
-      <div className="space-y-1 border-t-2 pt-3">
+      <div className="space-y-1 border-t pt-3">
         <h2 className="px-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           More
         </h2>

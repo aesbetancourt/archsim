@@ -87,7 +87,7 @@ export default function AutosaveNotes({
           }}
         />
       </div>
-      <output className="border-t-2 px-3 py-1 text-xs text-muted-foreground">
+      <output className="border-t px-3 py-1 text-xs text-muted-foreground">
         {statusText[status]}
       </output>
     </div>

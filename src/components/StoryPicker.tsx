@@ -36,7 +36,7 @@ export default function StoryPicker({ onPick }: { onPick: (text: string) => void
     <label className="flex flex-wrap items-center gap-2 text-sm">
       <span className="font-medium">Start from a story</span>
       <select
-        className="h-8 rounded-base border-2 border-border bg-secondary-background px-2"
+        className="h-8 rounded-base border border-border bg-secondary-background px-2"
         defaultValue=""
         onChange={(event) => {
           const story = stories.find((item) => item.id === event.target.value);

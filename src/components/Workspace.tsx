@@ -86,7 +86,7 @@ function StepHeading({ number, title, hint }: { number: number; title: string; h
   return (
     <div>
       <div className="flex items-center gap-2 font-medium">
-        <span className="flex size-5 items-center justify-center rounded-full border-2 border-border bg-main text-[11px] font-heading text-main-foreground">
+        <span className="flex size-5 items-center justify-center rounded-full border border-border bg-main text-[11px] font-heading text-main-foreground">
           {number}
         </span>
         {title}
@@ -326,7 +326,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             </div>
             <ProblemText kata={kata} />
             {kata.note && (
-              <p className="border-l-2 border-primary pl-3 text-muted-foreground">{kata.note}</p>
+              <p className="border-l border-primary pl-3 text-muted-foreground">{kata.note}</p>
             )}
             {kata.source && (
               <p className="text-muted-foreground">
@@ -402,7 +402,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                 ". Each one you add makes the design harder. Make sure each has a reason."}
             </p>
             {selected.map((item) => (
-              <div key={item.name} className="space-y-1.5 rounded-base border-2 bg-background p-3">
+              <div key={item.name} className="space-y-1.5 rounded-base border bg-background p-3">
                 <Label htmlFor={`why-${item.name}`}>{item.name}</Label>
                 <p className="text-muted-foreground">
                   {glossary.find((entry) => entry.name === item.name)?.meaning}
@@ -420,7 +420,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
                 What does each characteristic mean?
                 <ChevronDown className="size-3.5 transition-transform group-data-[panel-open]:rotate-180" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2 space-y-2 rounded-base border-2 bg-background p-3">
+              <CollapsibleContent className="mt-2 space-y-2 rounded-base border bg-background p-3">
                 <p className="text-muted-foreground">
                   A quality the system must have, not a feature. Look for these signals in the kata:
                 </p>
@@ -457,7 +457,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               </SelectContent>
             </Select>
             {lesson && (
-              <div className="space-y-2 rounded-base border-2 bg-background p-3">
+              <div className="space-y-2 rounded-base border bg-background p-3">
                 <p>{lesson.idea}</p>
                 <p>
                   <span className="font-medium">Use when:</span> {lesson.useWhen}
@@ -511,7 +511,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           </section>
         </div>
 
-        <div className="space-y-3 border-t-2 p-4">
+        <div className="space-y-3 border-t p-4">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -554,12 +554,12 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         <div
           role="tablist"
           aria-label="Work area"
-          className="flex items-center gap-2 border-b-2 px-3 py-2"
+          className="flex items-center gap-2 border-b px-3 py-2"
         >
           <Button
             role="tab"
             aria-selected={view === "notes"}
-            variant={view === "notes" ? "noShadow" : "ghost"}
+            variant="tab"
             size="sm"
             onClick={() => setView("notes")}
           >
@@ -568,7 +568,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           <Button
             role="tab"
             aria-selected={view === "diagram"}
-            variant={view === "diagram" ? "noShadow" : "ghost"}
+            variant="tab"
             size="sm"
             onClick={() => setView("diagram")}
           >

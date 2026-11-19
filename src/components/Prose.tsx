@@ -18,10 +18,7 @@ function WalkthroughBlock({ source }: { source: string }) {
   const result = parseWalkthrough(source);
   if (result.ok) return <Walkthrough walkthrough={result.walkthrough} />;
   return (
-    <p
-      role="alert"
-      className="rounded-base border-2 border-[#e03131] bg-card p-3 font-mono text-sm"
-    >
+    <p role="alert" className="rounded-base border border-[#e03131] bg-card p-3 font-mono text-sm">
       {result.error}
     </p>
   );
@@ -71,7 +68,7 @@ export default function Prose({
               </a>
             ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-2 border-primary pl-4 text-muted-foreground">
+            <blockquote className="border-l border-primary pl-4 text-muted-foreground">
               {children}
             </blockquote>
           ),
@@ -81,7 +78,7 @@ export default function Prose({
             const className = first?.type === "element" ? String(first.properties.className) : "";
             if (/language-(diagram|walkthrough)/.test(className)) return <>{children}</>;
             return (
-              <pre className="overflow-x-auto rounded-base border-2 bg-card p-4 font-mono text-[0.85em] leading-6 [&_code]:bg-transparent [&_code]:p-0">
+              <pre className="overflow-x-auto rounded-base border bg-card p-4 font-mono text-[0.85em] leading-6 [&_code]:bg-transparent [&_code]:p-0">
                 {children}
               </pre>
             );
@@ -96,7 +93,7 @@ export default function Prose({
                 {children}
               </code>
             ),
-          // A table compares options. The header has the main color, the first column names the
+          // A table compares options. An ink rule marks the header, the first column names the
           // row, and the rows have stripes, so the eye can follow one row across.
           // A wide table scrolls to the side, so each column keeps a readable width.
           table: ({ children }) => (
@@ -106,13 +103,9 @@ export default function Prose({
               </table>
             </TableFrame>
           ),
-          thead: ({ children }) => (
-            <thead className="border-b-2 border-border bg-main text-main-foreground">
-              {children}
-            </thead>
-          ),
+          thead: ({ children }) => <thead className="border-b border-foreground">{children}</thead>,
           th: ({ children }) => (
-            <th className="px-3 py-2.5 align-bottom text-xs font-semibold uppercase tracking-wide [&+th]:border-l-2 [&+th]:border-border/25">
+            <th className="px-3 py-2.5 align-bottom font-semibold [&+th]:border-l [&+th]:border-border">
               {children}
             </th>
           ),

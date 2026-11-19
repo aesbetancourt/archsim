@@ -140,7 +140,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
 
   return (
     <div
-      className="border-b-2 border-border bg-secondary-background text-xs"
+      className="border-b border-border bg-secondary-background text-xs"
       onPointerEnter={loadCanvasFont}
     >
       <div className="flex items-center gap-3 px-3 py-1.5">
@@ -160,7 +160,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
             onChange={(event) => setQuery(event.target.value)}
             placeholder={`Find in ${blocks.length} pieces`}
             aria-label="Find a piece"
-            className="w-44 rounded-base border-2 border-border bg-background px-2 py-0.5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-44 rounded-base border border-border bg-background px-2 py-0.5 outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         )}
         {open && (
@@ -196,7 +196,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
                     setGroupId(group.id);
                     setQuery("");
                   }}
-                  className={`flex items-center gap-1.5 rounded-base border-2 px-2 py-0.5 ${
+                  className={`flex items-center gap-1.5 rounded-base border px-2 py-0.5 ${
                     selected
                       ? "border-border bg-background font-medium"
                       : "border-transparent text-muted-foreground hover:text-foreground"
@@ -231,7 +231,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
                 onBlur={hideTip}
                 aria-describedby={tip?.block.id === block.id ? "block-tip" : undefined}
                 style={{ backgroundColor: colorOf(block) }}
-                className={`flex cursor-grab items-center gap-1 border-2 border-border px-2 py-0.5 font-medium text-black active:cursor-grabbing ${
+                className={`flex cursor-grab items-center gap-1 border border-border px-2 py-0.5 font-medium text-black active:cursor-grabbing ${
                   block.shape === "actor" || block.shape === "person"
                     ? "rounded-full"
                     : block.shape === "module"
@@ -256,7 +256,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
           id="block-tip"
           role="tooltip"
           style={{ left: tip.left, top: tip.top, width: TIP_WIDTH }}
-          className="pointer-events-none fixed z-50 space-y-1.5 rounded-base border-2 border-border bg-background p-3 text-xs leading-relaxed shadow-shadow"
+          className="pointer-events-none fixed z-50 space-y-1.5 rounded-base border border-border bg-background p-3 text-xs leading-relaxed shadow-float"
         >
           <p className="text-sm font-medium">{tip.block.name}</p>
           <p>{tip.block.does}</p>

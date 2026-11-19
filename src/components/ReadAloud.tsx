@@ -481,24 +481,25 @@ export default function ReadAloud({
         if (hovered.current) void start({ node: hovered.current, offset: 0 });
       }}
       style={{ top: gutter.top, left: gutter.left }}
-      className="fixed z-30 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border-2 border-border bg-main text-main-foreground opacity-70 transition-opacity hover:opacity-100"
+      className="fixed z-30 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-main text-main-foreground opacity-70 transition-opacity hover:opacity-100 shadow-float"
     >
       <Play className="size-3" aria-hidden />
     </button>
   );
 
-  const menu = "h-9 rounded-base border-2 border-border bg-secondary-background px-1.5 text-sm";
+  const menu = "h-9 rounded-base border border-border bg-secondary-background px-1.5 text-sm";
 
   if (status === "idle") {
     return (
       <>
         {fromHere}
-        <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-2">
-          {notice && <p className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</p>}
+        <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-2 shadow-float">
+          {notice && <p className="rounded-base border bg-card px-3 py-1.5 text-sm">{notice}</p>}
           <div className="flex items-center gap-1.5">
             <Button
               variant="neutral"
               size="sm"
+              className="bg-secondary-background shadow-float"
               onClick={() => void start()}
               title="Read aloud from the first sentence on the screen (Alt+R). To start at a paragraph, point at it and click the play button on its left."
             >
@@ -509,7 +510,7 @@ export default function ReadAloud({
                 aria-label="Read from a section"
                 value=""
                 onChange={(event) => startSection(Number(event.target.value))}
-                className={`${menu} max-w-48 shadow-shadow`}
+                className={`${menu} max-w-48 shadow-float`}
               >
                 <option value="" disabled>
                   From a section…
@@ -531,14 +532,14 @@ export default function ReadAloud({
   return (
     <>
       {fromHere}
-      <div className="fixed bottom-4 left-1/2 z-40 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col items-center gap-2">
+      <div className="fixed bottom-4 left-1/2 z-40 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col items-center gap-2 shadow-float">
         {notice && (
-          <output className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</output>
+          <output className="rounded-base border bg-card px-3 py-1.5 text-sm">{notice}</output>
         )}
         <div
           role="toolbar"
           aria-label="Read aloud"
-          className="flex flex-wrap items-center justify-center gap-1.5 rounded-base border-2 border-border bg-secondary-background p-1.5 shadow-shadow"
+          className="flex flex-wrap items-center justify-center gap-1.5 rounded-base border border-border bg-secondary-background p-1.5 shadow-float"
         >
           <Button
             variant="ghost"

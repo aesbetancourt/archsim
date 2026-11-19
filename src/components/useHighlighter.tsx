@@ -277,7 +277,7 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
     <>
       {selection && (
         <div
-          className="fixed z-50 flex -translate-x-1/2 -translate-y-full gap-1 pb-1.5"
+          className="fixed z-50 flex -translate-x-1/2 -translate-y-full gap-1 pb-1.5 [&>button]:shadow-float"
           style={{ left: selection.x, top: selection.y }}
         >
           <Button
@@ -307,7 +307,7 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
           open
           ref={dialog}
           aria-label="Highlight"
-          className="fixed z-50 m-0 w-72 text-foreground -translate-x-1/2 space-y-2 rounded-base border-2 border-border bg-secondary-background p-3 text-sm shadow-shadow"
+          className="fixed z-50 m-0 w-72 text-foreground -translate-x-1/2 space-y-2 rounded-base border border-border bg-secondary-background p-3 text-sm shadow-float"
           style={{ left: Math.max(150, open.at.x), top: open.at.y + 12 }}
         >
           <Textarea
@@ -334,7 +334,7 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
       {error && (
         <div
           role="alert"
-          className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-base border-2 border-border bg-secondary-background px-3 py-2 text-sm shadow-shadow"
+          className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-base border border-border bg-secondary-background px-3 py-2 text-sm shadow-float"
         >
           {error}{" "}
           <button type="button" className="underline" onClick={() => setError("")}>

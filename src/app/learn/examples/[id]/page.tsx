@@ -22,7 +22,7 @@ function Step({
   return (
     <section className="space-y-4">
       <h2 className="flex items-center gap-3 text-xl font-semibold tracking-tight">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-border bg-main text-xs font-heading text-main-foreground">
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-main text-xs font-heading text-main-foreground">
           {number}
         </span>
         {title}
@@ -137,7 +137,7 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
       <Step number={1} title="Read for what is hard">
         <ul className="grid gap-4">
           {example.hardParts.map((part) => (
-            <li key={part.quote} className="border-l-2 border-primary pl-4">
+            <li key={part.quote} className="border-l border-primary pl-4">
               <blockquote className="font-medium">&ldquo;{part.quote}&rdquo;</blockquote>
               <p className="text-muted-foreground">{part.meaning}</p>
             </li>

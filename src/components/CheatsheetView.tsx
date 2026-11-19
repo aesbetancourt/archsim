@@ -68,7 +68,7 @@ function Block({ block }: { block: SheetBlock }) {
       </h3>
 
       {block.type === "choose" && (
-        <ul className="divide-y-2 rounded-base border-2 bg-card">
+        <ul className="divide-y-2 rounded-base border bg-card">
           {block.items.map((item) => (
             <li
               key={item.when}
@@ -98,7 +98,7 @@ function Block({ block }: { block: SheetBlock }) {
       {block.type === "numbers" && (
         <dl className="grid gap-2 sm:grid-cols-2">
           {block.items.map((item) => (
-            <div key={item.label} className="flex gap-2 rounded-base border-2 bg-card px-3 py-2">
+            <div key={item.label} className="flex gap-2 rounded-base border bg-card px-3 py-2">
               <div className="flex-1">
                 <dd className="font-mono text-lg font-semibold tabular-nums">{item.value}</dd>
                 <dt>{item.label}</dt>
@@ -111,7 +111,7 @@ function Block({ block }: { block: SheetBlock }) {
       )}
 
       {block.type === "table" && (
-        <div className="overflow-x-auto rounded-base border-2 bg-card">
+        <div className="overflow-x-auto rounded-base border bg-card">
           <table className="w-full text-left text-sm leading-6">
             <thead>
               <tr>
@@ -193,8 +193,8 @@ export default function CheatsheetView({ sheets }: { sheets: Cheatsheet[] }) {
                 aria-disabled={!present}
                 className={
                   present
-                    ? "flex items-center gap-1.5 rounded-base border-2 border-border bg-secondary-background px-2 py-1 text-xs font-medium hover:bg-main hover:text-main-foreground"
-                    : "pointer-events-none flex items-center gap-1.5 rounded-base border-2 border-dashed px-2 py-1 text-xs text-muted-foreground opacity-60"
+                    ? "flex items-center gap-1.5 rounded-base border border-border bg-secondary-background px-2 py-1 text-xs font-medium hover:bg-main hover:text-main-foreground"
+                    : "pointer-events-none flex items-center gap-1.5 rounded-base border border-dashed px-2 py-1 text-xs text-muted-foreground opacity-60"
                 }
               >
                 <span className="tabular-nums">{index + 1}</span>
@@ -219,9 +219,9 @@ export default function CheatsheetView({ sheets }: { sheets: Cheatsheet[] }) {
             key={sheet.id}
             id={sheet.id}
             aria-labelledby={`${sheet.id}-title`}
-            className="scroll-mt-32 space-y-5 rounded-base border-2 bg-secondary-background p-5 shadow-shadow"
+            className="scroll-mt-32 space-y-5 rounded-base border bg-secondary-background p-5 shadow-shadow"
           >
-            <header className="space-y-1 border-b-2 pb-3">
+            <header className="space-y-1 border-b pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2
                   id={`${sheet.id}-title`}

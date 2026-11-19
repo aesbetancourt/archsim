@@ -96,7 +96,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
                   {result.improvement}
                 </p>
                 {result.example && (
-                  <p className="rounded-base border-2 bg-secondary-background px-3 py-2 text-muted-foreground">
+                  <p className="rounded-base border bg-secondary-background px-3 py-2 text-muted-foreground">
                     <span className="font-medium text-foreground">For example:</span>{" "}
                     {result.example}
                   </p>
@@ -162,7 +162,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
           <img
             src={`/attempt/${attempt.id}/diagram`}
             alt="Your diagram"
-            className="w-full rounded-base border-2 bg-white"
+            className="w-full rounded-base border bg-white"
           />
           {attempt.scope && (
             <div>

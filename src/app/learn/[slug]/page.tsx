@@ -45,9 +45,9 @@ const ratingColumns = [
   { key: "cost", label: "Cost", goodWhenHigh: false },
 ] as const;
 
-// The same look as the tables in the lesson text: a header in the main color and striped rows.
-const headRow = "bg-main hover:bg-main";
-const headCell = "text-xs font-semibold uppercase tracking-wide text-main-foreground";
+// The same look as the tables in the lesson text: an ink rule under the header and striped rows.
+const headRow = "border-b border-foreground hover:bg-transparent";
+const headCell = "font-semibold text-foreground";
 const bodyRow = "bg-card even:bg-muted/50 hover:bg-main/15";
 
 const levelValue = { low: 1, medium: 2, high: 3 } as const;
@@ -92,7 +92,7 @@ function Method() {
         <li key={step.title}>
           <Card>
             <CardContent className="flex gap-4">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-border bg-main text-xs font-heading text-main-foreground">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-main text-xs font-heading text-main-foreground">
                 {index + 1}
               </span>
               <div>
@@ -209,7 +209,7 @@ function Blocks() {
           answer.
         </p>
       </div>
-      <nav aria-label="Groups" className="inline-block rounded-base border-2 bg-card px-4 py-3">
+      <nav aria-label="Groups" className="inline-block rounded-base border bg-card px-4 py-3">
         <h2 className="font-medium">Groups</h2>
         <ul>
           {blockGroups.map((group) => (
@@ -240,7 +240,7 @@ function Blocks() {
                 <CardContent className="space-y-2 px-4">
                   <span
                     style={{ backgroundColor: group.color }}
-                    className={`inline-flex items-center gap-1 border-2 border-border px-2 py-0.5 font-medium text-black ${
+                    className={`inline-flex items-center gap-1 border border-border px-2 py-0.5 font-medium text-black ${
                       block.shape === "actor" || block.shape === "person"
                         ? "rounded-full"
                         : block.shape === "module"
@@ -334,7 +334,7 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
       {meta && <LessonObjectives slug={slug} objectives={meta.objectives} />}
 
       {contents.length > 2 && (
-        <nav aria-label="Contents" className="inline-block rounded-base border-2 bg-card px-4 py-3">
+        <nav aria-label="Contents" className="inline-block rounded-base border bg-card px-4 py-3">
           <h2 className="font-medium">Contents</h2>
           <ol className="list-decimal pl-5 text-primary">
             {contents.map((heading) => (

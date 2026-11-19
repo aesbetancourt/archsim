@@ -299,7 +299,7 @@ function CheckFeedback({ check }: { check: Check }) {
   const { grade } = check;
   return (
     <section
-      className="space-y-3 rounded-base border-2 bg-secondary-background p-4"
+      className="space-y-3 rounded-base border bg-secondary-background p-4"
       aria-live="polite"
     >
       <h3 className="flex items-baseline justify-between gap-4 font-semibold">

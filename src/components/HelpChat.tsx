@@ -54,7 +54,7 @@ export default function HelpChat({ getContext, intro }: Props) {
     return (
       <Button
         size="icon-lg"
-        className="fixed right-5 bottom-20 z-40 rounded-full"
+        className="fixed right-5 bottom-20 z-40 rounded-full shadow-float"
         aria-label="Open the help chat"
         onClick={() => setOpen(true)}
       >
@@ -66,9 +66,9 @@ export default function HelpChat({ getContext, intro }: Props) {
   return (
     <section
       aria-label="Help chat"
-      className="fixed right-5 bottom-20 z-40 flex h-[min(34rem,calc(100dvh-8rem))] w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col rounded-base border-2 border-border bg-secondary-background text-sm shadow-shadow"
+      className="fixed right-5 bottom-20 z-40 flex h-[min(34rem,calc(100dvh-8rem))] w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col rounded-base border border-border bg-secondary-background text-sm shadow-float"
     >
-      <header className="flex items-center justify-between gap-2 border-b-2 border-border bg-main px-3 py-2 text-main-foreground">
+      <header className="flex items-center justify-between gap-2 border-b border-border bg-main px-3 py-2 text-main-foreground">
         <h2 className="flex items-center gap-2 font-heading">
           <MessageCircleQuestion className="size-4" /> Help
         </h2>
@@ -94,7 +94,7 @@ export default function HelpChat({ getContext, intro }: Props) {
           message.role === "user" ? (
             <p
               key={index}
-              className="ml-8 whitespace-pre-wrap rounded-base border-2 border-border bg-background px-3 py-2"
+              className="ml-8 whitespace-pre-wrap rounded-base border border-border bg-background px-3 py-2"
             >
               {message.text}
             </p>
@@ -113,7 +113,7 @@ export default function HelpChat({ getContext, intro }: Props) {
         <div ref={end} />
       </div>
 
-      <div className="flex items-end gap-2 border-t-2 border-border p-3">
+      <div className="flex items-end gap-2 border-t border-border p-3">
         <Textarea
           aria-label="Your question"
           placeholder="Ask a question"

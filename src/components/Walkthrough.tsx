@@ -94,7 +94,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
       aria-label={`Walkthrough: ${walkthrough.title}`}
       // The read-aloud player skips the walkthrough. Its steps are controls, not text.
       data-read-skip
-      className="not-prose space-y-3 rounded-base border-2 bg-secondary-background p-3 shadow-shadow sm:p-4"
+      className="not-prose space-y-3 rounded-base border bg-secondary-background p-3 shadow-shadow sm:p-4"
       onKeyDown={(event) => {
         if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)
           return;
@@ -132,7 +132,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
               <div
                 key={metric.id}
                 className={cn(
-                  "rounded-base border-2 bg-card px-3 py-2 transition-colors",
+                  "rounded-base border bg-card px-3 py-2 transition-colors",
                   better === true && "border-[#2f9e44]",
                   better === false && "border-[#e03131]",
                 )}
@@ -151,11 +151,11 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
         <Diagram spec={walkthrough.diagram} view={view} />
       </div>
 
-      <div aria-live="polite" className="space-y-3 rounded-base border-2 bg-card p-4">
+      <div aria-live="polite" className="space-y-3 rounded-base border bg-card p-4">
         <div className="flex items-center justify-between gap-2">
           <span
             className={cn(
-              "rounded-base border-2 border-border px-2 py-0.5 text-xs font-semibold",
+              "rounded-base border border-border px-2 py-0.5 text-xs font-semibold",
               kindClass[step.kind],
             )}
           >
@@ -170,7 +170,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
           <p key={paragraph}>{paragraph}</p>
         ))}
         {step.key && (
-          <div className="flex gap-2 rounded-base border-2 border-dashed border-primary/60 bg-primary/5 px-3 py-2">
+          <div className="flex gap-2 rounded-base border border-dashed border-primary/60 bg-primary/5 px-3 py-2">
             {step.kind === "failure" ? (
               <TriangleAlert className="mt-1 size-4 shrink-0 text-primary" aria-hidden />
             ) : (
@@ -220,7 +220,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
               aria-current={position === index ? "step" : undefined}
               onClick={() => go(position)}
               className={cn(
-                "flex size-7 items-center justify-center rounded-full border-2 border-border text-xs font-semibold tabular-nums",
+                "flex size-7 items-center justify-center rounded-full border border-border text-xs font-semibold tabular-nums",
                 position === index
                   ? "bg-main text-main-foreground"
                   : position < index

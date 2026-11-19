@@ -93,7 +93,7 @@ export default async function Home() {
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {group.katas.map((kata) => (
-              <Card key={kata.id}>
+              <Card key={kata.id} className="plate-mark">
                 <CardHeader>
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle>{kata.title}</CardTitle>
