@@ -4,7 +4,7 @@ import { LoaderCircle, Pause, Play, SkipBack, SkipForward, Square, Volume2 } fro
 import { type RefObject, useEffect, useEffectEvent, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { rangeFor } from "@/components/useHighlighter";
-import { splitSentences } from "@/lib/sentences";
+import { splitSentences, withoutAsides } from "@/lib/sentences";
 import type { PublicSettings, SpeechEngine } from "@/lib/settings";
 
 type Sentence = { text: string; range: Range };
@@ -52,8 +52,9 @@ function collectSentences(root: HTMLElement): Sentence[] {
     const text = nodes.map((node) => node.data).join("");
     for (const span of splitSentences(text)) {
       const range = rangeFor(nodes, span.start, span.end);
-      if (range)
-        sentences.push({ text: text.slice(span.start, span.end).replace(/\s+/g, " "), range });
+      // Do not read the asides in parentheses. Skip a sentence that is only an aside.
+      const spoken = withoutAsides(text.slice(span.start, span.end));
+      if (range && /[\p{L}\p{N}]/u.test(spoken)) sentences.push({ text: spoken, range });
     }
   }
   return sentences;

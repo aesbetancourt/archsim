@@ -378,7 +378,11 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
           );
         })}
       </svg>
-      <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      {/* The read-aloud player skips the legend. */}
+      <figcaption
+        data-read-skip
+        className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground"
+      >
         {used.map((shape) => (
           <span key={shape} className="flex items-center gap-1.5">
             <span

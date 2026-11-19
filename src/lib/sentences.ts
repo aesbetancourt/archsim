@@ -33,3 +33,17 @@ export function splitSentences(text: string, max = MAX_LENGTH): Span[] {
   }
   return spans;
 }
+
+// An aside in parentheses that starts a sentence or follows a space, for example "(see below)".
+// A parenthesis right after a letter is notation, for example "O(log n)", so it stays.
+const ASIDE = /(^|\s)\([^()]*\)/g;
+
+// Remove the asides in parentheses, so the read-aloud player does not read them.
+export function withoutAsides(text: string): string {
+  let result = text;
+  for (let before = ""; before !== result;) {
+    before = result;
+    result = result.replace(ASIDE, "");
+  }
+  return result.replace(/\s+/g, " ").trim();
+}
