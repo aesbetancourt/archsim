@@ -94,6 +94,27 @@ describe("request schemas", () => {
     };
     expect(settingsUpdate.safeParse(file).success).toBe(false);
   });
+
+  const readAloud = (googleProjectId: string, googleVoice = "en-US-Chirp3-HD-Charon") => ({
+    ...settings,
+    readAloud: { engine: "google", googleProjectId, googleVoice },
+  });
+
+  it("accepts a project ID, an empty one, and no read-aloud settings", () => {
+    expect(settingsUpdate.parse(readAloud(" my-project-42 ")).readAloud?.googleProjectId).toBe(
+      "my-project-42",
+    );
+    expect(settingsUpdate.safeParse(readAloud("")).success).toBe(true);
+    expect(settingsUpdate.safeParse(settings).success).toBe(true);
+  });
+
+  it.each([
+    ["a project ID with capitals", readAloud("My-Project")],
+    ["a project ID that is too short", readAloud("abc")],
+    ["a voice name that is not valid", readAloud("", "../../etc")],
+  ])("rejects %s", (_name, body) => {
+    expect(settingsUpdate.safeParse(body).success).toBe(false);
+  });
 });
 
 describe("drillGradeRequest", () => {

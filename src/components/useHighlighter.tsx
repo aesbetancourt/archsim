@@ -34,7 +34,7 @@ function offsetIn(root: Node, node: Node, offset: number): number {
 }
 
 // Make a DOM range for the characters from start to end of the root text.
-function rangeFor(nodes: Text[], start: number, end: number): Range | undefined {
+export function rangeFor(nodes: Text[], start: number, end: number): Range | undefined {
   const range = document.createRange();
   let position = 0;
   let started = false;

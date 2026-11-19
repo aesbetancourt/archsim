@@ -2,11 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import NotebookSidebar from "@/components/NotebookSidebar";
+import ReadAloud from "@/components/ReadAloud";
 import { useHighlighter } from "@/components/useHighlighter";
 
 // A learning page with the notebook in a sidebar on the right.
 // The user can select text to highlight it and add a note.
 // The highlights are saved in the notebook on the server, for each page.
+// The read-aloud player reads the page text and highlights the current sentence.
 export default function StudyLayout({ children }: { children: React.ReactNode }) {
   const page = usePathname();
   const { root, handlers, highlights, show, changeNote, remove, pageTitle, overlay } =
@@ -30,6 +32,7 @@ export default function StudyLayout({ children }: { children: React.ReactNode })
         />
       </div>
       {overlay}
+      <ReadAloud root={root} page={page} />
     </>
   );
 }

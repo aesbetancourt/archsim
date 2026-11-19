@@ -9,6 +9,7 @@ import {
   PlugZap,
   Save,
   Terminal,
+  Volume2,
 } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -16,8 +17,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Mode, PublicSettings } from "@/lib/settings";
+import type { Mode, PublicSettings, SpeechEngine } from "@/lib/settings";
 import { cn } from "@/lib/utils";
+import { googleVoices } from "@/lib/voices";
 
 const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[] = [
   {
@@ -53,6 +55,24 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
       "Uses a provider with an endpoint in the OpenAI format: Google Gemini, OpenRouter, OpenAI, or a local model.",
   },
 ];
+
+const speechEngines: { id: SpeechEngine; title: string; description: string }[] = [
+  {
+    id: "google",
+    title: "Google Cloud voice",
+    description:
+      "Natural Chirp 3: HD voices. Google bills the project. Each sentence is saved, so a replay is free.",
+  },
+  {
+    id: "browser",
+    title: "Browser voice",
+    description:
+      "The voices of this computer. Free and offline. The quality depends on the system.",
+  },
+];
+
+const SAMPLE =
+  "Every architecture decision is a trade-off. This is the voice that reads your lessons.";
 
 const presets = [
   { name: "Google Gemini", url: "https://generativelanguage.googleapis.com/v1beta/openai" },
@@ -93,7 +113,10 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   const [baseUrl, setBaseUrl] = useState(initial.openaiCompatible.baseUrl);
   const [openaiKey, setOpenaiKey] = useState("");
   const [openaiModel, setOpenaiModel] = useState(initial.openaiCompatible.model);
-  const [busy, setBusy] = useState<"save" | "test" | null>(null);
+  const [speechEngine, setSpeechEngine] = useState(initial.readAloud.engine);
+  const [projectId, setProjectId] = useState(initial.readAloud.googleProjectId);
+  const [voice, setVoice] = useState(initial.readAloud.googleVoice);
+  const [busy, setBusy] = useState<"save" | "test" | "voice" | null>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   async function save(): Promise<boolean> {
@@ -107,6 +130,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
         openCodeGo: { apiKey: goKey, model: goModel },
         anthropic: { apiKey: anthropicKey, model: anthropicModel },
         openaiCompatible: { baseUrl, apiKey: openaiKey, model: openaiModel },
+        readAloud: { engine: speechEngine, googleProjectId: projectId, googleVoice: voice },
       }),
     });
     const body = await response.json();
@@ -140,6 +164,35 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           ? { ok: true, text: `The connection works. Model: ${body.model}.` }
           : { ok: false, text: body.error ?? "The model did not answer as expected." },
       );
+    }
+    setBusy(null);
+  }
+
+  // Save first, then read a short sample with the saved voice.
+  async function onSample() {
+    setBusy("voice");
+    setMessage(null);
+    if (await save()) {
+      try {
+        if (speechEngine === "google") {
+          const response = await fetch("/api/speech", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: SAMPLE }),
+          });
+          if (!response.ok) throw new Error((await response.json()).error);
+          const url = URL.createObjectURL(await response.blob());
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          await audio.play();
+        } else {
+          speechSynthesis.cancel();
+          speechSynthesis.speak(new SpeechSynthesisUtterance(SAMPLE));
+        }
+        setMessage({ ok: true, text: "Settings saved. The voice reads a sample." });
+      } catch (error) {
+        setMessage({ ok: false, text: (error as Error).message || "The voice did not play." });
+      }
     }
     setBusy(null);
   }
@@ -371,6 +424,85 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Volume2 className="size-4" aria-hidden /> Read aloud
+          </CardTitle>
+          <CardDescription>
+            The voice that reads the lessons. Press Alt+R on a lesson, or Alt+click a sentence.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <fieldset className="grid gap-2 sm:grid-cols-2">
+            <legend className="sr-only">Voice engine</legend>
+            {speechEngines.map((item) => (
+              <label
+                key={item.id}
+                className={cn(
+                  "block cursor-pointer rounded-base border-2 border-border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-border",
+                  speechEngine === item.id
+                    ? "bg-main text-main-foreground"
+                    : "bg-secondary-background",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="speech-engine"
+                  value={item.id}
+                  checked={speechEngine === item.id}
+                  onChange={() => setSpeechEngine(item.id)}
+                  className="sr-only"
+                />
+                <span className="flex items-center gap-2 font-medium">
+                  {item.title}
+                  {speechEngine === item.id && <CircleCheck className="size-4" />}
+                </span>
+                <span className={speechEngine === item.id ? "" : "text-muted-foreground"}>
+                  {item.description}
+                </span>
+              </label>
+            ))}
+          </fieldset>
+          {speechEngine === "google" && (
+            <>
+              <Field
+                id="gcp-project"
+                label="Google Cloud project ID"
+                hint="The project that pays for the voice. The Text-to-Speech API must be on in it. Leave empty to use the quota project of your login. Log in one time with: gcloud auth application-default login"
+              >
+                <Input
+                  id="gcp-project"
+                  value={projectId}
+                  onChange={(event) => setProjectId(event.target.value)}
+                  placeholder="my-project-id"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+              </Field>
+              <Field id="gcp-voice" label="Voice">
+                <select
+                  id="gcp-voice"
+                  value={voice}
+                  onChange={(event) => setVoice(event.target.value)}
+                  className="flex h-10 w-full rounded-base border-2 border-border bg-secondary-background px-3 text-sm"
+                >
+                  {googleVoices.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </>
+          )}
+          <Button variant="neutral" onClick={onSample} disabled={busy !== null}>
+            {busy === "voice" ? <LoaderCircle className="animate-spin" /> : <Volume2 />}
+            Save and play a sample
+          </Button>
+        </CardContent>
+      </Card>
 
       {message && (
         <Alert variant={message.ok ? "default" : "destructive"}>

@@ -217,6 +217,11 @@ body,
 ::highlight(archsim-highlight-note) {
   text-decoration: underline 2px #000;
 }
+/* The sentence that the read-aloud player reads now. */
+::highlight(archsim-reading) {
+  background-color: #b2f2bb;
+  color: #000;
+}
 /* A highlight that the user selected in the notebook sidebar. */
 ::highlight(archsim-highlight-focus) {
   background-color: #ff9f1c;

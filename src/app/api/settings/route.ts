@@ -27,6 +27,7 @@ export async function PUT(request: Request) {
       apiKey: update.openaiCompatible.apiKey.trim() || current.openaiCompatible.apiKey,
       model: update.openaiCompatible.model.trim(),
     },
+    readAloud: update.readAloud ?? current.readAloud,
   };
   await writeSettings(next);
   return Response.json(toPublic(next));

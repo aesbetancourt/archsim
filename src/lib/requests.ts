@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { modes } from "./settings";
+import { modes, speechEngines } from "./settings";
 
 // The limits keep one request to a sensible size.
 const MAX_TEXT = 20_000;
@@ -144,7 +144,23 @@ export const settingsUpdate = z.object({
     apiKey: key,
     model,
   }),
+  readAloud: z
+    .object({
+      engine: z.enum(speechEngines),
+      googleProjectId: z
+        .string()
+        .trim()
+        .regex(/^([a-z][a-z0-9-]{4,28}[a-z0-9])?$/, "This is not a Google Cloud project ID."),
+      googleVoice: z
+        .string()
+        .trim()
+        .regex(/^[a-z]{2,3}-[A-Z]{2}-[A-Za-z0-9-]{1,80}$/, "This is not a Google voice name."),
+    })
+    .optional(),
 });
+
+// One sentence for the read-aloud player. Google accepts at most 5,000 bytes in one request.
+export const speechRequest = z.object({ text: z.string().trim().min(1).max(1_000) });
 
 // Read the JSON body of a request and check it against a schema.
 // If the body is not valid, return a 400 response that names the first problem.

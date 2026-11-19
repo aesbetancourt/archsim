@@ -92,6 +92,8 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
     // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <section
       aria-label={`Walkthrough: ${walkthrough.title}`}
+      // The read-aloud player skips the walkthrough. Its steps are controls, not text.
+      data-read-skip
       className="not-prose space-y-3 rounded-base border-2 bg-secondary-background p-3 shadow-shadow sm:p-4"
       onKeyDown={(event) => {
         if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)
