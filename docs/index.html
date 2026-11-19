@@ -623,6 +623,40 @@
         margin-top: 0.4rem;
       }
 
+      /*
+        The scrollbars, the same as in the app: a thin ink line on a clear track. The line gets
+        darker and wider under the pointer, and follows the light and dark themes.
+      */
+      :root {
+        --scrollbar-thumb: color-mix(in srgb, var(--ink) 26%, transparent);
+        --scrollbar-thumb-hover: color-mix(in srgb, var(--ink) 50%, transparent);
+      }
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+      ::-webkit-scrollbar-track,
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        min-height: 40px;
+        border: 3px solid transparent;
+        border-radius: 999px;
+        background-color: var(--scrollbar-thumb);
+        background-clip: padding-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        border-width: 2px;
+        background-color: var(--scrollbar-thumb-hover);
+      }
+      @supports not selector(::-webkit-scrollbar) {
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: var(--scrollbar-thumb) transparent;
+        }
+      }
+
       @media (max-width: 64rem) {
         .hero {
           grid-template-columns: 1fr;
