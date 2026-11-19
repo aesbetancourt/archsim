@@ -1,13 +1,18 @@
 "use client";
 
-import { ArrowLeft, FileText, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, FileText, Plus, Sparkles, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AutosaveNotes, { putJson } from "@/components/AutosaveNotes";
 import ConfirmButton from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { InsightsStatus } from "@/lib/insights-job";
 import type { NoteDoc } from "@/lib/notebook";
 import { notesText } from "@/lib/notes";
+
+// How often the page asks for the state of the insights job, in milliseconds.
+const POLL_MS = 3_000;
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 
@@ -16,13 +21,79 @@ const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 export default function GeneralNotes({
   initial,
   compact = false,
+  insights = false,
+  openAsPage = false,
 }: {
   initial?: NoteDoc[];
   compact?: boolean;
+  // Show the button that writes an insights document from the whole notebook.
+  insights?: boolean;
+  // Open a note on its own page, with a full-size editor, and not in this box.
+  openAsPage?: boolean;
 }) {
+  const router = useRouter();
   const [documents, setDocuments] = useState<NoteDoc[] | null>(initial ?? null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [writing, setWriting] = useState(false);
+
+  const open = (id: string) => (openAsPage ? router.push(`/notebook/notes/${id}`) : setOpenId(id));
+
+  // The AI writes the insights in the background on the server. The page asks for the state when
+  // it opens, and again every few seconds while the job runs. Then the new note shows in the list.
+  const [check, setCheck] = useState(0);
+  const waiting = useRef(false);
+
+  useEffect(() => {
+    if (!insights) return;
+    let current = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    async function poll() {
+      try {
+        const state = (await (await fetch("/api/notebook/insights")).json()) as InsightsStatus;
+        if (!current) return;
+        if (state.status === "running") {
+          waiting.current = true;
+          setWriting(true);
+          timer = setTimeout(poll, POLL_MS);
+          return;
+        }
+        setWriting(false);
+        if (state.status === "failed") setError(state.error);
+        if (waiting.current) {
+          waiting.current = false;
+          const items = (await (await fetch("/api/notebook/notes")).json()) as NoteDoc[];
+          if (current) setDocuments(items);
+        }
+      } catch {
+        // The server did not answer. Ask again later.
+        if (current) timer = setTimeout(poll, POLL_MS);
+      }
+    }
+    void poll();
+    return () => {
+      current = false;
+      clearTimeout(timer);
+    };
+  }, [insights, check]);
+
+  async function createInsights() {
+    setError("");
+    try {
+      const response = await fetch("/api/notebook/insights", { method: "POST" });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        setError(body.error ?? "The insights document was not started. Try again.");
+        return;
+      }
+      waiting.current = true;
+      setWriting(true);
+      // Start to ask for the state of the new job.
+      setCheck((value) => value + 1);
+    } catch {
+      setError("The insights document was not started. Try again.");
+    }
+  }
 
   useEffect(() => {
     if (initial) return;
@@ -49,7 +120,7 @@ export default function GeneralNotes({
     }
     const created = (await response.json()) as NoteDoc;
     setDocuments((items) => [...(items ?? []), created]);
-    setOpenId(created.id);
+    open(created.id);
   }
 
   const update = (id: string, change: Partial<NoteDoc>) =>
@@ -84,10 +155,30 @@ export default function GeneralNotes({
         <p className="text-muted-foreground">
           Notes for each topic, not for one page. For example: questions, or a summary.
         </p>
-        <Button size="sm" onClick={create} className="shrink-0">
-          <Plus /> New note
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          {insights && (
+            <Button
+              size="sm"
+              variant="neutral"
+              onClick={createInsights}
+              disabled={writing}
+              title="The AI reads all your bookmarks, highlights, and notes, and writes a study document."
+            >
+              <Sparkles className={writing ? "animate-pulse" : undefined} />
+              {writing ? "Writing the insights…" : "Create insights"}
+            </Button>
+          )}
+          <Button size="sm" onClick={create}>
+            <Plus /> New note
+          </Button>
+        </div>
       </div>
+      {writing && (
+        <p role="status" className="px-3 pt-2 text-muted-foreground">
+          The AI writes the insights in the background. You can leave or reload this page. The
+          document shows here when it is ready.
+        </p>
+      )}
       {error && (
         <p role="alert" className="px-3 pt-2">
           {error}
@@ -104,11 +195,15 @@ export default function GeneralNotes({
                 <li key={item.id}>
                   <button
                     type="button"
-                    onClick={() => setOpenId(item.id)}
+                    onClick={() => open(item.id)}
                     className="w-full cursor-pointer rounded-base border border-border bg-secondary-background px-3 py-2 text-left hover:bg-main hover:text-main-foreground"
                   >
                     <span className="flex items-center gap-2 font-medium">
-                      <FileText className="size-4 shrink-0" aria-hidden />
+                      {item.kind === "insights" ? (
+                        <Sparkles className="size-4 shrink-0" aria-hidden />
+                      ) : (
+                        <FileText className="size-4 shrink-0" aria-hidden />
+                      )}
                       {item.title}
                     </span>
                     <span className="block truncate text-xs opacity-80">
@@ -126,7 +221,8 @@ export default function GeneralNotes({
   );
 }
 
-function OpenNote({
+// One general note: its title and its editor. The sidebar and the note page use it.
+export function OpenNote({
   document,
   compact,
   onBack,

@@ -219,8 +219,9 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
         <h2 id="general-title" className="text-xl font-semibold tracking-tight">
           General notes
         </h2>
-        <Card className="h-[30rem] overflow-hidden py-0">
-          <GeneralNotes initial={notebook.documents} />
+        {/* A short list. A click opens the note on its own page. */}
+        <Card className="max-h-96 overflow-hidden py-0">
+          <GeneralNotes initial={notebook.documents} insights openAsPage />
         </Card>
       </section>
 

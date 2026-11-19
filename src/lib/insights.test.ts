@@ -1,0 +1,110 @@
+import { describe, expect, it } from "vitest";
+import { buildInsightsPrompt, insightsHtml, sectionText } from "./insights";
+import type { Notebook } from "./notebook";
+
+const lesson = `Intro text.
+
+## Eviction
+
+A cache removes old entries.
+
+## Write-back
+
+The cache writes later.
+`;
+
+const empty: Notebook = { documents: [], pages: [], highlights: [], bookmarks: [], stories: [] };
+const at = "2026-11-19T10:00:00.000Z";
+
+describe("sectionText", () => {
+  it("returns the text of one section, up to the next section", () => {
+    expect(sectionText(lesson, "eviction")).toBe("A cache removes old entries.");
+  });
+
+  it("returns nothing for an unknown section", () => {
+    expect(sectionText(lesson, "missing")).toBe("");
+  });
+});
+
+describe("buildInsightsPrompt", () => {
+  it("returns nothing when the notebook has no marks", () => {
+    expect(buildInsightsPrompt(empty, {})).toBeNull();
+  });
+
+  it("puts each kind of mark in the prompt, with the bookmarked section text", () => {
+    const notebook: Notebook = {
+      ...empty,
+      bookmarks: [
+        {
+          id: "b",
+          page: "/learn/caching",
+          title: "Caching",
+          heading: "Eviction",
+          anchor: "eviction",
+          createdAt: at,
+        },
+      ],
+      highlights: [
+        {
+          id: "h",
+          page: "/learn/caching",
+          title: "Caching",
+          text: "stale data",
+          start: 0,
+          note: "check TTL",
+          createdAt: at,
+        },
+      ],
+      pages: [
+        { page: "/learn/caching", title: "Caching", html: "<p>my page note</p>", updatedAt: at },
+      ],
+      documents: [
+        { id: "d", title: "Questions", html: "<p>why LRU?</p>", createdAt: at, updatedAt: at },
+        {
+          id: "i",
+          title: "Insights · Old",
+          html: "<p>old summary</p>",
+          createdAt: at,
+          updatedAt: at,
+          kind: "insights",
+        },
+      ],
+    };
+
+    const result = buildInsightsPrompt(notebook, { caching: lesson });
+
+    expect(result?.counts).toEqual({ bookmarks: 1, highlights: 1, notes: 2 });
+    for (const part of [
+      "A cache removes old entries.",
+      "stale data",
+      "check TTL",
+      "my page note",
+      "why LRU?",
+    ]) {
+      expect(result?.prompt).toContain(part);
+    }
+    expect(result?.prompt).not.toContain("old summary");
+  });
+});
+
+describe("insightsHtml", () => {
+  it("draws the sections and escapes the text", () => {
+    const html = insightsHtml(
+      {
+        title: "Caching",
+        big_picture: ["A <cache> is fast."],
+        key_ideas: [{ idea: "Eviction", lesson: "Caching", quote: "", explanation: "LRU." }],
+        connections: [],
+        your_notes: [],
+        gaps: ["TTL"],
+        review_questions: [{ question: "Why?", answer: "Speed." }],
+      },
+      "Made today.",
+    );
+
+    expect(html).toContain("<h2>The big picture</h2>");
+    expect(html).toContain("A &lt;cache&gt; is fast.");
+    expect(html).not.toContain("How the ideas connect");
+    expect(html).toContain("<strong>Why?</strong>");
+  });
+});

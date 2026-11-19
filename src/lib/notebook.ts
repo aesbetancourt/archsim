@@ -42,6 +42,8 @@ export type NoteDoc = {
   html: string;
   createdAt: string;
   updatedAt: string;
+  // An insights document is written by the AI from the marks of the notebook.
+  kind?: "insights";
 };
 
 export type Notebook = {
@@ -146,6 +148,23 @@ export function createDocument(title: string): Promise<NoteDoc> {
       html: "",
       createdAt: now,
       updatedAt: now,
+    };
+    notebook.documents.push(document);
+    return document;
+  });
+}
+
+// Save an insights document as a new general note.
+export function addInsightsDocument(title: string, html: string): Promise<NoteDoc> {
+  return change((notebook) => {
+    const now = new Date().toISOString();
+    const document: NoteDoc = {
+      id: newId(),
+      title,
+      html,
+      createdAt: now,
+      updatedAt: now,
+      kind: "insights",
     };
     notebook.documents.push(document);
     return document;
