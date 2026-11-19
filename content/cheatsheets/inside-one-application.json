@@ -169,8 +169,8 @@
       "rows": [
         ["Stub", "Returns fixed answers, with no logic"],
         ["Fake", "A working but simplified implementation"],
-        ["Mock", "Records the calls, and the test checks them"],
-        ["Spy", "A real or fake object that also records the calls"]
+        ["Mock", "Expects some calls, and fails if they differ"],
+        ["Spy", "A stub that also records the calls for the test"]
       ],
       "lesson": "dependencies#test-doubles"
     },

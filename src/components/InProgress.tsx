@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { clearDraft, type DraftSummary, listDrafts } from "@/lib/draft";
+import { saveClock } from "@/lib/kata-clock";
 import { saveNotesHtml } from "@/lib/notes";
 
 // The katas with unfinished work in this browser. The home page shows them first.
@@ -27,6 +28,7 @@ export default function InProgress({ titles }: { titles: Record<string, string> 
   function remove(kataId: string) {
     clearDraft(kataId);
     saveNotesHtml(kataId, "");
+    saveClock(kataId, null);
     setDrafts((current) => current.filter((draft) => draft.kataId !== kataId));
     setRemoving(null);
   }

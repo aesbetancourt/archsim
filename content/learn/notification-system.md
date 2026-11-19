@@ -30,14 +30,14 @@ The questions that change the design most are the delivery promise and the mix o
 
 Assume these answers: 50 million notifications each day. 30 million push, 15 million email, 5 million SMS. A marketing campaign can create 3 million messages in five minutes.
 
-| Quantity            | Arithmetic              | Result                                         |
-| ------------------- | ----------------------- | ---------------------------------------------- |
-| Average rate        | 50 million ÷ 100,000 s  | About 500 each second                          |
-| Campaign burst      | 3 million ÷ 300 s       | About 10,000 each second, 20 times the average |
-| SMS rate            | 5 million ÷ 100,000 s   | About 50 each second                           |
-| Log of each message | 50 million × 1 KB       | About 50 GB each day                           |
-| Log for 90 days     | 50 GB × 90              | About 4.5 TB                                   |
-| SMS cost (rough)    | 5 million × a few cents | Tens of thousands of dollars each day          |
+| Quantity            | Arithmetic               | Result                                         |
+| ------------------- | ------------------------ | ---------------------------------------------- |
+| Average rate        | 50 million ÷ 100,000 s   | About 500 each second                          |
+| Campaign burst      | 3 million ÷ 300 s        | About 10,000 each second, 20 times the average |
+| SMS rate            | 5 million ÷ 100,000 s    | About 50 each second                           |
+| Log of each message | 50 million × 1 KB        | About 50 GB each day                           |
+| Log for 90 days     | 50 GB × 90               | About 4.5 TB                                   |
+| SMS cost (rough)    | 5 million × 1 to 5 cents | About 50,000 to 250,000 dollars each day       |
 
 What the numbers say:
 
@@ -131,7 +131,7 @@ You can make duplicates rare:
 
 1. **Give each notification an ID at the source.** The calling service makes the ID, for example from the event: `order-8812-shipped`. A retry from the caller then has the same ID.
 2. **Check the ID at the API.** If the log already has this ID, return the old result and do not queue again. This is an [idempotency key](/learn/distributed-transactions#idempotency).
-3. **Check the ID in the worker.** Before the send, look up the ID in a fast store of recent sends. After the send, write it with a time limit, for example 24 hours.
+3. **Check the ID in the worker.** Before the send, look up the ID in a fast store of recent sends. After the send, write it with a time limit, for example 24 hours. This check is not a lock: two workers can both pass it at the same time. To stop that, claim the ID first with an atomic set-if-absent, for example `SET id NX EX 300`. The claim expires, so another worker can retry the message if the first worker crashes.
 4. **Accept the last small window.** A crash between the send and the write still gives a duplicate. Say this aloud.
 
 Push providers also have a collapse feature. APNs and FCM let you mark messages with the same key, and the device shows only the newest one. That is useful for updates such as "your parcel is 3 stops away".

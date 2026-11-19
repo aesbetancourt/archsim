@@ -17,16 +17,30 @@ If the terms are new to you, read [What a software architect does](/learn/archit
 
 Each kata page has the problem text, a notepad, a canvas, and the five steps.
 
-1. **Read the problem two times.** Select a sentence to highlight it. Highlight each number, constraint, and word such as "must" or "never". The highlights go to your notebook.
-2. **Set the scope.** Name the few functions that shape the design. Say what you leave out.
-3. **Select the characteristics.** Pick about three qualities, for example availability or cost. Tie each one to a sentence in the problem.
-4. **Select a style.** Choose the simplest style that supports those characteristics.
-5. **Draw the diagram.** Drag pieces from the palette of [building blocks](/learn/building-blocks) to the canvas, and connect them.
-6. **State the trade-offs.** Say what your design gives up, and where it fails first.
+First, **read the problem two times.** Select a sentence to highlight it. Highlight each number, constraint, and word such as "must" or "never". The highlights go to your notebook. Then do the five steps:
+
+1. **Set the scope.** Name the few functions that shape the design. Say what you leave out.
+2. **Select the characteristics.** Pick about three qualities, for example availability or cost. Tie each one to a sentence in the problem.
+3. **Select a style.** Choose the simplest style that supports those characteristics.
+4. **Draw the diagram.** Drag pieces from the palette of [building blocks](/learn/building-blocks) to the canvas, and connect them.
+5. **State the trade-offs.** Say what your design gives up, and where it fails first.
 
 The app saves your answers, notes, and diagram in the browser as you work. You can stop and come back later. The home page lists the katas in progress.
 
 Use the help chat (the round button at the bottom right) when you are stuck. It explains concepts and gives hints. It does not give you the design.
+
+### Practice under time
+
+An interview gives you about 45 minutes. To practice that, click **Practice under time** above **Submit for review**, and select a time box: 20, 30, 45, or 60 minutes. The clock shows the phase that an interviewer expects now:
+
+| Phase                    | In 45 minutes    | What to do                                                                  |
+| ------------------------ | ---------------- | --------------------------------------------------------------------------- |
+| Clarify and scope        | Minutes 0 to 5   | Ask your questions. Do steps 1 and 2.                                       |
+| First design, end to end | Minutes 5 to 15  | Select a style and draw the happy path (steps 3 and 4). Do not go deep yet. |
+| Deep dives               | Minutes 15 to 40 | Go deep on data, failure, scale, and how you know it works.                 |
+| Wrap up                  | Minutes 40 to 45 | Write the rationale: trade-offs, risks, and next steps (step 5).            |
+
+A soft tone plays when a phase ends. The bell button turns it off. After the time is up, the clock counts the minutes over. The clock keeps running when you reload the page, and it stops when you submit or start again.
 
 ### Read the review
 
@@ -81,6 +95,7 @@ The drills use **spaced repetition**. A term that you know comes back after a lo
 
 - **[Vocabulary drill](/drill).** Explain a glossary term in your own words, then say if you knew it. An optional AI check says what your explanation covers and what it misses.
 - **[Question drill](/drill/questions).** Write an answer to an interview question. The model grades it against the lesson. Use the "Finished lessons" filter to drill only what you read.
+- **[Product drill](/drill/product).** Answer a product case: estimate what a feature costs, prove that it works, say who pays, or rank the work. Start with a number or a position. The model does your arithmetic again and grades the answer.
 
 A short drill each day is better than a long drill each week. Ten minutes is enough.
 
@@ -101,7 +116,7 @@ A short drill each day is better than a long drill each week. Ten minutes is eno
 
 1. **Week 1: the method.** Read the "Start here" section, including [The system design interview](/learn/interview-format). Study three worked examples. Start the vocabulary drill.
 2. **Week 2: the parts.** Read the lessons on data, communication, and reliability. Do one interview question from the kata list every two days.
-3. **Week 3: under time.** Do one interview question each day in 45 minutes. Use the question drill each day.
+3. **Week 3: under time.** Do one interview question each day with the 45-minute clock. Use the question drill and the product drill each day.
 4. **Week 4: your stories and your weak points.** Read [Behavioral interviews](/learn/behavioral-interviews). Write your stories in the story bank in the notebook, until each competency has a story. Do the katas with your lowest scores again.
 
 The story bank shows which competencies have no story yet. In the question drill, a behavioral answer can start from a saved story.

@@ -91,14 +91,16 @@ From here, you can split one domain service further into [microservices](/learn/
     { "id": "dom", "label": "4 domains in\none deployment", "shape": "module", "col": 2, "row": 1 },
     { "id": "ship", "label": "Shipment", "shape": "box", "col": 3, "row": 0 },
     { "id": "track", "label": "Tracking", "shape": "box", "col": 3, "row": 1 },
-    { "id": "bill", "label": "Billing", "shape": "box", "col": 3, "row": 2 }
+    { "id": "bill", "label": "Billing", "shape": "box", "col": 3, "row": 2 },
+    { "id": "notify", "label": "Notify", "shape": "box", "col": 3, "row": 3 }
   ],
   "edges": [
     { "from": "mono", "to": "comp", "label": "size, gather,\nflatten" },
     { "from": "comp", "to": "dom", "label": "step 5" },
     { "from": "dom", "to": "ship", "label": "step 6" },
     { "from": "dom", "to": "track" },
-    { "from": "dom", "to": "bill" }
+    { "from": "dom", "to": "bill" },
+    { "from": "dom", "to": "notify" }
   ]
 }
 ```

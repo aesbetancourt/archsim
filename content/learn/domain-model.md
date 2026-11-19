@@ -16,7 +16,7 @@ At code level, this has concrete effects:
 | -------------------------------------- | ---------------------------------------------- |
 | `booking.setStatus("CANCELLED")`       | `booking.cancelByLearner(now)`                 |
 | `BookingManager.process(data)`         | `BookLesson.execute(request)`                  |
-| `if (b.st === 3 && diff < 86400000)`   | `if (booking.isInFreeCancellationWindow(now))` |
+| `if (b.st === 3 && diff > 86400000)`   | `if (booking.isInFreeCancellationWindow(now))` |
 | A table `tbl_bkg` with a column `flg2` | A `Booking` with a `noShow` flag               |
 
 The first column works. But a business expert cannot read it, and a developer cannot tell which rule it applies. In the second column, a sentence from the expert ("a learner cancels inside the free window") maps to one method.

@@ -109,7 +109,7 @@ A stay of three nights touches three inventory rows, one for each night. A booki
 
 A scheduled job adds a new row each day for the date two years ahead. Staff changes, such as a room closed for repair, change `total_inventory` for the affected dates.
 
-The reservation is a **state machine**: `pending → paid → confirmed`, or `pending → expired`, and later `cancelled` or `refunded`. A pending reservation holds the rooms. If the payment does not complete in, for example, 15 minutes, a job moves it to `expired` and gives the rooms back. Without the expiry, abandoned checkouts slowly remove rooms from sale.
+The reservation is a **state machine**: `pending → paid → confirmed`, or `pending → expired` when the payment does not arrive in time, or `pending → cancelled` when the payment fails. A confirmed reservation can later become `cancelled` or `refunded`. A pending reservation holds the rooms. If the payment does not complete in, for example, 15 minutes, a job moves it to `expired` and gives the rooms back. Without the expiry, abandoned checkouts slowly remove rooms from sale.
 
 ### Double-booking from a double click
 
@@ -204,7 +204,7 @@ AND total_reserved + 1 <= FLOOR(total_inventory * 1.05)
 Here the limit for a room type with 20 rooms is 21. Three points matter in an interview:
 
 - **The rule belongs to the business.** Revenue managers set it, and it changes. Keep it in data, not in code.
-- **The limit is still a hard limit.** The concurrency fixes above protect 21 instead of 20. Overbooking does not make the race condition acceptable.
+- **The limit is still a hard limit.** The concurrency fixes above protect 21 instead of 20. Overbooking does not make the race condition acceptable. The `CHECK` guard must use the same limit. If it stays `total_reserved <= total_inventory`, it refuses the 21st booking.
 - **The desk needs a process.** When more guests arrive than rooms exist, staff need a list of overbooked nights and a way to move guests. The system can show the risk ahead of time.
 
 ### A monolith or services, and the consistency between them

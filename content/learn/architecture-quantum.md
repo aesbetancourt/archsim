@@ -1,6 +1,6 @@
 ## What a quantum is
 
-An architecture quantum is the smallest part of a system that has its own set of architecture characteristics. In physics, a quantum is the smallest amount of something. Richards and Ford brought the term into software architecture in Fundamentals of Software Architecture. The Hard Parts (Ford, Richards, Sadalage, Dehghani) gives the definition that most people now use.
+An architecture quantum is the smallest part of a system that has its own set of architecture characteristics. In physics, a quantum is the smallest amount of something. Ford, Parsons, and Kua brought the term into software architecture in Building Evolutionary Architectures. Fundamentals of Software Architecture (Richards, Ford) uses it to compare the styles. The Hard Parts (Ford, Richards, Sadalage, Dehghani) gives the definition that most people now use.
 
 A quantum is an independently deployable artifact with four properties together:
 
@@ -192,7 +192,7 @@ A reviewer who sees "each quantum has its own characteristics, and here they are
 ## Go deeper
 
 - **Software Architecture: The Hard Parts** (Ford, Richards, Sadalage, Dehghani), the part on architecture quanta and dynamic coupling: the full definition, and the three dimensions of communication, consistency, and coordination.
-- **Fundamentals of Software Architecture** (Richards, Ford), the part on the scope of architecture characteristics: the first form of the idea, and the quanta of each style.
+- **Fundamentals of Software Architecture** (Richards, Ford), the part on the scope of architecture characteristics: an earlier form of the idea, and the quanta of each style.
 - **Building Microservices** (Newman), the parts on independent deployability and on coupling: the same goal seen from the side of one service.
 - **Release It!** (Nygard), the part on integration points: what a synchronous call to another quantum does to your stability.
 

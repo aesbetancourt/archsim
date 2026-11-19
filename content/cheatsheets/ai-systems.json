@@ -1,0 +1,100 @@
+{
+  "section": "AI systems",
+  "summary": "Build with a model as one part of the system: contain it, test it, and know what it costs.",
+  "blocks": [
+    {
+      "type": "rules",
+      "title": "Build with a model",
+      "items": [
+        {
+          "text": "The model proposes, and the code decides. Numbers, rules, and permissions live in code.",
+          "lesson": "llm-systems#put-rules-in-code-not-in-the-prompt"
+        },
+        {
+          "text": "Put the model behind a port that the core owns. Each provider is an adapter, with a fake for tests.",
+          "lesson": "llm-systems#a-port-for-the-model"
+        },
+        {
+          "text": "Validate each output with a schema and business checks. Repair once, then hand off to a person.",
+          "lesson": "llm-systems#when-the-model-fails"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Agents",
+      "items": [
+        {
+          "text": "Use a fixed workflow when you can list the steps. Use an agent only when the steps depend on the input.",
+          "lesson": "ai-agents#workflow-or-agent"
+        },
+        {
+          "text": "Code owns the state. Each state has its own tools, exit conditions, and deterministic guards.",
+          "lesson": "ai-agents#state-machines-and-deterministic-guards"
+        },
+        {
+          "text": "Keep the internal decision and the reply apart. Internal labels never reach the user.",
+          "lesson": "ai-agents#what-the-user-sees-and-what-stays-inside"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Evaluate",
+      "items": [
+        {
+          "text": "Grade with code checks first: schema, labels, tool calls, final state, forbidden content.",
+          "lesson": "llm-evals#code-based-checks-first"
+        },
+        {
+          "text": "An LLM judge uses a binary rubric, and you calibrate it against expert labels before you trust it.",
+          "lesson": "llm-evals#llm-as-a-judge"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Cost and latency",
+      "items": [
+        {
+          "text": "Cost of one call = (input tokens × input price + output tokens × output price) ÷ 1,000,000. State each price as an assumption.",
+          "lesson": "llm-cost-latency#estimate-the-cost-step-by-step"
+        },
+        {
+          "text": "For English, assume about 4/3 tokens for each word and 150 spoken words each minute. A 30-minute call is about 6,000 tokens.",
+          "lesson": "llm-cost-latency#tokens"
+        },
+        {
+          "text": "Compare cost per task with value per task. Count the review time of people: it often costs more than the model.",
+          "lesson": "llm-cost-latency#cost-per-task-and-value-per-task"
+        },
+        {
+          "text": "Process once, use many times: extract the facts of each item once, store them as rows, and build each report from the rows.",
+          "lesson": "llm-cost-latency#make-it-cheaper"
+        },
+        {
+          "text": "Total time = time to first token + output tokens ÷ output speed. A long output is the usual cause of a slow call.",
+          "lesson": "llm-cost-latency#latency"
+        },
+        {
+          "text": "Start from when the person acts. Choose the cheapest processing that is ready before that moment.",
+          "lesson": "llm-cost-latency#batch-or-per-event"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Voice",
+      "items": [
+        {
+          "text": "Voice: aim for less than about 1 second from the end of speech to the first audio. The model is only about a third of it.",
+          "lesson": "voice-agents#the-latency-budget"
+        },
+        {
+          "text": "Voice cost per minute = telephony + speech to text + model + text to speech + hosting.",
+          "lesson": "voice-agents#cost-per-minute"
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import {
   GraduationCap,
   Library,
   Lightbulb,
+  Calculator,
   MessageCircleQuestion,
   NotebookPen,
   PencilRuler,
@@ -80,6 +81,12 @@ const learn = [
     title: "Question drill",
     description: "Answer the interview questions, with an AI check.",
     icon: <MessageCircleQuestion />,
+  },
+  {
+    href: "/drill/product",
+    title: "Product drill",
+    description: "Estimate cost, prove value, and set priorities.",
+    icon: <Calculator />,
   },
 ];
 

@@ -128,7 +128,7 @@ See [Data ownership](/learn/data-ownership) for how to decide which service owns
 **"Would you use SQL or NoSQL for this system?"**
 
 - Start from the access patterns and the relations, not from the label.
-- Say that relational is the default, and name what would make you leave it: scale beyond one partitioned cluster, a key-only access pattern, or a flexible shape.
+- Say that relational is the default, and name what would make you leave it: a write volume or a data size beyond one well-tuned server, a key-only access pattern, or a flexible shape.
 - Different data in one system can use different stores.
 
 **"When is a document database a good choice?"**

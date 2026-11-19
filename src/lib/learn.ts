@@ -268,7 +268,7 @@ export const styleLessons: StyleLesson[] = [
     useWhen: "Load peaks are extreme and hard to predict, such as a major ticket sale.",
     avoidWhen: "Load is steady, or the data is large and relational.",
     example: "Seat selection when a major concert goes on sale.",
-    ratings: { simplicity: "low", scalability: "high", faultTolerance: "high", cost: "high" },
+    ratings: { simplicity: "low", scalability: "high", faultTolerance: "medium", cost: "high" },
   },
   {
     id: "pipeline",

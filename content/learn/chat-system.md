@@ -149,9 +149,11 @@ One risk: a very busy group puts all its writes on one partition. For groups of 
 
 ### Many devices, presence, and offline users
 
-**Sync with a cursor for each device.** Ana uses a phone and a laptop. Each device keeps its own cursor: the highest sequence number it has, for each conversation. When a device connects, it sends its cursors. The server returns all messages after each cursor. Then the device moves its cursor forward.
+**Sync with a cursor for each device.** Ana uses a phone and a laptop. Each device keeps its own cursor for each conversation: the highest sequence number up to which it has every message, with no gap. When a device connects, it sends its cursors. The server returns all messages after each cursor. Then the device moves its cursor forward.
 
-Because of the cursor, the design does not need to know which device "missed" what. A device that was off for a week asks for everything after its cursor. A message that the fast path pushed twice is ignored, because its sequence number is not above the cursor. The "read" mark works the same way: a read cursor for each user and conversation.
+The cursor moves only over messages with no gap. If the fast path pushes message 5 before message 4, the device shows 5, but its cursor stays at 3. On the next sync it gets 4 and 5 again, and it ignores the copy of 5 that it already has, by the message ID.
+
+Because of the cursor, the design does not need to know which device "missed" what. A device that was off for a week asks for everything after its cursor. A message that the fast path pushed twice is ignored, because the device already has its message ID. The "read" mark works the same way: a read cursor for each user and conversation.
 
 **Online presence.** A device connected to a chat server is online. But a broken connection often does not close cleanly, so the server cannot rely on a "close" event. Use heartbeats instead:
 

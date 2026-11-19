@@ -195,7 +195,7 @@
           "lesson": "measuring-characteristics#make-the-definition-exact"
         },
         {
-          "text": "A build test is atomic, triggered, and static. A p99 alert in production is continual and dynamic.",
+          "text": "A build test is atomic, triggered, and static. A p99 alert with a fixed limit is continual and static. A limit that changes with the load is dynamic.",
           "lesson": "measuring-characteristics#fitness-functions"
         },
         {

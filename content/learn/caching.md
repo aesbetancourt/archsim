@@ -273,8 +273,8 @@ Follow one shop from a slow page to a cache that works, and then see the two way
       },
       "metrics": {
         "time": 900,
-        "reads": 2500,
-        "hit": 60
+        "reads": 900,
+        "hit": 55
       }
     },
     {

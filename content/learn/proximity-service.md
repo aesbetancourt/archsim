@@ -40,7 +40,7 @@ Assume these answers: 60 million daily users, 5 searches each day, 40 million bu
 
 What the numbers say:
 
-- Reads are about 10,000 times more frequent than writes. The design must make reads cheap. It can make writes slow.
+- Reads are about 3,000 times more frequent than writes, and about 12,000 times at the lunch peak. The design must make reads cheap. It can make writes slow.
 - All business data fits on one large database server. The data size is not the problem. The search rate and the geometry are the problem.
 - The index fits in memory with room to spare. A cache or an in-memory tree can hold it on each server.
 
@@ -136,7 +136,7 @@ Each extra character makes the cell about 32 times smaller. Two points with a lo
 
 **Boundary issues.** Geohash has two traps that interviewers like:
 
-1. **Close points can have different prefixes.** Two lunch shops 10 m apart, one on each side of a cell edge, are in different cells. At the equator or the prime meridian, they can share no prefix at all, because their first bit differs. A search of only the user cell misses the shop across the street. The 3 × 3 block fixes this. A neighbor of a cell can be computed from its geohash string in constant time.
+1. **Close points can have different prefixes.** Two lunch shops 10 m apart, one on each side of a cell edge, are in different cells. At the equator or the prime meridian, they can share no prefix at all, because a bit in their first character differs. A search of only the user cell misses the shop across the street. The 3 × 3 block fixes this. A neighbor of a cell can be computed from its geohash string in constant time.
 2. **Not enough results.** A user in a village asks for 30 lunch shops within 2 km, and the 9 cells have 4. The service can remove the last character of the geohash and search the larger cells. It repeats until it has enough results or reaches the largest allowed radius. Tell the user when the results come from farther away.
 
 Geohash cells do not adapt to density. A length 5 cell in a city still holds thousands of businesses. The filter step must handle this (see below). For this problem, it is acceptable, because the cache returns a list of IDs very fast.

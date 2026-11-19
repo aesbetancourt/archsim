@@ -282,6 +282,55 @@ export const interviewKatas: Kata[] = [
       "A broker must not be able to place an order that it cannot pay for.",
     ],
   },
+  {
+    id: "voice-support-agent",
+    title: "Voice Support Agent",
+    difficulty: "hard",
+    interview: true,
+    context:
+      "A company that sells and repairs home appliances wants a phone agent for its support line. The agent answers product questions, books or changes repair appointments through an API, and hands the call to a person when needed.",
+    users:
+      "About 3,000 support calls each day, with up to 400 calls in the busiest hour. A call lasts about 5 minutes. Most callers speak English, and about 20% speak Spanish.",
+    requirements: [
+      "The caller hears the start of each answer within about one second after they stop talking.",
+      "The caller can interrupt the agent at any time. The agent must stop and listen.",
+      "During the call, the agent finds free slots, and books, moves, or cancels an appointment through the scheduling API.",
+      "The caller can reach a person at any time. The person gets a summary, so the caller does not repeat the story.",
+      "Before launch, show that the agent handles the common calls correctly. Tell us how you measure it after launch.",
+      "Tell us what one minute of a call costs, and compare it with a call that a person answers.",
+    ],
+    constraints: [
+      "The scheduling API answers in 300 milliseconds on average, but sometimes takes 3 seconds.",
+      "Calls arrive over the public phone network, on the existing support number.",
+      "The agent must never change an appointment without a clear yes from the customer who owns it.",
+      "A support person costs the company about $1 for each minute of a call.",
+    ],
+    note: "This is an interview prompt. In the interview, you sketch the design as you talk. Give the latency budget and the cost per minute as numbers.",
+  },
+  {
+    id: "call-insights",
+    title: "Call Insights",
+    difficulty: "medium",
+    interview: true,
+    context:
+      "A sales team records about 1,000 customer calls each working day and sends about 3,000 emails. The company wants insights from them: a brief for each rep before the next follow-up, and themes for marketing each week.",
+    users:
+      "200 sales reps. A call lasts about 30 minutes. Reps follow up with most customers the next working day, and with some within an hour. The marketing team meets each Monday.",
+    requirements: [
+      "Each rep gets a brief before the follow-up: what the customer wants, the objections, and the agreed next steps.",
+      "Marketing gets the main themes of the week, with counts: objections, requested features, and competitors named.",
+      "A person reviews each theme report before it goes to marketing, and any text that goes to a customer.",
+      "Tell us what the system costs each day, in model calls and in review time, and compare it with the value.",
+      "Tell us how you would know, after three months, that the briefs help the reps.",
+    ],
+    constraints: [
+      "Transcripts of the calls already exist. Speech to text is solved.",
+      "The budget for model calls is $2,000 each month.",
+      "Transcripts contain personal data of customers, and must stay in the cloud region of the company.",
+      "Today, a weekly batch job makes one report, and the reps say that it arrives too late.",
+    ],
+    note: "This is an interview prompt. In the interview, you sketch the design as you talk. State your token and price assumptions aloud.",
+  },
 ];
 
 export const interviewExamples: WorkedExample[] = [
@@ -301,7 +350,7 @@ export const interviewExamples: WorkedExample[] = [
       {
         quote: "Links must work for at least five years.",
         meaning:
-          "100 million links each month for five years is 6 billion links. That is a few terabytes, too much for one database server. A code of 7 letters and digits gives 3.5 trillion values, which is enough.",
+          "100 million links each month for five years is 6 billion links. At about 500 bytes each, that is about 3 terabytes. One large server can hold it, but the growth and the read load are good reasons to plan for a store that partitions. A code of 7 letters and digits gives 3.5 trillion values, which is enough.",
       },
       {
         quote: "The owner sees how many times a link was opened.",

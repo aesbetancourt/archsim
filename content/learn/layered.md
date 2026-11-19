@@ -15,11 +15,11 @@ Each layer is an abstraction around one kind of work. A developer who works on t
 
 The layers are logical parts of the code. They do not have to be separate deployments. Three topologies are common:
 
-| Topology               | What is deployed together               | Typical case                                                |
-| ---------------------- | --------------------------------------- | ----------------------------------------------------------- |
-| All layers in one unit | Presentation, business, and persistence | A small web application with an embedded database for tests |
-| Database separate      | Code in one unit, database on its own   | The usual case: one application, one database server        |
-| Presentation separate  | A front-end app, plus one back-end unit | A single-page app or a mobile app on top of one API         |
+| Topology               | What is deployed together                                     | Typical case                                                |
+| ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| All layers in one unit | Presentation, business, persistence, and an embedded database | A small web application with an embedded database for tests |
+| Database separate      | Code in one unit, database on its own                         | The usual case: one application, one database server        |
+| Presentation separate  | A front-end app, plus one back-end unit                       | A single-page app or a mobile app on top of one API         |
 
 A separate front end does not make the system distributed in a deep sense. The back end is still one quantum. See [Architecture quanta](/learn/architecture-quantum).
 
@@ -121,12 +121,12 @@ A variant reduces the pain. Inside each layer, divide the code by business area:
 | --------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Simplicity      | Strong. Most developers know it. Frameworks generate it.                                                              |
 | Cost            | Low. One deployment, one database, one team.                                                                          |
-| Testability     | Good for each layer alone. Weaker for features, because a feature test crosses every layer.                           |
+| Testability     | Weak. You can test each layer alone, but a feature test crosses every layer and the whole unit.                       |
 | Deployability   | Weak as it grows. Each small change needs a release of the whole unit.                                                |
 | Scalability     | Limited. You can run several copies behind a load balancer, but all parts scale together, and the database is shared. |
 | Elasticity      | Weak. A large unit starts slowly.                                                                                     |
 | Fault tolerance | Weak. A memory leak or a crash in one part stops all parts.                                                           |
-| Evolvability    | Good while small. It falls as the code grows, because changes cross the layers.                                       |
+| Evolvability    | Weak. Each change crosses the layers and needs a release of the whole unit. It is acceptable while the code is small. |
 
 ## When it is a good first style
 

@@ -103,7 +103,7 @@ An **idempotency key** is a unique value that the caller makes once for one inte
 3. If the same key comes with a different request body, refuse it. That is a bug in the caller.
 4. When the work completes, store the result with the key.
 
-Choose the key from the business intent, not from the attempt. For a checkout, "order 4711, attempt 1" is a good key. A new random key on each click is not, because a double click then pays twice.
+Choose the key from the business intent, not from the attempt. For a checkout, a key from the order, such as `order-4711-payment-1`, is a good key. Each click and each retry of this payment sends the same key. A new random key on each click is not good, because a double click then pays twice. Make a new key only for a new intent, for example a second try with another card after a decline.
 
 **Exactly-once is not a delivery guarantee.** No network can deliver a message exactly once. What you build is **at-least-once delivery plus idempotent receivers**. The sender retries until it gets an acknowledgement. Each receiver drops repeats by key. The effect is that each operation happens once. DDIA makes this point in its discussion of end-to-end correctness: a request ID that travels from the client to the database is the safe way to suppress duplicates. See also [Idempotency](/learn/distributed-transactions#idempotency).
 

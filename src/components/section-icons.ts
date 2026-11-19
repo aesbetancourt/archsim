@@ -2,6 +2,7 @@ import {
   Activity,
   ArrowLeftRight,
   BookOpen,
+  Bot,
   Boxes,
   ClipboardList,
   Code,
@@ -23,6 +24,7 @@ const icons: Record<string, LucideIcon> = {
   "Reliability and operations": Activity,
   "The architect at work": Users,
   "Product and decisions": ClipboardList,
+  "AI systems": Bot,
   "System design cases": MessagesSquare,
 };
 

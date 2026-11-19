@@ -185,7 +185,7 @@ Group many small pages into large files, as archive formats do. Object stores an
 | Decision         | Choice here                           | When the choice changes                                              |
 | ---------------- | ------------------------------------- | -------------------------------------------------------------------- |
 | Crawl order      | BFS with priority and per-host queues | A focused crawl of one topic needs a stronger relevance score        |
-| URL seen         | Bloom filter                          | An exact set when no page can be missed, at about 7 times the memory |
+| URL seen         | Bloom filter                          | An exact set when no page can be missed, at about 6 times the memory |
 | Content seen     | Exact hash, near-duplicates later     | SimHash from the start when duplicates are a large share             |
 | Partitioning     | By host                               | By URL hash gives a better spread, but breaks local politeness       |
 | JavaScript pages | Plain HTTP fetch                      | A separate pool of headless browsers for sites that need it          |

@@ -79,7 +79,7 @@ Notes on each:
 - **Multi-master auto-increment.** With K = 3, database 1 makes 1, 4, 7, database 2 makes 2, 5, 8, and database 3 makes 3, 6, 9. A fourth database changes K, and all databases must change at once. IDs from database 1 can be larger than newer IDs from database 2.
 - **UUID.** Version 4 is 122 random bits. A collision is so unlikely that you can ignore it. Version 7, standard since 2024, puts a millisecond timestamp first, so it sorts by time. Both are 128 bits, so they fail the 64-bit requirement.
 - **Ticket server.** Flickr made this idea known. Two servers, one with odd and one with even numbers, remove the single point of failure, but then the order is only rough.
-- **Snowflake-style.** It meets all four requirements. That is why it is the usual answer to this question.
+- **Snowflake-style.** It meets all the requirements: unique, numeric, sorted by time, 64 bits, and the rate. That is why it is the usual answer to this question.
 
 ### The bit layout
 

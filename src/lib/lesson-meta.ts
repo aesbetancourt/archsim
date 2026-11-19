@@ -542,6 +542,7 @@ export const lessonMeta: Record<string, LessonMeta> = {
       "Prevent the confused deputy problem with ownership checks in the owning service.",
       "Manage secrets through their life, from creation to revocation.",
       "Model threats with STRIDE on each arrow that crosses a trust boundary.",
+      "Explain sign-in with OIDC and PKCE, password storage, and where a browser app keeps its session.",
     ],
   },
   diagrams: {
@@ -830,6 +831,51 @@ export const lessonMeta: Record<string, LessonMeta> = {
       "Name the roles in a product team and the product risk that each role covers.",
       "Map a product goal to an architecture characteristic and to a design choice.",
       "Answer a product sense question with a goal, a user segment, a priority, and success metrics.",
+    ],
+  },
+  "llm-systems": {
+    level: "intermediate",
+    objectives: [
+      "Explain why a model is an unreliable, slow, and costly component, and how code contains it.",
+      "Get structured output from a model, and validate it with a schema and business rules in code.",
+      "Design a model port with one adapter for each provider, and route each task to a model.",
+      "Handle timeouts, rate limits, invalid output, and prompt injection with a tested fallback.",
+    ],
+  },
+  "ai-agents": {
+    level: "advanced",
+    objectives: [
+      "Choose between a fixed workflow and an agent, and explain why the simpler one wins.",
+      "Design narrow, typed, and idempotent tools that act with the permissions of the user.",
+      "Put an agent in a state machine with deterministic guards, approvals, and handoff triggers.",
+      "Keep internal labels out of the reply, and trace each model call and tool call.",
+    ],
+  },
+  "llm-evals": {
+    level: "advanced",
+    objectives: [
+      "Explain why exact-match tests and string distance do not grade model outputs.",
+      "Build a golden set from error analysis of real cases, with code-based checks first.",
+      "Use an LLM judge with a binary rubric, and calibrate it against expert labels.",
+      "Run evals in CI on each prompt or model change, and track online metrics after release.",
+    ],
+  },
+  "llm-cost-latency": {
+    level: "intermediate",
+    objectives: [
+      "Estimate the model cost of a feature from tokens, items, and prices stated as assumptions.",
+      "Compare the cost of one task with its value, including the time people spend to review.",
+      "Choose the levers that cut cost: routing, prompt caching, batch APIs, and process once, use many times.",
+      "Set a latency budget with p50 and p95, and choose batch or per-event work from when the user acts.",
+    ],
+  },
+  "voice-agents": {
+    level: "advanced",
+    objectives: [
+      "Choose between a cascade and a speech-to-speech model, and state the reason with numbers.",
+      "Split an end-to-end latency budget, from the end of the caller's speech to the first audio.",
+      "Design turn detection, barge-in, tool calls with fillers, and the handoff to a person.",
+      "Test a voice agent with simulated callers, and compute its cost for each minute.",
     ],
   },
 };

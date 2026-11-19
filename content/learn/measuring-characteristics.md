@@ -107,13 +107,13 @@ A fitness function makes the rule part of the build. The architect does not have
 
 Building Evolutionary Architectures sorts fitness functions on several axes. The most useful:
 
-| Axis             | One end                                        | Other end                                                                                      |
-| ---------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Scope            | **Atomic**: one characteristic, one part       | **Holistic**: several characteristics together, for example latency while a security scan runs |
-| When it runs     | **Triggered**: on a commit, a build, a release | **Continual**: all the time, in production                                                     |
-| What it looks at | **Static**: the code or the configuration      | **Dynamic**: the running system                                                                |
+| Axis         | One end                                                 | Other end                                                                                             |
+| ------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Scope        | **Atomic**: one characteristic, one part                | **Holistic**: several characteristics together, for example latency while a security scan runs        |
+| When it runs | **Triggered**: on a commit, a build, a release          | **Continual**: all the time, in production                                                            |
+| Result       | **Static**: a fixed limit, for example p99 below 300 ms | **Dynamic**: a limit that changes with the context, for example a p99 target that grows with the load |
 
-A test in the build is atomic, triggered, and static. A monitor that alerts when the p99 goes up is atomic, continual, and dynamic. A tool that stops random servers in production, as Netflix did with Chaos Monkey, is a holistic, continual check of resilience.
+A test in the build is atomic, triggered, and static. A monitor that alerts when the p99 goes above a fixed limit is atomic, continual, and static. If the limit changes with the number of users, the monitor is dynamic. Static and dynamic do not mean "code" and "running system". They describe the limit. A tool that stops random servers in production, as Netflix did with Chaos Monkey, is a holistic, continual check of resilience.
 
 ## Examples of fitness functions
 
@@ -183,7 +183,7 @@ Fitness functions also make change safer. When the team changes the architecture
 
 ## Scope characteristics per quantum
 
-A system does not have to have one set of characteristics. An architecture quantum is a part that deploys alone, with its own data, and with no synchronous dependency on the other parts. Each quantum can have its own characteristics.
+A system does not have to have one set of characteristics. An architecture quantum is a part that deploys alone and has high cohesion inside it. Its parts are tied by synchronous calls, and it talks to other quanta mostly in an asynchronous way. [Architecture quanta](/learn/architecture-quantum) gives the full definition. Each quantum can have its own characteristics.
 
 In the ticket seller, the seat sale must scale to 2 million buyers and never sell one seat twice. The promoter tools serve a few hundred users. If both are in one quantum, the whole system must meet the strictest target. If they are separate quanta, only the seat sale pays for that target.
 

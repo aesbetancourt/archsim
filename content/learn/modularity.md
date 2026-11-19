@@ -153,7 +153,7 @@ Common coupling is risky when several services write the same data. Nobody owns 
 
 ## Two kinds that people forget
 
-- **Time coupling.** If A waits for B, then A is down when B is down. In connascence words, this is connascence of timing across a network. See [Synchronous and asynchronous communication](/learn/sync-async).
+- **Temporal coupling.** If A waits for B, then A is down when B is down: both must be up at the same time. Newman uses this name in Building Microservices. It is not the same as connascence of timing, which is about when code runs, for example a race between two threads. See [Synchronous and asynchronous communication](/learn/sync-async).
 - **Deployment coupling.** If A and B must be released together, they are one deployment in practice, with the costs of two.
 
 ## How to measure it in practice

@@ -169,7 +169,7 @@ See [Decomposing a monolith](/learn/decomposing-a-monolith) for the patterns.
 
 Look at the team size and the numbers. A team of four with a few thousand users almost never needs a distributed design. If you select one, the review will ask what you get for the cost.
 
-In the rationale, write the benefit and the cost in one pair of sentences. For example, in the [Front Row](/kata/front-row) kata: "Seat sales scale apart from the rest, because sales open at fixed times. The cost is a saga between sales and payment." For each arrow between deployments, say what occurs when no answer comes.
+In the rationale, write the benefit and the cost in one pair of sentences. For example, in the [Front Row](/kata/front-row) kata: "Seat sales and payment scale apart from ticket delivery, because sales open at fixed times. The cost is that delivery runs from events, so a ticket can arrive a few seconds after the payment." For each arrow between deployments, say what occurs when no answer comes.
 
 ## Interview questions
 

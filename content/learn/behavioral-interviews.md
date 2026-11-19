@@ -83,7 +83,7 @@ Make a table with your stories as rows and the competencies as columns. Mark the
 | A request from a vice president for a date  |           |          | Yes      |         | Yes       |          |           |           |
 | A senior engineer who became tech lead      |           |          |          |         |           |          |           | Yes       |
 
-Look for empty columns. Each competency needs at least two stories, so you can use a second one if the panel asks two similar questions. Look also for a story that fills too many columns. If you use it three times in one loop, the panel sees a narrow career.
+Look for empty columns, and for columns with only one mark. In the example, decision, conflict, and failure have two stories or more. Influence, saying no, incident, migration, and mentoring have only one each. Each competency needs at least two stories, so you can use a second one if the panel asks two similar questions. Look also for a story that fills too many columns. If you use it three times in one loop, the panel sees a narrow career.
 
 ### How to write each story
 

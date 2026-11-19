@@ -30,7 +30,7 @@ Complexity comes from two causes.
 - **Dependencies.** A dependency exists when you cannot understand or change one piece of code alone. Some dependencies are necessary: a caller depends on the signature of a function. The goal is fewer dependencies, and dependencies that are obvious.
 - **Obscurity.** Obscurity exists when important information is not obvious. Examples: a vague name, a variable used for two purposes, a rule that is written down nowhere, an order of calls that is required but not stated.
 
-Dependencies cause change amplification. Obscurity causes cognitive load. Together they cause unknown unknowns: a dependency that nobody can see.
+Dependencies cause change amplification and a high cognitive load. Obscurity causes unknown unknowns, and it also adds to cognitive load. A typical unknown unknown is a dependency that nobody can see.
 
 ### Complexity is incremental
 

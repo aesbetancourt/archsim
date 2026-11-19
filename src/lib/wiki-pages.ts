@@ -452,6 +452,41 @@ export const wikiSections: WikiSection[] = [
     ],
   },
   {
+    title: "AI systems",
+    pages: [
+      article(
+        "llm-systems",
+        "Building with language models",
+        "A model as a part of a system: what it is good at, where it fails, and how to contain it.",
+        ["ai-agents", "llm-evals", "llm-cost-latency"],
+      ),
+      article(
+        "ai-agents",
+        "Agents and tools",
+        "The agent loop, tools, state, guardrails, and when a person must take over.",
+        ["llm-systems", "llm-evals", "resilience"],
+      ),
+      article(
+        "llm-evals",
+        "Evaluating AI systems",
+        "Test sets, graders, simulated users, and how you know that a change made it better.",
+        ["llm-systems", "ai-agents", "testing-strategy"],
+      ),
+      article(
+        "llm-cost-latency",
+        "Cost and latency of AI systems",
+        "Estimate the token cost, set a latency budget, and make both smaller.",
+        ["estimation", "llm-systems", "caching"],
+      ),
+      article(
+        "voice-agents",
+        "Voice agents",
+        "Speech in, speech out: the pipeline, turn-taking, the latency budget, and handoff.",
+        ["ai-agents", "llm-cost-latency", "llm-evals"],
+      ),
+    ],
+  },
+  {
     title: "System design cases",
     pages: [
       article(

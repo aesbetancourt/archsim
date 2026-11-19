@@ -108,6 +108,62 @@ Facts to keep in mind:
 
 See also [access tokens](/glossary#access-token).
 
+## Sign-in, passwords, and the browser
+
+Interviewers often ask how a user signs in, how you store passwords, and where a browser app keeps its token. These are the standard answers.
+
+### OAuth 2.0 and OpenID Connect
+
+**OAuth 2.0** is delegated authorization. A user lets an app (the client) call an API for them, without giving the app their password. It has four roles:
+
+- **The resource owner:** the user.
+- **The client:** the app that wants access.
+- **The authorization server:** the service where the user signs in and gives consent. It issues the tokens.
+- **The resource server:** the API that accepts the tokens.
+
+**OpenID Connect (OIDC)** adds sign-in on top of OAuth. The difference is in the tokens:
+
+| Token         | For whom                 | What it says                                                                                                      |
+| ------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| ID token      | The client               | Who the user is, and when they signed in. It is a JWT.                                                            |
+| Access token  | The API                  | What the client can do for the user. Its audience is the API. The client must not use it as proof of identity.    |
+| Refresh token | The authorization server | Gets a new access token when the old one expires. It lives longer, so store it safely and replace it on each use. |
+
+The flow for a web or mobile app is the **authorization code flow with PKCE** (proof key for code exchange):
+
+1. The app makes a random secret, the code verifier. It sends a hash of it, the code challenge, with the redirect to the authorization server.
+2. The user signs in and gives consent at the authorization server, not in the app.
+3. The authorization server sends the browser back to the app with a short-lived authorization code.
+4. The app sends the code and the code verifier to the token endpoint.
+5. The authorization server checks that the hash of the verifier matches the challenge. Then it returns the tokens.
+
+An attacker who steals the code cannot use it, because they do not have the verifier. The current OAuth security guidance (RFC 9700) recommends PKCE for all clients. The older implicit flow, which put the token in the URL, is no longer recommended. Also send a random `state` value and check it on return, so that another site cannot start the flow for the user.
+
+For a call from one service to another, with no user, use the **client credentials flow**: the service proves its own identity and gets a token for itself.
+
+### Passwords
+
+Never store a password, and never store a plain hash of it. A fast hash such as SHA-256 lets an attacker with a stolen table test billions of guesses each second on graphics cards.
+
+- **Use a slow password hash** with a random salt for each user: Argon2id first, or scrypt or bcrypt. The salt makes two equal passwords give different hashes. The libraries store the salt in the hash string.
+- **Slow down guessing at sign-in:** rate limits, a growing delay after failures, and multi-factor authentication.
+- **Follow current guidance (NIST SP 800-63B):** check new passwords against lists of breached passwords, and do not force a change every few months without a reason.
+- **Or do not store passwords at all:** sign-in through an identity provider, or passkeys.
+
+### The browser: XSS, CSRF, and cookies
+
+Two attacks decide where a browser app keeps its session:
+
+- **Cross-site scripting (XSS).** The attacker's script runs in your page, usually from user input that the page shows without escaping. The script can do anything that your page can do. It can read any token in `localStorage`. Controls: escape output for its context (React does this by default), a Content Security Policy that blocks unknown scripts, and cookies that script cannot read.
+- **Cross-site request forgery (CSRF).** Another site makes the user's browser send a request to your site. The browser adds your cookies, so the request looks real. Controls: the `SameSite` cookie attribute (`Lax` or `Strict`), a CSRF token in each form or request that changes data, and a check of the `Origin` header.
+
+| Where the session lives                          | Safe from XSS reading it               | Safe from CSRF                                                   |
+| ------------------------------------------------ | -------------------------------------- | ---------------------------------------------------------------- |
+| Cookie with `HttpOnly`, `Secure`, and `SameSite` | Yes, script cannot read it             | Mostly, with `SameSite`. Add a CSRF token for strong protection. |
+| Token in `localStorage`, sent in a header        | No, any script on the page can read it | Yes, the browser does not send it by itself                      |
+
+For most web apps, the usual answer is a session cookie with `HttpOnly`, `Secure`, and `SameSite=Lax`, plus XSS controls. XSS is the more dangerous attack, because a script in your page can also send requests as the user.
+
 ## The confused deputy
 
 The confused deputy problem occurs when a service with authority is tricked into using that authority for a caller who does not have it. Newman discusses it for calls between services.
@@ -222,6 +278,28 @@ In the [Waiting Room kata](/kata/waiting-room), health data puts rules on where 
 - Use short lives and refresh tokens.
 - Keep a list of revoked tokens for urgent cases, at a cost of a lookup.
 
+**"Walk me through how a user signs in to your app with an outside identity provider."**
+
+- Use OpenID Connect with the authorization code flow and PKCE.
+- The user signs in at the identity provider, not in the app.
+- The app exchanges the short-lived code and the code verifier for the tokens.
+- The ID token tells the app who the user is. The access token is for the API, with the API as its audience.
+- Check the `state` value on return, and keep the tokens short-lived.
+
+**"How do you store passwords?"**
+
+- Never store the password or a fast hash of it.
+- Use a slow password hash with a salt for each user: Argon2id, scrypt, or bcrypt.
+- Limit sign-in attempts, and offer multi-factor authentication.
+- Check new passwords against breached lists. Better still, use an identity provider or passkeys.
+
+**"Where does your browser app keep the session, and why?"**
+
+- Name the two attacks: XSS reads what script can reach, and CSRF uses the cookies that the browser sends by itself.
+- A cookie with `HttpOnly`, `Secure`, and `SameSite=Lax` is safe from script and mostly safe from CSRF.
+- A token in `localStorage` is safe from CSRF but any injected script can read it.
+- Choose the cookie for most web apps, add a CSRF token for changes, and add XSS controls such as a Content Security Policy.
+
 **"Walk me through a threat model of this design."**
 
 - Draw the trust boundaries.
@@ -248,3 +326,5 @@ In the [Waiting Room kata](/kata/waiting-room), health data puts rules on where 
 - [STRIDE](https://en.wikipedia.org/wiki/STRIDE_model) and [Confused deputy problem](https://en.wikipedia.org/wiki/Confused_deputy_problem) on Wikipedia
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework), the source of the five functions
 - [JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token) on Wikipedia
+- [OAuth 2.0 Security Best Current Practice (RFC 9700)](https://www.rfc-editor.org/rfc/rfc9700)
+- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) and [Cross-Site Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)

@@ -93,7 +93,7 @@ The **B-tree** is the most common index. Almost every relational database uses i
 - To change a value, the engine overwrites the page in place.
 - When a page is full, the engine splits it into two half-full pages and updates the parent page.
 
-The number of child references in a page is the **branching factor**. It is usually several hundred. So a B-tree with four levels can hold a very large number of keys, and a read touches only a few pages. As a rough number, take a branching factor of 500 and 4 KB pages. Four levels give 500 × 500 × 500 × 500 leaf pages, about 250 TB.
+The number of child references in a page is the **branching factor**. It is usually several hundred. So a B-tree with four levels below the root can hold a very large number of keys, and a read touches only a few pages. As a rough number, take a branching factor of 500 and 4 KB pages. Four levels of branching below the root give 500 × 500 × 500 × 500 leaf pages, about 250 TB.
 
 ### Crash safety
 

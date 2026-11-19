@@ -723,7 +723,7 @@ export const blocks: Block[] = [
     name: "Availability zone",
     group: "boundaries",
     shape: "boundary",
-    does: "A frame for the parts in one data center of a region. Zones fail separately.",
+    does: "A frame for the parts in one zone of a region. A zone is one or more data centers with their own power and network. Zones fail separately.",
     useWhen:
       "The system must survive the loss of one data center. This is the usual first step to high availability.",
     cost: "Each part needs copies in two or more zones, and data must be copied between them.",

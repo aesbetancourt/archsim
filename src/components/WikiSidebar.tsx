@@ -7,6 +7,7 @@ import {
   ChevronsDownUp,
   ChevronsUpDown,
   LayoutGrid,
+  Calculator,
   MessageCircleQuestion,
   Lightbulb,
   type LucideIcon,
@@ -29,6 +30,7 @@ const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
   { href: "/learn/examples", title: "Worked examples", icon: Lightbulb },
   { href: "/glossary", title: "Glossary", icon: BookA },
   { href: "/drill/questions", title: "Question drill", icon: MessageCircleQuestion },
+  { href: "/drill/product", title: "Product drill", icon: Calculator },
   { href: "/notebook", title: "Notebook", icon: NotebookPen },
 ];
 

@@ -123,7 +123,7 @@ With many limiter instances, the counter must be in a shared store. The obvious 
 
 At high traffic, this occurs all the time. The fixes:
 
-- **Atomic increment.** Do not read and then write. Send one increment command, and decide with the value that it returns. In Redis, `INCR` with an expiry makes a fixed window counter that is safe.
+- **Atomic increment.** Do not read and then write. Send one increment command, and decide with the value that it returns. In Redis, `INCR` with an expiry makes a fixed window counter. Set the counter and its expiry in one atomic step, for example with a Lua script or `SET key 0 EX 60 NX` before the `INCR`. With two separate commands, a crash between them leaves a counter that never expires.
 - **A script on the server.** A token bucket needs a read, a calculation, and a write. Put the three in one Lua script. Redis runs a script as one unit, so no other command comes between its steps.
 - **Not a lock.** A distributed lock adds round trips and a new failure mode on each request. It is too slow for this hot path.
 

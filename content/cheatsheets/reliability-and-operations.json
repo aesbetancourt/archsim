@@ -139,7 +139,7 @@
           "lesson": "resilience#the-starting-point"
         },
         {
-          "text": "Retry at one level only. Three levels of three retries make one failure 27 calls.",
+          "text": "Retry at one level only. Three levels of three attempts each make one failure 27 calls.",
           "lesson": "resilience#rules-for-retries"
         },
         {

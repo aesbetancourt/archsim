@@ -37,7 +37,7 @@ When data is copied to several servers, a write reaches the copies at slightly d
 
 ## The range of guarantees
 
-Each guarantee below prevents one kind of surprise. Linearizable is the strongest, and eventual is the weakest. The three in the middle are not a strict ladder: each one prevents a different surprise, and a design can need one without the others.
+Each guarantee below prevents one kind of surprise. Linearizable is the strongest, and eventual is the weakest. Causal includes the three below it. Those three are not a strict ladder: each one prevents a different surprise, and a design can need one without the others.
 
 | Guarantee         | Promise                                                                | Surprise it prevents                                 |
 | ----------------- | ---------------------------------------------------------------------- | ---------------------------------------------------- |

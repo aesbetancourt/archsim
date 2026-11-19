@@ -44,6 +44,13 @@ const appPages: SearchItem[] = [
   },
   {
     kind: "Page",
+    title: "Product drill",
+    subtitle: "Estimate cost, prove value, set priorities",
+    href: "/drill/product",
+    keywords: "practice cost roi pricing rice business",
+  },
+  {
+    kind: "Page",
     title: "Notebook",
     subtitle: "Notes, highlights, and the story bank",
     href: "/notebook",

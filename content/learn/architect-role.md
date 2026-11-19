@@ -49,7 +49,7 @@ Richards and Ford list eight things that an organization expects from an archite
 | Have interpersonal skills        | Lead, explain, listen, and help teams to work well together.                  |
 | Understand politics              | Expect that each decision is challenged, and know how to get agreement.       |
 
-Four of the eight are about people, not technology. That is not an accident. A correct decision that nobody accepts has no effect. See [Teams and communication](/learn/teams).
+Four of the eight are about people and the business, not technology: decisions that are followed, the domain, interpersonal skills, and politics. That is not an accident. A correct decision that nobody accepts has no effect. See [Teams and communication](/learn/teams).
 
 The expectation to analyze the architecture again and again is easy to forget. A structure that was right for 500 orders each day can be wrong for 50,000. A lunch shop that adds delivery has a new driving characteristic.
 

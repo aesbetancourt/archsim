@@ -160,7 +160,7 @@ The trade-off is clear. The mesh removes the central bottleneck and the coupling
 
 ## Federated governance
 
-A mesh without shared rules becomes many small swamps. Federated governance means that domain teams and the platform team agree on a few global rules. The platform then checks them automatically, which is the "computational" part of the term.
+A mesh without shared rules becomes many small swamps. Federated governance, in full "federated computational governance", means that domain teams and the platform team agree on a few global rules. The platform then checks them automatically, which is the "computational" part of the term.
 
 Typical global rules:
 

@@ -26,23 +26,25 @@ const SECTIONS = ["Interview questions", "What interviewers probe"];
 const QUESTION = /^(?:\d+\.\s+)?\*\*(.+?)\*\*\s*$/;
 const POINT = /^\s*[-*]\s+(.+)$/;
 
-const slugify = (text: string) =>
+export const slugify = (text: string) =>
   text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 80);
 
-// Find the questions in the Markdown of one lesson.
+// Find the questions in the Markdown of one lesson. Only the sections that `accept` selects
+// count. The product drill accepts each section, because its sections are its filters.
 export function parseQuestions(
   markdown: string,
+  accept: (heading: string) => boolean = (heading) => SECTIONS.includes(heading),
 ): { heading: string; question: string; points: string[] }[] {
   const found: { heading: string; question: string; points: string[] }[] = [];
   let heading = "";
   let current: { heading: string; question: string; points: string[] } | null = null;
   for (const line of markdown.split("\n")) {
     if (line.startsWith("## ")) {
-      heading = SECTIONS.includes(line.slice(3).trim()) ? line.slice(3).trim() : "";
+      heading = accept(line.slice(3).trim()) ? line.slice(3).trim() : "";
       current = null;
       continue;
     }

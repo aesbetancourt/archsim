@@ -111,12 +111,12 @@ Say that the per-server number is an assumption. In a real project, you get it f
 
 ## Example: the Link Shortener
 
-- Writes: 100 million links each month ÷ 30 days ÷ 100,000 seconds ≈ 40 each second. Small.
+- Writes: 100 million links each month ÷ 2.5 million seconds in a month ≈ 40 each second. Small.
 - Reads: 100 for each write ≈ 4,000 each second, and 40,000 at peak. This is the hard number.
-- Storage: 100 million × 12 months × 5 years = 6 billion links. At 500 bytes each, that is 3 terabytes. Too large for one comfortable database server.
+- Storage: 100 million × 12 months × 5 years = 6 billion links. At 500 bytes each, that is 3 terabytes. One large server can hold 3 terabytes today, but 40,000 reads each second at peak and the growth over 5 years are good reasons to plan replicas and partitions.
 - Code length: 62 letters and digits, 7 positions: 62⁷ ≈ 3.5 trillion codes. Enough.
 
-Conclusion: design the read path first, use a cache, and split the store. The worked example does exactly this. The [URL shortener case](/learn/url-shortener) and the [Link Shortener kata](/kata/link-shortener) use these numbers.
+Conclusion: design the read path first, use a cache, and plan to split the store as it grows. The worked example does exactly this. The [URL shortener case](/learn/url-shortener) and the [Link Shortener kata](/kata/link-shortener) use these numbers.
 
 ## Example: a parcel tracking service
 

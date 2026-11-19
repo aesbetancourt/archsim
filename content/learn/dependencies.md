@@ -95,12 +95,12 @@ For a small or medium service, plain code in one composition root is enough. Dep
 
 A test double replaces a real dependency in a test. Injection makes this possible. The words have exact meanings, and interviewers notice when they are mixed:
 
-| Double | What it does                                      | Example                                              |
-| ------ | ------------------------------------------------- | ---------------------------------------------------- |
-| Stub   | Returns fixed answers. It has no logic.           | A clock that always returns 09:00                    |
-| Fake   | A working but simplified implementation           | A compiler in memory that returns a small PDF        |
-| Mock   | Records the calls, and the test checks them       | Check that the service called `compile` exactly once |
-| Spy    | A real or fake object that also records the calls | A fake repository that keeps a list of saved orders  |
+| Double | What it does                                    | Example                                              |
+| ------ | ----------------------------------------------- | ---------------------------------------------------- |
+| Stub   | Returns fixed answers. It has no logic.         | A clock that always returns 09:00                    |
+| Fake   | A working but simplified implementation         | A compiler in memory that returns a small PDF        |
+| Mock   | Expects some calls, and fails if they differ    | Expect exactly one call to `compile`                 |
+| Spy    | A stub that also records the calls for the test | A mail sender that keeps a list of the sent messages |
 
 Prefer stubs and fakes that check the result. A test full of mocks checks how the code works inside, so it breaks when you refactor, even when the behavior is correct.
 
@@ -123,7 +123,7 @@ The lint rule gives the fastest feedback. The architecture test needs no extra t
 | Question                                                      | A short answer                                                                                                       |
 | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | "What is this `deps` object?"                                 | Dependency injection. The service receives its compiler, clock, and queue. `main.ts` is the composition root.        |
-| "What is missing in your dependency injection?"               | One dependency is a concrete class. It should be an interface, so a test or a new implementation can replace it.     |
+| "What is missing in your dependency injection?"               | One dependency is a concrete class. Make it an interface, so a test or a new implementation can replace it.          |
 | "What are other names for hexagonal architecture?"            | Ports and adapters. Its close relatives are clean and onion architecture. See [Clean and onion](/learn/clean-onion). |
 | "What is the difference between a port and an adapter?"       | The port is the interface the core owns. The adapter is the implementation for one technology.                       |
 | "How do you stop an AI agent from breaking the architecture?" | An architecture test or a lint rule fails the build, and the rules are written down for the agent.                   |

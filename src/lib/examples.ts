@@ -386,7 +386,7 @@ export const workedExamples: WorkedExample[] = [
       },
       {
         quote:
-          "Later, the same should work for Slack messages, Google Sheet rows and Jira tickets.",
+          "Later, the same should work for Slack messages, Google Sheet rows, and Jira tickets.",
         meaning:
           "The core must know nothing about email. Each source needs to be a plug-in behind one contract.",
       },
@@ -396,7 +396,7 @@ export const workedExamples: WorkedExample[] = [
           "This is the boundary of the design. The dangerous moment is a crash after startRun succeeds and before the run ID is saved.",
       },
       {
-        quote: "how you'd know it's working, and how you'd find out when it isn't",
+        quote: "how you would know it is working, and how you would find out when it is not",
         meaning:
           "A quiet inbox and a broken connection look the same: no events. The design needs an active check that tells them apart.",
       },

@@ -89,7 +89,7 @@ Evans (Domain-Driven Design) names a pattern for the code that two parts must sh
 Inside a sliced code base, a shared kernel is a small module that slices can import:
 
 - Value objects that all slices use, such as `Money`, `SeatId`, and `ShowTime`.
-- The few business rules that must be the same everywhere, such as the hold expiry rule.
+- The few business rules that must be the same everywhere, such as the rule that rounds money amounts.
 - No data access, no endpoints, and no code that only one slice uses.
 
 Keep it small and keep it strict. A shared kernel that grows into a `common` folder of everything becomes the service layer again, with all its coupling. Give it an owner, and review each addition.

@@ -222,7 +222,7 @@ A circuit breaker wraps calls to one dependency and counts the failures.
   "nodes": [
     { "id": "closed", "label": "Closed\n(calls pass)", "shape": "box", "col": 0, "row": 0 },
     { "id": "open", "label": "Open\n(calls fail at once)", "shape": "box", "col": 2, "row": 0 },
-    { "id": "half", "label": "Half-open\n(one trial call)", "shape": "box", "col": 1, "row": 1.3 }
+    { "id": "half", "label": "Half-open\n(a few trial calls)", "shape": "box", "col": 1, "row": 1.3 }
   ],
   "edges": [
     { "from": "closed", "to": "open", "label": "failures above limit" },
@@ -291,7 +291,7 @@ Retries are useful and dangerous.
 - Retry only when the operation is [safe to repeat](/learn/distributed-transactions).
 - Wait longer before each attempt, and add a random part, so that many callers do not all retry in the same moment.
 - Set a maximum number of attempts.
-- Retry at one level only. If three levels each retry three times, one failure becomes 27 calls to a part that is already in trouble.
+- Retry at one level only. If three levels each try three times, one failure becomes 27 calls to a part that is already in trouble.
 
 A **retry budget** adds a further limit. Retries can be at most a small share of the traffic, for example 10%, as a rough number. When the dependency is down, the budget runs out, and the extra load stops. Retry only errors that can pass: a timeout or a `503`, not a `400`.
 
@@ -346,7 +346,7 @@ For each solid arrow to an external provider, write the timeout, the breaker, an
 
 - Closed: calls pass, failures are counted.
 - Open: calls fail at once for a period, with no network call.
-- Half-open: one trial call. Success closes it, failure opens it again.
+- Half-open: one or a few trial calls. Success closes it, failure opens it again.
 - Monitor the state. Configure it for each dependency.
 
 **"How do you prevent a retry storm?"**

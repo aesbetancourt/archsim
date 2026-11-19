@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import HelpChat from "@/components/HelpChat";
+import KataClock from "@/components/KataClock";
 import ProblemText from "@/components/ProblemText";
 import SidePanel from "@/components/SidePanel";
 import StyleLessonBody from "@/components/StyleLessonBody";
@@ -43,6 +44,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { clearDraft, type Draft, loadDraft, saveDraft } from "@/lib/draft";
+import { saveClock } from "@/lib/kata-clock";
 import type { Kata } from "@/lib/katas";
 import { loadNotesHtml, notesText, saveNotesHtml } from "@/lib/notes";
 import { slimElements } from "@/lib/scene";
@@ -227,6 +229,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
     saveTimer.current = null;
     clearDraft(kata.id);
     saveNotesHtml(kata.id, "");
+    saveClock(kata.id, null);
     api.current = null;
     savedScene.current = { elements: [], files: {} };
     latest.current = { scope: "", selected: [], style: "", rationale: "", notes: "" };
@@ -301,6 +304,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
       });
       const body = await response.json();
       if (!response.ok) throw new Error(body.error);
+      // The attempt is done, so the clock of this kata stops.
+      saveClock(kata.id, null);
       router.push(`/attempt/${body.id}`);
     } catch (caught) {
       setError((caught as Error).message || "The review failed.");
@@ -512,6 +517,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         </div>
 
         <div className="space-y-3 border-t p-4">
+          <KataClock key={round} kataId={kata.id} interview={Boolean(kata.interview)} />
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>

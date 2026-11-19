@@ -38,7 +38,8 @@ A **dirty write** overwrites data that another transaction wrote but did not com
 ### How databases do it
 
 - For writes, the database locks each row that a transaction changes, until the transaction ends.
-- For reads, the database keeps the old committed value of each changed row. Other transactions read that old value until the writer commits. So readers do not wait for writers.
+- For reads, most databases keep the old committed value of each changed row. Other transactions read that old value until the writer commits. So readers do not wait for writers.
+- SQL Server is an exception. By default, its read committed level uses read locks, so readers wait for writers. The option `READ_COMMITTED_SNAPSHOT` changes this.
 
 ## Snapshot isolation and MVCC
 

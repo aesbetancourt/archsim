@@ -142,7 +142,7 @@ Follow the tutor marketplace from one machine to many regions on one diagram. Us
   "metrics": [
     { "id": "users", "label": "Daily users", "better": "higher" },
     { "id": "time", "label": "Page time", "unit": "ms", "better": "lower" },
-    { "id": "spof", "label": "Single points of failure", "better": "lower" }
+    { "id": "spof", "label": "Single points of failure in the diagram", "better": "lower" }
   ],
   "diagram": {
     "nodes": [
@@ -212,7 +212,7 @@ Follow the tutor marketplace from one machine to many regions on one diagram. Us
     {
       "kind": "technique",
       "title": "Replicas take the reads",
-      "text": "The database is now the limit, and it is the last single point of failure. Students read profiles about 20 times for each booking.\n\nAdd two read replicas. The primary takes the writes and sends the changes to the replicas. If the primary fails, you promote a replica.\n\nThe price: a replica can be a little behind. Read from the primary just after a user writes, so a student sees the booking at once.",
+      "text": "The database is now the limit, and it is the last single point of failure in the diagram. Students read profiles about 20 times for each booking.\n\nAdd two read replicas. The primary takes the writes and sends the changes to the replicas. If the primary fails, you promote a replica.\n\nThe price: a replica can be a little behind. Read from the primary just after a user writes, so a student sees the booking at once.",
       "key": "Replicas scale reads and protect the data. They do not scale writes.",
       "show": ["users", "lb", "web", "db", "replicas"],
       "hide": ["users>web"],
@@ -236,7 +236,7 @@ Follow the tutor marketplace from one machine to many regions on one diagram. Us
     {
       "kind": "technique",
       "title": "Make the web tier stateless",
-      "text": "Each web server keeps the logins in its own memory. So the load balancer must send each user to the same server, and a server that stops logs out its users.\n\nMove the sessions to the shared store. Now any server can answer any request. The team turns on autoscaling: 3 servers at night, 12 at the evening peak.",
+      "text": "Each web server keeps the logins in its own memory. So the load balancer must send each user to the same server, and a server that stops logs out its users.\n\nMove the sessions to the shared store. Now any server can answer any request. Run the shared store with a replica, because it now holds the logins and must not become a new single point of failure. The team turns on autoscaling: 3 servers at night, 12 at the evening peak.",
       "key": "A stateless server can be added or removed at any time. The state goes to a shared store.",
       "show": ["users", "cdn", "lb", "web", "cache", "db", "replicas"],
       "hide": ["users>web"],

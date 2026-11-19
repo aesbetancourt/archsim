@@ -32,8 +32,8 @@ The numbers are rough and are for this example only.
 - **Data.** 200 million carts, average 2 KB each. 200 million × 2 KB = 400 GB.
 - **Replicas.** Three copies of each value: 1.2 TB. The storage engine needs extra space for old files before compaction, so plan for about 2 TB.
 - **Traffic.** 60,000 reads and 20,000 writes each second at peak.
-- **Work on the servers.** Each write goes to 3 replicas: 60,000 replica writes each second. Each read needs answers from 2 replicas: 120,000 replica reads each second. That is about 180,000 operations each second in total.
-- **Servers.** If one server handles roughly 15,000 operations each second and 500 GB of data, you need 12 servers for the traffic and 4 for the data. The traffic decides: 12 servers, plus a margin.
+- **Work on the servers.** Each write goes to 3 replicas: 60,000 replica writes each second. Each read also goes to all 3 replicas, and the coordinator waits for the first 2 answers: 180,000 replica reads each second. That is about 240,000 operations each second in total. A coordinator that asks only 2 replicas cuts the reads to 120,000, but one slow replica then makes the read slow.
+- **Servers.** If one server handles roughly 15,000 operations each second and 500 GB of data, you need 16 servers for the traffic and 4 for the data. The traffic decides: 16 servers, plus a margin.
 
 ## The first design
 

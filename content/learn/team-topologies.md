@@ -8,7 +8,7 @@ Skelton and Pais (Team Topologies) give a small set of building blocks:
 - Three interaction modes, which describe how two teams work together.
 - Cognitive load, which sets the limit on how much one team can own.
 
-The book treats the team, not the individual, as the unit of delivery. A team is a long-lived group of people, usually small, that works together on a shared goal. The rough size that the book gives is up to about 7 to 9 people. Above that, trust and communication in the group become harder.
+The book treats the team, not the individual, as the unit of delivery. A team is a long-lived group of people, usually small, that works together on a shared goal. The rough size that the book gives is 5 to 9 people. Above that, trust and communication in the group become harder.
 
 An architect needs this vocabulary for three reasons:
 

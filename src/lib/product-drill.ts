@@ -1,0 +1,46 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { parseQuestions, slugify, type Question } from "./questions";
+import { getWikiPage } from "./wiki";
+
+// The cases of the product drill: cost estimates, proof of value, business models, priorities,
+// and timing. The text is in content/product-drill.md. Each section of the file is a filter.
+
+// The lesson that teaches each section, for the link under the reference answer.
+export const productLessons: Record<string, string> = {
+  Cost: "llm-cost-latency",
+  "Value and proof": "product-thinking",
+  "Business model": "product-thinking",
+  Prioritization: "prioritization",
+  "Timing and adoption": "product-thinking",
+};
+
+let cache: Promise<Question[]> | null = null;
+
+export function readProductCases(): Promise<Question[]> {
+  // The file changes only when the app is built or the file is edited in development.
+  if (process.env.NODE_ENV === "production" && cache) return cache;
+  cache = load();
+  return cache;
+}
+
+async function load(): Promise<Question[]> {
+  const markdown = await readFile(path.join(process.cwd(), "content", "product-drill.md"), "utf8");
+  const ids = new Set<string>();
+  return parseQuestions(markdown, () => true).map((item) => {
+    let id = `product:${slugify(item.question)}`;
+    // Two cases with the same start get a number.
+    for (let n = 2; ids.has(id); n++) id = `product:${slugify(item.question)}-${n}`;
+    ids.add(id);
+    const slug = productLessons[item.heading] ?? "product-thinking";
+    return {
+      id,
+      slug,
+      lesson: getWikiPage(slug)?.title ?? "Product thinking",
+      section: item.heading,
+      question: item.question,
+      points: item.points,
+      href: `/learn/${slug}`,
+    };
+  });
+}
