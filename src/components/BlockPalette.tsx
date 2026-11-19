@@ -12,7 +12,7 @@ import BlockIcon from "@/components/BlockIcon";
 import { elementsFor, HEIGHT, sizeOf, WIDTH } from "@/lib/block-elements";
 import { type Block, blockGroups, blocks } from "@/lib/blocks";
 
-const HIDDEN_KEY = "archsim:blocks-hidden";
+const HIDDEN_KEY = "charrette:blocks-hidden";
 // The time the pointer must stay on a piece before its description shows.
 const TIP_DELAY_MS = 1000;
 const TIP_WIDTH = 320;

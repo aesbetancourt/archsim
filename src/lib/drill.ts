@@ -17,7 +17,7 @@ const LAST_BOX = 5;
 const WAIT_DAYS = [0, 1, 3, 7, 14];
 const DAY_MS = 24 * 60 * 60 * 1000;
 // The progress of the vocabulary drill. Other drills pass their own key.
-const STORAGE_KEY = "archsim:drill";
+const STORAGE_KEY = "charrette:drill";
 
 // The new state of a term after the user says whether they knew it.
 export function review(state: CardState | undefined, knew: boolean, now: Date): CardState {

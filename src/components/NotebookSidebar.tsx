@@ -12,7 +12,7 @@ import type { Highlight } from "@/lib/notebook";
 import { cn } from "@/lib/utils";
 
 // Whether the sidebar is open. This is a preference of this browser only.
-const OPEN_KEY = "archsim:notebook-open";
+const OPEN_KEY = "charrette:notebook-open";
 const listeners = new Set<() => void>();
 // The value when the browser storage is not available.
 let openInMemory = true;

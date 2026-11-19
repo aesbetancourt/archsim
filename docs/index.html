@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ArchSim: challenge your software architecture knowledge</title>
+    <title>Charrette: draw it, defend it, face the crit</title>
     <meta
       name="description"
       content="Challenge your software architecture knowledge with katas and an AI reviewer that grades your reasoning. Works with Claude Code, OpenCode, the Anthropic API, and any OpenAI-compatible provider."
     />
-    <meta property="og:title" content="ArchSim: challenge your software architecture knowledge" />
+    <meta property="og:title" content="Charrette: draw it, defend it, face the crit" />
     <meta
       property="og:description"
       content="Take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute."
     />
-    <meta property="og:image" content="screenshots/home.png" />
+    <meta property="og:image" content="screenshots/kata.png" />
     <link rel="icon" href="favicon.ico" sizes="32x32" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800&family=Geist+Mono:wght@500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;700;800&family=Geist+Mono:wght@500&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -33,6 +33,12 @@
         --mark: #ffe45c;
         --border: #000000;
         --shadow: 4px 4px 0 0 var(--border);
+        /* The hero is a blueprint: cyanotype blue with white drafting lines. */
+        --blueprint: #163f7a;
+        --blueprint-ink: #f2f6fc;
+        --blueprint-soft: #c3d5f2;
+        /* The red pencil of a critique. */
+        --crit: #e03131;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -159,8 +165,14 @@
         font-size: 1.1rem;
         text-decoration: none;
       }
-      .logo span {
-        color: var(--main);
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .logo svg {
+        width: 1.5rem;
+        height: 1.5rem;
       }
       nav a {
         margin-left: 1.25rem;
@@ -172,9 +184,134 @@
         text-decoration-thickness: 2px;
       }
 
+      /* Hero: a drafting sheet on blueprint paper, with a crit in red pencil */
+      .blueprint {
+        background-color: var(--blueprint);
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+          linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+        background-size:
+          120px 120px,
+          120px 120px,
+          24px 24px,
+          24px 24px;
+        background-position: -1px -1px;
+        color: var(--blueprint-ink);
+        border-bottom: 2px solid var(--border);
+      }
+      .entry {
+        max-width: 40rem;
+        color: var(--blueprint-soft);
+        font-size: 1.02rem;
+      }
+      .entry dfn {
+        font-style: normal;
+        font-weight: 800;
+        color: var(--blueprint-ink);
+      }
+      .entry .say {
+        font-family: "Geist Mono", ui-monospace, monospace;
+        font-size: 0.9em;
+      }
+      .blueprint h1 {
+        margin-top: 1.4rem;
+        font-size: clamp(3rem, 9vw, 6.6rem);
+        line-height: 0.95;
+        letter-spacing: -0.045em;
+      }
+      .blueprint .hero p.lead {
+        color: var(--blueprint-soft);
+      }
+      .blueprint .note {
+        margin-top: 1rem;
+        color: var(--blueprint-soft);
+        font-size: 0.92rem;
+      }
+      .sheet {
+        position: relative;
+        margin: 3rem 0 0;
+      }
+      .sheet .box {
+        overflow: hidden;
+      }
+      .sheet img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .crit {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: visible;
+      }
+      .crit path {
+        fill: none;
+        stroke: var(--crit);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      /* The crit itself: a paper tag pinned on the corner of the drawing. */
+      .crit-note {
+        position: absolute;
+        top: 29%;
+        right: -1.2%;
+        width: clamp(9rem, 19%, 14.5rem);
+        padding: 0.6rem 0.8rem;
+        background: #ffffff;
+        border: 2px solid var(--border);
+        box-shadow: var(--shadow);
+        transform: rotate(2deg);
+        color: var(--crit);
+        font-family: "Architects Daughter", "Segoe Print", cursive;
+        font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+        line-height: 1.35;
+      }
+      @media (max-width: 44rem) {
+        .crit-note,
+        .crit .arrow {
+          display: none;
+        }
+      }
+      .crit .ring {
+        stroke-dasharray: 900;
+        stroke-dashoffset: 900;
+        animation: draw 0.9s 0.5s ease-out forwards;
+      }
+      @keyframes draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* Why the name */
+      .why dl {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+        margin: 2rem 0 0;
+      }
+      .why dl div {
+        padding: 1.1rem 1.2rem;
+      }
+      .why dt {
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+      .why dd {
+        margin: 0.35rem 0 0;
+        color: var(--soft);
+        font-size: 0.95rem;
+      }
+
       /* Hero */
       .hero {
-        padding: 4.5rem 0 3rem;
+        padding-block: 4.5rem 3rem;
       }
       .hero p.lead {
         font-size: clamp(1.05rem, 2vw, 1.3rem);
@@ -345,50 +482,97 @@
         .btn {
           transition: none;
         }
+        .crit .ring {
+          animation: none;
+          stroke-dashoffset: 0;
+        }
       }
     </style>
   </head>
   <body>
     <header class="bar">
       <div class="wrap">
-        <a class="logo" href="#top">Arch<span>Sim</span></a>
+        <a class="logo" href="#top" aria-label="Charrette, top of the page">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect
+              x="1"
+              y="1"
+              width="30"
+              height="30"
+              rx="7"
+              fill="#5294ff"
+              stroke="#000"
+              stroke-width="2"
+            />
+            <g
+              transform="translate(5 5) scale(0.9167)"
+              fill="none"
+              stroke="#000"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m12.99 6.74 1.93 3.44" />
+              <path d="M19.136 12a10 10 0 0 1-14.271 0" />
+              <path d="m21 21-2.16-3.84" />
+              <path d="m3 21 8.02-14.26" />
+              <circle cx="12" cy="5" r="2" />
+            </g>
+          </svg>
+          Charrette
+        </a>
         <nav>
           <a href="#how">How it works</a>
           <a href="#learn">Learn</a>
           <a href="#study">Study</a>
           <a href="#providers">Providers</a>
           <a href="#run">Run it</a>
-          <a class="keep" href="https://github.com/aesbetancourt/archsim">GitHub</a>
+          <a class="keep" href="https://github.com/aesbetancourt/charrette">GitHub</a>
         </nav>
       </div>
     </header>
 
     <main id="top">
-      <div class="wrap">
-        <section class="hero">
-          <span class="tag">Open source · runs on your computer</span>
-          <h1 style="margin-top: 1.1rem">
-            Challenge your software architecture knowledge, and get your
-            <mark>reasoning</mark> reviewed.
-          </h1>
+      <section class="blueprint">
+        <div class="wrap hero">
+          <p class="entry">
+            <dfn>charrette</dfn> <span class="say">/ʃəˈrɛt/</span>, noun. A short, intense design
+            session that ends in a critique.
+          </p>
+          <h1>Draw it.<br />Defend it.<br />Face the crit.</h1>
           <p class="lead">
-            Take a short business problem, draw a design, and explain your trade-offs. An AI
-            reviewer reads your diagram and grades how well you reasoned, in about a minute.
+            Take a short business problem, draw a design, and explain your trade-offs. An AI critic
+            reads your diagram and grades how well you reasoned, in about a minute.
           </p>
           <div class="actions">
-            <a class="btn" href="https://github.com/aesbetancourt/archsim">Get it on GitHub</a>
+            <a class="btn" href="https://github.com/aesbetancourt/charrette">Get it on GitHub</a>
             <a class="btn plain" href="#how">See how it works</a>
           </div>
-          <div class="box shot">
-            <img
-              src="screenshots/home.png"
-              alt="The ArchSim home page with a list of architecture katas"
-              width="1400"
-              height="900"
-            />
-          </div>
-        </section>
+          <p class="note">Open source. It runs on your computer, with the AI provider you have.</p>
+          <figure class="sheet">
+            <div class="box">
+              <img
+                src="screenshots/kata.png"
+                alt="A kata in Charrette: the problem text on the left, and a diagram of the design on the canvas"
+                width="1400"
+                height="900"
+              />
+            </div>
+            <!-- A crit in red pencil on the drawing. The coordinates are those of the screenshot. -->
+            <svg class="crit" viewBox="0 0 1400 900" aria-hidden="true">
+              <path
+                class="ring"
+                d="M 742 520 C 738 478, 812 466, 870 474 C 930 482, 948 520, 916 548 C 884 572, 790 572, 756 552 C 738 541, 738 528, 760 512"
+              />
+              <path class="arrow" d="M 1150 372 C 1060 380, 990 420, 944 492" />
+              <path class="arrow" d="M 944 492 l 2 -24 M 944 492 l 22 -10" />
+            </svg>
+            <p class="crit-note">One module takes every order. What breaks at 12:30?</p>
+          </figure>
+        </div>
+      </section>
 
+      <div class="wrap">
         <section class="intro">
           <h2>The code is getting cheaper. The decisions are not.</h2>
           <p>
@@ -398,8 +582,41 @@
           </p>
           <p>
             Those decisions are architecture, and they are hard to practice. You can attempt a
-            design alone, but nobody tells you where your reasoning is weak. ArchSim does.
+            design alone, but nobody tells you where your reasoning is weak. Charrette does.
           </p>
+        </section>
+
+        <section class="why">
+          <div class="intro">
+            <h2>Why the name</h2>
+            <p>
+              Charrette is French for "cart". The best-known story comes from 19th-century Paris.
+              Architecture students at the École des Beaux-Arts drew until a cart came to collect
+              their work at the deadline. Then the critique started.
+            </p>
+            <p>
+              The word now means a short, intense design session. Each kata in the app follows the
+              same ritual.
+            </p>
+          </div>
+          <dl>
+            <div class="box">
+              <dt>Draw it</dt>
+              <dd>Read the problem, set the scope, and draw the design with standard pieces.</dd>
+            </div>
+            <div class="box">
+              <dt>Defend it</dt>
+              <dd>
+                Select the characteristics and the style, and state what your design gives up.
+              </dd>
+            </div>
+            <div class="box">
+              <dt>Face the crit</dt>
+              <dd>
+                Get scores with evidence, the top risk, and the questions a review board asks.
+              </dd>
+            </div>
+          </dl>
         </section>
 
         <section id="how">
@@ -718,16 +935,16 @@
         <section id="run">
           <h2>Run it</h2>
           <p class="soft" style="margin-top: 0.9rem; max-width: 44rem">
-            ArchSim runs on your computer. You need Node.js 20.9 or later, pnpm, and one of the five
-            connections above.
+            Charrette runs on your computer. You need Node.js 20.9 or later, pnpm, and one of the
+            five connections above.
           </p>
           <pre>
-git clone https://github.com/aesbetancourt/archsim.git
-cd archsim
+git clone https://github.com/aesbetancourt/charrette.git
+cd charrette
 pnpm install
 pnpm dev</pre>
           <div class="hero actions" style="padding: 0">
-            <a class="btn" href="https://github.com/aesbetancourt/archsim">Open the repository</a>
+            <a class="btn" href="https://github.com/aesbetancourt/charrette">Open the repository</a>
           </div>
         </section>
       </div>
@@ -741,9 +958,9 @@ pnpm dev</pre>
           the book <em>Fundamentals of Software Architecture</em> by Mark Richards and Neal Ford.
         </p>
         <p class="soft">
-          ArchSim is a personal project by Alejandro Sanchez. It is not affiliated with these
-          authors or with any AI provider. The lessons and worked examples are written with AI and
-          are not reviewed by an expert.
+          Charrette, formerly ArchSim, is a personal project by Alejandro Sanchez. It is not
+          affiliated with these authors or with any AI provider. The lessons and worked examples are
+          written with AI and are not reviewed by an expert.
         </p>
       </div>
     </footer>

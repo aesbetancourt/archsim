@@ -20,7 +20,7 @@ export default function VocabularyDrill() {
     <Drill
       items={glossary}
       filters={filters}
-      storageKey="archsim:drill"
+      storageKey="charrette:drill"
       // Few enough new terms to finish in about 15 minutes.
       newPerSession={10}
       noun={{ one: "term", many: "terms" }}

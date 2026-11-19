@@ -109,7 +109,7 @@ beforeAll(async () => {
   vi.stubEnv("ANTHROPIC_BASE_URL", `${baseUrl}/v1`);
   vi.stubEnv("OPENCODE_GO_BASE_URL", `${baseUrl}/go/v1`);
 
-  const dir = await mkdtemp(path.join(os.tmpdir(), "archsim-test-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "charrette-test-"));
   imagePath = path.join(dir, "diagram.png");
   await writeFile(imagePath, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
 });
@@ -251,7 +251,7 @@ describe("OpenCode Go connection", () => {
     expect(url).toBe("/go/v1/chat/completions");
     expect(headers.authorization).toBe("Bearer go-key");
     expect(headers["x-opencode-session"]).toMatch(/^[0-9a-f-]{36}$/);
-    expect(headers["user-agent"]).toMatch(/^archsim\//);
+    expect(headers["user-agent"]).toMatch(/^charrette\//);
     expect((body as RequestBody & { model: string }).model).toBe("kimi-k3");
   });
 

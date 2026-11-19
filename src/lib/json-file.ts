@@ -4,8 +4,8 @@ import path from "node:path";
 // The changes to each file run one after the other, so two changes at the same time do not lose
 // one of them. The queues are on globalThis: in development, a code reload can load this module
 // two times, and the two copies must use the same queues.
-const shared = globalThis as { archsimFileQueues?: Map<string, Promise<unknown>> };
-const queues = (shared.archsimFileQueues ??= new Map());
+const shared = globalThis as { charretteFileQueues?: Map<string, Promise<unknown>> };
+const queues = (shared.charretteFileQueues ??= new Map());
 
 // A JSON file in the data folder. Git ignores that folder.
 export function jsonFile<T>(name: string, normalize: (saved: unknown) => T) {

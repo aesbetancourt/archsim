@@ -14,7 +14,7 @@ let dir: string;
 
 // Each test uses a new data folder.
 beforeEach(async () => {
-  dir = await mkdtemp(path.join(os.tmpdir(), "archsim-notebook-"));
+  dir = await mkdtemp(path.join(os.tmpdir(), "charrette-notebook-"));
   vi.spyOn(process, "cwd").mockReturnValue(dir);
 });
 

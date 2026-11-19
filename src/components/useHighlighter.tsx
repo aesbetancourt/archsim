@@ -8,9 +8,9 @@ import type { Highlight as SavedHighlight } from "@/lib/notebook";
 import { findPassage } from "@/lib/text-anchor";
 
 // The names of the highlight styles in globals.css.
-const PLAIN = "archsim-highlight";
-const NOTED = "archsim-highlight-note";
-const FOCUS = "archsim-highlight-focus";
+const PLAIN = "charrette-highlight";
+const NOTED = "charrette-highlight-note";
+const FOCUS = "charrette-highlight-focus";
 const FOCUS_MS = 1500;
 
 type Point = { x: number; y: number };

@@ -21,9 +21,9 @@ const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=button]"
 // The distance from the left edge of the text to the "Read from here" button.
 const GUTTER = 26;
 // The name of the highlight style in globals.css.
-const HIGHLIGHT = "archsim-reading";
+const HIGHLIGHT = "charrette-reading";
 const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
-const RATE_KEY = "archsim-read-rate";
+const RATE_KEY = "charrette-read-rate";
 // The number of sentences to load before they are necessary, so there is no pause between them.
 const PREFETCH = 3;
 // The space at the top and bottom of the window that the current sentence must not go into.

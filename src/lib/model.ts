@@ -60,11 +60,11 @@ async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<Model
   // Claude Code reads the image from its working directory.
   const cwd = call.imagePath
     ? path.dirname(call.imagePath)
-    : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
+    : await mkdtemp(path.join(os.tmpdir(), "charrette-"));
   const prompt = call.imagePath
     ? `Read the file ${path.basename(call.imagePath)} in the current directory before you answer.\n\n${call.prompt}`
     : call.prompt;
-  const model = settings.claudeCode.model || process.env.ARCHSIM_MODEL || "";
+  const model = settings.claudeCode.model || process.env.CHARRETTE_MODEL || "";
   try {
     const output = await runClaude({
       cwd,
@@ -83,7 +83,7 @@ async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelRe
   // OpenCode reads the image from its working directory.
   const cwd = call.imagePath
     ? path.dirname(call.imagePath)
-    : await mkdtemp(path.join(os.tmpdir(), "archsim-"));
+    : await mkdtemp(path.join(os.tmpdir(), "charrette-"));
   const model = settings.openCode.model;
   try {
     // OpenCode cannot force the answer to match the schema. A model sometimes writes JSON
@@ -268,7 +268,7 @@ async function viaOpenCodeGo(call: ModelCall, settings: Settings): Promise<Model
     model,
     // OpenCode Go rejects a request without a session ID. Each call is one conversation.
     // It also asks each client to send its own name.
-    headers: { "x-opencode-session": randomUUID(), "user-agent": "archsim/0.1" },
+    headers: { "x-opencode-session": randomUUID(), "user-agent": "charrette/0.1" },
   });
 }
 

@@ -7,7 +7,7 @@ import { readProgress, setLessonDone } from "./progress";
 let dir: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(path.join(os.tmpdir(), "archsim-progress-"));
+  dir = await mkdtemp(path.join(os.tmpdir(), "charrette-progress-"));
   vi.spyOn(process, "cwd").mockReturnValue(dir);
 });
 

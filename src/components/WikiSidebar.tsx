@@ -34,7 +34,7 @@ const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
 
 // The groups that the user opened: sections by title, and pages with sub-pages by slug.
 // This is a preference of this browser only.
-const OPEN_KEY = "archsim:learn-open";
+const OPEN_KEY = "charrette:learn-open";
 const listeners = new Set<() => void>();
 const NONE: string[] = [];
 let memory = "[]";

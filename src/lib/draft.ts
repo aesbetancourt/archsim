@@ -9,7 +9,7 @@ export type Draft = {
   savedAt?: string;
 };
 
-const PREFIX = "archsim:draft:";
+const PREFIX = "charrette:draft:";
 const draftKey = (kataId: string) => `${PREFIX}${kataId}`;
 
 export function loadDraft(kataId: string): Draft | null {
@@ -78,7 +78,7 @@ export function listDrafts(): DraftSummary[] {
       if (!draft) continue;
       const hasNotes = Boolean(
         localStorage
-          .getItem(`archsim:notes:${kataId}`)
+          .getItem(`charrette:notes:${kataId}`)
           ?.replace(/<[^>]+>/g, "")
           .trim(),
       );

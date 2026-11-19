@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "archsim:side-panel-hidden";
+const STORAGE_KEY = "charrette:side-panel-hidden";
 
 type Props = {
   // The Tailwind width class of the open panel.

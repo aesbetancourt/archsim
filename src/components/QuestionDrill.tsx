@@ -38,7 +38,7 @@ export default function QuestionDrill({
     <Drill
       items={questions}
       filters={filters}
-      storageKey="archsim:question-drill"
+      storageKey="charrette:question-drill"
       // An answer takes a few minutes, so a session has fewer new questions than the vocabulary.
       newPerSession={5}
       noun={{ one: "question", many: "questions" }}

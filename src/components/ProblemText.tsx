@@ -8,7 +8,7 @@ import type { Kata } from "@/lib/katas";
 import type { Highlight } from "@/lib/notebook";
 
 // Before the notebook, kata highlights were in the browser: [start, end] in each text block.
-const oldKey = (kataId: string) => `archsim:highlights:${kataId}`;
+const oldKey = (kataId: string) => `charrette:highlights:${kataId}`;
 
 // The text of a kata. The user can select text to highlight it and add a note.
 // The highlights are saved in the notebook, like the highlights of the lessons.

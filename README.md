@@ -1,14 +1,20 @@
-# ArchSim
+# Charrette
 
-**Challenge your software architecture knowledge, with an AI reviewer that grades your reasoning.**
+**Draw it. Defend it. Face the crit.**
 
-Website: [aesbetancourt.dev/archsim](https://aesbetancourt.dev/archsim/)
+Practice software architecture with katas, and get your reasoning reviewed by an AI critic.
+
+Website: [aesbetancourt.dev/charrette](https://aesbetancourt.dev/charrette/)
 
 AI tools now write a large part of the code. The decisions that stay with people are the expensive ones: how a system is divided, where its data lives, how its parts talk, and which qualities it must have. Those decisions are architecture, and they are hard to practice. You can attempt a design alone, but nobody tells you where your reasoning is weak.
 
-ArchSim closes that gap. You take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute.
+Charrette closes that gap. You take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute.
 
 ![The home page with the list of katas](docs/screenshots/home.png)
+
+### Why the name
+
+A charrette (said "sha-RET") is a short, intense design session that ends in a critique. The word is French for "cart". The best-known story comes from 19th-century Paris: architecture students at the École des Beaux-Arts worked on their drawings until a cart came to collect them at the deadline. Each kata here is the same ritual: draw a design against a problem, defend your trade-offs, and face the crit. The app was named ArchSim before.
 
 ## What you do in it
 
@@ -93,8 +99,8 @@ Each review records which model wrote it, so scores from different models stay d
 You need Node.js 20.9 or later, pnpm, and one of the connections above.
 
 ```bash
-git clone https://github.com/aesbetancourt/archsim.git
-cd archsim
+git clone https://github.com/aesbetancourt/charrette.git
+cd charrette
 pnpm install
 pnpm dev
 ```
@@ -152,4 +158,4 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 
 [MIT](LICENSE). You can use, copy, and change this code. Keep the copyright notice.
 
-ArchSim is a personal project. It is not affiliated with the authors above or with any AI provider.
+Charrette is a personal project. It is not affiliated with the authors above or with any AI provider.

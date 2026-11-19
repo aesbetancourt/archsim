@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import ThemeProvider from "@/components/ThemeProvider";
+import { migrationScript } from "@/lib/storage-migration";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,8 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ArchSim",
-  description: "Challenge your software architecture knowledge with katas and an AI reviewer.",
+  title: "Charrette",
+  description:
+    "Draw it. Defend it. Face the crit. Practice software architecture with katas and an AI reviewer.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -27,6 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        {/* Move the browser data of the old app name before the app reads it. */}
+        {/* oxlint-disable-next-line react/no-danger */}
+        <script dangerouslySetInnerHTML={{ __html: migrationScript }} />
         <ThemeProvider>
           <SiteHeader />
           {children}
