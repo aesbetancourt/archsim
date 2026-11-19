@@ -31,11 +31,12 @@ const kindLabel: Record<StepKind, string> = {
 };
 
 const kindClass: Record<StepKind, string> = {
-  problem: "bg-[#ffc9c9] text-black",
-  idea: "bg-[#ffec99] text-black",
-  technique: "bg-[#b2f2bb] text-black",
-  failure: "bg-[#ffa8a8] text-black",
-  recap: "bg-[#a5d8ff] text-black",
+  // The washes of the building blocks, so a walkthrough matches its diagram.
+  problem: "bg-[#ebbcb0] text-black",
+  idea: "bg-[#ecd394] text-black",
+  technique: "bg-[#c2d8ad] text-black",
+  failure: "bg-[#e3a79b] text-black",
+  recap: "bg-[#b7cde2] text-black",
 };
 
 const signClass: Record<Change["sign"], string> = {

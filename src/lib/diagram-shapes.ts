@@ -22,14 +22,14 @@ export const diagramShapes: DiagramShape[] = [
 
 // The fill color and the legend text of each form. The colors are the colors of the palette groups.
 export const shapeStyle: Record<DiagramShape, { color: string; legend: string }> = {
-  person: { color: "#a5d8ff", legend: "User" },
-  actor: { color: "#a5d8ff", legend: "Client" },
-  device: { color: "#a5d8ff", legend: "Device" },
-  external: { color: "#a5d8ff", legend: "External system" },
-  box: { color: "#d0bfff", legend: "Service or other running part" },
-  module: { color: "#d0bfff", legend: "Module in one deployment" },
-  store: { color: "#b2f2bb", legend: "Stored data" },
-  pipe: { color: "#ffec99", legend: "Queue, topic, or stream" },
+  person: { color: "#b7cde2", legend: "User" },
+  actor: { color: "#b7cde2", legend: "Client" },
+  device: { color: "#b7cde2", legend: "Device" },
+  external: { color: "#b7cde2", legend: "External system" },
+  box: { color: "#cdc2de", legend: "Service or other running part" },
+  module: { color: "#cdc2de", legend: "Module in one deployment" },
+  store: { color: "#c2d8ad", legend: "Stored data" },
+  pipe: { color: "#ecd394", legend: "Queue, topic, or stream" },
 };
 
 const PERSON =

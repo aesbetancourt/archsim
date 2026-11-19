@@ -8,6 +8,7 @@ import type {
 import { useTheme } from "next-themes";
 import { useCallback, useRef } from "react";
 import BlockPalette from "@/components/BlockPalette";
+import { CANVAS_PAPER, recolorElements } from "@/lib/block-colors";
 import "@excalidraw/excalidraw/index.css";
 
 type Props = {
@@ -35,14 +36,16 @@ export default function Canvas({ onReady, initialData, onChange }: Props) {
             onReady(instance);
           }}
           theme={resolvedTheme === "dark" ? "dark" : "light"}
+          // The canvas is light paper. A saved drawing gets the washes in place of the old pastels.
           initialData={
-            initialData
-              ? ({
-                  elements: initialData.elements,
+            (initialData
+              ? {
+                  elements: recolorElements(initialData.elements),
                   files: initialData.files,
                   scrollToContent: true,
-                } as ExcalidrawInitialDataState)
-              : undefined
+                  appState: { viewBackgroundColor: CANVAS_PAPER },
+                }
+              : { appState: { viewBackgroundColor: CANVAS_PAPER } }) as ExcalidrawInitialDataState
           }
           onChange={onChange}
         />
