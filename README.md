@@ -32,10 +32,10 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Practice
 
-- **Katas and interview questions.** Original katas from starter to hard, classic system design interview questions (link shortener, chat, news feed, video streaming, notifications, payments), and two open interview prompts.
+- **Katas and interview questions.** Five original katas from starter to hard, and 16 interview questions. They include the classic system design questions (link shortener, chat, news feed, video streaming, notifications, payments) and open interview prompts.
 - **A drawing canvas.** An embedded [Excalidraw](https://excalidraw.com) canvas, the same kind of tool used in real interviews.
 - **Building blocks.** A palette above the canvas with 48 standard components in seven groups, three kinds of connection, five boundaries, and five small patterns. Stored data is a cylinder and a message channel is a pipe, as in the usual notation. Drag a piece to the canvas. A Learn page says what each piece costs you.
-- **Auto-save.** Your answers, notes, and diagram for each kata are saved in the browser as you work. The home page lists the katas in progress.
+- **Auto-save.** Your answers, notes, and diagram for each kata are saved in the browser as you work. The home page lists the katas in progress. Kata highlights go to the notebook.
 - **A tutor chat.** A help chat sits next to the canvas. In a kata it explains concepts, gives hints, and asks about the pieces you used. It does not hand you the design.
 - **Solve a problem.** Paste any problem text, for example an interview question you had. The app writes a worked answer with the five-step method and adds the problem to your katas.
 - **The Architectural Katas collection.** The app reads Ted Neward's public kata collection, so you can practice on about 40 more problems.
@@ -45,10 +45,28 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Learn
 
-- **A wiki of 43 pages** on the knowledge areas of a senior architect: trade-off analysis, modularity, architecture styles, data and consistency, messaging, resilience, observability, security, evolution, and the work with teams.
+- **87 lessons in nine sections** on the knowledge areas of a senior architect: trade-off analysis, characteristics, structure and styles, data and consistency, communication, reliability and operations, and the work with teams. Each lesson has a level, a reading time, and objectives.
 - **Design inside one application.** Hexagonal, clean, and onion architecture, vertical slices, domain model patterns, CQRS, and event sourcing, with a clear line between system architecture and application architecture.
-- **Worked examples.** Finished katas that show each decision and the sentence in the problem that caused it, with a diagram, the rejected options, and a different valid answer.
-- **A glossary** of more than 120 terms in plain words, each with an example and a link to a lesson and to Wikipedia.
+- **22 system design cases**, each a short case study of a known type of system.
+- **Walkthroughs.** Some lessons explain one diagram in steps, for example a cache that fails and a saga that compensates. Use the buttons or the arrow keys.
+- **Worked examples.** Ten finished katas that show each decision and the sentence in the problem that caused it, with a diagram, the rejected options, and a different valid answer.
+- **Cheatsheets.** One page for each section, with a filter.
+- **A glossary** of 306 terms in plain words, each with an example and a link to a lesson and to Wikipedia.
+
+### Study
+
+- **Search.** Press Cmd+K or Ctrl+K on any page. It finds lessons, sections, cases, katas, terms, cheatsheets, interview questions, and your notes.
+- **Highlights and the notebook.** Select text in a lesson to highlight it and add a note. A sidebar holds the notes for each page. The Notebook page collects all highlights, page notes, and general notes.
+- **Progress.** Mark a lesson as done. The sidebar shows how many lessons are done in each section.
+- **Read aloud.** A player reads the lesson and highlights the sentence that it reads, so your eyes can follow the voice. Press Alt+R to start or pause, or Alt+click a sentence to start there. You can change the speed from 0.75× to 2×. The player uses the voices of your browser, or Google Cloud voices that you select in Settings (see [Read aloud with Google voices](#read-aloud-with-google-voices)).
+
+![A lesson read aloud, with the current sentence highlighted and the player at the bottom](docs/screenshots/read-aloud.png)
+
+### Interview practice
+
+- **Question drill.** 410 interview questions from 82 lessons, 28 of them behavioral. Write your answer, and the model grades it against the lesson. Filter by section or by the lessons you finished.
+- **Vocabulary drill.** Explain the glossary terms in your own words. Spaced repetition brings back the terms you missed. An optional AI check says what your explanation covers and what it misses.
+- **Behavioral interviews and the story bank.** A lesson on behavioral interviews, and a story bank in the notebook. Write true work stories in the STAR form and tag each one with competencies. The bank shows which of the 11 competencies have no story yet. In the drill, a behavioral answer can start from a saved story, and the model grades it as a story.
 
 ![A lesson page in the dark theme](docs/screenshots/learn.png)
 
@@ -81,6 +99,17 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000). The default connection is Claude Code. To use a different one, open Settings with the gear icon.
 
+### Read aloud with Google voices
+
+Read aloud works without setup, with the voices of your browser. For the more natural Google Cloud Chirp 3: HD voices:
+
+1. Turn on the Text-to-Speech API in a Google Cloud project.
+2. Run `gcloud auth application-default login` one time on your computer.
+3. In Settings, under Read aloud, select **Google Cloud voice**. Enter the project ID, or leave it empty to use the quota project of your login.
+4. Select a voice, then click **Save and play a sample**.
+
+Google bills the characters that it reads. At the time of writing, the price is about $30 for one million characters, after a free allowance each month. All the lessons together are about 1.2 million characters. The app saves the audio of each sentence in `data/speech`, so a sentence costs money only the first time that you hear it with a voice. If the Google voice fails, the player continues with the browser voice.
+
 This project uses pnpm only. An install with npm, Yarn, or Bun stops with an error.
 
 ## How it is built
@@ -88,8 +117,9 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Next.js** (App Router) and **TypeScript**
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
+- **Google Cloud Text-to-Speech** (optional) for the read-aloud voices, with the browser Web Speech API as the default
 - **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`), and [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
-- **No database.** Attempts, boards, the notebook, settings, and your own problems are plain files in a `data/` folder that git ignores. Kata highlights and notes in progress are in the browser.
+- **No database.** Attempts, boards, the notebook, lesson progress, settings, your own problems, and the read-aloud audio are plain files in a `data/` folder that git ignores. Kata answers and notes in progress, and the drill progress, are in the browser.
 
 ```mermaid
 flowchart LR
@@ -107,7 +137,7 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 
 ## Things to know
 
-- **It is a local, single-user tool.** There is no login and no hosted version. Your data stays on your computer, except for what a review sends to the model provider you selected.
+- **It is a local, single-user tool.** There is no login and no hosted version. Your data stays on your computer, except for what you send to the model provider you selected. With Google voices, the lesson text also goes to Google Cloud.
 - **The lessons and worked examples are written with AI and are not reviewed by an expert.** Treat each one as a reasoned answer, not as an authority. The reading list in the app points to the books that are.
 - **Scores are a guide.** They are useful to compare your own attempts over time, with the same model.
 
