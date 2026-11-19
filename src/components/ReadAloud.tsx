@@ -74,6 +74,21 @@ function collectSentences(root: HTMLElement): Sentence[] {
   return sentences;
 }
 
+// The middle of the first line of text in a block, in window pixels. The padding of a heading and a
+// tall line do not move it, so the "Read from here" button is level with the words.
+function firstLineMiddle(block: Element): number {
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent?.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const line = [...range.getClientRects()].find((rect) => rect.height > 0);
+    if (line) return line.top + line.height / 2;
+  }
+  const rect = block.getBoundingClientRect();
+  return rect.top + rect.height / 2;
+}
+
 // The sections of the page: each visible level-2 heading outside the skipped parts.
 function collectSections(root: HTMLElement | null): Section[] {
   if (!root) return [];
@@ -426,9 +441,7 @@ export default function ReadAloud({
       column.getBoundingClientRect().left +
       parseFloat(getComputedStyle(column).paddingLeft) -
       GUTTER;
-    const rect = block.getBoundingClientRect();
-    const line = parseFloat(getComputedStyle(block).lineHeight) || 24;
-    setGutter({ left, top: rect.top + Math.min(line, rect.height) / 2 });
+    setGutter({ left, top: firstLineMiddle(block) });
   });
 
   function clearGutter() {
@@ -495,7 +508,9 @@ export default function ReadAloud({
       aria-label="Read from here"
       title="Read from here"
       onMouseLeave={(event) => {
-        if (!root.current?.contains(event.relatedTarget as Node | null)) clearGutter();
+        // The pointer can go to something that is not a node, for example the window.
+        const next = event.relatedTarget;
+        if (!(next instanceof Node) || !root.current?.contains(next)) clearGutter();
       }}
       onClick={() => {
         if (hovered.current) void start({ node: hovered.current, offset: 0 });
