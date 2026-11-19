@@ -152,6 +152,17 @@
         font-weight: 600;
         letter-spacing: 0.01em;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      /* The mark: the wheel of a charrette, the same as the icon of the app. */
+      .wordmark svg {
+        width: 1.35rem;
+        height: 1.35rem;
+      }
+      .wordmark .hub {
+        fill: var(--crit);
       }
       .masthead nav {
         display: flex;
@@ -693,7 +704,18 @@
   <body>
     <header class="masthead">
       <div class="wrap">
-        <a class="wordmark" href="#top">Charrette</a>
+        <a class="wordmark" href="#top">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+              <circle cx="16" cy="16" r="12" />
+              <line x1="5.2" y1="16" x2="26.8" y2="16" />
+              <line x1="10.6" y1="6.65" x2="21.4" y2="25.35" />
+              <line x1="21.4" y1="6.65" x2="10.6" y2="25.35" />
+              <circle class="hub" cx="16" cy="16" r="3" stroke-width="1.8" />
+            </g>
+          </svg>
+          Charrette
+        </a>
         <nav aria-label="Sections">
           <a href="#ritual">The ritual</a>
           <a href="#method">The method</a>

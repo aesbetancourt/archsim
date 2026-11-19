@@ -2,7 +2,6 @@ import {
   Blocks,
   BookA,
   BookOpen,
-  DraftingCompass,
   GraduationCap,
   Library,
   Lightbulb,
@@ -16,6 +15,7 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
+import CartWheel from "@/components/CartWheel";
 import CommandPalette from "@/components/CommandPalette";
 import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
@@ -87,7 +87,7 @@ export default function SiteHeader() {
     // The spaces are smaller below 1024px, so the bar fits a narrow window without a side scroll.
     <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-card px-4 lg:gap-6 lg:px-6">
       <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-        <DraftingCompass className="size-5 text-primary" />
+        <CartWheel className="size-5" />
         Charrette
       </Link>
       <nav className="flex min-w-0 items-center gap-1">
