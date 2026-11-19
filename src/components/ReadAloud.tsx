@@ -7,7 +7,8 @@ import { rangeFor } from "@/components/useHighlighter";
 import { splitSentences, withoutAsides } from "@/lib/sentences";
 import type { PublicSettings, SpeechEngine } from "@/lib/settings";
 
-type Sentence = { text: string; range: Range };
+// The pause is the silence before the sentence, in milliseconds.
+type Sentence = { text: string; range: Range; pause: number };
 type Status = "idle" | "playing" | "paused";
 type Point = { node: Node; offset: number };
 type Section = { title: string; element: HTMLElement };
@@ -26,6 +27,10 @@ const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
 const RATE_KEY = "charrette-read-rate";
 // The number of sentences to load before they are necessary, so there is no pause between them.
 const PREFETCH = 3;
+// The silence before a heading and before a list item, in milliseconds.
+// A new section and a new item then sound new.
+const HEADING_PAUSE = 800;
+const ITEM_PAUSE = 400;
 // The space at the top and bottom of the window that the current sentence must not go into.
 const TOP_MARGIN = 72;
 const BOTTOM_MARGIN = 120;
@@ -50,11 +55,20 @@ function collectSentences(root: HTMLElement): Sentence[] {
   for (const { block, nodes } of groups) {
     if (!block.checkVisibility()) continue;
     const text = nodes.map((node) => node.data).join("");
+    // Wait before a heading and before a list item. A list item can hold its text in a paragraph.
+    let pause = block.matches("h1,h2,h3,h4")
+      ? HEADING_PAUSE
+      : block.matches("li, li > p:first-child")
+        ? ITEM_PAUSE
+        : 0;
     for (const span of splitSentences(text)) {
       const range = rangeFor(nodes, span.start, span.end);
       // Do not read the asides in parentheses. Skip a sentence that is only an aside.
       const spoken = withoutAsides(text.slice(span.start, span.end));
-      if (range && /[\p{L}\p{N}]/u.test(spoken)) sentences.push({ text: spoken, range });
+      if (!range || !/[\p{L}\p{N}]/u.test(spoken)) continue;
+      sentences.push({ text: spoken, range, pause });
+      // Only the first sentence of the block waits.
+      pause = 0;
     }
   }
   return sentences;
@@ -231,6 +245,15 @@ export default function ReadAloud({
     setWaiting(false);
   }
 
+  // Read the sentence after the one at the index, after its pause.
+  // A pause or a stop changes the run, so a waiting step does nothing.
+  function playNext(id: number, at: number) {
+    const wait = sentences.current[at + 1]?.pause ?? 0;
+    window.setTimeout(() => {
+      if (id === run.current) void playAt(at + 1);
+    }, wait);
+  }
+
   async function playAt(index: number) {
     const id = ++run.current;
     silence();
@@ -242,9 +265,7 @@ export default function ReadAloud({
     const at = current.current;
     show(at);
     setStatus("playing");
-    const next = () => {
-      if (id === run.current) void playAt(at + 1);
-    };
+    const next = () => playNext(id, at);
 
     if (engine.current === "google") {
       for (const later of sentences.current.slice(at + 1, at + 1 + PREFETCH)) {
@@ -333,9 +354,7 @@ export default function ReadAloud({
     ) {
       const id = ++run.current;
       const at = current.current;
-      player.onended = () => {
-        if (id === run.current) void playAt(at + 1);
-      };
+      player.onended = () => playNext(id, at);
       setStatus("playing");
       player.play().catch(() => void playAt(at));
       return;
