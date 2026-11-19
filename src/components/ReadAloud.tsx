@@ -10,10 +10,15 @@ import type { PublicSettings, SpeechEngine } from "@/lib/settings";
 type Sentence = { text: string; range: Range };
 type Status = "idle" | "playing" | "paused";
 type Point = { node: Node; offset: number };
+type Section = { title: string; element: HTMLElement };
 
 // The elements that hold text to read, and the elements to skip.
 const BLOCKS = "h1,h2,h3,h4,p,li,dt,dd,th,td,blockquote,figcaption";
 const SKIP = "pre,nav,button,svg,script,style,textarea,input,select,[data-read-skip]";
+// A click on these elements does its own action. It does not move the reading.
+const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=button]";
+// The distance from the left edge of the text to the "Read from here" button.
+const GUTTER = 26;
 // The name of the highlight style in globals.css.
 const HIGHLIGHT = "archsim-reading";
 const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -51,6 +56,27 @@ function collectSentences(root: HTMLElement): Sentence[] {
     }
   }
   return sentences;
+}
+
+// The sections of the page: each visible level-2 heading outside the skipped parts.
+function collectSections(root: HTMLElement | null): Section[] {
+  if (!root) return [];
+  return [...root.querySelectorAll<HTMLElement>("h2")]
+    .filter((heading) => {
+      const skip = heading.closest(SKIP);
+      return !(skip && root.contains(skip)) && heading.checkVisibility();
+    })
+    .map((element) => ({ title: element.textContent?.trim() ?? "", element }))
+    .filter((section) => section.title);
+}
+
+// The section of a sentence: the last heading before it, or -1 before the first heading.
+function sectionOf(sections: Section[], range: Range): number {
+  let found = -1;
+  sections.forEach((section, index) => {
+    if (range.comparePoint(section.element, 0) <= 0) found = index;
+  });
+  return found;
 }
 
 // The text position under a point of the window.
@@ -104,7 +130,8 @@ function readRate(): number {
 }
 
 // A player that reads the text of the root aloud and highlights the sentence that it reads.
-// Alt+R starts and pauses it. Alt+click on a sentence starts the reading at that sentence.
+// Alt+R starts and pauses it. To start at a place, use the button next to a paragraph, the section
+// menu, or Alt+click on a sentence. While the player is open, a click on a sentence moves to it.
 export default function ReadAloud({
   root,
   page,
@@ -117,6 +144,10 @@ export default function ReadAloud({
   const [position, setPosition] = useState({ index: 0, total: 0 });
   const [rate, setRate] = useState(1);
   const [notice, setNotice] = useState<string | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [section, setSection] = useState(-1);
+  // The position of the "Read from here" button, next to the block under the pointer.
+  const [gutter, setGutter] = useState<{ top: number; left: number } | null>(null);
 
   const sentences = useRef<Sentence[]>([]);
   const current = useRef(0);
@@ -130,6 +161,15 @@ export default function ReadAloud({
   // The audio of each sentence, as a blob URL, by the sentence text.
   const clips = useRef(new Map<string, Promise<string>>());
   const rateNow = useRef(1);
+  const sectionList = useRef<Section[]>([]);
+  // The block under the pointer, where the "Read from here" button starts the reading.
+  const hovered = useRef<Element | null>(null);
+  const gutterButton = useRef<HTMLButtonElement>(null);
+
+  function refreshSections() {
+    sectionList.current = collectSections(root.current);
+    setSections(sectionList.current);
+  }
 
   useEffect(() => {
     rateNow.current = readRate();
@@ -148,6 +188,7 @@ export default function ReadAloud({
     highlight.priority = 1;
     CSS.highlights.set(HIGHLIGHT, highlight);
     setPosition({ index, total: sentences.current.length });
+    setSection(sectionOf(sectionList.current, range));
 
     const rect = range.getBoundingClientRect();
     if (rect.top < TOP_MARGIN || rect.bottom > window.innerHeight - BOTTOM_MARGIN) {
@@ -260,8 +301,15 @@ export default function ReadAloud({
       return;
     }
     sentences.current = collectSentences(element);
+    refreshSections();
     if (sentences.current.length === 0) return;
     void playAt(point ? sentenceAt(sentences.current, point) : firstVisible(sentences.current));
+  }
+
+  // Read from a section, or from the start of the page for -1.
+  function startSection(index: number) {
+    const element = index < 0 ? root.current : sectionList.current[index]?.element;
+    if (element) void start({ node: element, offset: 0 });
   }
 
   function pause() {
@@ -319,13 +367,65 @@ export default function ReadAloud({
   });
 
   const onClick = useEffectEvent((event: MouseEvent) => {
-    if (!event.altKey) return;
-    // Alt+click on a link downloads it. Here it starts the reading.
-    event.preventDefault();
-    void start(caretAt(event.clientX, event.clientY));
+    const element = root.current;
+    const target = event.target instanceof Element ? event.target : null;
+    if (!element || !target) return;
+    if (event.altKey) {
+      // Alt+click on a link downloads it. Here it starts the reading.
+      event.preventDefault();
+      void start(caretAt(event.clientX, event.clientY));
+      return;
+    }
+    if (status === "idle") return;
+    // A link to a part of this page, as in the contents, also moves the reading there.
+    const link = target.closest<HTMLAnchorElement>('a[href^="#"]');
+    if (link) {
+      const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (heading && element.contains(heading)) void start({ node: heading, offset: 0 });
+      return;
+    }
+    if (target.closest(INTERACTIVE) || target.closest(SKIP) || !target.closest(BLOCKS)) return;
+    // A click that ends a text selection is for a highlight, not for the reading.
+    if (window.getSelection()?.isCollapsed === false) return;
+    const point = caretAt(event.clientX, event.clientY);
+    if (point) void start(point);
   });
 
-  const reset = useEffectEvent(() => stop());
+  // Show the "Read from here" button next to the block under the pointer.
+  const onMove = useEffectEvent((event: MouseEvent) => {
+    const element = root.current;
+    const block = event.target instanceof Element ? event.target.closest(BLOCKS) : null;
+    if (!element || !block || block === hovered.current || !element.contains(block)) return;
+    const skip = block.closest(SKIP);
+    if ((skip && element.contains(skip)) || !block.textContent?.trim()) return;
+    hovered.current = block;
+    // Put the button in the margin to the left of the text column, level with the first line.
+    const column = block.closest("main") ?? element;
+    const left =
+      column.getBoundingClientRect().left +
+      parseFloat(getComputedStyle(column).paddingLeft) -
+      GUTTER;
+    const rect = block.getBoundingClientRect();
+    const line = parseFloat(getComputedStyle(block).lineHeight) || 24;
+    setGutter({ left, top: rect.top + Math.min(line, rect.height) / 2 });
+  });
+
+  function clearGutter() {
+    hovered.current = null;
+    setGutter(null);
+  }
+
+  const hideGutter = useEffectEvent((event?: Event) => {
+    // The pointer can move from the text to the button. Keep the button then.
+    if (event instanceof MouseEvent && event.relatedTarget === gutterButton.current) return;
+    clearGutter();
+  });
+
+  const reset = useEffectEvent(() => {
+    stop();
+    hideGutter();
+    refreshSections();
+  });
 
   useEffect(() => {
     window.addEventListener("keydown", onKey);
@@ -334,12 +434,25 @@ export default function ReadAloud({
 
   useEffect(() => {
     const element = root.current;
+    const hide = () => hideGutter();
     element?.addEventListener("click", onClick, true);
-    return () => element?.removeEventListener("click", onClick, true);
+    element?.addEventListener("mousemove", onMove, { passive: true });
+    element?.addEventListener("mouseleave", hideGutter);
+    // The button has a fixed place on the screen, so it goes away when the page scrolls.
+    window.addEventListener("scroll", hide, { capture: true, passive: true });
+    return () => {
+      element?.removeEventListener("click", onClick, true);
+      element?.removeEventListener("mousemove", onMove);
+      element?.removeEventListener("mouseleave", hideGutter);
+      window.removeEventListener("scroll", hide, { capture: true });
+    };
   }, [root]);
 
-  // A new page stops the reading.
-  useEffect(() => () => reset(), [page]);
+  // A new page stops the reading and loads the sections of the new page.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => reset());
+    return () => cancelAnimationFrame(frame);
+  }, [page]);
 
   // Release the audio when the player closes.
   useEffect(() => {
@@ -352,80 +465,144 @@ export default function ReadAloud({
     };
   }, []);
 
+  const fromHere = gutter && (
+    <button
+      ref={gutterButton}
+      type="button"
+      // The section menu and Alt+R do the same for the keyboard.
+      tabIndex={-1}
+      aria-label="Read from here"
+      title="Read from here"
+      onMouseLeave={(event) => {
+        if (!root.current?.contains(event.relatedTarget as Node | null)) clearGutter();
+      }}
+      onClick={() => {
+        if (hovered.current) void start({ node: hovered.current, offset: 0 });
+      }}
+      style={{ top: gutter.top, left: gutter.left }}
+      className="fixed z-30 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border-2 border-border bg-main text-main-foreground opacity-70 transition-opacity hover:opacity-100"
+    >
+      <Play className="size-3" aria-hidden />
+    </button>
+  );
+
+  const menu = "h-9 rounded-base border-2 border-border bg-secondary-background px-1.5 text-sm";
+
   if (status === "idle") {
     return (
-      <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-2">
-        {notice && <p className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</p>}
-        <Button
-          variant="neutral"
-          size="sm"
-          onClick={() => void start()}
-          title="Read aloud from the first sentence on the screen (Alt+R). Alt+click a sentence to start there."
-        >
-          <Volume2 /> Read aloud
-        </Button>
-      </div>
+      <>
+        {fromHere}
+        <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-2">
+          {notice && <p className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</p>}
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="neutral"
+              size="sm"
+              onClick={() => void start()}
+              title="Read aloud from the first sentence on the screen (Alt+R). To start at a paragraph, point at it and click the play button on its left."
+            >
+              <Volume2 /> Read aloud
+            </Button>
+            {sections.length > 0 && (
+              <select
+                aria-label="Read from a section"
+                value=""
+                onChange={(event) => startSection(Number(event.target.value))}
+                className={`${menu} max-w-48 shadow-shadow`}
+              >
+                <option value="" disabled>
+                  From a section…
+                </option>
+                <option value={-1}>Start of the page</option>
+                {sections.map((item, index) => (
+                  <option key={`${index}-${item.title}`} value={index}>
+                    {item.title}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="fixed bottom-4 left-1/2 z-40 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col items-center gap-2">
-      {notice && (
-        <output className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</output>
-      )}
-      <div
-        role="toolbar"
-        aria-label="Read aloud"
-        className="flex items-center gap-1.5 rounded-base border-2 border-border bg-secondary-background p-1.5 shadow-shadow"
-      >
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Previous sentence"
-          onClick={() => void playAt(Math.max(current.current - 1, 0))}
+    <>
+      {fromHere}
+      <div className="fixed bottom-4 left-1/2 z-40 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col items-center gap-2">
+        {notice && (
+          <output className="rounded-base border-2 bg-card px-3 py-1.5 text-sm">{notice}</output>
+        )}
+        <div
+          role="toolbar"
+          aria-label="Read aloud"
+          className="flex flex-wrap items-center justify-center gap-1.5 rounded-base border-2 border-border bg-secondary-background p-1.5 shadow-shadow"
         >
-          <SkipBack />
-        </Button>
-        <Button
-          size="icon-sm"
-          aria-label={status === "playing" ? "Pause (Alt+R)" : "Play (Alt+R)"}
-          onClick={toggle}
-        >
-          {waiting ? (
-            <LoaderCircle className="animate-spin" />
-          ) : status === "playing" ? (
-            <Pause />
-          ) : (
-            <Play />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Previous sentence"
+            onClick={() => void playAt(Math.max(current.current - 1, 0))}
+          >
+            <SkipBack />
+          </Button>
+          <Button
+            size="icon-sm"
+            aria-label={status === "playing" ? "Pause (Alt+R)" : "Play (Alt+R)"}
+            onClick={toggle}
+          >
+            {waiting ? (
+              <LoaderCircle className="animate-spin" />
+            ) : status === "playing" ? (
+              <Pause />
+            ) : (
+              <Play />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Next sentence"
+            onClick={() => void playAt(current.current + 1)}
+          >
+            <SkipForward />
+          </Button>
+          <span className="px-1 font-mono text-xs tabular-nums text-muted-foreground">
+            {position.index + 1}/{position.total}
+          </span>
+          {sections.length > 0 && (
+            <select
+              aria-label="Section"
+              value={section}
+              onChange={(event) => startSection(Number(event.target.value))}
+              className={`${menu} max-w-48`}
+            >
+              <option value={-1}>Start of the page</option>
+              {sections.map((item, index) => (
+                <option key={`${index}-${item.title}`} value={index}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
           )}
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Next sentence"
-          onClick={() => void playAt(current.current + 1)}
-        >
-          <SkipForward />
-        </Button>
-        <span className="px-1 font-mono text-xs tabular-nums text-muted-foreground">
-          {position.index + 1}/{position.total}
-        </span>
-        <select
-          aria-label="Reading speed"
-          value={rate}
-          onChange={(event) => changeRate(Number(event.target.value))}
-          className="h-9 rounded-base border-2 border-border bg-secondary-background px-1.5 text-sm"
-        >
-          {RATES.map((value) => (
-            <option key={value} value={value}>
-              {value}×
-            </option>
-          ))}
-        </select>
-        <Button variant="ghost" size="icon-sm" aria-label="Stop reading" onClick={stop}>
-          <Square />
-        </Button>
+          <select
+            aria-label="Reading speed"
+            value={rate}
+            onChange={(event) => changeRate(Number(event.target.value))}
+            className={menu}
+          >
+            {RATES.map((value) => (
+              <option key={value} value={value}>
+                {value}×
+              </option>
+            ))}
+          </select>
+          <Button variant="ghost" size="icon-sm" aria-label="Stop reading" onClick={stop}>
+            <Square />
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

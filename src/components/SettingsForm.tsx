@@ -431,7 +431,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
             <Volume2 className="size-4" aria-hidden /> Read aloud
           </CardTitle>
           <CardDescription>
-            The voice that reads the lessons. Press Alt+R on a lesson, or Alt+click a sentence.
+            The voice that reads the lessons. Press Alt+R on a lesson, or click the play button next
+            to a paragraph.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
