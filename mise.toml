@@ -1,0 +1,7 @@
+[tasks.app]
+description = "Build and start Charrette in production mode, then open it in the browser"
+run = """
+pnpm build
+(sleep 2; open http://localhost:3000) &
+pnpm start --hostname 127.0.0.1
+"""
