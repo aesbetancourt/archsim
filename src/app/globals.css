@@ -239,6 +239,89 @@
     scrollbar-color: var(--scrollbar-thumb) transparent;
   }
 }
+/*
+  The code blocks of the lessons, in the colors of the app: keywords in red chalk, strings in sage,
+  numbers in ochre, names in Prussian blue, types in lavender, and comments in muted italic.
+  Each color has a contrast of at least 4.5:1 on the code background (WCAG AA).
+*/
+:root {
+  --code-bg: #f3ecdd;
+  --code-keyword: #9b2f1f;
+  --code-string: #3d6b2f;
+  --code-number: #86560c;
+  --code-comment: #6e6453;
+  --code-title: #2c4e7c;
+  --code-type: #6a4a8c;
+  --code-attr: #7a4a1f;
+}
+.dark {
+  --code-bg: #1a1712;
+  --code-keyword: #e8846b;
+  --code-string: #a9c98f;
+  --code-number: #e0bf6e;
+  --code-comment: #a2977f;
+  --code-title: #9dbbe0;
+  --code-type: #c3aee0;
+  --code-attr: #e3b184;
+}
+.code-block {
+  background: var(--code-bg);
+}
+.code-block pre {
+  tab-size: 2;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword {
+  color: var(--code-keyword);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: var(--code-string);
+}
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--code-number);
+}
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: var(--code-title);
+}
+.hljs-type,
+.hljs-built_in,
+.hljs-class .hljs-title,
+.hljs-title.class_ {
+  color: var(--code-type);
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-property,
+.hljs-params,
+.hljs-meta {
+  color: var(--code-attr);
+}
+.hljs-strong {
+  font-weight: 700;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+
 /* The text of the kata notepad. */
 .notes-editor {
   font-size: 0.95rem;

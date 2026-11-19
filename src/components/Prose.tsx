@@ -1,11 +1,40 @@
+import bash from "highlight.js/lib/languages/bash";
+import java from "highlight.js/lib/languages/java";
+import javascript from "highlight.js/lib/languages/javascript";
+import json from "highlight.js/lib/languages/json";
+import protobuf from "highlight.js/lib/languages/protobuf";
+import sql from "highlight.js/lib/languages/sql";
+import typescript from "highlight.js/lib/languages/typescript";
+import yaml from "highlight.js/lib/languages/yaml";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import rehypeHighlight, { type Options as HighlightOptions } from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import CodeBlock from "@/components/CodeBlock";
 import Diagram from "@/components/Diagram";
 import TableFrame from "@/components/TableFrame";
 import Walkthrough from "@/components/Walkthrough";
 import { parseWalkthrough } from "@/lib/walkthrough";
 import { headingId } from "@/lib/wiki-pages";
+
+// Color the code of the languages that the lessons use. Only these grammars load, so the help
+// chat stays small. Diagram and walkthrough blocks are data for a component, not code.
+const highlight: [typeof rehypeHighlight, HighlightOptions] = [
+  rehypeHighlight,
+  {
+    languages: { bash, java, javascript, json, protobuf, sql, typescript, yaml },
+    aliases: { bash: ["sh", "shell"], javascript: ["js"], protobuf: ["proto"], typescript: ["ts"] },
+    plainText: ["diagram", "walkthrough", "text"],
+  },
+];
+
+// The plain text of a part of the syntax tree, for the copy button of a code block.
+type Node = { type: string; value?: string; children?: Node[] };
+function nodeText(node: Node | undefined): string {
+  if (!node) return "";
+  if (node.type === "text") return node.value ?? "";
+  return (node.children ?? []).map(nodeText).join("");
+}
 
 function text(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -40,6 +69,7 @@ export default function Prose({
     >
       <Markdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[highlight]}
         components={{
           h2: ({ children }) => (
             <h2
@@ -77,10 +107,11 @@ export default function Prose({
             const first = node?.children[0];
             const className = first?.type === "element" ? String(first.properties.className) : "";
             if (/language-(diagram|walkthrough)/.test(className)) return <>{children}</>;
+            const language = className.match(/language-([\w+-]+)/)?.[1] ?? "";
             return (
-              <pre className="overflow-x-auto rounded-base border bg-card p-4 font-mono text-[0.85em] leading-6 [&_code]:bg-transparent [&_code]:p-0">
+              <CodeBlock language={language} code={nodeText(first as Node | undefined)}>
                 {children}
-              </pre>
+              </CodeBlock>
             );
           },
           code: ({ className, children }) =>
@@ -88,6 +119,9 @@ export default function Prose({
               <WalkthroughBlock source={text(children)} />
             ) : className === "language-diagram" ? (
               <Diagram spec={JSON.parse(text(children))} />
+            ) : className?.includes("hljs") ? (
+              // A highlighted code block. Its spans have the classes of the code theme.
+              <code className={className}>{children}</code>
             ) : (
               <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">
                 {children}
