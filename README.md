@@ -153,6 +153,7 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 
 - **The architecture kata** is an idea of [Ted Neward](https://github.com/tedneward/ArchKatas). The app reads his public collection of katas and shows each kata with its author. The kata texts are not part of this repository.
 - **The method** is inspired by the book _Fundamentals of Software Architecture_ by Mark Richards and Neal Ford: architecture characteristics, architecture styles, and the rule that every decision is a trade-off.
+- **The engraving** on the website is by Alexis Lemaistre, 1889, from _L'École des Beaux-Arts dessinée et racontée par un élève_. It comes from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Charrette,_%C3%89cole_nationale_sup%C3%A9rieure_des_beaux-arts,_by_Alexis_Lemaistre.png) under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The MIT license of this repository does not apply to it.
 
 ## License
 

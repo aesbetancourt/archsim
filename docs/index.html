@@ -6,47 +6,60 @@
     <title>Charrette: draw it, defend it, face the crit</title>
     <meta
       name="description"
-      content="Challenge your software architecture knowledge with katas and an AI reviewer that grades your reasoning. Works with Claude Code, OpenCode, the Anthropic API, and any OpenAI-compatible provider."
+      content="Practice software architecture with katas. Draw a design, defend your trade-offs, and get a critique from an AI reviewer. Works with Claude Code, OpenCode, the Anthropic API, and any OpenAI-compatible provider."
     />
     <meta property="og:title" content="Charrette: draw it, defend it, face the crit" />
     <meta
       property="og:description"
-      content="Take a short business problem, draw a design, explain your trade-offs, and get a structured review in about a minute."
+      content="Take a short business problem, draw a design, explain your trade-offs, and get a structured critique in about a minute."
     />
     <meta property="og:image" content="screenshots/kata.png" />
+    <meta name="theme-color" content="#ece3cf" />
     <link rel="icon" href="favicon.ico" sizes="32x32" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;700;800&family=Geist+Mono:wght@500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <style>
+      /*
+        The atelier folio. The page looks like a 19th-century book of plates from the
+        École des Beaux-Arts: ivory paper, ink, Didone display type (the age of Firmin-Didot,
+        who published the engraving), Garamond for reading, and red chalk only for the crit.
+      */
       :root {
-        --bg: hsl(214, 95%, 93%);
-        --panel: #ffffff;
-        --ink: #000000;
-        --soft: #3d4658;
-        --main: hsl(217, 100%, 66%);
-        --mark: #ffe45c;
-        --border: #000000;
-        --shadow: 4px 4px 0 0 var(--border);
-        /* The hero is a blueprint: cyanotype blue with white drafting lines. */
-        --blueprint: #163f7a;
-        --blueprint-ink: #f2f6fc;
-        --blueprint-soft: #c3d5f2;
-        /* The red pencil of a critique. */
-        --crit: #e03131;
+        --paper: #ece3cf;
+        --paper-deep: #d6c7a4;
+        --mat: #f4eedf;
+        --ink: #1b1812;
+        --ink-soft: #4a4235;
+        --rule: rgba(27, 24, 18, 0.28);
+        --charcoal: #0f0d0a;
+        --glass: rgba(15, 13, 10, 0.8);
+        --glass-ink: #eee5d0;
+        --crit: #9b2f1f;
+        --display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+        --serif: "EB Garamond", Garamond, Georgia, serif;
+        --hand: "Architects Daughter", "Segoe Print", cursive;
+        --mono: ui-monospace, "SF Mono", Menlo, monospace;
+        --print: none;
+        color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #171f38;
-          --panel: #14161d;
-          --ink: #eef0f4;
-          --soft: #b5bdcc;
-          --border: #000000;
+          --paper: #14120e;
+          --paper-deep: #2a251c;
+          --mat: #1c1914;
+          --ink: #eee5d0;
+          --ink-soft: #b9ae97;
+          --rule: rgba(238, 229, 208, 0.24);
+          --crit: #d9654f;
+          /* A white print is too bright on charcoal. Show it as an old, dim print. */
+          --print: sepia(0.35) brightness(0.78) contrast(1.05);
+          color-scheme: dark;
         }
       }
       * {
@@ -57,195 +70,364 @@
       }
       body {
         margin: 0;
-        background: var(--bg);
+        background: var(--paper);
         color: var(--ink);
-        font-family: "Geist", system-ui, sans-serif;
-        font-weight: 500;
+        font-family: var(--serif);
+        font-size: 1.1875rem;
         line-height: 1.6;
+        font-kerning: normal;
+        font-variant-numeric: oldstyle-nums;
+        text-rendering: optimizeLegibility;
+      }
+      /* The grain of the paper, over the whole page. */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        pointer-events: none;
+        opacity: 0.07;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      @media (prefers-color-scheme: dark) {
+        body::after {
+          mix-blend-mode: screen;
+          opacity: 0.05;
+        }
       }
       a {
         color: inherit;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
       }
-      .wrap {
-        max-width: 68rem;
-        margin: 0 auto;
-        padding: 0 1.25rem;
+      a:hover {
+        text-decoration-color: var(--crit);
+      }
+      :focus-visible {
+        outline: 2px solid var(--crit);
+        outline-offset: 3px;
       }
       h1,
       h2,
       h3 {
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
+        font-family: var(--display);
+        font-weight: 500;
         margin: 0;
-      }
-      h1 {
-        font-size: clamp(2.4rem, 6.5vw, 4.6rem);
         text-wrap: balance;
-      }
-      h2 {
-        font-size: clamp(1.7rem, 3.6vw, 2.5rem);
-        text-wrap: balance;
-      }
-      h3 {
-        font-size: 1.15rem;
       }
       p {
         margin: 0;
       }
+      .wrap {
+        max-width: 74rem;
+        margin: 0 auto;
+        padding-inline: 1.5rem;
+      }
+      .measure {
+        max-width: 38rem;
+      }
       .soft {
-        color: var(--soft);
+        color: var(--ink-soft);
+      }
+      code {
+        font-family: var(--mono);
+        font-size: 0.8em;
       }
 
-      /* Shared pieces */
-      .box {
-        background: var(--panel);
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        box-shadow: var(--shadow);
+      /* Masthead */
+      .masthead {
+        border-bottom: 1px solid var(--rule);
       }
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.7rem 1.2rem;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        background: var(--main);
-        color: #000;
-        font-weight: 700;
-        text-decoration: none;
-        box-shadow: var(--shadow);
-        transition:
-          transform 0.12s,
-          box-shadow 0.12s;
-      }
-      .btn:hover {
-        transform: translate(4px, 4px);
-        box-shadow: none;
-      }
-      .btn.plain {
-        background: var(--panel);
-        color: var(--ink);
-      }
-      .btn:focus-visible,
-      a:focus-visible {
-        outline: 3px solid var(--ink);
-        outline-offset: 3px;
-      }
-      mark {
-        background: var(--mark);
-        color: #000;
-        padding: 0 0.2em;
-        border-radius: 2px;
-      }
-      .tag {
-        display: inline-block;
-        padding: 0.15rem 0.6rem;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        background: var(--panel);
-        font-size: 0.8rem;
-        font-weight: 700;
-      }
-
-      /* Top bar */
-      header.bar {
-        border-bottom: 2px solid var(--border);
-        background: var(--panel);
-      }
-      header.bar .wrap {
+      .masthead .wrap {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: space-between;
-        height: 3.5rem;
+        gap: 1.5rem;
+        padding-block: 1.1rem;
       }
-      .logo {
-        font-weight: 800;
-        font-size: 1.1rem;
+      .wordmark {
+        font-family: var(--display);
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
         text-decoration: none;
       }
-      .logo {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .logo svg {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-      nav a {
-        margin-left: 1.25rem;
-        text-decoration: none;
-        font-size: 0.95rem;
-      }
-      nav a:hover {
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-      }
-
-      /* Hero: a drafting sheet on blueprint paper, with a crit in red pencil */
-      .blueprint {
-        background-color: var(--blueprint);
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
-          linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-        background-size:
-          120px 120px,
-          120px 120px,
-          24px 24px,
-          24px 24px;
-        background-position: -1px -1px;
-        color: var(--blueprint-ink);
-        border-bottom: 2px solid var(--border);
-      }
-      .entry {
-        max-width: 40rem;
-        color: var(--blueprint-soft);
+      .masthead nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 1.4rem;
         font-size: 1.02rem;
       }
+      .masthead nav a {
+        text-decoration: none;
+      }
+      .masthead nav a:hover {
+        text-decoration: underline;
+      }
+
+      /* Hero: the tagline on paper, beside the engraving of the charrette */
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        min-height: min(52rem, calc(100svh - 4rem));
+        border-bottom: 1px solid var(--rule);
+      }
+      .hero-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4rem clamp(1.5rem, 5vw, 5rem) 4rem max(1.5rem, calc((100vw - 74rem) / 2 + 1.5rem));
+      }
+      .entry {
+        max-width: 30rem;
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+      }
       .entry dfn {
+        font-family: var(--display);
         font-style: normal;
-        font-weight: 800;
-        color: var(--blueprint-ink);
+        font-weight: 600;
+        color: var(--ink);
       }
-      .entry .say {
-        font-family: "Geist Mono", ui-monospace, monospace;
-        font-size: 0.9em;
+      .entry i {
+        font-style: italic;
       }
-      .blueprint h1 {
+      .hero h1 {
+        margin-top: 1.6rem;
+        font-size: clamp(2.6rem, 6vw, 5.6rem);
+        font-weight: 500;
+        line-height: 0.98;
+        letter-spacing: -0.015em;
+      }
+      .hero h1 span {
+        display: block;
+        white-space: nowrap;
+      }
+      .hero h1 span:last-child {
+        font-style: italic;
+      }
+      .lead {
+        max-width: 31rem;
+        margin-top: 1.8rem;
+        font-size: 1.3rem;
+        line-height: 1.5;
+        color: var(--ink-soft);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem 1.6rem;
+        margin-top: 2.2rem;
+      }
+      .button {
+        display: inline-block;
+        padding: 0.7rem 1.35rem;
+        background: var(--ink);
+        color: var(--paper);
+        font-size: 1.08rem;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 2px;
+      }
+      .button:hover {
+        background: var(--crit);
+      }
+      .note {
         margin-top: 1.4rem;
-        font-size: clamp(3rem, 9vw, 6.6rem);
-        line-height: 0.95;
-        letter-spacing: -0.045em;
+        font-size: 1rem;
+        color: var(--ink-soft);
       }
-      .blueprint .hero p.lead {
-        color: var(--blueprint-soft);
-      }
-      .blueprint .note {
-        margin-top: 1rem;
-        color: var(--blueprint-soft);
-        font-size: 0.92rem;
-      }
-      .sheet {
+      .engraving {
         position: relative;
-        margin: 3rem 0 0;
-      }
-      .sheet .box {
+        margin: 0;
         overflow: hidden;
+        background: #e9e4d8;
+        border-left: 1px solid var(--rule);
       }
-      .sheet img {
+      .engraving img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 40%;
+        filter: var(--print);
+        animation: ink 1.6s ease-out both;
+      }
+      /* The one moment of motion: the engraving comes up like ink on a fresh print. */
+      @keyframes ink {
+        from {
+          opacity: 0;
+          filter: contrast(0.6) brightness(1.25);
+        }
+        to {
+          opacity: 1;
+          filter: var(--print);
+        }
+      }
+      .engraving figcaption {
+        position: absolute;
+        left: 1.5rem;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        max-width: 24rem;
+        padding: 1.1rem 1.3rem;
+        background: var(--glass);
+        color: var(--glass-ink);
+        font-size: 1rem;
+        line-height: 1.5;
+        backdrop-filter: blur(2px);
+      }
+      .engraving figcaption strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-family: var(--display);
+        font-size: 1.35rem;
+        font-weight: 500;
+      }
+      .engraving figcaption small {
+        display: block;
+        margin-top: 0.55rem;
+        font-size: 0.86rem;
+        opacity: 0.78;
+      }
+
+      /* Sections */
+      section {
+        padding-block: 5rem;
+      }
+      section + section {
+        border-top: 1px solid var(--rule);
+      }
+      h2 {
+        font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+        line-height: 1.05;
+      }
+      h3 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+        font-style: italic;
+        font-weight: 500;
+      }
+      .intro p + p,
+      .measure p + p {
+        margin-top: 1rem;
+      }
+      .intro p,
+      .ritual-text p {
+        font-size: 1.25rem;
+      }
+      .intro h2 + p,
+      .ritual-text h2 + p {
+        margin-top: 1.3rem;
+      }
+      /* A drop cap, as in the books of the period. */
+      .intro h2 + p::first-letter {
+        float: left;
+        margin: 0.08em 0.1em 0 0;
+        font-family: var(--display);
+        font-size: 3.6em;
+        line-height: 0.8;
+      }
+
+      /* Plates: screenshots of the app, toned like prints, in a paper mat */
+      .plate {
+        margin: 0;
+      }
+      .plate .mat {
+        position: relative;
+        padding: clamp(0.6rem, 1.4vw, 1.1rem);
+        background: var(--mat);
+        border: 1px solid var(--rule);
+        box-shadow: 0 1px 0 var(--rule);
+      }
+      .plate .mat::before {
+        /* The plate mark: the line the press leaves around an engraving. */
+        content: "";
+        position: absolute;
+        inset: clamp(0.3rem, 0.7vw, 0.55rem);
+        border: 1px solid var(--rule);
+        pointer-events: none;
+      }
+      .plate img {
         display: block;
         width: 100%;
         height: auto;
+        filter: sepia(0.55) saturate(0.6) contrast(1.03);
+        transition: filter 0.5s ease;
       }
+      .plate:hover img,
+      .plate:focus-within img {
+        filter: none;
+      }
+      .plate figcaption {
+        margin-top: 0.8rem;
+        font-size: 1rem;
+        color: var(--ink-soft);
+      }
+      .plate figcaption b {
+        font-family: var(--display);
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      /* The ritual: three plates, in the order of a kata */
+      .ritual-text {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 1rem 4rem;
+        align-items: end;
+      }
+      .ritual-text .aside {
+        font-size: 1.1rem;
+        color: var(--ink-soft);
+      }
+      .ritual {
+        margin: 3.5rem 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: plate;
+      }
+      .ritual > li {
+        display: grid;
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+        gap: 1.5rem 3rem;
+        align-items: center;
+        counter-increment: plate;
+      }
+      .ritual > li + li {
+        margin-top: 4.5rem;
+      }
+      .ritual > li:nth-child(even) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+      }
+      .ritual > li:nth-child(even) .plate {
+        order: 2;
+      }
+      .ritual .label {
+        font-family: var(--display);
+        font-size: 1rem;
+        color: var(--ink-soft);
+      }
+      .ritual .label::before {
+        content: "Plate " counter(plate, upper-roman) ".";
+      }
+      .ritual h3 {
+        margin-top: 0.3rem;
+        font-size: clamp(2rem, 3.4vw, 2.7rem);
+      }
+      .ritual p.say {
+        margin-top: 0.9rem;
+        font-size: 1.15rem;
+      }
+
+      /* The crit in red pencil on Plate I */
       .crit {
         position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
+        inset: clamp(0.6rem, 1.4vw, 1.1rem);
+        width: calc(100% - 2 * clamp(0.6rem, 1.4vw, 1.1rem));
+        height: calc(100% - 2 * clamp(0.6rem, 1.4vw, 1.1rem));
         pointer-events: none;
         overflow: visible;
       }
@@ -256,161 +438,113 @@
         stroke-linecap: round;
         stroke-linejoin: round;
       }
-      /* The crit itself: a paper tag pinned on the corner of the drawing. */
       .crit-note {
         position: absolute;
-        top: 29%;
-        right: -1.2%;
-        width: clamp(9rem, 19%, 14.5rem);
-        padding: 0.6rem 0.8rem;
-        background: #ffffff;
-        border: 2px solid var(--border);
-        box-shadow: var(--shadow);
-        transform: rotate(2deg);
-        color: var(--crit);
-        font-family: "Architects Daughter", "Segoe Print", cursive;
-        font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+        top: 27%;
+        right: -1.2rem;
+        width: clamp(8.5rem, 21%, 13rem);
+        padding: 0.55rem 0.75rem;
+        background: #fbf7ec;
+        border: 1px solid rgba(27, 24, 18, 0.35);
+        box-shadow: 0 3px 8px rgba(27, 24, 18, 0.18);
+        transform: rotate(2.5deg);
+        color: #9b2f1f;
+        font-family: var(--hand);
+        font-size: clamp(0.82rem, 1.4vw, 1.02rem);
         line-height: 1.35;
       }
-      @media (max-width: 44rem) {
-        .crit-note,
-        .crit .arrow {
-          display: none;
-        }
-      }
-      .crit .ring {
-        stroke-dasharray: 900;
-        stroke-dashoffset: 900;
-        animation: draw 0.9s 0.5s ease-out forwards;
-      }
-      @keyframes draw {
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
 
-      /* Why the name */
-      .why dl {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-        margin: 2rem 0 0;
-      }
-      .why dl div {
-        padding: 1.1rem 1.2rem;
-      }
-      .why dt {
-        font-weight: 800;
-        font-size: 1.15rem;
-      }
-      .why dd {
-        margin: 0.35rem 0 0;
-        color: var(--soft);
-        font-size: 0.95rem;
-      }
-
-      /* Hero */
-      .hero {
-        padding-block: 4.5rem 3rem;
-      }
-      .hero p.lead {
-        font-size: clamp(1.05rem, 2vw, 1.3rem);
-        max-width: 40rem;
-        margin-top: 1.25rem;
-        color: var(--soft);
-      }
-      .hero .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.9rem;
-        margin-top: 2rem;
-      }
-      .shot {
-        margin-top: 3rem;
-        overflow: hidden;
-      }
-      .shot img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      section {
-        padding: 3.5rem 0;
-      }
-      .intro {
-        max-width: 44rem;
-      }
-      .intro p {
-        margin-top: 0.9rem;
-        color: var(--soft);
-        font-size: 1.05rem;
-      }
-
-      /* Steps */
+      /* Steps of a kata: a real sequence, so the numbers carry meaning */
       .steps {
         display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-        margin-top: 2rem;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        margin: 2.5rem 0 0;
         padding: 0;
         list-style: none;
         counter-reset: step;
+        border-top: 1px solid var(--rule);
       }
       .steps li {
-        padding: 1.1rem;
+        padding: 1.3rem 1.2rem 0 0;
         counter-increment: step;
+      }
+      .steps li + li {
+        padding-left: 1.2rem;
+        border-left: 1px solid var(--rule);
       }
       .steps li::before {
         content: counter(step);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2rem;
-        height: 2rem;
-        margin-bottom: 0.8rem;
-        border: 2px solid var(--border);
-        border-radius: 50%;
-        background: var(--main);
-        color: #000;
-        font-weight: 800;
+        display: block;
+        font-family: var(--display);
+        font-size: 2.4rem;
+        line-height: 1;
+        color: var(--crit);
+      }
+      .steps h3 {
+        margin-top: 0.6rem;
+        font-size: 1.25rem;
       }
       .steps p {
-        margin-top: 0.35rem;
-        font-size: 0.93rem;
-        color: var(--soft);
-      }
-
-      /* Feature grid */
-      .grid {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-        margin-top: 2rem;
-      }
-      .grid .box {
-        padding: 1.25rem;
-      }
-      .grid p {
         margin-top: 0.4rem;
-        font-size: 0.95rem;
-        color: var(--soft);
+        font-size: 1.02rem;
+        color: var(--ink-soft);
       }
 
-      /* Two column blocks */
+      /* Two columns: text and a plate */
       .split {
         display: grid;
-        gap: 2rem;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+        gap: 2.5rem 4rem;
         align-items: center;
-        grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
       }
-      .split ul {
-        margin: 1rem 0 0;
-        padding-left: 1.2rem;
-        color: var(--soft);
+      .split.flip > :first-child {
+        order: 2;
       }
-      .split li + li {
-        margin-top: 0.4rem;
+      ul.points {
+        margin: 1.3rem 0 0;
+        padding-left: 1.1rem;
+      }
+      ul.points li + li {
+        margin-top: 0.55rem;
+      }
+      ul.points li::marker {
+        color: var(--crit);
+      }
+      blockquote {
+        margin: 0;
+        padding-left: 1.4rem;
+        border-left: 2px solid var(--crit);
+        font-size: 1.3rem;
+        font-style: italic;
+      }
+      blockquote cite {
+        display: block;
+        margin-top: 0.6rem;
+        font-size: 1rem;
+        font-style: normal;
+        color: var(--ink-soft);
+      }
+
+      /* Lists of features: hairlines, no boxes */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+        gap: 0 3rem;
+        margin: 2.2rem 0 0;
+      }
+      .features div {
+        padding: 1.2rem 0;
+        border-top: 1px solid var(--rule);
+      }
+      .features dt {
+        font-family: var(--display);
+        font-size: 1.3rem;
+        font-style: italic;
+      }
+      .features dd {
+        margin: 0.3rem 0 0;
+        font-size: 1.05rem;
+        color: var(--ink-soft);
       }
 
       /* Providers */
@@ -421,110 +555,148 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.95rem;
+        font-size: 1.05rem;
       }
       th,
       td {
+        padding: 0.85rem 1rem 0.85rem 0;
         text-align: left;
-        padding: 0.8rem 1rem;
-        border-bottom: 2px solid var(--border);
         vertical-align: top;
+        border-bottom: 1px solid var(--rule);
       }
-      tr:last-child td {
-        border-bottom: 0;
+      thead th {
+        font-family: var(--display);
+        font-weight: 600;
+        border-bottom: 2px solid var(--ink);
       }
-      th {
-        background: var(--main);
-        color: #000;
-        font-weight: 800;
+      tbody th {
+        font-weight: 600;
+        white-space: nowrap;
       }
 
-      /* Run */
+      /* Run it */
       pre {
-        margin: 1.25rem 0 0;
-        padding: 1.1rem 1.25rem;
+        margin: 1.6rem 0 0;
+        padding: 1.2rem 1.4rem;
         overflow-x: auto;
-        background: #0d1017;
-        color: #e8ecf3;
-        border: 2px solid var(--border);
-        border-radius: 6px;
-        box-shadow: var(--shadow);
-        font-family: "Geist Mono", ui-monospace, monospace;
-        font-size: 0.92rem;
-        line-height: 1.7;
+        background: var(--charcoal);
+        color: #eee5d0;
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        line-height: 1.75;
+        border-radius: 2px;
+      }
+      .run .actions {
+        margin-top: 1.6rem;
       }
 
+      /* Colophon */
       footer {
-        border-top: 2px solid var(--border);
-        background: var(--panel);
-        padding: 2.5rem 0;
-        font-size: 0.93rem;
+        padding-block: 3rem 3.5rem;
+        border-top: 3px double var(--rule);
+        font-size: 1rem;
+        color: var(--ink-soft);
       }
-      footer p + p {
-        margin-top: 0.6rem;
+      footer .wrap {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+        gap: 1.2rem 3rem;
       }
-      footer a {
-        text-decoration-thickness: 2px;
+      footer h2 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      footer p {
+        margin-top: 0.4rem;
       }
 
-      @media (max-width: 40rem) {
-        nav a:not(.keep) {
+      @media (max-width: 64rem) {
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: 0;
+        }
+        .hero-text {
+          padding: 3.5rem 1.5rem;
+        }
+        .engraving {
+          border-left: 0;
+          border-top: 1px solid var(--rule);
+        }
+        .engraving img {
+          height: min(34rem, 110vw);
+          object-position: 35% 72%;
+        }
+        /* On a narrow screen the caption goes under the engraving, so it covers nobody. */
+        .engraving figcaption {
+          position: static;
+          max-width: none;
+        }
+        .ritual-text,
+        .ritual > li,
+        .ritual > li:nth-child(even),
+        .split {
+          grid-template-columns: 1fr;
+        }
+        .ritual > li:nth-child(even) .plate,
+        .split.flip > :first-child {
+          order: 0;
+        }
+        .steps {
+          grid-template-columns: 1fr;
+        }
+        .steps li,
+        .steps li + li {
+          display: grid;
+          grid-template-columns: 2.5rem 1fr;
+          column-gap: 0.8rem;
+          padding: 1rem 0;
+          border-left: 0;
+          border-bottom: 1px solid var(--rule);
+        }
+        .steps li::before {
+          grid-row: span 2;
+        }
+        .steps h3 {
+          margin-top: 0;
+        }
+      }
+      @media (max-width: 44rem) {
+        body {
+          font-size: 1.125rem;
+        }
+        .masthead nav a:not(.keep) {
           display: none;
         }
-        .hero {
-          padding-top: 3rem;
+        section {
+          padding-block: 3.5rem;
+        }
+        .crit-note,
+        .crit .arrow {
+          display: none;
         }
       }
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
         }
-        .btn {
-          transition: none;
-        }
-        .crit .ring {
+        .engraving img {
           animation: none;
-          stroke-dashoffset: 0;
+        }
+        .plate img {
+          transition: none;
         }
       }
     </style>
   </head>
   <body>
-    <header class="bar">
+    <header class="masthead">
       <div class="wrap">
-        <a class="logo" href="#top" aria-label="Charrette, top of the page">
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <rect
-              x="1"
-              y="1"
-              width="30"
-              height="30"
-              rx="7"
-              fill="#5294ff"
-              stroke="#000"
-              stroke-width="2"
-            />
-            <g
-              transform="translate(5 5) scale(0.9167)"
-              fill="none"
-              stroke="#000"
-              stroke-width="2.4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m12.99 6.74 1.93 3.44" />
-              <path d="M19.136 12a10 10 0 0 1-14.271 0" />
-              <path d="m21 21-2.16-3.84" />
-              <path d="m3 21 8.02-14.26" />
-              <circle cx="12" cy="5" r="2" />
-            </g>
-          </svg>
-          Charrette
-        </a>
-        <nav>
-          <a href="#how">How it works</a>
+        <a class="wordmark" href="#top">Charrette</a>
+        <nav aria-label="Sections">
+          <a href="#ritual">The ritual</a>
+          <a href="#method">The method</a>
           <a href="#learn">Learn</a>
-          <a href="#study">Study</a>
           <a href="#providers">Providers</a>
           <a href="#run">Run it</a>
           <a class="keep" href="https://github.com/aesbetancourt/charrette">GitHub</a>
@@ -533,47 +705,48 @@
     </header>
 
     <main id="top">
-      <section class="blueprint">
-        <div class="wrap hero">
+      <div class="hero">
+        <div class="hero-text">
           <p class="entry">
-            <dfn>charrette</dfn> <span class="say">/ʃəˈrɛt/</span>, noun. A short, intense design
-            session that ends in a critique.
+            <dfn>charrette</dfn> <i>/ʃəˈrɛt/</i>, noun. A short, intense design session that ends in
+            a critique.
           </p>
-          <h1>Draw it.<br />Defend it.<br />Face the crit.</h1>
+          <h1>
+            <span>Draw it.</span>
+            <span>Defend it.</span>
+            <span>Face the crit.</span>
+          </h1>
           <p class="lead">
             Take a short business problem, draw a design, and explain your trade-offs. An AI critic
             reads your diagram and grades how well you reasoned, in about a minute.
           </p>
           <div class="actions">
-            <a class="btn" href="https://github.com/aesbetancourt/charrette">Get it on GitHub</a>
-            <a class="btn plain" href="#how">See how it works</a>
+            <a class="button" href="https://github.com/aesbetancourt/charrette">Get it on GitHub</a>
+            <a href="#ritual">See the ritual</a>
           </div>
           <p class="note">Open source. It runs on your computer, with the AI provider you have.</p>
-          <figure class="sheet">
-            <div class="box">
-              <img
-                src="screenshots/kata.png"
-                alt="A kata in Charrette: the problem text on the left, and a diagram of the design on the canvas"
-                width="1400"
-                height="900"
-              />
-            </div>
-            <!-- A crit in red pencil on the drawing. The coordinates are those of the screenshot. -->
-            <svg class="crit" viewBox="0 0 1400 900" aria-hidden="true">
-              <path
-                class="ring"
-                d="M 742 520 C 738 478, 812 466, 870 474 C 930 482, 948 520, 916 548 C 884 572, 790 572, 756 552 C 738 541, 738 528, 760 512"
-              />
-              <path class="arrow" d="M 1150 372 C 1060 380, 990 420, 944 492" />
-              <path class="arrow" d="M 944 492 l 2 -24 M 944 492 l 22 -10" />
-            </svg>
-            <p class="crit-note">One module takes every order. What breaks at 12:30?</p>
-          </figure>
         </div>
-      </section>
+        <figure class="engraving">
+          <img
+            src="images/lemaistre-charrette-1889.jpg"
+            alt="An engraving: a student in a top hat and apron pulls a hand cart full of framed drawings, and other students hurry behind it."
+            width="1076"
+            height="1474"
+          />
+          <figcaption>
+            <strong>Friday, the deadline</strong>
+            At the École des Beaux-Arts, the week's drawings left in a cart, finished or not. Then
+            the critique started.
+            <small
+              >Engraving by Alexis Lemaistre, 1889, from
+              <cite>L'École des Beaux-Arts dessinée et racontée par un élève</cite>.</small
+            >
+          </figcaption>
+        </figure>
+      </div>
 
       <div class="wrap">
-        <section class="intro">
+        <section class="intro measure">
           <h2>The code is getting cheaper. The decisions are not.</h2>
           <p>
             AI tools now write a large part of the code. The decisions that stay with people are the
@@ -586,82 +759,132 @@
           </p>
         </section>
 
-        <section class="why">
-          <div class="intro">
-            <h2>Why the name</h2>
-            <p>
-              Charrette is French for "cart". The best-known story comes from 19th-century Paris.
-              Architecture students at the École des Beaux-Arts drew until a cart came to collect
-              their work at the deadline. Then the critique started.
-            </p>
-            <p>
-              The word now means a short, intense design session. Each kata in the app follows the
-              same ritual.
+        <section id="ritual">
+          <div class="ritual-text">
+            <div>
+              <h2>The ritual</h2>
+              <p>
+                Charrette is French for "cart". The best-known story comes from 19th-century Paris:
+                architecture students drew until a cart came to collect their work at the deadline.
+                The word now means a short, intense design session. Each kata in the app follows the
+                same three steps.
+              </p>
+            </div>
+            <p class="aside">
+              The plates below are the app itself. Point at a plate to see it in its real colors.
             </p>
           </div>
-          <dl>
-            <div class="box">
-              <dt>Draw it</dt>
-              <dd>Read the problem, set the scope, and draw the design with standard pieces.</dd>
-            </div>
-            <div class="box">
-              <dt>Defend it</dt>
-              <dd>
-                Select the characteristics and the style, and state what your design gives up.
-              </dd>
-            </div>
-            <div class="box">
-              <dt>Face the crit</dt>
-              <dd>
-                Get scores with evidence, the top risk, and the questions a review board asks.
-              </dd>
-            </div>
-          </dl>
+
+          <ol class="ritual">
+            <li>
+              <figure class="plate">
+                <div class="mat">
+                  <img
+                    src="screenshots/kata.png"
+                    alt="A kata: the problem text on the left, and a diagram of the design on the canvas"
+                    width="1400"
+                    height="900"
+                    loading="lazy"
+                  />
+                  <!-- A crit in red pencil on the drawing. The coordinates are those of the screenshot. -->
+                  <svg class="crit" viewBox="0 0 1400 900" aria-hidden="true">
+                    <path
+                      d="M 742 520 C 738 478, 812 466, 870 474 C 930 482, 948 520, 916 548 C 884 572, 790 572, 756 552 C 738 541, 738 528, 760 512"
+                    />
+                    <path class="arrow" d="M 1150 372 C 1060 380, 990 420, 944 492" />
+                    <path class="arrow" d="M 944 492 l 2 -24 M 944 492 l 22 -10" />
+                  </svg>
+                  <p class="crit-note">One module takes every order. What breaks at 12:30?</p>
+                </div>
+              </figure>
+              <div>
+                <p class="label"></p>
+                <h3>Draw it</h3>
+                <p class="say">
+                  Read a short business problem. Set the scope, and draw the design on a canvas with
+                  48 standard pieces: services, queues, stores, and the boundaries around them.
+                </p>
+              </div>
+            </li>
+            <li>
+              <figure class="plate">
+                <div class="mat">
+                  <img
+                    src="screenshots/defend.png"
+                    alt="The driving characteristics of a kata, each tied to a sentence of the problem, next to the diagram"
+                    width="1400"
+                    height="900"
+                    loading="lazy"
+                  />
+                </div>
+              </figure>
+              <div>
+                <p class="label"></p>
+                <h3>Defend it</h3>
+                <p class="say">
+                  Select the few characteristics that drive the design, and tie each one to a
+                  sentence of the problem. Choose a style. Say what your design gives up, and where
+                  it fails first.
+                </p>
+              </div>
+            </li>
+            <li>
+              <figure class="plate">
+                <div class="mat">
+                  <img
+                    src="screenshots/review.png"
+                    alt="A review with the total score, the top risk, and the feedback for one dimension"
+                    width="1400"
+                    height="960"
+                    loading="lazy"
+                  />
+                </div>
+              </figure>
+              <div>
+                <p class="label"></p>
+                <h3>Face the crit</h3>
+                <p class="say">
+                  The critic scores seven dimensions from 1 to 5. It quotes your own work as the
+                  evidence, names the top risk, and asks the questions that a review board asks.
+                </p>
+              </div>
+            </li>
+          </ol>
         </section>
 
-        <section id="how">
+        <section id="method">
           <h2>One kata, five steps, one review</h2>
           <ol class="steps">
-            <li class="box">
+            <li>
               <h3>Set the scope</h3>
               <p>Name the few functions that shape the design, and what you leave out.</p>
             </li>
-            <li class="box">
+            <li>
               <h3>Select the characteristics</h3>
-              <p>Pick the three qualities that drive this problem, and tie each one to the text.</p>
+              <p>
+                Pick the qualities that drive this problem, usually three. Tie each one to the text.
+              </p>
             </li>
-            <li class="box">
+            <li>
               <h3>Select a style</h3>
               <p>Choose the simplest architecture style that supports them.</p>
             </li>
-            <li class="box">
+            <li>
               <h3>Draw the diagram</h3>
-              <p>
-                Use the built-in Excalidraw canvas, with a palette of standard pieces that you drag
-                in.
-              </p>
+              <p>Use the Excalidraw canvas, with a palette of standard pieces to drag in.</p>
             </li>
-            <li class="box">
+            <li>
               <h3>State the trade-offs</h3>
               <p>Say what your design gives up, and where it fails first.</p>
             </li>
           </ol>
-          <div class="box shot">
-            <img
-              src="screenshots/kata.png"
-              alt="A kata page with the problem text, the palette of building blocks, and a diagram on the canvas"
-              width="1400"
-              height="900"
-              loading="lazy"
-            />
-          </div>
         </section>
 
         <section>
           <div class="split">
             <div>
-              <h2>A review that shows its evidence</h2>
-              <ul>
+              <h2>A crit that shows its evidence</h2>
+              <ul class="points">
                 <li>Seven dimensions, each scored from 1 to 5.</li>
                 <li>A quote from your own diagram or text for each score.</li>
                 <li>One concrete change to make next time, for each dimension.</li>
@@ -669,258 +892,236 @@
                 <li>The questions a review board would ask you.</li>
               </ul>
             </div>
-            <div class="box" style="padding: 1.25rem">
-              <h3>No single correct answer</h3>
-              <p class="soft" style="margin-top: 0.5rem">
-                Every architecture is a set of trade-offs. The reviewer grades the quality of your
-                reasoning against the problem. It does not compare your design with a reference
-                solution.
-              </p>
-            </div>
+            <blockquote>
+              Every architecture is a set of trade-offs. The critic grades the quality of your
+              reasoning against the problem. It does not compare your design with a reference
+              solution.
+              <cite>There is no single correct answer to a kata.</cite>
+            </blockquote>
           </div>
         </section>
 
         <section id="blocks">
-          <div class="split">
+          <div class="split flip">
+            <figure class="plate">
+              <div class="mat">
+                <img
+                  src="screenshots/building-blocks.png"
+                  alt="The Building blocks page with a card for each type of database"
+                  width="1400"
+                  height="900"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption>
+                <b>The building blocks.</b> What each piece does, and what it costs.
+              </figcaption>
+            </figure>
             <div>
               <h2>The pieces of a design, and what each one costs</h2>
-              <ul>
+              <ul class="points">
                 <li>
-                  <strong>48 standard components</strong> in seven groups, from load balancer and
-                  cache to event stream and secrets store.
+                  48 standard components in seven groups, from load balancer and cache to event
+                  stream and secrets store.
                 </li>
                 <li>
-                  <strong>The usual notation:</strong> a cylinder for stored data, a pipe for
-                  messages, a dashed line for a message that nobody waits for.
+                  The usual notation: a cylinder for stored data, a pipe for messages, a dashed line
+                  for a message that nobody waits for.
                 </li>
                 <li>
-                  <strong>Boundaries and patterns:</strong> frames for a deployment, a region, or a
-                  trust zone, and small sets of pieces that come with their arrows.
+                  Boundaries for a deployment, a region, or a trust zone, and small patterns that
+                  come with their arrows.
                 </li>
                 <li>
-                  <strong>A cost for each piece.</strong> Each one has a card with what it costs you
-                  and the question a reviewer asks about it.
+                  A card for each piece, with its cost and the question a reviewer asks about it.
                 </li>
               </ul>
-            </div>
-            <div class="box shot" style="margin-top: 0">
-              <img
-                src="screenshots/building-blocks.png"
-                alt="The Building blocks page with a card for each type of database"
-                width="1400"
-                height="900"
-                loading="lazy"
-              />
             </div>
           </div>
         </section>
 
         <section>
           <h2>Built for practice</h2>
-          <div class="grid">
-            <div class="box">
-              <h3>Katas and interview questions</h3>
-              <p>
+          <dl class="features">
+            <div>
+              <dt>Katas and interview questions</dt>
+              <dd>
                 From a sandwich chain to a ticket seller with two million buyers, plus the classic
                 system design questions.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>A tutor, not an answer key</h3>
-              <p>
+            <div>
+              <dt>A tutor, not an answer key</dt>
+              <dd>
                 A help chat next to the canvas explains concepts and asks about the pieces you used.
                 In a kata, it does not hand you the design.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>Highlights and a notepad</h3>
-              <p>
-                Mark the sentences that matter and think in a private notepad, as with pen and
-                paper.
-              </p>
+            <div>
+              <dt>Highlights and a notepad</dt>
+              <dd>Mark the sentences that matter, and think in a private notepad.</dd>
             </div>
-            <div class="box">
-              <h3>Solve your own problem</h3>
-              <p>
+            <div>
+              <dt>Solve your own problem</dt>
+              <dd>
                 Paste any problem, for example an interview question you had, and get a worked
                 answer with a diagram.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>Scratchpad</h3>
-              <p>
-                Free boards for designs that are not katas, with the full canvas, the building
-                blocks, and the same notepad.
-              </p>
+            <div>
+              <dt>Scratchpad</dt>
+              <dd>Free boards for designs that are not katas, with the full canvas and notepad.</dd>
             </div>
-            <div class="box">
-              <h3>Nothing is lost</h3>
-              <p>
+            <div>
+              <dt>Nothing is lost</dt>
+              <dd>
                 Your answers, notes, and diagram are saved as you work. The home page lists the
                 katas in progress.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>Your data stays local</h3>
-              <p>
-                No account and no database. Attempts and boards are plain files on your computer.
-              </p>
-            </div>
-          </div>
+          </dl>
         </section>
 
         <section id="learn">
           <div class="split">
             <div>
-              <h2>A wiki for the concepts you meet</h2>
-              <ul>
+              <h2>A course for the concepts you meet</h2>
+              <ul class="points">
                 <li>
-                  <strong>91 lessons in ten sections</strong> on trade-offs, structure, styles,
-                  data, communication, reliability, teams, and product decisions. Each one has a
-                  level, a reading time, and objectives.
+                  91 lessons in ten sections: trade-offs, structure, styles, data, communication,
+                  reliability, teams, and product decisions. Each one has a level, a reading time,
+                  and objectives.
                 </li>
                 <li>
-                  <strong>A sidebar for the whole course:</strong> the ten sections in order, your
-                  progress in each one, and a filter to find a page. The notebook sits on the other
-                  side of the lesson.
+                  A sidebar for the whole course, with your progress in each section. The notebook
+                  sits on the other side of the lesson.
                 </li>
                 <li>
-                  <strong>Design inside one application:</strong> hexagonal, clean, vertical slices,
-                  domain models, CQRS.
+                  Product and decisions: who decides, the RACI matrix, prioritization with MoSCoW,
+                  RICE, and cost of delay, and product thinking.
                 </li>
-                <li>
-                  <strong>Product and decisions:</strong> who decides, the RACI matrix,
-                  prioritization with MoSCoW, RICE, and cost of delay, and product thinking for
-                  product roles.
-                </li>
-                <li>
-                  <strong>22 system design cases</strong>, and walkthroughs that explain one diagram
-                  in steps.
-                </li>
-                <li>
-                  <strong>Worked examples</strong> that show which sentence in the problem caused
-                  each decision.
-                </li>
-                <li>
-                  <strong>A glossary</strong> of 323 terms in plain words, and a cheatsheet for each
-                  section.
-                </li>
+                <li>22 system design cases, and walkthroughs that explain one diagram in steps.</li>
+                <li>A glossary of 323 terms in plain words, and a cheatsheet for each section.</li>
               </ul>
             </div>
-            <div class="box shot" style="margin-top: 0">
-              <img
-                src="screenshots/learn.png"
-                alt="A lesson about hexagonal architecture in the dark theme, with the course sidebar on the left and the notebook on the right"
-                width="1400"
-                height="900"
-                loading="lazy"
-              />
-            </div>
+            <figure class="plate">
+              <div class="mat">
+                <img
+                  src="screenshots/learn.png"
+                  alt="A lesson about hexagonal architecture in the dark theme, with the course sidebar on the left and the notebook on the right"
+                  width="1400"
+                  height="900"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption>
+                <b>A lesson.</b> The course on the left, your notebook on the right.
+              </figcaption>
+            </figure>
           </div>
         </section>
 
         <section id="study">
-          <div class="split">
+          <div class="split flip">
+            <figure class="plate">
+              <div class="mat">
+                <img
+                  src="screenshots/read-aloud.png"
+                  alt="A lesson read aloud, with the current sentence highlighted and the player at the bottom"
+                  width="1400"
+                  height="900"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption>
+                <b>Read aloud.</b> The sentence that the voice reads is highlighted.
+              </figcaption>
+            </figure>
             <div>
               <h2>Study the way that works for you</h2>
-              <ul>
+              <ul class="points">
                 <li>
-                  <strong>Read aloud.</strong> A voice reads the lesson and highlights the sentence
-                  that it reads, so your eyes follow along. Start at any paragraph or section, and
-                  click a sentence to jump to it. Use the browser voices, or natural Google Cloud
-                  voices.
+                  Read aloud: a voice reads the lesson and highlights each sentence, so your eyes
+                  follow along. Start at any paragraph or section. Use the browser voices, or
+                  natural Google Cloud voices.
                 </li>
                 <li>
-                  <strong>Search everything</strong> with Cmd+K: lessons, cases, terms, questions,
-                  katas, and your own notes.
+                  Search everything with Cmd+K: lessons, cases, terms, questions, and your notes.
                 </li>
                 <li>
-                  <strong>Highlights and a notebook.</strong> Mark a passage, add a note, and find
-                  all of it again on one page.
+                  Highlights and a notebook: mark a passage, add a note, and find it all again.
                 </li>
-                <li>
-                  <strong>Progress.</strong> Mark each lesson as done, and see what is left in each
-                  section.
-                </li>
+                <li>Progress: mark each lesson as done, and see what is left.</li>
               </ul>
-            </div>
-            <div class="box shot" style="margin-top: 0">
-              <img
-                src="screenshots/read-aloud.png"
-                alt="A lesson read aloud, with the current sentence highlighted and the player at the bottom"
-                width="1400"
-                height="900"
-                loading="lazy"
-              />
             </div>
           </div>
         </section>
 
         <section>
           <h2>Get ready for the interview</h2>
-          <div class="grid">
-            <div class="box">
-              <h3>Question drill</h3>
-              <p>
+          <dl class="features">
+            <div>
+              <dt>Question drill</dt>
+              <dd>
                 436 interview questions from the lessons. Write your answer, and the model grades it
                 against the lesson.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>Vocabulary drill</h3>
-              <p>
+            <div>
+              <dt>Vocabulary drill</dt>
+              <dd>
                 Explain each term in your own words. Spaced repetition brings back the terms you
                 missed.
-              </p>
+              </dd>
             </div>
-            <div class="box">
-              <h3>Behavioral stories</h3>
-              <p>
+            <div>
+              <dt>Behavioral stories</dt>
+              <dd>
                 Keep true work stories in a story bank, tag them with competencies, and see which
-                competencies have no story yet.
-              </p>
+                ones have no story yet.
+              </dd>
             </div>
-          </div>
+          </dl>
         </section>
 
         <section id="providers">
           <h2>Works with the AI provider you already have</h2>
-          <p class="soft" style="margin-top: 0.9rem; max-width: 44rem">
-            The reviewer, the tutor chat, and the worked answers use one connection that you select
-            in Settings. No provider is required by the design.
+          <p class="measure soft" style="margin-top: 1rem">
+            The critic, the tutor chat, and the worked answers use one connection that you select in
+            Settings. No provider is required by the design.
           </p>
-          <div class="box table">
+          <div class="table">
             <table>
               <thead>
                 <tr>
-                  <th>Mode</th>
-                  <th>What it uses</th>
-                  <th>API key in the app</th>
+                  <th scope="col">Mode</th>
+                  <th scope="col">What it uses</th>
+                  <th scope="col">API key in the app</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Claude Code</strong></td>
+                  <th scope="row">Claude Code</th>
                   <td>The <code>claude</code> command and its login on your computer</td>
                   <td>No</td>
                 </tr>
                 <tr>
-                  <td><strong>OpenCode</strong></td>
+                  <th scope="row">OpenCode</th>
                   <td>The <code>opencode</code> command and its login on your computer</td>
                   <td>No</td>
                 </tr>
                 <tr>
-                  <td><strong>OpenCode Go</strong></td>
+                  <th scope="row">OpenCode Go</th>
                   <td>An OpenCode Go API key</td>
                   <td>Yes</td>
                 </tr>
                 <tr>
-                  <td><strong>Anthropic API</strong></td>
+                  <th scope="row">Anthropic API</th>
                   <td>An Anthropic API key</td>
                   <td>Yes</td>
                 </tr>
                 <tr>
-                  <td><strong>OpenAI-compatible endpoint</strong></td>
+                  <th scope="row">OpenAI-compatible endpoint</th>
                   <td>
                     Google Gemini, OpenRouter, OpenAI, a local Ollama model, or any provider with
                     this API format
@@ -932,9 +1133,9 @@
           </div>
         </section>
 
-        <section id="run">
+        <section id="run" class="run">
           <h2>Run it</h2>
-          <p class="soft" style="margin-top: 0.9rem; max-width: 44rem">
+          <p class="measure soft" style="margin-top: 1rem">
             Charrette runs on your computer. You need Node.js 20.9 or later, pnpm, and one of the
             five connections above.
           </p>
@@ -943,8 +1144,10 @@ git clone https://github.com/aesbetancourt/charrette.git
 cd charrette
 pnpm install
 pnpm dev</pre>
-          <div class="hero actions" style="padding: 0">
-            <a class="btn" href="https://github.com/aesbetancourt/charrette">Open the repository</a>
+          <div class="actions">
+            <a class="button" href="https://github.com/aesbetancourt/charrette"
+              >Open the repository</a
+            >
           </div>
         </section>
       </div>
@@ -952,16 +1155,32 @@ pnpm dev</pre>
 
     <footer>
       <div class="wrap">
-        <p>
-          <strong>Credits.</strong> The architecture kata is an idea of
-          <a href="https://github.com/tedneward/ArchKatas">Ted Neward</a>. The method is inspired by
-          the book <em>Fundamentals of Software Architecture</em> by Mark Richards and Neal Ford.
-        </p>
-        <p class="soft">
-          Charrette, formerly ArchSim, is a personal project by Alejandro Sanchez. It is not
-          affiliated with these authors or with any AI provider. The lessons and worked examples are
-          written with AI and are not reviewed by an expert.
-        </p>
+        <div>
+          <h2>Credits</h2>
+          <p>
+            The architecture kata is an idea of
+            <a href="https://github.com/tedneward/ArchKatas">Ted Neward</a>. The method is inspired
+            by <em>Fundamentals of Software Architecture</em> by Mark Richards and Neal Ford.
+          </p>
+        </div>
+        <div>
+          <h2>Colophon</h2>
+          <p>
+            Set in Bodoni Moda and EB Garamond. The engraving is by Alexis Lemaistre, 1889, from
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Charrette,_%C3%89cole_nationale_sup%C3%A9rieure_des_beaux-arts,_by_Alexis_Lemaistre.png"
+              >Wikimedia Commons</a
+            >, under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+        <div>
+          <h2>About</h2>
+          <p>
+            Charrette, formerly ArchSim, is a personal project by Alejandro Sanchez. It is not
+            affiliated with these authors or with any AI provider. The lessons and worked examples
+            are written with AI and are not reviewed by an expert.
+          </p>
+        </div>
       </div>
     </footer>
   </body>
