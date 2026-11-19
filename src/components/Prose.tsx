@@ -115,11 +115,19 @@ export default function Prose({
               {children}
             </th>
           ),
-          td: ({ children }) => (
-            <td className="min-w-36 border-t border-foreground/10 px-3 py-2.5 align-top transition-colors first:min-w-40 first:font-semibold [&+td]:border-l [&+td]:border-foreground/10">
-              {children}
-            </td>
-          ),
+          // A cell with long text gets a minimum width. A short cell, such as "A/R" in a RACI
+          // matrix or "Yes", does not, so a column of short values stays narrow.
+          td: ({ children }) => {
+            const length = text(children).trim().length;
+            const short = length > 0 && length <= 12;
+            return (
+              <td
+                className={`border-t border-foreground/10 px-3 py-2.5 align-top transition-colors first:min-w-40 first:font-semibold [&+td]:border-l [&+td]:border-foreground/10 ${short ? "" : "min-w-36"}`}
+              >
+                {children}
+              </td>
+            );
+          },
         }}
       >
         {markdown}

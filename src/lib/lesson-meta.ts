@@ -796,4 +796,40 @@ export const lessonMeta: Record<string, LessonMeta> = {
       "Recover and fail over a matching engine with event sourcing and consensus.",
     ],
   },
+  "decision-making": {
+    level: "intermediate",
+    objectives: [
+      "Classify a decision as a one-way door or a two-way door, and set its speed and the people involved.",
+      "Name the decider, the people who give input, and the people told after, before the discussion starts.",
+      "Select DACI, RAPID, consent, consensus, or the advice process for a given decision.",
+      "Prepare, record, and revisit a decision that crosses product and architecture.",
+    ],
+  },
+  raci: {
+    level: "basic",
+    objectives: [
+      "Tell the difference between responsible, accountable, consulted, and informed.",
+      "Build a RACI matrix with one accountable role in each row, and check its rows and columns.",
+      "Assign architecture decisions by reach: inside one team, across teams, or a quality target.",
+      "Select a RACI variant only when a real gap needs the extra letter.",
+    ],
+  },
+  prioritization: {
+    level: "intermediate",
+    objectives: [
+      "Compare work items by value, effort, risk, urgency, dependencies, and strategy fit.",
+      "Use MoSCoW, RICE, cost of delay, and the Kano model, and select the method that fits the decision.",
+      "Make technical debt and platform work compete with features in business terms.",
+      "Say no to a request and keep the trust of the person who asked.",
+    ],
+  },
+  "product-thinking": {
+    level: "intermediate",
+    objectives: [
+      "Tell an output from an outcome and an impact, and give an example of each.",
+      "Name the roles in a product team and the product risk that each role covers.",
+      "Map a product goal to an architecture characteristic and to a design choice.",
+      "Answer a product sense question with a goal, a user segment, a priority, and success metrics.",
+    ],
+  },
 };

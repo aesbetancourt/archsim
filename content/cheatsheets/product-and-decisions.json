@@ -1,0 +1,144 @@
+{
+  "section": "Product and decisions",
+  "summary": "Who decides, how to decide, what to do first, and how architecture serves the product.",
+  "blocks": [
+    {
+      "type": "rules",
+      "title": "Make decisions that stick",
+      "items": [
+        {
+          "text": "Ask what it costs to reverse a decision. Go fast on two-way doors and slowly on one-way doors.",
+          "lesson": "decision-making#one-way-and-two-way-doors"
+        },
+        {
+          "text": "Name one decider before the discussion starts. Input is not approval.",
+          "lesson": "decision-making#who-decides"
+        },
+        {
+          "text": "Use a single owner with advice, such as DACI, for most decisions. Keep consensus for few decisions.",
+          "lesson": "decision-making#frameworks-for-group-decisions"
+        },
+        {
+          "text": "Agree the criteria before you score the options, and set a deadline.",
+          "lesson": "decision-making#how-to-prepare-a-decision"
+        },
+        {
+          "text": "Give each shared product and architecture decision one decider anyway.",
+          "lesson": "decision-making#product-and-architecture-decisions"
+        },
+        {
+          "text": "Disagree once, before the decision. Then commit, and reopen only with new facts.",
+          "lesson": "decision-making#disagree-and-commit"
+        },
+        {
+          "text": "Write a revisit trigger with each decision. Record a reversal as a new entry.",
+          "lesson": "decision-making#record-and-revisit"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "RACI rules",
+      "items": [
+        {
+          "text": "Give each row exactly one A.",
+          "lesson": "raci#the-rules"
+        },
+        {
+          "text": "Give each row at least one R. A and R can be the same person.",
+          "lesson": "raci#the-rules"
+        },
+        {
+          "text": "Keep C small. Each C adds a conversation and a delay.",
+          "lesson": "raci#the-rules"
+        },
+        {
+          "text": "Send I a message. Do not invite I to the meeting.",
+          "lesson": "raci#the-four-letters"
+        },
+        {
+          "text": "Use verbs as rows and roles as columns, not names.",
+          "lesson": "raci#how-to-build-one"
+        },
+        {
+          "text": "Fill in A first, then R, then C and I.",
+          "lesson": "raci#how-to-build-one"
+        },
+        {
+          "text": "A column with no empty cells is overloaded. A column with only I is perhaps not needed.",
+          "lesson": "raci#the-rules"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "title": "Which prioritization method to use",
+      "items": [
+        {
+          "when": "You have a long, unsorted list and a short workshop",
+          "use": "Value against effort 2x2",
+          "lesson": "prioritization#the-methods"
+        },
+        {
+          "when": "You must fix the scope of one release or time box",
+          "use": "MoSCoW, with Musts at no more than about 60% of effort",
+          "lesson": "prioritization#the-methods"
+        },
+        {
+          "when": "You compare many product ideas and timing matters little",
+          "use": "RICE score",
+          "lesson": "prioritization#the-methods"
+        },
+        {
+          "when": "Items differ in urgency, deadlines, or weekly loss",
+          "use": "Cost of delay divided by duration (CD3 or WSJF)",
+          "lesson": "prioritization#the-methods"
+        },
+        {
+          "when": "You balance a release across basic, performance, and delighter features",
+          "use": "Kano model",
+          "lesson": "prioritization#the-methods"
+        },
+        {
+          "when": "Technical debt or platform work competes with features",
+          "use": "Cost of delay, a capacity share, or an error budget",
+          "lesson": "prioritization#technical-work-against-features"
+        }
+      ]
+    },
+    {
+      "type": "rules",
+      "title": "Product thinking",
+      "items": [
+        {
+          "text": "Start from the user problem and the business result, not from the feature.",
+          "lesson": "product-thinking#what-product-thinking-is"
+        },
+        {
+          "text": "Steer the team by outcomes. An output can have no effect.",
+          "lesson": "product-thinking#what-product-thinking-is"
+        },
+        {
+          "text": "Reduce the four risks before you build: value, usability, feasibility, and viability.",
+          "lesson": "product-thinking#who-does-what-in-a-product-team"
+        },
+        {
+          "text": "Put problems on the roadmap with order and confidence, not features with dates.",
+          "lesson": "product-thinking#from-strategy-to-backlog"
+        },
+        {
+          "text": "Test the riskiest assumption first. An MVP is not a bad version 1.",
+          "lesson": "product-thinking#discovery-and-delivery"
+        },
+        {
+          "text": "Give each main metric at least one guardrail metric.",
+          "lesson": "product-thinking#product-metrics"
+        },
+        {
+          "text": "Tie each characteristic and design choice to a product goal. State its cost per user or per order.",
+          "lesson": "product-thinking#how-architecture-serves-the-product"
+        }
+      ]
+    }
+  ]
+}

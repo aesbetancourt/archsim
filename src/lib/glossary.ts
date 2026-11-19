@@ -22,6 +22,7 @@ export const glossaryCategories = [
   "Scale and speed",
   "Operations",
   "Security",
+  "Product and decisions",
 ];
 
 export const glossary: GlossaryTerm[] = [
@@ -3320,6 +3321,194 @@ export const glossary: GlossaryTerm[] = [
     match: ["jwt", "json web token"],
     wiki: "JSON_Web_Token",
     learn: "security",
+  },
+  {
+    id: "one-way-door",
+    term: "One-way door",
+    category: "Product and decisions",
+    definition:
+      "A one-way door is a decision with large consequences that is almost impossible to reverse.",
+    example:
+      "The choice of the main database for a system with ten years of data is a one-way door.",
+    match: ["one-way door", "type 1 decision"],
+    learn: "decision-making",
+  },
+  {
+    id: "two-way-door",
+    term: "Two-way door",
+    category: "Product and decisions",
+    definition:
+      "A two-way door is a decision that you can reverse at a small cost, so one owner can take it fast.",
+    example:
+      "A new text on a checkout button is a two-way door, because the team can change it back the next day.",
+    match: ["two-way door", "type 2 decision"],
+    learn: "decision-making",
+  },
+  {
+    id: "daci",
+    term: "DACI",
+    category: "Product and decisions",
+    definition:
+      "DACI is a decision framework from Intuit that names a Driver, one Approver, the Contributors, and the Informed.",
+    example:
+      "A staff engineer is the Driver for a build-or-buy decision, and the head of product is the Approver.",
+    match: ["daci"],
+    learn: "decision-making",
+  },
+  {
+    id: "disagree-and-commit",
+    term: "Disagree and commit",
+    category: "Product and decisions",
+    definition:
+      "Disagree and commit means that you state your disagreement before the decision, and then support the decision fully.",
+    example:
+      "The platform lead prefers to run an open-source engine, records the concern, and then helps the hosted service succeed.",
+    match: ["disagree and commit"],
+    learn: "decision-making",
+  },
+  {
+    id: "raci-matrix",
+    term: "RACI matrix",
+    category: "Product and decisions",
+    definition:
+      "A RACI matrix is a table with activities as rows and roles as columns, and each cell marks R, A, C, or I.",
+    example:
+      "A launch plan uses a RACI matrix to show that support is responsible for telling customers.",
+    match: ["raci matrix", "responsibility assignment matrix"],
+    wiki: "Responsibility_assignment_matrix",
+    learn: "raci",
+  },
+  {
+    id: "accountable-raci",
+    term: "Accountable (RACI)",
+    category: "Product and decisions",
+    definition:
+      "The accountable role is the one person who answers for the result and signs it off, with exactly one per row.",
+    example: "The architect is accountable for the decision record, and the tech lead writes it.",
+    match: [],
+    learn: "raci",
+  },
+  {
+    id: "consulted-informed",
+    term: "Consulted and informed (RACI)",
+    category: "Product and decisions",
+    definition:
+      "Consulted people give input before the work in a two-way talk, and informed people get the result after it in a one-way message.",
+    example: "Security is consulted on the design, and support is informed of the launch date.",
+    match: [],
+    learn: "raci",
+  },
+  {
+    id: "opportunity-cost",
+    term: "Opportunity cost",
+    category: "Product and decisions",
+    definition: "The value of the best option that you give up when you choose another option.",
+    example:
+      "If the team builds the live map this quarter, the opportunity cost is the checkout fix that waits.",
+    match: ["opportunity cost"],
+    wiki: "Opportunity_cost",
+    learn: "prioritization",
+  },
+  {
+    id: "moscow",
+    term: "MoSCoW",
+    category: "Product and decisions",
+    definition:
+      "A method that puts each item of a release into Must have, Should have, Could have, or Won't have this time.",
+    example:
+      "For the first release, current parcel status is a Must and the live map is Won't have this time.",
+    match: ["moscow", "won't have this time"],
+    wiki: "MoSCoW_method",
+    learn: "prioritization",
+  },
+  {
+    id: "rice-score",
+    term: "RICE score",
+    category: "Product and decisions",
+    definition:
+      "A score that multiplies reach, impact, and confidence, and divides the result by effort.",
+    example: "Saved addresses score 5,000 × 1 × 1.0 ÷ 1 = 5,000.",
+    match: ["rice score", "rice method"],
+    learn: "prioritization",
+  },
+  {
+    id: "cost-of-delay",
+    term: "Cost of delay",
+    category: "Product and decisions",
+    definition: "The value that you lose for each unit of time that an item is not done.",
+    example:
+      "A checkout bug that loses $6k of orders each week has a cost of delay of $6k each week.",
+    match: ["cost of delay", "cd3"],
+    wiki: "Cost_of_delay",
+    learn: "prioritization",
+  },
+  {
+    id: "wsjf",
+    term: "WSJF",
+    category: "Product and decisions",
+    definition:
+      "Weighted shortest job first: do first the item with the highest cost of delay divided by its duration.",
+    example:
+      "A one-week fix with a cost of delay of $6k each week scores 6 and goes before a five-week project that scores 2.",
+    match: ["wsjf", "weighted shortest job first"],
+    learn: "prioritization",
+  },
+  {
+    id: "outcome-over-output",
+    term: "Outcome over output",
+    category: "Product and decisions",
+    definition:
+      "An outcome is a change in what users do, and an output is something that the team ships.",
+    example:
+      "A ready message is an output, and customers who arrive at the pickup time are an outcome.",
+    match: ["outcomes over output", "outcome over output"],
+    learn: "product-thinking",
+  },
+  {
+    id: "north-star-metric",
+    term: "North star metric",
+    category: "Product and decisions",
+    definition:
+      "A north star metric is the one number that best shows the value that users get from the product.",
+    example:
+      "For a lunch ordering app, the north star can be online orders picked up on time each week.",
+    match: ["north star metric"],
+    learn: "product-thinking",
+  },
+  {
+    id: "okr",
+    term: "OKR (objectives and key results)",
+    category: "Product and decisions",
+    definition:
+      "An OKR is a qualitative objective with a few numeric key results that show progress to it.",
+    example:
+      "The objective is to make online pickup normal, and one key result is 30% of lunch orders online.",
+    match: ["okrs", "objectives and key results"],
+    wiki: "Objectives_and_key_results",
+    learn: "product-thinking",
+  },
+  {
+    id: "minimum-viable-product",
+    term: "Minimum viable product",
+    category: "Product and decisions",
+    definition:
+      "A minimum viable product is the smallest product that lets a team learn whether its main assumption is true.",
+    example:
+      "Order ahead in five shops with pay at pickup tests whether customers want to order ahead.",
+    match: ["minimum viable product"],
+    wiki: "Minimum_viable_product",
+    learn: "product-thinking",
+  },
+  {
+    id: "product-discovery",
+    term: "Product discovery",
+    category: "Product and decisions",
+    definition:
+      "Product discovery is the work that finds out what to build, with cheap tests, before the team builds it.",
+    example:
+      "Five customer interviews and a paper prototype test the ready message before the team writes code.",
+    match: ["product discovery", "dual-track"],
+    learn: "product-thinking",
   },
 ];
 

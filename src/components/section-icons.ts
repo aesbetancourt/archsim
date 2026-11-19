@@ -3,6 +3,7 @@ import {
   ArrowLeftRight,
   BookOpen,
   Boxes,
+  ClipboardList,
   Code,
   Compass,
   Database,
@@ -21,6 +22,7 @@ const icons: Record<string, LucideIcon> = {
   Communication: ArrowLeftRight,
   "Reliability and operations": Activity,
   "The architect at work": Users,
+  "Product and decisions": ClipboardList,
   "System design cases": MessagesSquare,
 };
 

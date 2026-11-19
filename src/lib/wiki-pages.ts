@@ -423,6 +423,35 @@ export const wikiSections: WikiSection[] = [
     ],
   },
   {
+    title: "Product and decisions",
+    pages: [
+      article(
+        "decision-making",
+        "How decisions are made",
+        "Who decides what, how fast, and how a group reaches a decision that sticks.",
+        ["decision-records", "raci", "trade-offs"],
+      ),
+      article(
+        "raci",
+        "The RACI matrix",
+        "Who does the work, who answers for it, who gives input, and who is told.",
+        ["decision-making", "teams", "team-topologies"],
+      ),
+      article(
+        "prioritization",
+        "Prioritization",
+        "Decide what to do first, what to do later, and what not to do, and explain why.",
+        ["product-thinking", "estimation", "risk-assessment"],
+      ),
+      article(
+        "product-thinking",
+        "Product thinking",
+        "How product teams work, and how architecture serves the product and its users.",
+        ["prioritization", "measuring-characteristics", "architect-role"],
+      ),
+    ],
+  },
+  {
     title: "System design cases",
     pages: [
       article(

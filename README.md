@@ -45,14 +45,15 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Learn
 
-- **87 lessons in nine sections** on the knowledge areas of a senior architect: trade-off analysis, characteristics, structure and styles, data and consistency, communication, reliability and operations, and the work with teams. Each lesson has a level, a reading time, and objectives.
+- **91 lessons in ten sections** on the knowledge areas of a senior architect: trade-off analysis, characteristics, structure and styles, data and consistency, communication, reliability and operations, the work with teams, and product decisions. Each lesson has a level, a reading time, and objectives.
 - **A course sidebar.** The sections are numbered in reading order. The sidebar shows your progress in each section and has a filter to find a page. The notebook sits on the other side of the lesson.
 - **Design inside one application.** Hexagonal, clean, and onion architecture, vertical slices, domain model patterns, CQRS, and event sourcing, with a clear line between system architecture and application architecture.
+- **Product and decisions.** Four lessons for architects who work with product, and for technical product roles: how decisions are made (one-way and two-way doors, DACI, RAPID, disagree and commit), the RACI matrix, prioritization (MoSCoW, RICE, cost of delay, the Kano model, technical debt against features), and product thinking (outcomes, OKRs, discovery, metrics, product sense).
 - **22 system design cases**, each a short case study of a known type of system.
 - **Walkthroughs.** Some lessons explain one diagram in steps, for example a cache that fails and a saga that compensates. Use the buttons or the arrow keys.
 - **Worked examples.** Ten finished katas that show each decision and the sentence in the problem that caused it, with a diagram, the rejected options, and a different valid answer.
 - **Cheatsheets.** One page for each section, with a filter.
-- **A glossary** of 306 terms in plain words, each with an example and a link to a lesson and to Wikipedia.
+- **A glossary** of 323 terms in plain words, each with an example and a link to a lesson and to Wikipedia.
 
 ### Study
 
@@ -65,7 +66,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 
 ### Interview practice
 
-- **Question drill.** 410 interview questions from 82 lessons, 28 of them behavioral. Write your answer, and the model grades it against the lesson. Filter by section or by the lessons you finished.
+- **Question drill.** 436 interview questions from 86 lessons, 28 of them behavioral. Write your answer, and the model grades it against the lesson. Filter by section or by the lessons you finished.
 - **Vocabulary drill.** Explain the glossary terms in your own words. Spaced repetition brings back the terms you missed. An optional AI check says what your explanation covers and what it misses.
 - **Behavioral interviews and the story bank.** A lesson on behavioral interviews, and a story bank in the notebook. Write true work stories in the STAR form and tag each one with competencies. The bank shows which of the 11 competencies have no story yet. In the drill, a behavioral answer can start from a saved story, and the model grades it as a story.
 
