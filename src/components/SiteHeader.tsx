@@ -2,6 +2,7 @@ import {
   Blocks,
   BookA,
   BookOpen,
+  CircleHelp,
   GraduationCap,
   Library,
   Lightbulb,
@@ -114,6 +115,9 @@ export default function SiteHeader() {
       </nav>
       <div className="ml-auto flex items-center gap-1">
         <CommandPalette />
+        <LinkButton variant="ghost" size="icon" href="/guide" aria-label="Guide" title="Guide">
+          <CircleHelp />
+        </LinkButton>
         <LinkButton variant="ghost" size="icon" href="/settings" aria-label="Settings">
           <Settings />
         </LinkButton>

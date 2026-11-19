@@ -43,6 +43,7 @@ const suggestions: SearchItem[] = [
   { kind: "Page", title: "Question drill", href: "/drill/questions" },
   { kind: "Page", title: "Notebook", href: "/notebook" },
   { kind: "Page", title: "Katas", href: "/" },
+  { kind: "Page", title: "Guide", href: "/guide" },
 ];
 
 // The search of the app. ⌘K or Ctrl+K opens it from any page.

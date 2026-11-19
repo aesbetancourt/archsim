@@ -70,6 +70,13 @@ const appPages: SearchItem[] = [
   },
   {
     kind: "Page",
+    title: "Guide",
+    subtitle: "How to practice and study with Charrette",
+    href: "/guide",
+    keywords: "help how to use start study plan shortcuts",
+  },
+  {
+    kind: "Page",
     title: "Settings",
     subtitle: "The model connection",
     href: "/settings",
