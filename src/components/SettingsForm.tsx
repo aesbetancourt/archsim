@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ReadingFontSetting from "@/components/ReadingFontSetting";
 import type { Mode, PublicSettings, SpeechEngine } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 import { googleVoices } from "@/lib/voices";
@@ -424,6 +425,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
           </CardContent>
         </Card>
       )}
+
+      <ReadingFontSetting />
 
       <Card>
         <CardHeader>
