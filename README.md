@@ -46,6 +46,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 ### Learn
 
 - **87 lessons in nine sections** on the knowledge areas of a senior architect: trade-off analysis, characteristics, structure and styles, data and consistency, communication, reliability and operations, and the work with teams. Each lesson has a level, a reading time, and objectives.
+- **A course sidebar.** The sections are numbered in reading order. The sidebar shows your progress in each section and has a filter to find a page. The notebook sits on the other side of the lesson.
 - **Design inside one application.** Hexagonal, clean, and onion architecture, vertical slices, domain model patterns, CQRS, and event sourcing, with a clear line between system architecture and application architecture.
 - **22 system design cases**, each a short case study of a known type of system.
 - **Walkthroughs.** Some lessons explain one diagram in steps, for example a cache that fails and a saga that compensates. Use the buttons or the arrow keys.
@@ -68,7 +69,7 @@ There is no single correct answer to a kata. The reviewer grades the quality of 
 - **Vocabulary drill.** Explain the glossary terms in your own words. Spaced repetition brings back the terms you missed. An optional AI check says what your explanation covers and what it misses.
 - **Behavioral interviews and the story bank.** A lesson on behavioral interviews, and a story bank in the notebook. Write true work stories in the STAR form and tag each one with competencies. The bank shows which of the 11 competencies have no story yet. In the drill, a behavioral answer can start from a saved story, and the model grades it as a story.
 
-![A lesson page in the dark theme](docs/screenshots/learn.png)
+![A lesson about hexagonal architecture in the dark theme, with the course sidebar and the notebook](docs/screenshots/learn.png)
 
 ![A worked example with its diagram](docs/screenshots/worked-example.png)
 
