@@ -37,12 +37,53 @@ import {
   readingMinutes,
 } from "@/lib/wiki";
 
+// For cost, a high level is bad. For the other columns, a high level is good.
 const ratingColumns = [
-  { key: "simplicity", label: "Simplicity" },
-  { key: "scalability", label: "Scalability" },
-  { key: "faultTolerance", label: "Fault tolerance" },
-  { key: "cost", label: "Cost" },
+  { key: "simplicity", label: "Simplicity", goodWhenHigh: true },
+  { key: "scalability", label: "Scalability", goodWhenHigh: true },
+  { key: "faultTolerance", label: "Fault tolerance", goodWhenHigh: true },
+  { key: "cost", label: "Cost", goodWhenHigh: false },
 ] as const;
+
+// The same look as the tables in the lesson text: a header in the main color and striped rows.
+const headRow = "bg-main hover:bg-main";
+const headCell = "text-xs font-semibold uppercase tracking-wide text-main-foreground";
+const bodyRow = "bg-card even:bg-muted/50 hover:bg-main/15";
+
+const levelValue = { low: 1, medium: 2, high: 3 } as const;
+const barHeights = ["h-1.5", "h-2.5", "h-3.5"];
+// Green is good for the system, amber is in the middle, and red is a cost.
+const qualityColor = [
+  "",
+  "text-[#e03131] dark:text-[#ff8787]",
+  "text-[#e8590c] dark:text-[#ffc078]",
+  "text-[#2f9e44] dark:text-[#8ce99a]",
+];
+
+// A rating as three bars and a word. The color says if the level is good or bad in that column.
+function Rating({
+  level,
+  goodWhenHigh,
+}: {
+  level: "low" | "medium" | "high";
+  goodWhenHigh: boolean;
+}) {
+  const value = levelValue[level];
+  const quality = goodWhenHigh ? value : 4 - value;
+  return (
+    <span className={`inline-flex items-center gap-1.5 font-medium ${qualityColor[quality]}`}>
+      <span className="flex h-3.5 items-end gap-0.5" aria-hidden>
+        {barHeights.map((height, index) => (
+          <span
+            key={height}
+            className={`w-1.5 rounded-[1px] border border-current ${height} ${index < value ? "bg-current" : "opacity-40"}`}
+          />
+        ))}
+      </span>
+      {level}
+    </span>
+  );
+}
 
 function Method() {
   return (
@@ -78,15 +119,15 @@ function Characteristics() {
       <Card className="py-0">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="pl-4">Characteristic</TableHead>
-              <TableHead>Meaning</TableHead>
-              <TableHead className="pr-4">Signal in a kata</TableHead>
+            <TableRow className={headRow}>
+              <TableHead className={`pl-4 ${headCell}`}>Characteristic</TableHead>
+              <TableHead className={headCell}>Meaning</TableHead>
+              <TableHead className={`pr-4 ${headCell}`}>Signal in a kata</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {characteristics.map((item) => (
-              <TableRow key={item.name} className="align-top">
+              <TableRow key={item.name} className={`align-top ${bodyRow}`}>
                 <TableCell className="pl-4 font-medium">{item.name}</TableCell>
                 <TableCell className="whitespace-normal">{item.meaning}</TableCell>
                 <TableCell className="whitespace-normal pr-4 text-muted-foreground">
@@ -109,19 +150,25 @@ function Styles() {
         few. The last four accept more complexity to get scale or resilience. No style is the best
         one. Each is a different set of trade-offs.
       </p>
+      <p className="max-w-2xl text-muted-foreground">
+        The bars show the level. The color shows what the level means for you: green is good, red is
+        a cost. For cost, a high level is bad.
+      </p>
       <Card className="py-0">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="pl-4">Style</TableHead>
+            <TableRow className={headRow}>
+              <TableHead className={`pl-4 ${headCell}`}>Style</TableHead>
               {ratingColumns.map((column) => (
-                <TableHead key={column.key}>{column.label}</TableHead>
+                <TableHead key={column.key} className={headCell}>
+                  {column.label}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
             {styleLessons.map((lesson) => (
-              <TableRow key={lesson.id}>
+              <TableRow key={lesson.id} className={bodyRow}>
                 <TableCell className="pl-4">
                   <Link
                     href={`/learn/${lesson.id}`}
@@ -131,20 +178,11 @@ function Styles() {
                   </Link>
                   <p className="whitespace-normal text-muted-foreground">{lesson.idea}</p>
                 </TableCell>
-                {ratingColumns.map((column) => {
-                  const level = lesson.ratings[column.key];
-                  return (
-                    <TableCell key={column.key}>
-                      <Badge
-                        variant={
-                          level === "high" ? "default" : level === "medium" ? "neutral" : "neutral"
-                        }
-                      >
-                        {level}
-                      </Badge>
-                    </TableCell>
-                  );
-                })}
+                {ratingColumns.map((column) => (
+                  <TableCell key={column.key}>
+                    <Rating level={lesson.ratings[column.key]} goodWhenHigh={column.goodWhenHigh} />
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

@@ -13,8 +13,9 @@ type Point = { node: Node; offset: number };
 type Section = { title: string; element: HTMLElement };
 
 // The elements that hold text to read, and the elements to skip.
-const BLOCKS = "h1,h2,h3,h4,p,li,dt,dd,th,td,blockquote,figcaption";
-const SKIP = "pre,nav,button,svg,script,style,textarea,input,select,[data-read-skip]";
+// Tables are skipped: a table read cell by cell is hard to follow by ear.
+const BLOCKS = "h1,h2,h3,h4,p,li,dt,dd,blockquote,figcaption";
+const SKIP = "pre,nav,table,button,svg,script,style,textarea,input,select,[data-read-skip]";
 // A click on these elements does its own action. It does not move the reading.
 const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=button]";
 // The distance from the left edge of the text to the "Read from here" button.

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Diagram from "@/components/Diagram";
+import TableFrame from "@/components/TableFrame";
 import Walkthrough from "@/components/Walkthrough";
 import { parseWalkthrough } from "@/lib/walkthrough";
 import { headingId } from "@/lib/wiki-pages";
@@ -94,15 +95,31 @@ export default function Prose({
                 {children}
               </code>
             ),
+          // A table compares options. The header has the main color, the first column names the
+          // row, and the rows have stripes, so the eye can follow one row across.
+          // A wide table scrolls to the side, so each column keeps a readable width.
           table: ({ children }) => (
-            <div className="overflow-x-auto rounded-base border-2 bg-card">
-              <table className="w-full text-left text-sm leading-6">{children}</table>
-            </div>
+            <TableFrame>
+              <table className="w-full border-collapse text-left text-sm leading-6 [&_tbody_tr:hover]:bg-main/15 [&_tbody_tr:nth-child(even)]:bg-muted/50">
+                {children}
+              </table>
+            </TableFrame>
+          ),
+          thead: ({ children }) => (
+            <thead className="border-b-2 border-border bg-main text-main-foreground">
+              {children}
+            </thead>
           ),
           th: ({ children }) => (
-            <th className="border-b bg-muted/50 px-3 py-2 font-medium">{children}</th>
+            <th className="px-3 py-2.5 align-bottom text-xs font-semibold uppercase tracking-wide [&+th]:border-l-2 [&+th]:border-border/25">
+              {children}
+            </th>
           ),
-          td: ({ children }) => <td className="border-b px-3 py-2 align-top">{children}</td>,
+          td: ({ children }) => (
+            <td className="min-w-36 border-t border-foreground/10 px-3 py-2.5 align-top transition-colors first:min-w-40 first:font-semibold [&+td]:border-l [&+td]:border-foreground/10">
+              {children}
+            </td>
+          ),
         }}
       >
         {markdown}
