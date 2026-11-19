@@ -5,12 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  /* The font of the app. It is a variable, so the reading font setting can change it at once. */
+  --font-sans: var(--app-font);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
-  /* Bodoni Moda for the page titles and the lesson headings. EB Garamond for the lesson text. */
-  --font-display: var(--font-bodoni);
-  --font-serif: var(--font-garamond);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -145,9 +143,7 @@
   html {
     @apply font-sans;
   }
-  /* The page titles are set in Bodoni, as on the website. Bodoni is only for large sizes. */
   h1 {
-    font-family: var(--font-display);
     font-weight: 600;
   }
   h1,
@@ -166,16 +162,21 @@ body,
 }
 
 /*
-  The text of a lesson, as in a book. The reader can select a sans font in Settings, which sets
-  data-reading="sans" on the html element.
+  Literata for the whole app, as on the website. In Settings, the reader can select Geist (sans)
+  instead. That sets data-reading="sans" on the html element.
 */
+:root {
+  --app-font: var(--font-literata), Georgia, serif;
+}
+[data-reading="sans"] {
+  --app-font: var(--font-geist-sans), system-ui, sans-serif;
+}
+/* The text of a lesson, slightly larger, with more space between the lines. */
 .reading {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 1.8;
+  font-size: 1.0625rem;
+  line-height: 1.75;
 }
 [data-reading="sans"] .reading {
-  font-family: var(--font-sans);
   font-size: 0.9375rem;
   line-height: 1.75rem;
 }

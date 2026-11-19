@@ -9,15 +9,15 @@ import { cn } from "@/lib/utils";
 const options: { id: ReadingFont; title: string; sample: string; className: string }[] = [
   {
     id: "serif",
-    title: "Serif, like a book",
+    title: "Literata, like a book",
     sample: "Every architecture decision is a trade-off.",
-    className: "font-serif text-lg",
+    className: "font-[family-name:var(--font-literata)] text-base",
   },
   {
     id: "sans",
-    title: "Sans, like the rest of the app",
+    title: "Geist, a sans font",
     sample: "Every architecture decision is a trade-off.",
-    className: "font-sans",
+    className: "font-[family-name:var(--font-geist-sans)]",
   },
 ];
 
@@ -50,15 +50,15 @@ export default function ReadingFontSetting() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <BookOpen className="size-4" aria-hidden /> Reading font
+          <BookOpen className="size-4" aria-hidden /> Font
         </CardTitle>
         <CardDescription>
-          The font of the lesson text. The change applies at once, in this browser.
+          The font of the whole app. The change applies at once, in this browser.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <fieldset className="grid gap-2 sm:grid-cols-2">
-          <legend className="sr-only">Reading font</legend>
+          <legend className="sr-only">Font</legend>
           {options.map((item) => (
             <label
               key={item.id}

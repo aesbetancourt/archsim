@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, EB_Garamond, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Literata } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import ThemeProvider from "@/components/ThemeProvider";
 import { readingFontScript } from "@/lib/reading-font";
@@ -11,17 +11,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const bodoni = Bodoni_Moda({
-  variable: "--font-bodoni",
+// Literata is the font of the whole app, as on the website. Its optical sizes keep small text
+// crisp. Geist is the sans font that the reader can select in Settings.
+const literata = Literata({
+  variable: "--font-literata",
   subsets: ["latin"],
   style: ["normal", "italic"],
   axes: ["opsz"],
-});
-
-const garamond = EB_Garamond({
-  variable: "--font-garamond",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -40,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${bodoni.variable} ${garamond.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${literata.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         {/* Move the browser data of the old app name before the app reads it. */}

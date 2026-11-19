@@ -47,7 +47,7 @@ export default function Prose({
           h2: ({ children }) => (
             <h2
               id={headingId(text(children))}
-              className="scroll-mt-6 border-b pb-1 pt-4 font-display text-2xl font-semibold"
+              className="scroll-mt-6 border-b pb-1 pt-4 text-2xl font-semibold"
             >
               {children}
             </h2>
@@ -101,7 +101,7 @@ export default function Prose({
           // A wide table scrolls to the side, so each column keeps a readable width.
           table: ({ children }) => (
             <TableFrame>
-              <table className="w-full border-collapse text-left font-sans text-sm leading-6 [&_tbody_tr:hover]:bg-main/15 [&_tbody_tr:nth-child(even)]:bg-muted/50">
+              <table className="w-full border-collapse text-left text-sm leading-6 [&_tbody_tr:hover]:bg-main/15 [&_tbody_tr:nth-child(even)]:bg-muted/50">
                 {children}
               </table>
             </TableFrame>

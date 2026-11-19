@@ -21,14 +21,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap"
       rel="stylesheet"
     />
     <style>
       /*
         The atelier folio. The page looks like a 19th-century book of plates from the
-        École des Beaux-Arts: ivory paper, ink, Didone display type (the age of Firmin-Didot,
-        who published the engraving), Garamond for reading, and red chalk only for the crit.
+        École des Beaux-Arts: ivory paper, ink, Literata for all the text,
+        and red chalk only for the crit.
       */
       :root {
         --paper: #ece3cf;
@@ -41,9 +41,9 @@
         --glass: rgba(15, 13, 10, 0.8);
         --glass-ink: #eee5d0;
         --crit: #9b2f1f;
-        --display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-        --serif: "EB Garamond", Garamond, Georgia, serif;
-        --hand: "Architects Daughter", "Segoe Print", cursive;
+        /* One font, as in the app: Literata, a book face made for reading on screens. */
+        --display: "Literata", Georgia, serif;
+        --serif: "Literata", Georgia, serif;
         --mono: ui-monospace, "SF Mono", Menlo, monospace;
         --print: none;
         color-scheme: light;
@@ -73,7 +73,7 @@
         background: var(--paper);
         color: var(--ink);
         font-family: var(--serif);
-        font-size: 1.1875rem;
+        font-size: 1.125rem;
         line-height: 1.6;
         font-kerning: normal;
         font-variant-numeric: oldstyle-nums;
@@ -195,8 +195,8 @@
       }
       .hero h1 {
         margin-top: 1.6rem;
-        font-size: clamp(2.6rem, 6vw, 5.6rem);
-        font-weight: 500;
+        font-size: clamp(2.4rem, 5.4vw, 5rem);
+        font-weight: 600;
         line-height: 0.98;
         letter-spacing: -0.015em;
       }
@@ -449,7 +449,8 @@
         box-shadow: 0 3px 8px rgba(27, 24, 18, 0.18);
         transform: rotate(2.5deg);
         color: #9b2f1f;
-        font-family: var(--hand);
+        font-family: var(--serif);
+        font-style: italic;
         font-size: clamp(0.82rem, 1.4vw, 1.02rem);
         line-height: 1.35;
       }
@@ -1166,7 +1167,8 @@ pnpm dev</pre>
         <div>
           <h2>Colophon</h2>
           <p>
-            Set in Bodoni Moda and EB Garamond. The engraving is by Alexis Lemaistre, 1889, from
+            Set in Literata, the same font as the app. The engraving is by Alexis Lemaistre, 1889,
+            from
             <a
               href="https://commons.wikimedia.org/wiki/File:Charrette,_%C3%89cole_nationale_sup%C3%A9rieure_des_beaux-arts,_by_Alexis_Lemaistre.png"
               >Wikimedia Commons</a

@@ -1,4 +1,4 @@
-// The font of the lesson text: serif (EB Garamond, the default) or sans (Geist).
+// The font of the app: serif (Literata, the default) or sans (Geist).
 // The choice is kept in this browser only.
 export const READING_FONT_KEY = "charrette:reading-font";
 export type ReadingFont = "serif" | "sans";
