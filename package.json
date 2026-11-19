@@ -2,7 +2,7 @@
   "name": "charrette",
   "version": "0.1.0",
   "private": true,
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev",

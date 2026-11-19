@@ -891,7 +891,8 @@
 
       /* Colophon */
       footer {
-        padding-block: 3rem 3.5rem;
+        /* The bottom space keeps the last line clear of the chapter ribbon. */
+        padding-block: 3rem 7.5rem;
         border-top: 3px double var(--rule);
         font-size: 1rem;
         color: var(--ink-soft);
@@ -1251,7 +1252,9 @@
             <a class="button" href="https://github.com/aesbetancourt/charrette">Get it on GitHub</a>
             <a href="#ritual">See the ritual</a>
           </div>
-          <p class="note">Open source. It runs on your computer, with the AI provider you have.</p>
+          <p class="note">
+            Source available. It runs on your computer, with the AI provider you have.
+          </p>
         </div>
         <figure class="engraving">
           <img
@@ -1737,9 +1740,12 @@ pnpm dev</pre>
         <div>
           <h2>About</h2>
           <p>
-            Charrette, formerly ArchSim, is a personal project by Alejandro Sanchez. It is not
-            affiliated with these authors or with any AI provider. The lessons and worked examples
-            are written with AI and are not reviewed by an expert.
+            Charrette, formerly ArchSim, is a personal project by Alejandro Sanchez. It is free for
+            noncommercial use under the
+            <a href="https://github.com/aesbetancourt/charrette/blob/main/LICENSE"
+              >PolyForm Noncommercial License 1.0.0</a
+            >. It is not affiliated with these authors or with any AI provider. The lessons and
+            worked examples are written with AI and are not reviewed by an expert.
           </p>
         </div>
       </div>
