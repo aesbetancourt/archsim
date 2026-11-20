@@ -36,6 +36,8 @@ import {
 import { listAttempts } from "@/lib/store/attempts";
 import { allExamples, allKatas, kataTitles } from "@/lib/store/library";
 import { partition } from "es-toolkit";
+import Tour, { StartTourButton } from "@/components/Tour";
+import { tourTarget } from "@/lib/content/tours";
 
 // Read the attempt history on each request.
 export const dynamic = "force-dynamic";
@@ -66,13 +68,16 @@ export default async function Home() {
           Each kata is a short business problem. Draw a design, explain your decisions, and get a
           review from an AI model. If the concepts are new to you, start with a finished example.
         </p>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          New here? Read the{" "}
-          <Link href="/guide" className="text-primary hover:underline">
-            guide
-          </Link>{" "}
-          for a first session and a study plan.
-        </p>
+        <div className="flex max-w-2xl flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+          <p>
+            New here? Read the{" "}
+            <Link href="/guide" className="text-primary hover:underline">
+              guide
+            </Link>{" "}
+            for a first session and a study plan, or
+          </p>
+          <StartTourButton />
+        </div>
         <div className="flex flex-wrap gap-2">
           <LinkButton href="/learn/examples">
             <BookOpen /> Study a finished kata
@@ -90,7 +95,10 @@ export default async function Home() {
 
       {groups.map((group) => (
         <section key={group.title} className="space-y-4">
-          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          <h2
+            className="flex items-center gap-2 text-lg font-semibold tracking-tight"
+            {...(group.katas === practice && tourTarget("katas"))}
+          >
             <group.icon className="size-5 text-primary" aria-hidden /> {group.title}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -244,6 +252,7 @@ export default async function Home() {
           </Card>
         )}
       </section>
+      <Tour id="welcome" />
     </main>
   );
 }

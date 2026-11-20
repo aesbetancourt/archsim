@@ -8,6 +8,8 @@ export const keys = {
   allBookmarks: ["bookmarks"] as const,
   // The state of the insights job.
   insights: ["insights"] as const,
+  // The onboarding tours that the person saw.
+  onboarding: ["onboarding"] as const,
   // The highlights of one page.
   highlights: (page: string) => ["highlights", page] as const,
   // The notes of one page, for the editor of the sidebar.

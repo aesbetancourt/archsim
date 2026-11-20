@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { tourIds } from "@/lib/content/tours";
 import { modes, speechEngines } from "@/lib/store/settings";
 import { HTTP } from "@/lib/http-status";
 
@@ -150,6 +151,8 @@ export const progressUpdate = z.object({
     .max(MAX_SLUG),
   done: z.boolean(),
 });
+
+export const onboardingUpdate = z.object({ tour: z.enum(tourIds), seen: z.boolean() });
 
 const storyText = z.string().max(MAX_STORY_PART);
 export const storyFields = z.object({

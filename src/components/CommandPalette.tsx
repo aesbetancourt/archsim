@@ -11,6 +11,7 @@ import { search, type SearchItem } from "@/lib/content/search";
 import { cn } from "@/lib/utils";
 import { listNotes, searchIndex } from "@/lib/browser/api";
 import { keys } from "@/lib/browser/query-keys";
+import { tourTarget } from "@/lib/content/tours";
 import type { NoteDoc } from "@/lib/store/notebook";
 import { pageAddress } from "@/lib/routes";
 import { clamp } from "es-toolkit";
@@ -101,6 +102,7 @@ export default function CommandPalette() {
         onClick={() => setOpen(true)}
         className="hidden w-48 justify-start text-muted-foreground lg:inline-flex xl:w-56"
         aria-label="Search (⌘K)"
+        {...tourTarget("search")}
       >
         <Search /> Search
         <kbd className="ml-auto rounded border border-border px-1.5 font-mono text-[0.7rem]">
@@ -113,6 +115,7 @@ export default function CommandPalette() {
         onClick={() => setOpen(true)}
         className="lg:hidden"
         aria-label="Search (⌘K)"
+        {...tourTarget("search")}
       >
         <Search />
       </Button>

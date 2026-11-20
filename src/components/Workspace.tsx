@@ -57,6 +57,8 @@ import {
 import { reviewAttempt } from "@/lib/browser/api";
 import { sceneVersion } from "@/lib/browser/scene-version";
 import { useAutosave } from "@/lib/browser/use-autosave";
+import { tourTarget } from "@/lib/content/tours";
+import Tour from "@/components/Tour";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
@@ -321,7 +323,9 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
               <h1 className="text-xl font-semibold tracking-tight">{kata.title}</h1>
               <Badge variant="neutral">{kataKind(kata)}</Badge>
             </div>
-            <ProblemText kata={kata} />
+            <div {...tourTarget("problem")}>
+              <ProblemText kata={kata} />
+            </div>
             {kata.note && (
               <p className="border-l border-primary pl-3 text-muted-foreground">{kata.note}</p>
             )}
@@ -343,7 +347,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
           <Separator />
 
-          <section className="space-y-2">
+          <section className="space-y-2" {...tourTarget("steps")}>
             <Label htmlFor="scope" className="sr-only">
               Core functions and scope
             </Label>
@@ -509,13 +513,21 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         </div>
 
         <div className="space-y-3 border-t p-4">
-          <KataClock key={round} kataId={kata.id} interview={Boolean(kata.interview)} />
+          <div {...tourTarget("clock")}>
+            <KataClock key={round} kataId={kata.id} interview={Boolean(kata.interview)} />
+          </div>
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <Button onClick={submit} disabled={busy} size="lg" className="w-full">
+          <Button
+            onClick={submit}
+            {...tourTarget("submit")}
+            disabled={busy}
+            size="lg"
+            className="w-full"
+          >
             {busy ? <LoaderCircle className="animate-spin" /> : <Send />}
             {busy ? "The review is in progress. This can take a minute." : "Submit for review"}
           </Button>
@@ -553,6 +565,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           role="tablist"
           aria-label="Work area"
           className="flex items-center gap-2 border-b px-3 py-2"
+          {...tourTarget("work-area")}
         >
           <Button
             role="tab"
@@ -569,6 +582,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
             variant="tab"
             size="sm"
             onClick={() => setView("diagram")}
+            {...tourTarget("diagram-tab")}
           >
             <PenTool /> Diagram
           </Button>
@@ -611,6 +625,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           elements: slimElements(api.current?.getSceneElements() ?? []),
         })}
       />
+      <Tour id="kata" />
     </main>
   );
 }

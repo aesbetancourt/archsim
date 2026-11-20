@@ -23,6 +23,7 @@ import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
 import ThemeToggle from "@/components/ThemeToggle";
 import { route } from "@/lib/routes";
+import { tourTarget } from "@/lib/content/tours";
 
 const practice = [
   {
@@ -105,14 +106,15 @@ export default function SiteHeader() {
         Charrette
       </Link>
       <nav className="flex min-w-0 items-center gap-1">
-        <NavMenu label="Practice" icon={<Target />} items={practice} />
-        <NavMenu label="Learn" icon={<GraduationCap />} items={learn} />
+        <NavMenu label="Practice" icon={<Target />} items={practice} tour="practice" />
+        <NavMenu label="Learn" icon={<GraduationCap />} items={learn} tour="learn" />
         <LinkButton
           variant="ghost"
           size="sm"
           href="/notebook"
           aria-label="Notebook"
           title="Notebook"
+          {...tourTarget("notebook")}
         >
           <NotebookPen /> <span className="hidden md:inline">Notebook</span>
         </LinkButton>
@@ -122,16 +124,30 @@ export default function SiteHeader() {
           href="/scratchpad"
           aria-label="Scratchpad"
           title="Scratchpad"
+          {...tourTarget("scratchpad")}
         >
           <PencilRuler /> <span className="hidden md:inline">Scratchpad</span>
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">
         <CommandPalette />
-        <LinkButton variant="ghost" size="icon" href="/guide" aria-label="Guide" title="Guide">
+        <LinkButton
+          variant="ghost"
+          size="icon"
+          href="/guide"
+          aria-label="Guide"
+          title="Guide"
+          {...tourTarget("guide")}
+        >
           <CircleHelp />
         </LinkButton>
-        <LinkButton variant="ghost" size="icon" href="/settings" aria-label="Settings">
+        <LinkButton
+          variant="ghost"
+          size="icon"
+          href="/settings"
+          aria-label="Settings"
+          {...tourTarget("settings")}
+        >
           <Settings />
         </LinkButton>
         <ThemeToggle />

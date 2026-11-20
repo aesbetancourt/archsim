@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { pageAddress } from "@/lib/routes";
+import { type TourTarget, tourTarget } from "@/lib/content/tours";
 
 type Item = { href: string; title: string; description: string; icon: React.ReactNode };
 
@@ -18,15 +19,26 @@ export default function NavMenu({
   label,
   icon,
   items,
+  tour,
 }: {
   label: string;
   icon: React.ReactNode;
   items: Item[];
+  // The name of the menu for the onboarding tour.
+  tour?: TourTarget;
 }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="ghost" size="sm" aria-label={label} title={label} />}
+        render={
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={label}
+            title={label}
+            {...(tour && tourTarget(tour))}
+          />
+        }
       >
         {/* On a narrow window, only the icon shows. */}
         {icon} <span className="hidden md:inline">{label}</span> <ChevronDown />

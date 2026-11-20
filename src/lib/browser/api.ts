@@ -3,7 +3,9 @@ import type { InsightsStatus } from "@/lib/ai/insights-job";
 import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
 import type { SearchItem } from "@/lib/content/search";
 import type { ReviewRequest } from "@/lib/requests";
+import type { TourId } from "@/lib/content/tours";
 import type { Bookmark, Highlight, NoteDoc } from "@/lib/store/notebook";
+import type { Onboarding } from "@/lib/store/onboarding";
 import type { PublicSettings, Settings } from "@/lib/store/settings";
 import type { Story, StoryFields } from "@/lib/store/stories";
 
@@ -142,6 +144,17 @@ export function readProgress(): Promise<{ done: Record<string, string> }> {
 
 export async function setLessonDone(slug: string, done: boolean): Promise<void> {
   await send("PUT", "/api/progress", { body: { slug, done } });
+}
+
+// ---- The onboarding tours -----------------------------------------------------------
+
+// The tours that the person saw.
+export function readOnboarding(): Promise<Onboarding> {
+  return json("GET", "/api/onboarding");
+}
+
+export async function setTourSeen(tour: TourId, seen: boolean): Promise<void> {
+  await send("PUT", "/api/onboarding", { body: { tour, seen } });
 }
 
 // ---- The notebook --------------------------------------------------------------------
