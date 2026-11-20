@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
 import type { EventData, Controls, Step, TooltipRenderProps } from "react-joyride";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,8 +31,7 @@ function visible(name: string): HTMLElement | null {
   return [...all].find((element) => element.checkVisibility()) ?? null;
 }
 
-// On a narrow window, some parts are inside a menu or a tab. A step then points at that menu or
-// tab.
+// On a narrow window, the pages of the top bar are in the menu. A step then points at the menu.
 const narrowTarget: Partial<Record<TourStep["target"], TourTarget>> = {
   practice: "menu",
   learn: "menu",
@@ -41,8 +39,6 @@ const narrowTarget: Partial<Record<TourStep["target"], TourTarget>> = {
   scratchpad: "menu",
   guide: "menu",
   settings: "menu",
-  "work-area": "notes-pane",
-  "diagram-tab": "diagram-pane",
 };
 
 function findTarget(name: TourStep["target"]): () => HTMLElement | null {
@@ -139,26 +135,6 @@ export default function Tour({ id }: { id: TourId }) {
   );
 }
 
-// A button that starts a tour again. The tour runs the next time its page opens.
-function ReplayTour({ id, onReplay }: { id: TourId; onReplay?: () => void }) {
-  const tour = useTour(id);
-  return (
-    <Button
-      type="button"
-      variant="neutral"
-      size="sm"
-      onClick={() => {
-        void tour
-          .setSeen(false)
-          .then(onReplay)
-          .catch(() => undefined);
-      }}
-    >
-      Start {tours[id].label.toLowerCase()}
-    </Button>
-  );
-}
-
 // The link in the text of the home page that starts the welcome tour again, from its first step.
 export function StartTourButton() {
   const tour = useTour("welcome");
@@ -170,20 +146,5 @@ export function StartTourButton() {
     >
       take the tour
     </button>
-  );
-}
-
-// The kata tour on the Guide page. It waits for the next kata that the person opens.
-export function TourReplays() {
-  const [kataNote, setKataNote] = useState(false);
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <ReplayTour id="kata" onReplay={() => setKataNote(true)} />
-      {kataNote && (
-        <output className="text-muted-foreground">
-          The kata tour starts the next time you open a kata.
-        </output>
-      )}
-    </div>
   );
 }

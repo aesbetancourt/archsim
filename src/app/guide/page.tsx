@@ -2,7 +2,6 @@ import { CircleHelp } from "lucide-react";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Prose from "@/components/Prose";
-import { TourReplays } from "@/components/Tour";
 
 // The guide is a Markdown file, so you can change it without a change to the code.
 
@@ -20,16 +19,6 @@ export default async function GuidePage() {
           for each week.
         </p>
       </header>
-      <section className="space-y-2 rounded-base border bg-card p-4" aria-labelledby="tours-title">
-        <h2 id="tours-title" className="font-semibold">
-          The tours
-        </h2>
-        <p className="text-muted-foreground">
-          A tour shows the parts of a kata. Start it again here. To see the welcome tour again,
-          click &ldquo;take the tour&rdquo; on the home page.
-        </p>
-        <TourReplays />
-      </section>
       <Prose markdown={markdown} />
     </main>
   );

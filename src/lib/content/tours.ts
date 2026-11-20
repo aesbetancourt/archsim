@@ -1,7 +1,8 @@
-// The onboarding tours. A tour runs one time, the first time the person opens its page. The
-// Guide page can start a tour again. The data folder keeps which tours the person saw.
+// The onboarding tour of the home page. It runs one time, the first time the person opens the
+// app. The link "take the tour" on the home page starts it again. The data folder keeps which tours
+// the person saw, so a later tour can use the same store.
 
-export const tourIds = ["welcome", "kata"] as const;
+export const tourIds = ["welcome"] as const;
 export type TourId = (typeof tourIds)[number];
 
 // The parts of the app that a tour points at. Put tourTarget(name) on the element.
@@ -14,16 +15,7 @@ export type TourTarget =
   | "search"
   | "settings"
   | "guide"
-  | "menu"
-  | "notes-pane"
-  | "diagram-pane"
-  | "problem"
-  | "steps"
-  | "work-area"
-  | "diagram-tab"
-  | "clock"
-  | "help-chat"
-  | "submit";
+  | "menu";
 
 // The attribute that marks a part for a tour.
 export const TOUR_ATTRIBUTE = "data-tour";
@@ -87,53 +79,6 @@ export const tours: Record<TourId, { label: string; steps: TourStep[] }> = {
         title: "Guide",
         content:
           'The guide explains how to practice. To see this tour again, click "take the tour" on the home page.',
-      },
-    ],
-  },
-  kata: {
-    label: "The kata tour",
-    steps: [
-      {
-        target: "problem",
-        title: "Read the problem",
-        content:
-          "The problem is here: the users, the requirements, and the constraints. Select text to highlight it or to add a note.",
-      },
-      {
-        target: "steps",
-        title: "Five steps",
-        content:
-          "Do the steps in order: the scope, the characteristics, the style, the diagram, and the rationale. Each step has a hint.",
-      },
-      {
-        target: "work-area",
-        title: "Notes first",
-        content:
-          "Think in the notes before you draw. Your notes are private. The review does not read them.",
-      },
-      {
-        target: "diagram-tab",
-        title: "Draw the design",
-        content:
-          "Open the diagram to draw. Drag a building block from the palette to the canvas, or click it. The review reads this diagram.",
-      },
-      {
-        target: "clock",
-        title: "Practice with a clock",
-        content:
-          "Start the clock to work in the time of an interview. It shows when to go to the next phase.",
-      },
-      {
-        target: "help-chat",
-        title: "Ask for help",
-        content:
-          "Open the help chat when you are stuck. It gives hints and questions, not the design.",
-      },
-      {
-        target: "submit",
-        title: "Get a review",
-        content:
-          "When you finish, submit your work. The AI critic gives a score for each part and tells you what to study next. The review needs an AI provider. Set one up in Settings.",
       },
     ],
   },

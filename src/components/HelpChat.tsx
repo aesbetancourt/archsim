@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
 import { askHelper } from "@/lib/browser/api";
-import { tourTarget } from "@/lib/content/tours";
 
 type Props = {
   // Read the current work at the moment the person sends a question.
@@ -53,7 +52,6 @@ export default function HelpChat({ getContext, intro }: Props) {
         // On a phone, the button is higher, so it does not cover the Submit button of a kata.
         className="fixed right-5 bottom-44 z-40 rounded-full shadow-float md:bottom-20"
         aria-label="Open the help chat"
-        {...tourTarget("help-chat")}
         onClick={() => setOpen(true)}
       >
         <MessageCircleQuestion className="size-5" />
@@ -64,7 +62,6 @@ export default function HelpChat({ getContext, intro }: Props) {
   return (
     <section
       aria-label="Help chat"
-      {...tourTarget("help-chat")}
       className="fixed right-5 bottom-20 z-40 flex h-[min(34rem,calc(100dvh-8rem))] w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col rounded-base border border-border bg-secondary-background text-sm shadow-float"
     >
       <header className="flex items-center justify-between gap-2 border-b border-border bg-main px-3 py-2 text-main-foreground">
