@@ -2,7 +2,8 @@ import { ArrowRight, ExternalLink, Library, RefreshCw, Sparkles } from "lucide-r
 import LinkButton from "@/components/LinkButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { COMMUNITY_SOURCE, loadCommunity } from "@/lib/content/community";
+import { loadCommunity } from "@/lib/content/community";
+import { COMMUNITY_SOURCE } from "@/lib/content/community-source";
 import type { Kata } from "@/lib/content/katas";
 
 export default async function CommunityPage({

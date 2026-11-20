@@ -2,16 +2,9 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Kata } from "./katas";
 import { upperFirst } from "es-toolkit";
+import { COMMUNITY_SOURCE } from "./community-source";
 
-// The Architectural Katas collection of Ted Neward.
-// The app reads the katas from the public repository and keeps a local copy.
-// The kata texts are not part of this project.
-export const COMMUNITY_SOURCE = {
-  name: "Architectural Katas",
-  owner: "Ted Neward",
-  url: "https://github.com/tedneward/ArchKatas",
-  site: "http://www.architecturalkatas.com",
-} as const;
+// The app reads the katas of COMMUNITY_SOURCE from the public repository and keeps a local copy.
 
 const LIST_URL = "https://api.github.com/repos/tedneward/ArchKatas/contents/";
 const CACHE = path.join(process.cwd(), "data", "community.json");

@@ -37,6 +37,8 @@ import { listAttempts } from "@/lib/store/attempts";
 import { allExamples, allKatas, kataTitles } from "@/lib/store/library";
 import { partition } from "es-toolkit";
 import Tour, { StartTourButton } from "@/components/Tour";
+import AboutDialog from "@/components/AboutDialog";
+import { CREATOR } from "@/lib/content/about";
 import { tourTarget } from "@/lib/content/tours";
 
 // Read the attempt history on each request.
@@ -252,6 +254,10 @@ export default async function Home() {
           </Card>
         )}
       </section>
+      <footer className="flex flex-wrap items-center gap-x-2 border-t pt-6 text-sm text-muted-foreground">
+        <span>Charrette · built by {CREATOR.name}</span>
+        <AboutDialog />
+      </footer>
       <Tour id="welcome" />
     </main>
   );
