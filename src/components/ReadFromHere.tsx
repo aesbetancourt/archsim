@@ -47,8 +47,10 @@ export default function ReadFromHere({
   }
 
   const hide = useEffectEvent((event?: Event) => {
-    // The pointer can move from the text to the button. Keep the button then.
-    if (event instanceof MouseEvent && event.relatedTarget === button.current) return;
+    // The pointer can move from the text to the button, or straight to the icon inside it.
+    // Keep the button then.
+    const next = event instanceof MouseEvent ? event.relatedTarget : null;
+    if (next instanceof Node && button.current?.contains(next)) return;
     clear();
   });
 
