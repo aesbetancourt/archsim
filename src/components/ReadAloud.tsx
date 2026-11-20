@@ -102,13 +102,22 @@ function collectSections(root: HTMLElement | null): Section[] {
 }
 
 // The section of a sentence: the last heading before it, or -1 before the first heading.
+// A heading that is no longer in the same page as the sentence cannot be compared. Skip it.
 function sectionOf(sections: Section[], range: Range): number {
   let found = -1;
   sections.forEach((section, index) => {
-    if (range.comparePoint(section.element, 0) <= 0) found = index;
+    try {
+      if (range.comparePoint(section.element, 0) <= 0) found = index;
+    } catch {
+      // The page changed under the sentence or the heading.
+    }
   });
   return found;
 }
+
+// A sentence is gone when React replaced its text, for example after a new page or a new render.
+const isGone = (sentence: Sentence) =>
+  !sentence.range.startContainer.isConnected || !sentence.range.endContainer.isConnected;
 
 // The text position under a point of the window.
 function caretAt(x: number, y: number): Point | null {
@@ -272,6 +281,12 @@ export default function ReadAloud({
   async function playAt(index: number) {
     const id = ++run.current;
     silence();
+    // The text changed while the player waited. Find the sentences again and continue.
+    const sentence = sentences.current[index];
+    if (sentence && isGone(sentence) && root.current) {
+      sentences.current = collectSentences(root.current);
+      refreshSections();
+    }
     if (index >= sentences.current.length) {
       stop();
       return;
