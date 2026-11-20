@@ -175,6 +175,7 @@ src/lib/        the logic, in four folders, with small shared helpers at its roo
   browser/      code that needs the browser: saved drafts, drill progress, the clock,
                 the text of the page, and the voice of the read-aloud player
 src/prompts/    every word that the app sends to a model. See src/prompts/README.md
+tests/          the unit tests, in the same folders as src/. Run them with pnpm test
 data/           your work on this computer. Git ignores it
 docs/           the website
 ```
