@@ -272,8 +272,15 @@ export default function ReadAloud({
     return () => cancelAnimationFrame(frame);
   }, [page]);
 
-  // Release the audio when the player closes.
-  useEffect(() => () => speaker.release(), [speaker]);
+  // When the player closes, for example on a page with no lesson, stop the sound and release the
+  // audio. Without this, the reading continues on the next page.
+  const close = useEffectEvent(() => {
+    run.current += 1;
+    speaker.silence();
+    CSS.highlights.delete(HIGHLIGHT);
+    speaker.release();
+  });
+  useEffect(() => () => close(), []);
 
   const fromHere = (
     <ReadFromHere
