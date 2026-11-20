@@ -1,8 +1,10 @@
 import type { WorkedExample } from "./examples";
 import type { Kata } from "./katas";
 
-// Classic system design interview questions.
-// The numbers are invented for practice. They are not the figures of a real company.
+/**
+ * Classic system design interview questions.
+ * The numbers are invented for practice. They are not the figures of a real company.
+ */
 export const interviewKatas: Kata[] = [
   {
     id: "link-shortener",
@@ -333,6 +335,7 @@ export const interviewKatas: Kata[] = [
   },
 ];
 
+/** The worked examples of the interview katas. */
 export const interviewExamples: WorkedExample[] = [
   {
     kataId: "link-shortener",

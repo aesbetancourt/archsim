@@ -6,7 +6,10 @@ import Prose from "@/components/Prose";
 import type { Question } from "@/lib/content/questions";
 import { pageAddress } from "@/lib/routes";
 
-// The product drill: cost estimates, proof of value, business models, priorities, and timing.
+/**
+ * The product drill: cost estimates, proof of value, business models, priorities, and timing.
+ * @returns The drill of the product cases.
+ */
 export default function ProductDrill({
   cases,
   sections,

@@ -49,9 +49,13 @@ function offsetIn(root: Node, node: Node, offset: number): number {
   return range.toString().length;
 }
 
-// Highlights and notes on the text inside one element, saved in the notebook for one page.
-// Put `root` and `handlers` on the element, and show `overlay` once on the page. The learning
-// pages and the kata text use it.
+/**
+ * Highlights and notes on the text inside one element, saved in the notebook for one page.
+ * Put `root` and `handlers` on the element, and show `overlay` once on the page. The learning
+ * pages and the kata text use it.
+ * @returns The root ref, the event handlers, the highlights of the page, the functions that change
+ * them, the page title, and the overlay to show.
+ */
 export function useHighlighter({ page, getTitle }: { page: string; getTitle?: () => string }) {
   const root = useRef<HTMLDivElement>(null);
   const client = useQueryClient();

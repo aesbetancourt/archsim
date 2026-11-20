@@ -282,6 +282,11 @@ function Blocks() {
   );
 }
 
+/**
+ * One lesson of the Learn section: the header, the contents, the text, and the links to
+ * related and neighbor lessons.
+ * @returns The lesson page, or the not-found page when the lesson does not exist.
+ */
 export default async function LessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const page = getLesson(slug);

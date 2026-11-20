@@ -4,12 +4,19 @@ import { GoogleAuth } from "google-auth-library";
 // text. Speech, image, embedding, live audio, and transcription models cannot.
 const NOT_FOR_TEXT = /(tts|image|embedding|live|transcribe|translate|nano-banana|omni|robotics)/;
 
+/** The model IDs that Vertex AI offers, by publisher. */
 export type VertexModels = { gemini: string[]; claude: string[] };
 
 // Sort model IDs with the newest version first: gemini-4-neon before gemini-3.8-flash.
 const newestFirst = (a: string, b: string) => b.localeCompare(a, "en", { numeric: true });
 
-// Keep the Gemini models that can write a review, newest first.
+/**
+ * Keep the Gemini models that can write a review, newest first.
+ * @param names The model IDs from Vertex AI.
+ * @returns The Gemini text models, with the newest version first.
+ * @example
+ * textModels(["gemini-3.8-flash", "gemini-4-neon", "gemini-4-tts"]); // ["gemini-4-neon", "gemini-3.8-flash"]
+ */
 export function textModels(names: string[]): string[] {
   return names
     .filter((name) => name.startsWith("gemini-") && !NOT_FOR_TEXT.test(name))
@@ -40,8 +47,17 @@ async function publisherModels(publisher: string, location: string, project: str
   return (body.publisherModels ?? []).map((model) => model.name.split("/").pop() ?? "");
 }
 
-// The models that Vertex AI offers in a location: Gemini, and Claude from the Model Garden.
-// A Claude model in this list must still be enabled in the Model Garden of the project.
+/**
+ * The models that Vertex AI offers in a location: Gemini, and Claude from the Model Garden.
+ * A Claude model in this list must still be enabled in the Model Garden of the project.
+ * @param project The Google Cloud project that pays the quota. Empty means the project of the login.
+ * @param location The Vertex AI location, for example "global" or "us-east5".
+ * @returns The Gemini models and the Claude models, newest first. The Claude list is empty when it fails.
+ * @throws When there is no Google Cloud login on this computer.
+ * @throws When Vertex AI does not list the Gemini models.
+ * @example
+ * const { gemini, claude } = await listVertexModels("my-project", "global");
+ */
 export async function listVertexModels(project: string, location: string): Promise<VertexModels> {
   try {
     await auth.getRequestHeaders();

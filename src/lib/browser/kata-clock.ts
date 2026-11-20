@@ -2,6 +2,7 @@
 // points where an interviewer expects you to move on. This file has no server code.
 import { MINUTE_MS, SECOND_MS, SECONDS_PER_MINUTE } from "@/lib/time";
 
+/** A countdown clock, as it is saved. The state at a given time comes from `clockState`. */
 export type Clock = {
   // The length of the time box, in minutes.
   minutes: number;
@@ -13,13 +14,15 @@ export type Clock = {
   pausedAt: number | null;
 };
 
-// The time box of an interview, in minutes. The phases are planned for it. A clock of a different
-// length keeps the same fractions.
+/**
+ * The time box of an interview, in minutes. The phases are planned for it. A clock of a
+ * different length keeps the same fractions.
+ */
 export const INTERVIEW_MINUTES = 45;
 // The minute of the plan at which each phase ends. The wrap-up is in the last 5 minutes.
 const PHASE_ENDS = { clarify: 5, firstDesign: 15, deepDives: 40 };
 
-// The phases of the time box, as the fraction of the time at which each one ends.
+/** The phases of the time box, as the fraction of the time at which each one ends. */
 export const phases = [
   {
     label: "Clarify and scope",
@@ -43,23 +46,49 @@ export const phases = [
   },
 ] as const;
 
-// The lengths of the time box that the person can select, in minutes.
-// oxlint-disable-next-line no-magic-numbers -- A named list of choices.
+/* oxlint-disable no-magic-numbers -- A named list of choices. */
+/** The lengths of the time box that the person can select, in minutes. */
 export const DURATIONS = [20, 30, INTERVIEW_MINUTES, 60] as const;
+/* oxlint-enable no-magic-numbers */
 
+/**
+ * Start a new clock.
+ * @param minutes The length of the time box, in minutes.
+ * @param now The time now, in milliseconds since 1970.
+ * @returns A clock that runs from now.
+ * @example
+ * update(startClock(minutes, Date.now()));
+ */
 export function startClock(minutes: number, now: number): Clock {
   return { minutes, startedAt: now, pausedMs: 0, pausedAt: null };
 }
 
+/**
+ * Pause a clock. A clock on pause stays as it is.
+ * @param clock The clock to pause.
+ * @param now The time now, in milliseconds since 1970.
+ * @returns The clock on pause.
+ * @example
+ * update(pauseClock(clock, Date.now()));
+ */
 export function pauseClock(clock: Clock, now: number): Clock {
   return clock.pausedAt === null ? { ...clock, pausedAt: now } : clock;
 }
 
+/**
+ * Start a clock again after a pause. A clock that runs stays as it is.
+ * @param clock The clock to start again.
+ * @param now The time now, in milliseconds since 1970.
+ * @returns The clock that runs, with the time of the pause added to `pausedMs`.
+ * @example
+ * update(resumeClock(clock, Date.now()));
+ */
 export function resumeClock(clock: Clock, now: number): Clock {
   if (clock.pausedAt === null) return clock;
   return { ...clock, pausedMs: clock.pausedMs + (now - clock.pausedAt), pausedAt: null };
 }
 
+/** The state of a clock at a given time, for the display. */
 export type ClockState = {
   elapsedMs: number;
   // Below zero after the time is up.
@@ -72,6 +101,14 @@ export type ClockState = {
   paused: boolean;
 };
 
+/**
+ * Get the state of a clock at a given time.
+ * @param clock The clock.
+ * @param now The time now, in milliseconds since 1970.
+ * @returns The elapsed and remaining time, the current phase, and whether the time is up.
+ * @example
+ * clockState(startClock(45, 0), 5 * MINUTE_MS).phase; // 1
+ */
 export function clockState(clock: Clock, now: number): ClockState {
   const until = clock.pausedAt ?? now;
   const elapsedMs = Math.max(0, until - clock.startedAt - clock.pausedMs);
@@ -89,7 +126,13 @@ export function clockState(clock: Clock, now: number): ClockState {
   };
 }
 
-// "12:05", or "+1:30" after the time is up.
+/**
+ * Get the text of a time, for the clock: "12:05", or "+1:30" after the time is up.
+ * @param remainingMs The time that is left, in milliseconds. Below zero after the end.
+ * @returns The time as minutes and seconds.
+ * @example
+ * formatClock(65_000); // "1:05"
+ */
 export function formatClock(remainingMs: number): string {
   const over = remainingMs < 0;
   // Count down in whole seconds that are not finished yet, as a kitchen timer does.
@@ -99,7 +142,13 @@ export function formatClock(remainingMs: number): string {
   return over ? `+${text}` : text;
 }
 
-// Read a saved clock. A value that is not a clock gives null.
+/**
+ * Read a saved clock.
+ * @param raw The saved text, or null when there is none.
+ * @returns The clock. Null when the text is not a clock.
+ * @example
+ * parseClock('{"minutes":45,"startedAt":0,"pausedMs":0,"pausedAt":null}');
+ */
 export function parseClock(raw: string | null): Clock | null {
   if (!raw) return null;
   try {
@@ -122,6 +171,13 @@ export function parseClock(raw: string | null): Clock | null {
 // The clock of each kata is saved in this browser, so it keeps running after a reload.
 const key = (kataId: string) => `charrette:clock:${kataId}`;
 
+/**
+ * Read the saved clock of a kata.
+ * @param kataId The ID of the kata.
+ * @returns The clock, or null when there is none or the storage is not available.
+ * @example
+ * setClock(loadClock(kataId));
+ */
 export function loadClock(kataId: string): Clock | null {
   try {
     return parseClock(localStorage.getItem(key(kataId)));
@@ -130,6 +186,13 @@ export function loadClock(kataId: string): Clock | null {
   }
 }
 
+/**
+ * Save the clock of a kata, so it keeps running after a reload. Null removes the clock.
+ * @param kataId The ID of the kata.
+ * @param clock The clock to save, or null to remove it.
+ * @example
+ * saveClock(kata.id, null);
+ */
 export function saveClock(kataId: string, clock: Clock | null): void {
   try {
     if (clock) localStorage.setItem(key(kataId), JSON.stringify(clock));

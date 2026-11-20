@@ -4,6 +4,7 @@ import { styleLessons } from "./kata-method";
 // This file has no server code, so the browser can use it too. lesson-reader.ts finds one lesson
 // and reads its text, and lesson-meta.ts has the level and the objectives of each lesson.
 
+/** One page of the Learn area. */
 export type Lesson = {
   slug: string;
   title: string;
@@ -15,6 +16,7 @@ export type Lesson = {
   parent?: string;
 };
 
+/** A section of the Learn area, with its lessons in reading order. */
 export type LessonSection = { title: string; pages: Lesson[] };
 
 const article = (slug: string, title: string, summary: string, related: string[] = []): Lesson => ({
@@ -25,7 +27,7 @@ const article = (slug: string, title: string, summary: string, related: string[]
   related,
 });
 
-// The sections of the Learn area with their lessons, in reading order.
+/** The sections of the Learn area with their lessons, in reading order. */
 export const lessonSections: LessonSection[] = [
   {
     title: "Start here",
@@ -624,7 +626,13 @@ export const lessonSections: LessonSection[] = [
   },
 ];
 
-// Make the anchor ID of a heading. This file has no file-system import, so the browser can use it.
+/**
+ * Make the anchor ID of a heading. This file has no file-system import, so the browser can use it.
+ * @param text The text of the heading.
+ * @returns The ID: lowercase letters and digits, with a hyphen in place of each other run.
+ * @example
+ * headingId("Caching: when and why"); // "caching-when-and-why"
+ */
 export function headingId(text: string): string {
   return text
     .toLowerCase()

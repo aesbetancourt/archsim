@@ -25,8 +25,16 @@ const projectConfig = {
   agent: { plan: { permission: { edit: "deny", bash: "deny" } } },
 };
 
-// Start a headless OpenCode process and return the text of its answer.
-// The process uses the OpenCode login of this computer.
+/**
+ * Start a headless OpenCode process and return the text of its answer.
+ * The process uses the OpenCode login of this computer.
+ * It writes an opencode.json file in cwd that stops edits and shell commands.
+ * @returns The text of the answer. The text can contain JSON, but OpenCode does not force the schema.
+ * @throws When the opencode command cannot start, or does not answer in 5 minutes.
+ * @throws When OpenCode cannot sign in to the model provider, or returns no text.
+ * @example
+ * const text = await runOpenCode({ cwd, prompt, systemPrompt, schema, model: "anthropic/claude-opus-5-5" });
+ */
 export async function runOpenCode({
   cwd,
   prompt,

@@ -39,7 +39,16 @@ async function requestHeaders(projectId: string): Promise<Headers> {
   return headers;
 }
 
-// Return the MP3 audio of one sentence, from the cache or from Google Cloud Text-to-Speech.
+/**
+ * Return the MP3 audio of one sentence, from the cache or from Google Cloud Text-to-Speech.
+ * The cache is in data/speech/. A new sentence adds one MP3 file there.
+ * @param text The sentence to read aloud.
+ * @returns The MP3 audio.
+ * @throws When there is no Google Cloud login on this computer.
+ * @throws When Google Text-to-Speech returns an error or no audio, or the app cannot write the cache file.
+ * @example
+ * const audio = await synthesize("A cache keeps a copy of the data.", settings.readAloud);
+ */
 export async function synthesize(
   text: string,
   { googleProjectId, googleVoice }: ReadAloud,

@@ -44,8 +44,11 @@ function chime() {
   }
 }
 
-// The countdown clock of a kata, for practice under the time of an interview.
-// It shows the phase that an interviewer expects now, and the minute at which it ends.
+/**
+ * The countdown clock of a kata, for practice under the time of an interview.
+ * It shows the phase that an interviewer expects now, and the minute at which it ends.
+ * @returns The clock and its controls.
+ */
 export default function KataClock({ kataId, interview }: { kataId: string; interview: boolean }) {
   const [clock, setClock] = useState<Clock | null>(null);
   const [choosing, setChoosing] = useState(false);

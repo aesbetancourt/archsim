@@ -64,7 +64,12 @@ async function download(): Promise<Kata[]> {
   return katas.sort((a, b) => a.title.localeCompare(b.title));
 }
 
-// Return the local copy. Return an empty list if there is none.
+/**
+ * Read the local copy of the community katas. This does not download.
+ * @returns The katas of the local copy, or an empty list if there is none.
+ * @example
+ * const katas = await cachedCommunity();
+ */
 export async function cachedCommunity(): Promise<Kata[]> {
   try {
     return JSON.parse(await readFile(CACHE, "utf8")).katas;
@@ -73,7 +78,16 @@ export async function cachedCommunity(): Promise<Kata[]> {
   }
 }
 
-// Return the katas. Download them if there is no local copy, or if refresh is set.
+/**
+ * Get the community katas. Download them if there is no local copy, or if refresh is set.
+ * A download replaces the local copy.
+ * @param refresh Set to download the katas again, also when a local copy exists.
+ * @returns The katas, sorted by title.
+ * @throws An error when GitHub does not answer with success, or when the copy cannot be written.
+ * @example
+ * const katas = await loadCommunity();
+ * const fresh = await loadCommunity(true);
+ */
 export async function loadCommunity(refresh = false): Promise<Kata[]> {
   if (!refresh) {
     const cached = await cachedCommunity();

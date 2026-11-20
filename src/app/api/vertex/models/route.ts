@@ -3,8 +3,12 @@ import { readSettings } from "@/lib/store/settings";
 import { listVertexModels } from "@/lib/ai/vertex-models";
 import { HTTP } from "@/lib/http-status";
 
-// List the models that Vertex AI offers for a project and a location, for the model menu in
-// Settings. The project and the location come from the form, which can be not saved yet.
+/**
+ * List the models that Vertex AI offers for a project and a location, for the model menu in
+ * Settings. The project and the location come from the form, which can be not saved yet.
+ * @param request The request. Its search parameters have the project and the location.
+ * @returns The models. 400 when the search parameters are not valid, 502 when Vertex AI fails.
+ */
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URL(request.url).searchParams);
   const query = vertexModelsQuery.safeParse(params);

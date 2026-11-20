@@ -10,8 +10,13 @@ type Done = Record<string, string>;
 
 const EMPTY: Done = {};
 
-// The marks load one time for each visit to the app. A change here is the only thing that
-// changes them, so they do not load again.
+/**
+ * Get the lessons marked as done. The marks load one time for each visit to the app. A change
+ * here is the only thing that changes them, so they do not load again.
+ * @returns The time of each mark, by the slug of the lesson. Empty until the marks load.
+ * @example
+ * const finished = Boolean(useProgress()[slug]);
+ */
 export function useProgress(): Done {
   const { data } = useQuery({
     queryKey: keys.progress,
@@ -21,8 +26,13 @@ export function useProgress(): Done {
   return data ?? EMPTY;
 }
 
-// Get the function that marks a lesson as done or not done. The page changes at once. If the
-// save fails, the page changes back and the function throws.
+/**
+ * Get the function that marks a lesson as done or not done. The page changes at once.
+ * @returns The function. If the save fails, the page changes back and the function throws.
+ * @example
+ * const setDone = useSetDone();
+ * await setDone(slug, true);
+ */
 export function useSetDone(): (slug: string, value: boolean) => Promise<void> {
   const client = useQueryClient();
   const { mutateAsync } = useMutation({

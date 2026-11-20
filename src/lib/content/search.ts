@@ -15,6 +15,7 @@ const searchKinds = [
 ] as const;
 type SearchKind = (typeof searchKinds)[number];
 
+/** One item that the search can find: a page, a lesson, a term, a note, or other content. */
 export type SearchItem = {
   kind: SearchKind;
   title: string;
@@ -28,8 +29,15 @@ export type SearchItem = {
 // A word of this length or shorter is not stemmed.
 const SHORT_WORD = 4;
 
-// Remove a plural or "-y" end from a search word, so "retry" also finds "retries", and
-// "caches" also finds "cache". Short words stay as they are.
+/**
+ * Remove a plural or "-y" end from a search word, so "retry" also finds "retries", and
+ * "caches" also finds "cache". Short words stay as they are.
+ * @param word A lowercase search word.
+ * @returns The word without its end.
+ * @example
+ * stem("caches"); // "cach"
+ * stem("api"); // "api"
+ */
 export function stem(word: string): string {
   if (word.length <= SHORT_WORD) return word;
   return word.replace(/(ies|es|s|y)$/, "");
@@ -76,7 +84,18 @@ function scoreItem(item: SearchItem, words: string[]): number {
   return score + kindBonus[item.kind] - Math.min(title.length / TITLE_STEP, MAX_TITLE_PENALTY);
 }
 
-// The best results, in order. Items with the same score keep the order of the index.
+/**
+ * Find the best results for a query, in order.
+ * Items with the same score keep the order of the index.
+ * An item must have each word of the query to be a result.
+ * @param items The search index.
+ * @param query The text that the person typed.
+ * @param limit The maximum number of results.
+ * @returns The items that match, best first. An empty query gives no results.
+ * @example
+ * search(index, "event sourcing"); // the items with both words, best first
+ * search(index, "cache", 5); // the five best items for "cache"
+ */
 export function search(items: SearchItem[], query: string, limit = 40): SearchItem[] {
   const words = searchWords(query);
   if (words.length === 0) return [];

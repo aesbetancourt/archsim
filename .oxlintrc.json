@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["nextjs", "typescript", "react", "jsx-a11y", "import"],
+  "plugins": ["nextjs", "typescript", "react", "jsx-a11y", "import", "jsdoc"],
   "env": {
     "builtin": true,
     "browser": true,
@@ -111,7 +111,14 @@
             "ignoreReadonlyClassProperties": true,
             "ignoreTypeIndexes": true
           }
-        ]
+        ],
+        "jsdoc/require-param": ["error", { "checkDestructured": false }],
+        "jsdoc/require-param-description": "error",
+        "jsdoc/require-returns": "error",
+        "jsdoc/require-returns-description": "error",
+        "jsdoc/check-tag-names": "error",
+        "jsdoc/empty-tags": "error",
+        "jsdoc/no-defaults": "error"
       }
     },
     {

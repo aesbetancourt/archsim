@@ -14,6 +14,13 @@ const PROBLEM_ID_RANDOM_LENGTH = 4;
 
 type Solution = { kata: Omit<Kata, "id">; example: Omit<WorkedExample, "kataId"> };
 
+/**
+ * Write a worked answer for a problem that the user pastes. Save the problem as a new kata of
+ * the user, with the answer as its worked example.
+ * @param request The request. Its body has the text of the problem.
+ * @returns The `id` of the new kata. 400 when the body is not valid or the text is too short,
+ * 502 when the model fails.
+ */
 export async function POST(request: Request) {
   const body = await readBody(request, solveRequest);
   if (body instanceof Response) return body;

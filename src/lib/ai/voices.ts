@@ -1,5 +1,7 @@
-// The US English Chirp 3: HD voices of Google Cloud Text-to-Speech.
-// The Text-to-Speech docs list the voices for other languages.
+/**
+ * The US English Chirp 3: HD voices of Google Cloud Text-to-Speech, with an ID and a label.
+ * The Text-to-Speech docs list the voices for other languages.
+ */
 export const googleVoices = [
   ["Achernar", "female"],
   ["Achird", "male"],

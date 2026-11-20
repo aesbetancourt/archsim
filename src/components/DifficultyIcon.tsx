@@ -1,7 +1,10 @@
 const levels: Record<string, number> = { starter: 1, medium: 2, hard: 3 };
 const heights = ["h-1.5", "h-2.5", "h-3.5"];
 
-// Three bars show how hard a kata is. One filled bar is a starter kata, three is a hard one.
+/**
+ * Three bars show how hard a kata is. One filled bar is a starter kata, three is a hard one.
+ * @returns Three bars, with one to three of them filled.
+ */
 export default function DifficultyIcon({ level }: { level: string }) {
   const filled = levels[level] ?? 1;
   return (

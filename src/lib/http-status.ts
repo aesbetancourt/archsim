@@ -1,4 +1,4 @@
-// The HTTP status codes that the app sends and reads.
+/** The HTTP status codes that the app sends and reads, by name. */
 export const HTTP = {
   ok: 200,
   accepted: 202,

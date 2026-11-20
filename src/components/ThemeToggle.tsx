@@ -4,7 +4,10 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
-// Change between the light and the dark theme. The first visit follows the system setting.
+/**
+ * Change between the light and the dark theme. The first visit follows the system setting.
+ * @returns A button that changes the theme.
+ */
 export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   return (

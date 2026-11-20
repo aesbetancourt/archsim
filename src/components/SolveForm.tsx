@@ -10,6 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { solveProblem } from "@/lib/browser/api";
 import { MIN_PROBLEM_LENGTH } from "@/lib/limits";
 
+/**
+ * A form for the text of a new problem. The model makes the kata and its answer.
+ * Then the page opens the answer, or the canvas to try first.
+ * @returns The problem text field, the two buttons, and an error message when the request fails.
+ */
 export default function SolveForm({ initialText }: { initialText: string }) {
   const router = useRouter();
   const [text, setText] = useState(initialText);

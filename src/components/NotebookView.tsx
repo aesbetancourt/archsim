@@ -66,8 +66,11 @@ function summary(group: LessonGroup): string {
 
 const subheading = "text-xs font-medium uppercase text-muted-foreground";
 
-// All of the notebook: the lessons with their bookmarks, notes, and highlights, the general notes,
-// and the story bank. Each lesson is closed at first, so the page stays short.
+/**
+ * All of the notebook: the lessons with their bookmarks, notes, and highlights, the general notes,
+ * and the story bank. Each lesson is closed at first, so the page stays short.
+ * @returns The notebook page.
+ */
 export default function NotebookView({ notebook }: { notebook: Notebook }) {
   const client = useQueryClient();
   const [highlights, setHighlights] = useState(notebook.highlights);

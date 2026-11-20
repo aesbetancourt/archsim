@@ -47,9 +47,12 @@ function draftFrom(saved: PublicSettings): Settings {
   };
 }
 
-// The Settings page: the connection to the model, the font, and the voice. This component has the
-// values and the three actions: save, test the connection, and play a sample. Each card of the
-// form is a file in components/settings.
+/**
+ * The Settings page: the connection to the model, the font, and the voice. This component has the
+ * values and the three actions: save, test the connection, and play a sample. Each card of the
+ * form is a file in components/settings.
+ * @returns The settings form.
+ */
 export default function SettingsForm({ initial }: { initial: PublicSettings }) {
   // The settings as the server saved them, with a hint for each key.
   const [saved, setSaved] = useState(initial);

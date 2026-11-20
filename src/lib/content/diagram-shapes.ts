@@ -1,4 +1,6 @@
-// The form of each node in a drawn diagram. The forms are the same as in the palette of the canvas.
+/**
+ * The form of a node in a drawn diagram. The forms are the same as in the palette of the canvas.
+ */
 export type DiagramShape =
   | "box"
   | "person"
@@ -9,6 +11,7 @@ export type DiagramShape =
   | "pipe"
   | "external";
 
+/** All the node forms, in the order of the diagram legend. */
 export const diagramShapes: DiagramShape[] = [
   "person",
   "actor",
@@ -20,7 +23,9 @@ export const diagramShapes: DiagramShape[] = [
   "pipe",
 ];
 
-// The fill color and the legend text of each form. The colors are the colors of the palette groups.
+/**
+ * The fill color and the legend text of each form. The colors are the colors of the palette groups.
+ */
 export const shapeStyle: Record<DiagramShape, { color: string; legend: string }> = {
   person: { color: "#b7cde2", legend: "User" },
   actor: { color: "#b7cde2", legend: "Client" },
@@ -40,8 +45,15 @@ const MODULE = /\(module\)|\bplug-in\b/;
 const PIPE = /\b(queue|queues|stream|broker|topic|bus)\b/;
 const STORE = /\b(database|store|storage|cache|ledger|index|warehouse|registry|db)\b/;
 
-// Find the form of a node. A node can state its form. If it does not, the name decides.
-// Only the name counts, not the text in parentheses or on the second line.
+/**
+ * Find the form of a node. A node can state its form. If it does not, the name decides.
+ * Only the name counts, not the text in parentheses or on the second line.
+ * @param node The node, with its label and an optional form or external mark.
+ * @returns The form of the node. A node that matches no rule is a "box".
+ * @example
+ * shapeOf({ label: "Orders database" }); // "store"
+ * shapeOf({ label: "Payments", external: true }); // "external"
+ */
 export function shapeOf(node: {
   label: string;
   external?: boolean;

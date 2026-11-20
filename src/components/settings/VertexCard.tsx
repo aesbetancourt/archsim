@@ -20,9 +20,16 @@ import { listVertexModels } from "@/lib/browser/api";
 
 type VertexModels = ReturnType<typeof useVertexModels>;
 
-// The models that Vertex AI offers for a project and a location. The list loads when the card
-// opens. The form calls this hook, not the card, so the list stays when the person looks at a
-// different connection and comes back.
+/**
+ * The models that Vertex AI offers for a project and a location. The list loads when the card
+ * opens. The form calls this hook, not the card, so the list stays when the person looks at a
+ * different connection and comes back.
+ * @param open True when the card is open. The list loads when the card opens.
+ * @param projectId The Google Cloud project.
+ * @param location The Vertex AI location of the models.
+ * @returns The list of models, the error, the loading state, the state of "Other model", and
+ * the function that loads the list again.
+ */
 export function useVertexModels(open: boolean, projectId: string, location: string) {
   const [list, setList] = useState<{ gemini: string[]; claude: string[] } | null>(null);
   const [error, setError] = useState("");
@@ -51,7 +58,10 @@ export function useVertexModels(open: boolean, projectId: string, location: stri
   return { list, error, loading, other, setOther, load };
 }
 
-// The settings of the Google Vertex AI connection.
+/**
+ * The settings of the Google Vertex AI connection.
+ * @returns The fields of the connection.
+ */
 export default function VertexCard({
   value,
   onChange,

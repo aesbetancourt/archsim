@@ -15,7 +15,10 @@ type Props = {
   intro: string;
 };
 
-// A floating button that opens a small help chat. The chat only answers. It changes nothing.
+/**
+ * A floating button that opens a small help chat. The chat only answers. It changes nothing.
+ * @returns The help button and the chat panel.
+ */
 export default function HelpChat({ getContext, intro }: Props) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);

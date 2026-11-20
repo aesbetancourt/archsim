@@ -28,5 +28,9 @@ const icons: Record<string, LucideIcon> = {
   "System design cases": MessagesSquare,
 };
 
-// The icon of a section of the Learn area. The Learn page and the sidebar use the same icons.
+/**
+ * The icon of a section of the Learn area. The Learn page and the sidebar use the same icons.
+ * @param title The title of the section.
+ * @returns The icon of the section, or a book icon for a section with no icon of its own.
+ */
 export const sectionIcon = (title: string): LucideIcon => icons[title] ?? BookOpen;

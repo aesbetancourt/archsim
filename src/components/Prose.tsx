@@ -58,8 +58,12 @@ function WalkthroughBlock({ source }: { source: string }) {
   );
 }
 
-// Draw the Markdown text of an article in the style of the app.
-// The compact form is for the help chat. Its links open in a new tab, so the canvas keeps its content.
+/**
+ * Shows the Markdown text of an article in the style of the app.
+ * The compact form is for the help chat. Its links open in a new tab, so the canvas keeps its
+ * content.
+ * @returns The article.
+ */
 export default function Prose({
   markdown,
   compact = false,

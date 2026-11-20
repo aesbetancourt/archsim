@@ -3,8 +3,10 @@ import { speechClip } from "./api";
 // The sound of the read-aloud player. It says one sentence, with the Google voice or with the voice
 // of the browser. It does not know the page, and it does not decide which sentence comes next.
 
-// oxlint-disable-next-line no-magic-numbers -- A named list of the speeds that the person can select.
+/* oxlint-disable no-magic-numbers -- A named list of the speeds that the person can select. */
+/** The reading speeds that the person can select. */
 export const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
+/* oxlint-enable no-magic-numbers */
 const RATE_KEY = "charrette-read-rate";
 
 // A natural English voice of the browser. macOS has Premium and Enhanced voices.
@@ -17,7 +19,12 @@ function browserVoice(): SpeechSynthesisVoice | undefined {
   );
 }
 
-// The reading speed that the person selected the last time.
+/**
+ * Read the reading speed that the person selected the last time.
+ * @returns The saved speed. 1 when no valid speed is saved or the storage is not available.
+ * @example
+ * const saved = readRate();
+ */
 export function readRate(): number {
   try {
     const saved = Number(localStorage.getItem(RATE_KEY));
@@ -27,6 +34,13 @@ export function readRate(): number {
   }
 }
 
+/**
+ * Save the reading speed for the next visit. When the storage is not available, the speed
+ * applies now only.
+ * @param value The speed, one of `RATES`.
+ * @example
+ * saveRate(1.25);
+ */
 export function saveRate(value: number): void {
   try {
     localStorage.setItem(RATE_KEY, String(value));
@@ -35,8 +49,23 @@ export function saveRate(value: number): void {
   }
 }
 
+/**
+ * Find out if the browser has a voice of its own.
+ * @returns True when the browser has speech synthesis.
+ * @example
+ * if (!browserCanSpeak()) setNotice("This browser cannot read aloud.");
+ */
 export const browserCanSpeak = () => "speechSynthesis" in window;
 
+/**
+ * Make the sound of the read-aloud player. It says one sentence, with the Google voice or with
+ * the voice of the browser. It does not know the page, and it does not decide which sentence
+ * comes next.
+ * @returns The functions that load, play, continue, and stop the audio, and set the speed.
+ * @example
+ * const speaker = createSpeaker();
+ * await speaker.playClip(await speaker.clip(sentence.text), index, playNext);
+ */
 export function createSpeaker() {
   let audio: HTMLAudioElement | null = null;
   // The sentence that the audio element holds now.

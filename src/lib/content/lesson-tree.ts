@@ -1,10 +1,19 @@
 import type { Lesson } from "./lessons";
 
+/** A top lesson of a section, with the lessons under it. */
 export type TreeNode = { page: Lesson; children: Lesson[] };
 
-// Put the lessons of a section in a tree: a lesson with a parent goes under that parent.
-// With search words, keep the pages whose title has the words. A parent that matches keeps all
-// of its children. A child that matches keeps its parent, so the reader sees where it belongs.
+/**
+ * Put the lessons of a section in a tree: a lesson with a parent goes under that parent.
+ * With search words, keep the pages whose title has the words. A parent that matches keeps all
+ * of its children. A child that matches keeps its parent, so the reader sees where it belongs.
+ * @param pages The lessons of one section.
+ * @param words The search words. Empty words keep all the lessons.
+ * @returns The top lessons, each with the lessons under it that stay.
+ * @example
+ * sectionTree(section.pages); // all the lessons, as a tree
+ * sectionTree(section.pages, "cache"); // only the branches with "cache" in a title
+ */
 export function sectionTree(pages: Lesson[], words = ""): TreeNode[] {
   const query = words.trim().toLowerCase();
   const matches = (page: Lesson) => !query || page.title.toLowerCase().includes(query);

@@ -16,15 +16,16 @@ import {
 import { suggestKnew, type Grade } from "@/lib/ai/drill-grade";
 import { ApiError, gradeAnswer } from "@/lib/browser/api";
 
-// A drill with the Leitner system and an optional AI check. The vocabulary drill and the
-// question drill use it. Each drill gives its items, its filters, and how to show an item.
-
 const VERDICT_LABEL: Record<Grade["verdict"], string> = {
   correct: "Correct",
   partly: "Partly correct",
   wrong: "Not correct",
 };
 
+/**
+ * A filter button of a drill: its label, the test that selects the items, and the text to show when
+ * no item matches.
+ */
 export type DrillFilter<T> = { label: string; test: (item: T) => boolean; empty?: string };
 
 type Props<T extends { id: string }> = {
@@ -60,6 +61,11 @@ function errorText(caught: unknown): string {
   return "The check did not finish.";
 }
 
+/**
+ * A drill with the Leitner system and an optional AI check. The vocabulary drill and the
+ * question drill use it. Each drill gives its items, its filters, and how to show an item.
+ * @returns The filter buttons, the current item with its answer box, and the result of the check.
+ */
 export default function Drill<T extends { id: string }>({
   items,
   filters,

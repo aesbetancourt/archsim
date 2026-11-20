@@ -7,7 +7,9 @@ import {
 } from "@/lib/content/diagram-shapes";
 import type { DiagramSpec } from "@/lib/content/examples";
 
-// What a walkthrough step shows of a diagram. Without a view, the diagram shows all of it.
+/**
+ * What a walkthrough step shows of a diagram. Without a view, the diagram shows all of it.
+ */
 export type DiagramView = {
   visible: Set<string>;
   // The positions of the visible arrows in spec.edges.
@@ -209,7 +211,10 @@ function Note({ x, y, text }: { x: number; y: number; text: string }) {
   );
 }
 
-// Draw a diagram from a grid description, with a legend of the forms it uses.
+/**
+ * Draws a diagram from a grid description, with a legend of the forms it uses.
+ * @returns The diagram as an SVG image, and its legend.
+ */
 export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: DiagramView }) {
   const shown = (id: string) => !view || view.visible.has(id);
   const rects = new Map<string, Rect>();

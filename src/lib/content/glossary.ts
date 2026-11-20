@@ -1,3 +1,6 @@
+/**
+ * One term of the glossary, with its definition, an example, and the words that find it in a text.
+ */
 export type GlossaryTerm = {
   id: string;
   term: string;
@@ -12,6 +15,7 @@ export type GlossaryTerm = {
   learn?: string;
 };
 
+/** The categories of the glossary, in the order that the glossary page shows them. */
 export const glossaryCategories = [
   "Architecture practice",
   "Building blocks",
@@ -26,6 +30,7 @@ export const glossaryCategories = [
   "AI systems",
 ];
 
+/** All the terms of the glossary. */
 export const glossary: GlossaryTerm[] = [
   // Building blocks
   {
@@ -3786,11 +3791,24 @@ export const glossary: GlossaryTerm[] = [
   },
 ];
 
+/**
+ * Make the link to an article of the English Wikipedia.
+ * @param title The title of the article.
+ * @returns The URL of the article.
+ * @example
+ * wikiUrl("Load balancing"); // "https://en.wikipedia.org/wiki/Load%20balancing"
+ */
 export function wikiUrl(title: string): string {
   return `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
 }
 
-// Find the glossary terms that a text uses.
+/**
+ * Find the glossary terms that a text uses.
+ * @param text The text to look in. Case does not matter.
+ * @returns The terms that have a match word in the text, in the order of the glossary.
+ * @example
+ * termsIn("Put a cache in front of the database.");
+ */
 export function termsIn(text: string): GlossaryTerm[] {
   const lower = text.toLowerCase();
   return glossary.filter((entry) => entry.match.some((word) => lower.includes(word)));

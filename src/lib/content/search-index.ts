@@ -100,7 +100,15 @@ const sectionOf = new Map(
   ),
 );
 
-// The search index of the content. The notes of the user are not in it: the browser adds them.
+/**
+ * Build the search index of the content.
+ * The notes of the user are not in it: the browser adds them.
+ * @returns The items of the app pages, lessons, sections, katas, terms, cheatsheets, and questions.
+ * @throws An error when the cheatsheets or the questions cannot be read.
+ * @example
+ * const index = await buildSearchIndex();
+ * search(index, "cache");
+ */
 export async function buildSearchIndex(): Promise<SearchItem[]> {
   const items: SearchItem[] = [...appPages];
 

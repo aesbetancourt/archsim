@@ -59,6 +59,7 @@ const sceneElement = z.looseObject({
 });
 const elements = z.array(sceneElement).max(MAX_ELEMENTS);
 
+/** The body of POST /api/review: one kata attempt to review, with the diagram as a PNG. */
 export const reviewRequest = z.object({
   kataId: id,
   scope: text,
@@ -69,8 +70,10 @@ export const reviewRequest = z.object({
   diagramPng: z.string().max(MAX_PNG).startsWith("data:image/png;base64,"),
   elements,
 });
+/** One kata attempt to review, as `reviewRequest` checks it. */
 export type ReviewRequest = z.infer<typeof reviewRequest>;
 
+/** The body of POST /api/chat: the work in a kata or on a board, and the help chat so far. */
 export const chatRequest = z.object({
   context: z.discriminatedUnion("kind", [
     z.object({
@@ -91,20 +94,28 @@ export const chatRequest = z.object({
     .max(MAX_MESSAGES),
 });
 
+/** The body of POST /api/solve: the problem text for "Solve a problem". */
 export const solveRequest = z.object({ text: z.string().max(MAX_PROBLEM) });
 
-// One explanation in the vocabulary drill. The server looks up the reference by the term ID.
+/**
+ * The body of POST /api/drill/grade: one explanation in the vocabulary drill.
+ * The server looks up the reference by the term ID.
+ */
 export const drillGradeRequest = z.object({
   termId: slugId,
   answer: z.string().trim().min(1, "Write an explanation first.").max(MAX_EXPLANATION),
 });
 
-// One answer in the question drill. The server looks up the reference by the question ID.
+/**
+ * The body of POST /api/drill/question and POST /api/drill/product: one answer in a question
+ * drill. The server looks up the reference by the question ID.
+ */
 export const questionGradeRequest = z.object({
   questionId: id,
   answer: z.string().trim().min(1, "Write an answer first.").max(MAX_ANSWER),
 });
 
+/** The body of PUT /api/boards/[id]: the title, the notes, and the drawing of a board. */
 export const boardUpdate = z.object({
   title: name,
   notes,
@@ -114,6 +125,7 @@ export const boardUpdate = z.object({
   }),
 });
 
+/** The body of POST /api/notebook/highlights: a new highlight of a passage on a page. */
 export const highlightCreate = z.object({
   page: pageAddress,
   title: pageField,
@@ -126,8 +138,10 @@ export const highlightCreate = z.object({
   note: z.string().max(MAX_TEXT).default(""),
 });
 
+/** The body of PATCH /api/notebook/highlights/[id]: the new note of a highlight. */
 export const highlightUpdate = z.object({ note: z.string().max(MAX_TEXT) });
 
+/** The body of POST /api/notebook/bookmarks: a new bookmark on a page or on one section. */
 export const bookmarkCreate = z.object({
   page: pageAddress,
   title: pageField,
@@ -138,12 +152,14 @@ export const bookmarkCreate = z.object({
     .max(MAX_NAME),
 });
 
+/** The body of PUT /api/notebook/pages: the notes on one page. */
 export const pageNoteUpdate = z.object({
   page: pageAddress,
   title: pageField,
   html: notes,
 });
 
+/** The body of PUT /api/progress: a lesson that is done or not done. */
 export const progressUpdate = z.object({
   slug: z
     .string()
@@ -152,9 +168,11 @@ export const progressUpdate = z.object({
   done: z.boolean(),
 });
 
+/** The body of PUT /api/onboarding: a tour that the person saw or did not see. */
 export const onboardingUpdate = z.object({ tour: z.enum(tourIds), seen: z.boolean() });
 
 const storyText = z.string().max(MAX_STORY_PART);
+/** The body of POST /api/notebook/stories and PUT /api/notebook/stories/[id]: one story. */
 export const storyFields = z.object({
   title: name,
   situation: storyText,
@@ -165,8 +183,10 @@ export const storyFields = z.object({
   competencies: z.array(z.string().max(MAX_SLUG)).max(MAX_COMPETENCIES),
 });
 
+/** The body of POST /api/notebook/notes: a new general note, with an optional title. */
 export const documentCreate = z.object({ title: name.default("") });
 
+/** The body of PUT /api/notebook/notes/[id]: the title and the HTML of a general note. */
 export const documentUpdate = z.object({ title: name, html: notes });
 
 const httpUrl = z.url({ protocol: /^https?$/ });
@@ -178,6 +198,7 @@ const googleProjectId = z
 const model = name;
 const key = z.string().max(MAX_KEY);
 
+/** The body of PUT /api/settings: the AI mode, the settings of each provider, and read-aloud. */
 export const settingsUpdate = z.object({
   mode: z.enum(modes),
   claudeCode: z.object({ model }),
@@ -214,8 +235,10 @@ export const settingsUpdate = z.object({
     .optional(),
 });
 
-// The project and the location for the list of Vertex AI models. An empty project means: use the
-// project in Settings.
+/**
+ * The query of GET /api/vertex/models: the project and the location for the list of Vertex AI
+ * models. An empty project means: use the project in Settings.
+ */
 export const vertexModelsQuery = z.object({
   project: googleProjectId.default(""),
   location: z
@@ -225,11 +248,19 @@ export const vertexModelsQuery = z.object({
     .default("global"),
 });
 
-// One sentence for the read-aloud player.
+/** The body of POST /api/speech: one sentence for the read-aloud player. */
 export const speechRequest = z.object({ text: z.string().trim().min(1).max(MAX_SENTENCE) });
 
-// Read the JSON body of a request and check it against a schema.
-// If the body is not valid, return a 400 response that names the first problem.
+/**
+ * Read the JSON body of a request and check it against a schema.
+ * @param request The request from the route handler.
+ * @param schema The Zod schema that the body must match.
+ * @returns The checked body, or a 400 response when the body is not JSON or does not match.
+ * The response names the first problem.
+ * @example
+ * const body = await readBody(request, solveRequest);
+ * if (body instanceof Response) return body;
+ */
 export async function readBody<T extends z.ZodType>(
   request: Request,
   schema: T,

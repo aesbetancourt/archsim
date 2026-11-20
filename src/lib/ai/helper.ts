@@ -1,8 +1,9 @@
 import type { SceneElement } from "./scene";
 
+/** One message in the chat with the helper: from the person, or from the helper. */
 export type ChatMessage = { role: "user" | "helper"; text: string };
 
-// What the person works on when they ask a question.
+/** What the person works on when they ask a question: a kata attempt, or a board. */
 export type HelperContext =
   | {
       kind: "kata";
@@ -16,6 +17,7 @@ export type HelperContext =
     }
   | { kind: "board"; title: string; notes: string; elements: SceneElement[] };
 
+/** The JSON Schema of a helper answer: one reply text. The output of the model must match it. */
 export const helperSchema = {
   type: "object",
   additionalProperties: false,

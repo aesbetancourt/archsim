@@ -151,7 +151,10 @@ function Block({ block }: { block: SheetBlock }) {
   );
 }
 
-// All cheatsheets on one page, with a filter that searches every entry.
+/**
+ * All cheatsheets on one page, with a filter that searches every entry.
+ * @returns The filter and the cheatsheets, with the entries that match.
+ */
 export default function CheatsheetView({ sheets }: { sheets: Cheatsheet[] }) {
   const [query, setQuery] = useState("");
   const words = query.toLowerCase().split(/\s+/).filter(Boolean).map(stem);

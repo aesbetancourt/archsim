@@ -54,7 +54,11 @@ const fieldsOf = (story: Story): StoryFields => ({
   competencies: story.competencies,
 });
 
-// A story as one answer text, in STAR order. The question drill puts it in the answer box.
+/**
+ * A story as one answer text, in STAR order. The question drill puts it in the answer box.
+ * @param story The story to put in the answer box.
+ * @returns The parts of the story that have text, with a blank line between them.
+ */
 export function storyAsAnswer(story: Story): string {
   return parts
     .map((part) => story[part.key as keyof Story] as string)
@@ -62,7 +66,10 @@ export function storyAsAnswer(story: Story): string {
     .join("\n\n");
 }
 
-// The story bank: true stories for the behavioral interview, in STAR form.
+/**
+ * The story bank: true stories for the behavioral interview, in STAR form.
+ * @returns The list of stories, with an editor for the open story.
+ */
 export default function StoryBank({ initial }: { initial: Story[] }) {
   const [stories, setStories] = useState(initial);
   const [openId, setOpenId] = useState<string | null>(null);

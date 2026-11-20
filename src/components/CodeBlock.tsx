@@ -21,8 +21,11 @@ const names: Record<string, string> = {
   proto: "Protocol Buffers",
 };
 
-// A code block in a lesson: a header with the language and a copy button, then the code.
-// The colors of the code come from the theme in globals.css.
+/**
+ * A code block in a lesson: a header with the language and a copy button, then the code.
+ * The colors of the code come from the theme in globals.css.
+ * @returns The header and the code.
+ */
 export default function CodeBlock({
   language,
   code,

@@ -13,8 +13,15 @@ type ClaudeCall = {
   model?: string;
 };
 
-// Start a headless Claude Code process and return its structured output.
-// The process uses the local Claude Code login. It can only read files in cwd.
+/**
+ * Start a headless Claude Code process and return its structured output.
+ * The process uses the local Claude Code login. It can only read files in cwd.
+ * @returns The structured output of Claude Code. It matches the schema.
+ * @throws When the claude command cannot start, or does not answer in 5 minutes.
+ * @throws When Claude Code fails, or returns no structured output.
+ * @example
+ * const output = await runClaude({ cwd, prompt, systemPrompt, schema: gradeSchema });
+ */
 export function runClaude({
   cwd,
   prompt,

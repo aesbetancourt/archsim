@@ -8,6 +8,14 @@ import { readBody, reviewRequest } from "@/lib/requests";
 import { buildReviewPrompt, reviewerSystemPrompt } from "@/prompts/review";
 import { HTTP } from "@/lib/http-status";
 
+/**
+ * Review an attempt at a kata with the AI model. Save the diagram, the scene, and the review
+ * as a new attempt.
+ * @param request The request. Its body has the kata ID, the diagram as a PNG data URL, the
+ * scene elements, and the answers of the attempt.
+ * @returns The `id` of the new attempt. 400 when the body is not valid or the diagram is
+ * missing, 404 when the kata is not known, 502 when the model fails.
+ */
 export async function POST(request: Request) {
   const submission = await readBody(request, reviewRequest);
   if (submission instanceof Response) return submission;

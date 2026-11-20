@@ -1,5 +1,8 @@
-// The Architectural Katas collection of Ted Neward. The kata texts are not part of this project.
-// This file has no server code, so the browser can use it too.
+/**
+ * The Architectural Katas collection of Ted Neward: its name, owner, and links.
+ * The kata texts are not part of this project. This file has no server code, so the browser can
+ * use it too.
+ */
 export const COMMUNITY_SOURCE = {
   name: "Architectural Katas",
   owner: "Ted Neward",

@@ -155,9 +155,12 @@ type Props = {
   onRemove: (id: string) => void;
 };
 
-// The notebook next to a learning page: the notes, highlights, and bookmarks of the page, and the
-// general notes. Expand shows the same panel large, over the lesson. The panel is not loaded again,
-// so no editor loses its text. It also stays in the page when it is closed.
+/**
+ * The notebook next to a learning page: the notes, highlights, and bookmarks of the page, and the
+ * general notes. Expand shows the same panel large, over the lesson. The panel is not loaded again,
+ * so no editor loses its text. It also stays in the page when it is closed.
+ * @returns The notebook panel.
+ */
 export default function NotebookSidebar({
   page,
   getTitle,

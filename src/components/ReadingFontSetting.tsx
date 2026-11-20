@@ -31,7 +31,10 @@ const subscribe = (listener: () => void) => {
 const current = (): ReadingFont =>
   document.documentElement.dataset.reading === "sans" ? "sans" : "serif";
 
-// The font of the lesson text. The choice applies at once and is kept in this browser.
+/**
+ * The font of the lesson text. The choice applies at once and is kept in this browser.
+ * @returns The choice between the serif and the sans-serif font.
+ */
 export default function ReadingFontSetting() {
   const font = useSyncExternalStore(subscribe, current, () => "serif" as ReadingFont);
 

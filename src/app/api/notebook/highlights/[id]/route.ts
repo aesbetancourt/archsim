@@ -4,7 +4,12 @@ import { HTTP } from "@/lib/http-status";
 
 type Context = { params: Promise<{ id: string }> };
 
-// Save the note of one highlight.
+/**
+ * Save the note of one highlight.
+ * @param request The request. Its body has the new note.
+ * @returns The changed highlight. 400 when the body is not valid, 404 when the highlight is
+ * not known.
+ */
 export async function PATCH(request: Request, { params }: Context) {
   const { id } = await params;
   const update = await readBody(request, highlightUpdate);
@@ -14,6 +19,11 @@ export async function PATCH(request: Request, { params }: Context) {
   return Response.json(highlight);
 }
 
+/**
+ * Remove one highlight.
+ * @param _request The request. The handler does not read it.
+ * @returns `{ ok: true }`.
+ */
 export async function DELETE(_request: Request, { params }: Context) {
   const { id } = await params;
   await removeHighlight(id);

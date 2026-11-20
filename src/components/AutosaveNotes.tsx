@@ -28,7 +28,10 @@ type Props = {
   compact?: boolean;
 };
 
-// A notes editor that saves each change after a short delay.
+/**
+ * A notes editor that saves each change after a short delay.
+ * @returns The notes editor.
+ */
 export default function AutosaveNotes({
   initialHtml,
   save,

@@ -11,7 +11,10 @@ type Props<T extends string> = Omit<
   href: Route<T>;
 };
 
-// A button that is a link. An external address opens in a new tab.
+/**
+ * A button that is a link. An external address opens in a new tab.
+ * @returns A link with the style of a button.
+ */
 export default function LinkButton<T extends string>({ href, ...props }: Props<T>) {
   const external = /^https?:/.test(href);
   return (

@@ -32,6 +32,14 @@ In a kata:
 
 const open = `The person is on a free board in the scratchpad. Nothing here is graded. Answer their questions directly, and give a recommendation with its main trade-off when they ask for one.`;
 
+/**
+ * Write the system prompt of the help chat. In a kata the chat is a tutor that does not give the
+ * design. On a free board it answers directly.
+ * @param kind Where the chat is open: "kata" or "board".
+ * @returns The shared rules and the rules for that place.
+ * @example
+ * const systemPrompt = helperSystemPrompt(context.kind);
+ */
 export function helperSystemPrompt(kind: HelperContext["kind"]): string {
   return `${shared}\n\n${kind === "kata" ? tutor : open}`;
 }
@@ -88,7 +96,15 @@ ${describeScene(context.elements)}${pieceNotes(context.elements)}
 </board>`;
 }
 
-// The work of the person and the conversation, as the prompt for one answer.
+/**
+ * Write the prompt for one answer of the help chat: the work of the person and the conversation.
+ * @param context The work in the kata or on the board, with the notes and the diagram.
+ * @param kata The kata of the attempt. It is undefined on a free board.
+ * @param messages The conversation so far. The last message is from the person.
+ * @returns The prompt, with the work and the conversation in tags.
+ * @example
+ * const prompt = buildHelperPrompt(context, kata, messages.slice(-MAX_MESSAGES));
+ */
 export function buildHelperPrompt(
   context: HelperContext,
   kata: Kata | undefined,

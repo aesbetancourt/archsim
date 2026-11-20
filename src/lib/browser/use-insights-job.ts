@@ -8,9 +8,15 @@ import { keys } from "./query-keys";
 // How often the page asks for the state of the job, in milliseconds.
 const POLL_MS = 3_000;
 
-// The job that writes an insights document. It runs in the background on the server, so the
-// person can reload or leave the page. The page asks for the state when it opens, and again every
-// few seconds while the job runs.
+/**
+ * Follow the job that writes an insights document. The job runs in the background on the
+ * server, so the person can reload or leave the page. The page asks for the state when it opens,
+ * and again every few seconds while the job runs.
+ * @returns Whether the job runs now, and a function that starts a job. That function throws when
+ * the server refuses.
+ * @example
+ * const job = useInsightsJob({ enabled: open, onDone: refresh, onFailed: showError });
+ */
 export function useInsightsJob({
   enabled,
   onDone,

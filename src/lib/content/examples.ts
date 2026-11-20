@@ -28,8 +28,10 @@ type DiagramEdge = {
   both?: boolean;
 };
 
+/** A diagram as data: the nodes and groups on a grid, and the arrows between the nodes. */
 export type DiagramSpec = { nodes: DiagramNode[]; groups?: DiagramGroup[]; edges: DiagramEdge[] };
 
+/** One possible answer to a kata, with its reasons, its diagram, and its trade-offs. */
 export type WorkedExample = {
   kataId: string;
   // The model that wrote the answer. Empty for the built-in answers.
@@ -48,6 +50,7 @@ export type WorkedExample = {
   alternative: { title: string; body: string };
 };
 
+/** The worked examples of all katas, the interview katas too. */
 export const workedExamples: WorkedExample[] = [
   {
     kataId: "lunch-rush",
@@ -497,6 +500,13 @@ export const workedExamples: WorkedExample[] = [
   ...interviewExamples,
 ];
 
+/**
+ * Find the worked example of a kata.
+ * @param kataId The ID of the kata.
+ * @returns The worked example, or undefined when the kata has none.
+ * @example
+ * getWorkedExample("lunch-rush")?.diagram;
+ */
 export function getWorkedExample(kataId: string): WorkedExample | undefined {
   return workedExamples.find((example) => example.kataId === kataId);
 }

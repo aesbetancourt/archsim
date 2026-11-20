@@ -4,6 +4,10 @@ import GlossaryList from "@/components/GlossaryList";
 import StudyLayout from "@/components/StudyLayout";
 import { glossary } from "@/lib/content/glossary";
 
+/**
+ * The glossary of terms from the katas, the worked answers, and the Learn pages.
+ * @returns The glossary page, with the notebook sidebar.
+ */
 export default function GlossaryPage() {
   return (
     <div className="flex flex-1">

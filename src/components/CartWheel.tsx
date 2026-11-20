@@ -1,5 +1,8 @@
-// The mark of Charrette: the wheel of a charrette, the cart of the Beaux-Arts. It is the same
-// wheel as the app icon. The rim and the spokes use the text color, and the hub is red chalk.
+/**
+ * The mark of Charrette: the wheel of a charrette, the cart of the Beaux-Arts. It is the same
+ * wheel as the app icon. The rim and the spokes use the text color, and the hub is red chalk.
+ * @returns The wheel as an SVG image.
+ */
 export default function CartWheel({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>

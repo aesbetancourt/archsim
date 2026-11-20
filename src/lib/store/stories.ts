@@ -1,7 +1,9 @@
 // The story bank of the notebook. This file has no server code, so the browser can use it.
 
-// A true story from the user's work, for the behavioral interview. The parts follow STAR, plus
-// what the user learned. The competencies say which questions the story answers.
+/**
+ * A true story from the user's work, for the behavioral interview. The parts follow STAR, plus
+ * what the user learned. The competencies say which questions the story answers.
+ */
 export type Story = {
   id: string;
   title: string;
@@ -15,12 +17,13 @@ export type Story = {
   updatedAt: string;
 };
 
+/** The parts of a story that the user writes. The app sets the ID and the times. */
 export type StoryFields = Pick<
   Story,
   "title" | "situation" | "task" | "action" | "result" | "reflection" | "competencies"
 >;
 
-// The competencies that an architect is asked about, from the behavioral interviews lesson.
+/** The competencies that an architect is asked about, from the behavioral interviews lesson. */
 export const competencies = [
   "Influence without authority",
   "Decision under uncertainty",

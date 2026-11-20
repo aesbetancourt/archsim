@@ -7,6 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { glossary, glossaryCategories, wikiUrl } from "@/lib/content/glossary";
 
+/**
+ * The glossary terms in their categories, with a search on the terms and their definitions.
+ * @returns The search field and the terms that match, in groups by category.
+ */
 export default function GlossaryList() {
   const [query, setQuery] = useState("");
   const words = query.trim().toLowerCase();

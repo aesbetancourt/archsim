@@ -1,6 +1,7 @@
 import { lessonSections } from "@/lib/content/lessons";
 import { SCORES } from "@/lib/ai/score";
 
+/** The dimensions of the review rubric. The reviewer gives a score for each one. */
 export const dimensions = [
   { id: "scope", label: "Scope and core functions" },
   { id: "characteristics", label: "Characteristics identified" },
@@ -13,6 +14,7 @@ export const dimensions = [
 
 type DimensionId = (typeof dimensions)[number]["id"];
 
+/** The review of an attempt: a summary, a score for each dimension, strengths, and risks. */
 export type Review = {
   summary: string;
   dimensions: {
@@ -33,12 +35,12 @@ export type Review = {
   defense_questions: string[];
 };
 
-// The Learn pages that a review can send the person to.
+/** The Learn pages that a review can send the person to. */
 export const studyPages = lessonSections
   .flatMap((section) => section.pages)
   .map((page) => ({ slug: page.slug, title: page.title }));
 
-// The output of the reviewer must match this schema, with each provider.
+/** The JSON Schema of a review. The output of the reviewer must match it, with each provider. */
 export const reviewSchema = {
   type: "object",
   additionalProperties: false,

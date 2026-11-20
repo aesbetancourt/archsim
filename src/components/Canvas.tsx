@@ -19,6 +19,11 @@ type Props = {
   onChange?: (elements: readonly { version: number }[]) => void;
 };
 
+/**
+ * The drawing canvas of Excalidraw, with the palette of pieces above it.
+ * It uses the light or the dark theme of the app.
+ * @returns The palette and the canvas.
+ */
 export default function Canvas({ onReady, initialData, onChange }: Props) {
   const { resolvedTheme } = useTheme();
   const api = useRef<ExcalidrawImperativeAPI | null>(null);

@@ -1,7 +1,10 @@
 import Diagram from "@/components/Diagram";
 import type { StyleLesson } from "@/lib/content/kata-method";
 
-// The full content of one style lesson. The Learn page and the kata page use it.
+/**
+ * The full content of one style lesson. The Learn page and the kata page use it.
+ * @returns The diagram and the text of the lesson.
+ */
 export default function StyleLessonBody({ lesson }: { lesson: StyleLesson }) {
   return (
     <div className="space-y-4">

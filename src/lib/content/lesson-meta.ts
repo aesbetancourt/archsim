@@ -1,17 +1,22 @@
+/** The level of a lesson. */
 export type Level = "basic" | "intermediate" | "advanced";
 
+/** The level and the learning objectives of one lesson. */
 export type LessonMeta = { level: Level; objectives: string[] };
 
+/** The text that the app shows for each level. */
 export const levelLabel: Record<Level, string> = {
   basic: "Basic",
   intermediate: "Intermediate",
   advanced: "Advanced",
 };
 
-// The level and the learning objectives of each Learn page, by slug.
-// basic: needs no earlier lesson. intermediate: uses ideas from basic lessons.
-// advanced: combines several areas, or is about hard trade-offs in distributed systems.
-// Each objective completes the sentence "After this lesson, you can ...".
+/**
+ * The level and the learning objectives of each Learn page, by slug.
+ * basic: needs no earlier lesson. intermediate: uses ideas from basic lessons.
+ * advanced: combines several areas, or is about hard trade-offs in distributed systems.
+ * Each objective completes the sentence "After this lesson, you can ...".
+ */
 export const lessonMeta: Record<string, LessonMeta> = {
   "architect-role": {
     level: "basic",

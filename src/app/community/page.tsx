@@ -6,6 +6,11 @@ import { loadCommunity } from "@/lib/content/community";
 import { COMMUNITY_SOURCE } from "@/lib/content/community-source";
 import type { Kata } from "@/lib/content/katas";
 
+/**
+ * The katas of the community collection, downloaded from its public repository.
+ * Add `?refresh=1` to download the list again.
+ * @returns The list of community katas, or an error message when the download fails.
+ */
 export default async function CommunityPage({
   searchParams,
 }: {

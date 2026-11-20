@@ -1,7 +1,11 @@
 import { runModel } from "@/lib/ai/model";
 import { HTTP } from "@/lib/http-status";
 
-// Send a very small request with the saved settings.
+/**
+ * Send a very small request with the saved settings, to test the connection to the model.
+ * @returns `ok` and the `model` that answered. 502 when the model fails or gives a wrong
+ * answer.
+ */
 export async function POST() {
   try {
     const { output, model } = await runModel({

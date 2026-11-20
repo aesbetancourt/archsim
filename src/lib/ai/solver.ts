@@ -3,7 +3,10 @@ import type { DiagramSpec } from "@/lib/content/examples";
 import { object, text, textList } from "./json-schema";
 import { styleLessons } from "@/lib/content/kata-method";
 
-// The output of the solver must match this schema, with each provider.
+/**
+ * The JSON Schema of a solution: a kata and its worked example.
+ * The output of the solver must match it, with each provider.
+ */
 export const solutionSchema = object({
   kata: object(
     {
@@ -66,7 +69,14 @@ export const solutionSchema = object({
   ),
 });
 
-// Remove diagram parts that the renderer cannot draw.
+/**
+ * Remove diagram parts that the renderer cannot draw.
+ * It removes a node with an ID that is used two times, and an edge with a missing end or the same two ends.
+ * @param diagram The diagram from the model.
+ * @returns A diagram that the renderer can draw.
+ * @example
+ * const diagram = cleanDiagram(solution.example.diagram);
+ */
 export function cleanDiagram(diagram: DiagramSpec): DiagramSpec {
   const ids = new Set<string>();
   const nodes = diagram.nodes.filter((node) => {

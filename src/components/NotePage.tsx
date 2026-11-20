@@ -5,8 +5,11 @@ import { OpenNote } from "@/components/GeneralNotes";
 import { Card } from "@/components/ui/card";
 import type { NoteDoc } from "@/lib/store/notebook";
 
-// One general note on its own page, with a full-size editor.
-// The back arrow and a delete go to the notebook. The notebook page reads the notes again.
+/**
+ * One general note on its own page, with a full-size editor.
+ * The back arrow and a delete go to the notebook. The notebook page reads the notes again.
+ * @returns The note page with its editor.
+ */
 export default function NotePage({ document }: { document: NoteDoc }) {
   const router = useRouter();
   const back = () => router.push("/notebook");

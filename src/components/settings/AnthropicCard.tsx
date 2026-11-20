@@ -3,7 +3,10 @@ import { Input } from "@/components/ui/input";
 import { ApiKeyField, Field } from "@/components/settings/Field";
 import type { Settings } from "@/lib/store/settings";
 
-// The settings of the Anthropic API connection.
+/**
+ * The settings of the Anthropic API connection.
+ * @returns The fields of the connection.
+ */
 export default function AnthropicCard({
   value,
   onChange,

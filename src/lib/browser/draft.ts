@@ -1,4 +1,7 @@
-// The work in progress on a kata. It is saved in the browser, for each kata, until the user clears it.
+/**
+ * The work in progress on a kata. It is saved in the browser, for each kata, until the
+ * user clears it.
+ */
 export type Draft = {
   scope: string;
   selected: { name: string; why: string }[];
@@ -12,6 +15,14 @@ export type Draft = {
 const PREFIX = "charrette:draft:";
 const draftKey = (kataId: string) => `${PREFIX}${kataId}`;
 
+/**
+ * Read the saved draft of a kata.
+ * @param kataId The ID of the kata.
+ * @returns The draft, or null when there is no draft, the storage is not available, or the saved
+ * text is damaged.
+ * @example
+ * const saved = loadDraft(kata.id);
+ */
 export function loadDraft(kataId: string): Draft | null {
   try {
     const saved = JSON.parse(localStorage.getItem(draftKey(kataId)) ?? "null");
@@ -30,7 +41,15 @@ export function loadDraft(kataId: string): Draft | null {
   }
 }
 
-// Save the draft. Return false if the browser refuses.
+/**
+ * Save the draft of a kata, with the time of the save. When the drawing is too large for the
+ * storage, save the draft without its images.
+ * @param kataId The ID of the kata.
+ * @param work The draft to save.
+ * @returns True when the draft is saved. False when the browser refuses.
+ * @example
+ * const ok = saveDraft(kata.id, { scope, selected, style, rationale, scene });
+ */
 export function saveDraft(kataId: string, work: Draft): boolean {
   const draft = { ...work, savedAt: new Date().toISOString() };
   try {
@@ -50,6 +69,12 @@ export function saveDraft(kataId: string, work: Draft): boolean {
   }
 }
 
+/**
+ * Remove the saved draft of a kata.
+ * @param kataId The ID of the kata.
+ * @example
+ * clearDraft(kata.id);
+ */
 export function clearDraft(kataId: string): void {
   try {
     localStorage.removeItem(draftKey(kataId));
@@ -58,6 +83,7 @@ export function clearDraft(kataId: string): void {
   }
 }
 
+/** The unfinished work on one kata, for the list of work in progress. */
 export type DraftSummary = {
   kataId: string;
   savedAt?: string;
@@ -66,7 +92,12 @@ export type DraftSummary = {
   hasNotes: boolean;
 };
 
-// List the katas that have unfinished work in this browser, newest first.
+/**
+ * List the katas that have unfinished work in this browser, newest first.
+ * @returns A summary of each draft that has content or notes.
+ * @example
+ * setDrafts(listDrafts().filter((draft) => titles[draft.kataId]));
+ */
 export function listDrafts(): DraftSummary[] {
   const summaries: DraftSummary[] = [];
   try {

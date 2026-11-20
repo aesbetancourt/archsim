@@ -3,7 +3,9 @@ import { convertToExcalidrawElements } from "@excalidraw/excalidraw";
 import { type Block, blockGroups, getBlock, type LinkKind } from "./blocks";
 import { randomText } from "@/lib/random-id";
 
+/** The width of a component piece on the canvas. */
 export const WIDTH = 180;
+/** The height of a component piece on the canvas. */
 export const HEIGHT = 70;
 // The height of the round end of a cylinder, and the width of the round end of a pipe.
 const END = 22;
@@ -311,7 +313,13 @@ function ends(
   };
 }
 
-// The size of a piece on the canvas. The palette uses it to put the piece in the center.
+/**
+ * Find the size of a piece on the canvas. The palette uses it to put the piece in the center.
+ * @param block The piece.
+ * @returns The width and the height of the piece. An arrow has a height of 0.
+ * @example
+ * sizeOf(getBlock("user")!); // { width: 180, height: 70 }
+ */
 export function sizeOf(block: Block): { width: number; height: number } {
   if (block.shape === "boundary") return { width: FRAME_WIDTH, height: FRAME_HEIGHT };
   if (block.shape === "pattern" && block.pattern) {
@@ -325,7 +333,16 @@ export function sizeOf(block: Block): { width: number; height: number } {
   return { width: WIDTH, height: HEIGHT };
 }
 
-// Make the elements of a piece, with its top left corner at the given point.
+/**
+ * Make the canvas elements of a piece, with its top left corner at the given point.
+ * @param block The piece.
+ * @param x The left side of the piece on the canvas.
+ * @param y The top side of the piece on the canvas.
+ * @returns The Excalidraw elements of the piece. A pattern gives the elements of all its pieces
+ * and arrows.
+ * @example
+ * const elements = elementsFor(getBlock("user")!, 100, 200);
+ */
 export function elementsFor(block: Block, x: number, y: number): Element[] {
   const builder = new Builder();
   if (block.shape === "call" || block.shape === "message" || block.shape === "replication") {

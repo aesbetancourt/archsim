@@ -17,8 +17,11 @@ type Props = {
   children: React.ReactNode;
 };
 
-// The left panel of a canvas page. The user can hide it to get more room to draw.
-// The content stays loaded while the panel is hidden, so no input is lost.
+/**
+ * The left panel of a canvas page. The user can hide it to get more room to draw.
+ * The content stays loaded while the panel is hidden, so no input is lost.
+ * @returns The panel with its hide button.
+ */
 export default function SidePanel({ widthClass, className, onToggle, children }: Props) {
   const [hidden, setHidden] = useState(false);
 

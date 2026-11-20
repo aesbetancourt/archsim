@@ -32,7 +32,10 @@ type Props = {
   onDone?: () => void;
 };
 
-// A button that asks for confirmation, then sends a DELETE request.
+/**
+ * A button that asks for confirmation, then sends a DELETE request.
+ * @returns The button and its confirmation dialog.
+ */
 export default function ConfirmButton({
   label,
   title,

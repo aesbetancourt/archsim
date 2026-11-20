@@ -1,6 +1,12 @@
-// The app was named ArchSim before it was named Charrette. Its browser data used keys that start
-// with "archsim", for example "archsim:draft:lunch-rush". Move each one to the same key with
-// "charrette" at the start. A key that exists with the new name already is kept as it is.
+/**
+ * Move the browser data of the old app name. The app was named ArchSim before it was named
+ * Charrette. Its browser data used keys that start with "archsim", for example
+ * "archsim:draft:lunch-rush". Move each one to the same key with "charrette" at the start. A key
+ * that exists with the new name already is kept as it is.
+ * @param storage The storage to change.
+ * @example
+ * migrateStorage(window.localStorage);
+ */
 export function migrateStorage(storage: Storage): void {
   const OLD = "archsim";
   const NEW = "charrette";
@@ -15,6 +21,8 @@ export function migrateStorage(storage: Storage): void {
   }
 }
 
-// The migration as a script for the page. It runs before React starts, so each component reads
-// the moved data. If storage is not available, the script does nothing.
+/**
+ * The migration as a script for the page. It runs before React starts, so each component
+ * reads the moved data. If storage is not available, the script does nothing.
+ */
 export const migrationScript = `try{(${migrateStorage.toString()})(window.localStorage)}catch(e){}`;

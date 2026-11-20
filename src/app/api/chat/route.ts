@@ -8,6 +8,12 @@ import { HTTP } from "@/lib/http-status";
 // The chat sends only the last messages. Older ones are dropped.
 const MAX_MESSAGES = 12;
 
+/**
+ * Answer the last question of the helper chat, for a kata or for a lesson.
+ * @param request The request. Its body has the context and the messages of the chat.
+ * @returns The `reply` of the model. 400 when the body is not valid or the last message is
+ * not from the user, 404 when the kata is not known, 502 when the model fails.
+ */
 export async function POST(request: Request) {
   const body = await readBody(request, chatRequest);
   if (body instanceof Response) return body;

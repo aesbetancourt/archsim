@@ -17,8 +17,11 @@ import { clearDraft, type DraftSummary, listDrafts } from "@/lib/browser/draft";
 import { saveClock } from "@/lib/browser/kata-clock";
 import { saveNotesHtml } from "@/lib/browser/kata-notes";
 
-// The katas with unfinished work in this browser. The home page shows them first.
-// Each one can be continued, or removed to start the kata again from nothing.
+/**
+ * The katas with unfinished work in this browser. The home page shows them first.
+ * Each one can be continued, or removed to start the kata again from nothing.
+ * @returns The list of katas in progress, or nothing when there is none.
+ */
 export default function InProgress({ titles }: { titles: Record<string, string> }) {
   const [drafts, setDrafts] = useState<DraftSummary[]>([]);
   // The kata to remove, while the confirmation is open.

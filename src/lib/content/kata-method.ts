@@ -5,6 +5,7 @@ import type { DiagramSpec } from "./examples";
 
 type Level = "low" | "medium" | "high";
 
+/** One architecture style, with its diagram, its strengths and costs, and its ratings. */
 export type StyleLesson = {
   id: string;
   name: string;
@@ -19,6 +20,7 @@ export type StyleLesson = {
   ratings: { simplicity: Level; scalability: Level; faultTolerance: Level; cost: Level };
 };
 
+/** All the architecture styles of the style lesson. */
 export const styleLessons: StyleLesson[] = [
   {
     id: "layered",
@@ -309,12 +311,21 @@ export const styleLessons: StyleLesson[] = [
   },
 ];
 
+/**
+ * Find an architecture style by its name.
+ * @param name The name of the style, as the style lesson shows it.
+ * @returns The style, or undefined when no style has the name.
+ * @example
+ * getStyleLesson("Layered")?.useWhen;
+ */
 export function getStyleLesson(name: string): StyleLesson | undefined {
   return styleLessons.find((lesson) => lesson.name === name);
 }
 
+/** One architecture characteristic: its meaning, and the signal in a problem that calls for it. */
 export type Characteristic = { name: string; meaning: string; signal: string };
 
+/** All the architecture characteristics that a kata can select. */
 export const characteristics: Characteristic[] = [
   {
     name: "Availability",
@@ -378,6 +389,7 @@ export const characteristics: Characteristic[] = [
   },
 ];
 
+/** The five steps of a kata, in order. */
 export const kataSteps = [
   {
     title: "Read for what is hard, and set the scope",

@@ -2,10 +2,12 @@
 // app. The link "take the tour" on the home page starts it again. The data folder keeps which tours
 // the person saw, so a later tour can use the same store.
 
+/** The names of all the tours. */
 export const tourIds = ["welcome"] as const;
+/** The name of one tour. */
 export type TourId = (typeof tourIds)[number];
 
-// The parts of the app that a tour points at. Put tourTarget(name) on the element.
+/** A part of the app that a tour points at. Put tourTarget(name) on the element. */
 export type TourTarget =
   | "katas"
   | "practice"
@@ -17,13 +19,21 @@ export type TourTarget =
   | "guide"
   | "menu";
 
-// The attribute that marks a part for a tour.
+/** The attribute that marks a part for a tour. */
 export const TOUR_ATTRIBUTE = "data-tour";
+/**
+ * Make the attribute that marks an element as a part for a tour.
+ * @param name The part of the app.
+ * @returns The attribute, to spread on the element.
+ * @example
+ * <nav {...tourTarget("search")} />
+ */
 export const tourTarget = (name: TourTarget) => ({ [TOUR_ATTRIBUTE]: name });
 
-// One step of a tour. A step for the whole page shows in the middle of the screen.
+/** One step of a tour. A step for the whole page shows in the middle of the screen. */
 export type TourStep = { target: TourTarget | "page"; title: string; content: string };
 
+/** Each tour, with its label and its steps in order. */
 export const tours: Record<TourId, { label: string; steps: TourStep[] }> = {
   welcome: {
     label: "The welcome tour",

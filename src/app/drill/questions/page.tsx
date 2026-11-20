@@ -7,6 +7,10 @@ import { lessonSections } from "@/lib/content/lessons";
 // Read the questions on each request, so a new question in a lesson shows at once.
 export const dynamic = "force-dynamic";
 
+/**
+ * The question drill, to practice the interview questions of the lessons.
+ * @returns The drill page, with the questions and their sections.
+ */
 export default async function QuestionDrillPage() {
   const questions = await readQuestions();
   const sections = lessonSections

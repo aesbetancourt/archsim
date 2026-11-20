@@ -45,12 +45,12 @@ const sheetSchema = z.object({
   blocks: z.array(blockSchema).min(1),
 });
 
-// A link to a lesson, ready to draw.
+/** A link to a lesson, ready to draw. */
 export type LessonLink = { href: string; title: string };
 
 type Block = z.infer<typeof blockSchema>;
 
-// The same block, with each lesson reference changed to a link.
+/** A block of a cheatsheet file, with each lesson reference changed to a link. */
 export type SheetBlock =
   | (Omit<Extract<Block, { type: "choose" }>, "items"> & {
       items: { when: string; use: string; link: LessonLink }[];
@@ -63,6 +63,7 @@ export type SheetBlock =
     })
   | (Omit<Extract<Block, { type: "table" }>, "lesson"> & { link: LessonLink });
 
+/** The cheatsheet of one lesson section, with its blocks ready to draw. */
 export type Cheatsheet = {
   id: string;
   section: string;
@@ -121,8 +122,17 @@ async function resolveBlock(block: Block, file: string): Promise<SheetBlock> {
   }
 }
 
-// Read the cheatsheets of all sections, in the order of the sections. A section without a file
-// has no cheatsheet.
+/**
+ * Read the cheatsheets of all sections, in the order of the sections. A section without a file
+ * has no cheatsheet.
+ * @returns The cheatsheets, with each lesson reference changed to a link.
+ * @throws An error when a file does not match the schema, or names a different section.
+ * @throws An error when a reference names an unknown lesson or heading, or a table row has the
+ * wrong number of cells.
+ * @example
+ * const sheets = await readCheatsheets();
+ * sheets.map((sheet) => sheet.section);
+ */
 export async function readCheatsheets(): Promise<Cheatsheet[]> {
   const sheets: Cheatsheet[] = [];
   for (const section of lessonSections) {

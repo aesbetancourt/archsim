@@ -5,6 +5,10 @@ import { readNotebook } from "@/lib/store/notebook";
 // Read the notebook on each request.
 export const dynamic = "force-dynamic";
 
+/**
+ * The notebook: the bookmarks, the general notes, and the notes and highlights of all pages.
+ * @returns The notebook page.
+ */
 export default async function NotebookPage() {
   const notebook = await readNotebook();
 

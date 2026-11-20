@@ -10,6 +10,10 @@ import { listBoards } from "@/lib/store/boards";
 // Read the boards on each request.
 export const dynamic = "force-dynamic";
 
+/**
+ * The scratchpad: a list of free boards to draw diagrams and write notes.
+ * @returns A card for each board, or a message when there are no boards.
+ */
 export default async function ScratchpadPage() {
   const boards = await listBoards();
 

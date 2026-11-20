@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useProgress, useSetDone } from "@/lib/browser/use-progress";
 
-// A badge in the lesson header when the lesson is done.
+/**
+ * A badge in the lesson header when the lesson is done.
+ * @returns The badge, or nothing when the lesson is not done.
+ */
 export function DoneBadge({ slug }: { slug: string }) {
   const done = useProgress();
   if (!done[slug]) return null;
@@ -17,7 +20,10 @@ export function DoneBadge({ slug }: { slug: string }) {
   );
 }
 
-// The learning objectives of a lesson. When the lesson is done, each objective has a check.
+/**
+ * The learning objectives of a lesson. When the lesson is done, each objective has a check.
+ * @returns The list of objectives.
+ */
 export function LessonObjectives({ slug, objectives }: { slug: string; objectives: string[] }) {
   const finished = Boolean(useProgress()[slug]);
   const Mark = finished ? CircleCheck : Circle;
@@ -48,7 +54,10 @@ export function LessonObjectives({ slug, objectives }: { slug: string; objective
   );
 }
 
-// The button at the end of a lesson that marks it as done, or not done again.
+/**
+ * The button at the end of a lesson that marks it as done, or not done again.
+ * @returns The button, and an error message when the save fails.
+ */
 export function MarkDone({ slug }: { slug: string }) {
   const finished = Boolean(useProgress()[slug]);
   const setDone = useSetDone();

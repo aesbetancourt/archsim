@@ -3,7 +3,10 @@ import { Input } from "@/components/ui/input";
 import { ApiKeyField, Field } from "@/components/settings/Field";
 import type { Settings } from "@/lib/store/settings";
 
-// The settings of the OpenCode Go connection.
+/**
+ * The settings of the OpenCode Go connection.
+ * @returns The fields of the connection.
+ */
 export default function OpenCodeGoCard({
   value,
   onChange,

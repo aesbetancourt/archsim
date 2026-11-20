@@ -1,5 +1,6 @@
 // The standard pieces of a system design. The palette above the canvas and the Learn page use this list.
 
+/** A group of building blocks in the palette, such as "Databases", with its fill color. */
 export type BlockGroup = {
   id: string;
   title: string;
@@ -8,7 +9,10 @@ export type BlockGroup = {
   color: string;
 };
 
-// The form on the canvas. The first five are components. The others are arrows, frames, and sets of pieces.
+/**
+ * The form on the canvas. The first five are components. The others are arrows, frames, and sets
+ * of pieces.
+ */
 export type BlockShape =
   | "box"
   | "person"
@@ -24,7 +28,7 @@ export type BlockShape =
   | "boundary"
   | "pattern";
 
-// The three connections of the palette. Each has its own line style.
+/** The three connections of the palette. Each has its own line style. */
 export type LinkKind = "call" | "message" | "replication";
 
 // A small set of pieces that often come together, with the arrows between them.
@@ -34,6 +38,7 @@ type Pattern = {
   links: { from: string; to: string; kind: LinkKind }[];
 };
 
+/** One standard piece of a system design, with what it does, when to use it, and what it costs. */
 export type Block = {
   id: string;
   name: string;
@@ -54,6 +59,7 @@ export type Block = {
   pattern?: Pattern;
 };
 
+/** The groups of the palette, in the order that the palette shows them. */
 export const blockGroups: BlockGroup[] = [
   {
     id: "edge",
@@ -112,6 +118,7 @@ export const blockGroups: BlockGroup[] = [
   },
 ];
 
+/** All the building blocks of the palette and the Learn page. */
 export const blocks: Block[] = [
   {
     id: "user",
@@ -871,15 +878,37 @@ export const blocks: Block[] = [
   },
 ];
 
+/**
+ * Find the blocks of one palette group.
+ * @param group The ID of the group.
+ * @returns The blocks of the group, in the order of the palette.
+ * @example
+ * blocksIn("edge"); // the blocks of "Clients and entry"
+ */
 export function blocksIn(group: string): Block[] {
   return blocks.filter((block) => block.group === group);
 }
 
+/**
+ * Find a block by its ID.
+ * @param id The ID of the block.
+ * @returns The block, or undefined when no block has the ID.
+ * @example
+ * getBlock("user")?.name; // "User"
+ */
 export function getBlock(id: string): Block | undefined {
   return blocks.find((block) => block.id === id);
 }
 
-// Find the palette pieces that a diagram uses, from the labels of its shapes.
+/**
+ * Find the palette pieces that a diagram uses, from the labels of its shapes.
+ * A label must be the same as the name of a block, with no change other than case. Patterns are
+ * not found.
+ * @param labels The labels of the shapes in the diagram.
+ * @returns The blocks that the labels name, in the order of the palette.
+ * @example
+ * blocksNamed(["User", "Load balancer", "My service"]); // the blocks "User" and "Load balancer"
+ */
 export function blocksNamed(labels: string[]): Block[] {
   const names = new Set(labels.map((label) => label.trim().toLowerCase()));
   return blocks.filter((block) => block.shape !== "pattern" && names.has(block.name.toLowerCase()));

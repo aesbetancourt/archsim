@@ -8,7 +8,10 @@ import type { Question } from "@/lib/content/questions";
 import { useProgress } from "@/lib/browser/use-progress";
 import { pageAddress } from "@/lib/routes";
 
-// The question drill: answer the interview questions of the lessons, as in an interview.
+/**
+ * The question drill: answer the interview questions of the lessons, as in an interview.
+ * @returns The drill of the interview questions.
+ */
 export default function QuestionDrill({
   questions,
   sections,

@@ -46,7 +46,10 @@ const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[
   },
 ];
 
-// The list of connections. The person selects one.
+/**
+ * The list of connections. The person selects one.
+ * @returns The list of connections.
+ */
 export default function ConnectionPicker({
   value,
   onChange,

@@ -33,6 +33,10 @@ export const metadata: Metadata = {
     "Draw it. Defend it. Face the crit. Practice software architecture with katas and an AI reviewer.",
 };
 
+/**
+ * The root layout of the app: the fonts, the providers, and the site header.
+ * @returns The HTML document, with the page inside it.
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html

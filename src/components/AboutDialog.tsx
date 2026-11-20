@@ -24,7 +24,10 @@ function External({ href, children }: { href: string; children: React.ReactNode 
 
 const heading = "text-xs font-medium uppercase text-muted-foreground";
 
-// Who made Charrette and why, the credits, and the license. The home page opens it.
+/**
+ * Who made Charrette and why, the credits, and the license. The home page opens it.
+ * @returns The About button and the dialog that it opens.
+ */
 export default function AboutDialog() {
   return (
     <Dialog>

@@ -14,7 +14,10 @@ import { type TourTarget, tourTarget } from "@/lib/content/tours";
 
 type Item = { href: string; title: string; description: string; icon: React.ReactNode };
 
-// One menu in the top bar. It opens a list of pages.
+/**
+ * One menu in the top bar. It opens a list of pages.
+ * @returns The menu button and its list of pages.
+ */
 export default function NavMenu({
   label,
   icon,

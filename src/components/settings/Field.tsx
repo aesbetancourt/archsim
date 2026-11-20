@@ -1,7 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// One field of the Settings form: a label, the control, and a hint under it.
+/**
+ * One field of the Settings form: a label, the control, and a hint under it.
+ * @returns The label, the control, and the hint.
+ */
 export function Field({
   id,
   label,
@@ -22,8 +25,11 @@ export function Field({
   );
 }
 
-// The field for an API key. The app does not show a saved key, so the field starts empty.
-// An empty field keeps the saved key.
+/**
+ * The field for an API key. The app does not show a saved key, so the field starts empty.
+ * An empty field keeps the saved key.
+ * @returns The password field for the key, with its hint.
+ */
 export function ApiKeyField({
   id,
   value,

@@ -1,5 +1,7 @@
-// The keys of the cached data. They are in one file, so a change on one screen can find the data
-// that a different screen shows.
+/**
+ * The keys of the cached data. They are in one file, so a change on one screen can find the
+ * data that a different screen shows.
+ */
 export const keys = {
   // The lessons marked as done.
   progress: ["progress"] as const,

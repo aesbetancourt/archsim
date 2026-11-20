@@ -3,8 +3,11 @@
 import { MoveHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-// The frame of a lesson table. A table wider than the page scrolls to the side.
-// Then a fade shows on each side that has more columns, and a line under the table says so.
+/**
+ * The frame of a lesson table. A table wider than the page scrolls to the side.
+ * Then a fade shows on each side that has more columns, and a line under the table says so.
+ * @returns The table in its frame.
+ */
 export default function TableFrame({ children }: { children: React.ReactNode }) {
   const frame = useRef<HTMLDivElement>(null);
   const [more, setMore] = useState({ left: false, right: false });

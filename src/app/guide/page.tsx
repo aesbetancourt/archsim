@@ -3,8 +3,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Prose from "@/components/Prose";
 
-// The guide is a Markdown file, so you can change it without a change to the code.
-
+/**
+ * The guide to Charrette. The guide is a Markdown file, so you can change it without a change
+ * to the code.
+ * @returns The guide page, with the text of `content/guide.md`.
+ */
 export default async function GuidePage() {
   const markdown = await readFile(path.join(process.cwd(), "content", "guide.md"), "utf8");
   return (

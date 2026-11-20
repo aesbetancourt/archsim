@@ -12,8 +12,11 @@ const presets = [
   { name: "Ollama (local)", url: "http://localhost:11434/v1" },
 ];
 
-// The settings of a provider with an endpoint in the OpenAI format. This is also the way to use a
-// local model, for example with Ollama.
+/**
+ * The settings of a provider with an endpoint in the OpenAI format. This is also the way to use a
+ * local model, for example with Ollama.
+ * @returns The fields of the connection.
+ */
 export default function OpenAiCompatibleCard({
   value,
   onChange,

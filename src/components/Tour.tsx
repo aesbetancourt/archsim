@@ -97,8 +97,11 @@ function TourTooltip({
   );
 }
 
-// A tour of one page. It runs one time, the first time the person opens the page.
-// Done, Skip, and Escape all end it, and it does not run again.
+/**
+ * A tour of one page. It runs one time, the first time the person opens the page.
+ * Done, Skip, and Escape all end it, and it does not run again.
+ * @returns The tour, or nothing when it ran before.
+ */
 export default function Tour({ id }: { id: TourId }) {
   const tour = useTour(id);
   if (!tour.shouldRun) return null;
@@ -135,7 +138,10 @@ export default function Tour({ id }: { id: TourId }) {
   );
 }
 
-// The link in the text of the home page that starts the welcome tour again, from its first step.
+/**
+ * The link in the text of the home page that starts the welcome tour again, from its first step.
+ * @returns The link that starts the tour.
+ */
 export function StartTourButton() {
   const tour = useTour("welcome");
   return (

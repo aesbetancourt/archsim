@@ -2,6 +2,10 @@ import { Repeat } from "lucide-react";
 import Link from "next/link";
 import VocabularyDrill from "@/components/VocabularyDrill";
 
+/**
+ * The vocabulary drill, to practice the glossary terms.
+ * @returns The drill page, with an introduction and the drill.
+ */
 export default function DrillPage() {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">

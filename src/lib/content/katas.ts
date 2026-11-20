@@ -1,5 +1,6 @@
 import { interviewKatas } from "./interview-katas";
 
+/** One design problem: its context, its requirements, and its constraints. */
 export type Kata = {
   id: string;
   title: string;
@@ -20,6 +21,7 @@ export type Kata = {
   note?: string;
 };
 
+/** All the built-in katas, the interview katas too. */
 export const katas: Kata[] = [
   {
     id: "lunch-rush",
@@ -156,6 +158,13 @@ export const katas: Kata[] = [
   ...interviewKatas,
 ];
 
+/**
+ * Find a built-in kata by its ID.
+ * @param id The ID of the kata.
+ * @returns The kata, or undefined when no built-in kata has the ID.
+ * @example
+ * getKata("lunch-rush")?.title;
+ */
 export function getKata(id: string): Kata | undefined {
   return katas.find((kata) => kata.id === id);
 }

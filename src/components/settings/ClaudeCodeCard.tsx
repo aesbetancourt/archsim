@@ -3,7 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/settings/Field";
 import type { Settings } from "@/lib/store/settings";
 
-// The settings of the Claude Code connection.
+/**
+ * The settings of the Claude Code connection.
+ * @returns The fields of the connection.
+ */
 export default function ClaudeCodeCard({
   value,
   onChange,

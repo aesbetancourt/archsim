@@ -29,7 +29,10 @@ const speechEngines: { id: SpeechEngine; title: string; description: string }[] 
   },
 ];
 
-// The voice that reads the lessons: the Google voice with its project, or the voice of the browser.
+/**
+ * The voice that reads the lessons: the Google voice with its project, or the voice of the browser.
+ * @returns The fields of the voice and a button that plays a sample.
+ */
 export default function ReadAloudCard({
   value,
   onChange,

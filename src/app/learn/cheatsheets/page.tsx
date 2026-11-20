@@ -2,6 +2,10 @@ import { ScrollText } from "lucide-react";
 import CheatsheetView from "@/components/CheatsheetView";
 import { readCheatsheets } from "@/lib/content/cheatsheets";
 
+/**
+ * The cheatsheets, with the key facts of each section of the lessons.
+ * @returns The cheatsheets page.
+ */
 export default async function CheatsheetsPage() {
   const sheets = await readCheatsheets();
   return (

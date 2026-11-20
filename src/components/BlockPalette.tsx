@@ -40,7 +40,10 @@ type Props = {
   onToggle: () => void;
 };
 
-// The standard pieces of a design. Drag a piece to the canvas, or click it.
+/**
+ * The standard pieces of a design. Drag a piece to the canvas, or click it.
+ * @returns The palette of pieces, with its groups and its search.
+ */
 export default function BlockPalette({ getApi, onToggle }: Props) {
   const [open, setOpen] = useState(true);
   // The group on view. A search shows the matches from all groups.

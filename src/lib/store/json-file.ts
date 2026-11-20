@@ -8,7 +8,19 @@ import { timeId } from "@/lib/random-id";
 const shared = globalThis as { charretteFileQueues?: Map<string, Promise<unknown>> };
 const queues = (shared.charretteFileQueues ??= new Map());
 
-// A JSON file in the data folder. Git ignores that folder.
+/**
+ * A JSON file in the data folder. Git ignores that folder.
+ * The changes to one file run one after the other, and each change replaces the full file.
+ * @param name The name of the file in data/, for example "notebook.json".
+ * @param normalize Make a correct value from the saved JSON. It gets undefined when the file
+ * does not exist or is damaged.
+ * @returns read, which returns the value. change, which applies a function to the value and saves
+ * it. change returns the result of the function, and rejects when the app cannot write the file.
+ * @example
+ * const store = jsonFile("progress.json", normalize);
+ * const progress = await store.read();
+ * await store.change((value) => { value.done.caching = new Date().toISOString(); });
+ */
 export function jsonFile<T>(name: string, normalize: (saved: unknown) => T) {
   // Read the folder on each call, so a test can use a different working folder.
   const file = () => path.join(process.cwd(), "data", name);

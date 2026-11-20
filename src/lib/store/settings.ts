@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+/** The ways that the app can connect to a model. Each mode is one provider. */
 export const modes = [
   "claude-code",
   "opencode",
@@ -9,17 +10,24 @@ export const modes = [
   "openai-compatible",
   "vertex",
 ] as const;
+/** One way that the app can connect to a model. */
 export type Mode = (typeof modes)[number];
 
-// The read-aloud player can use Google Cloud Text-to-Speech or the voices of the browser.
+/** The read-aloud player can use Google Cloud Text-to-Speech or the voices of the browser. */
 export const speechEngines = ["google", "browser"] as const;
+/** The engine of the read-aloud player. */
 export type SpeechEngine = (typeof speechEngines)[number];
 
-// An empty project ID means: use the quota project of the gcloud login on this computer.
+/**
+ * The settings of the read-aloud player.
+ * An empty project ID means: use the quota project of the gcloud login on this computer.
+ */
 export type ReadAloud = { engine: SpeechEngine; googleProjectId: string; googleVoice: string };
 
-// The settings file is in the data folder. Git ignores that folder.
-// API keys are in plain text in this file. They must never go to the browser.
+/**
+ * The settings of the app, in data/settings.json. Git ignores the data folder.
+ * API keys are in plain text in this file. They must never go to the browser.
+ */
 export type Settings = {
   mode: Mode;
   claudeCode: { model: string };
@@ -48,6 +56,12 @@ const defaultSettings: Settings = {
   readAloud: { engine: "browser", googleProjectId: "", googleVoice: "en-US-Chirp3-HD-Charon" },
 };
 
+/**
+ * Read the settings from data/settings.json. A missing value gets its default.
+ * @returns The settings. A missing or damaged file gives the default settings.
+ * @example
+ * const settings = await readSettings();
+ */
 export async function readSettings(): Promise<Settings> {
   try {
     const saved = JSON.parse(await readFile(FILE, "utf8")) as Partial<Settings>;
@@ -66,12 +80,22 @@ export async function readSettings(): Promise<Settings> {
   }
 }
 
+/**
+ * Write the settings to data/settings.json. Only the owner of the file can read it.
+ * @param settings The full settings, with the API keys.
+ * @throws When the app cannot write the file.
+ * @example
+ * await writeSettings({ ...(await readSettings()), mode: "anthropic" });
+ */
 export async function writeSettings(settings: Settings): Promise<void> {
   await mkdir(path.dirname(FILE), { recursive: true });
   await writeFile(FILE, JSON.stringify(settings, null, 2), { mode: 0o600 });
 }
 
-// The form of the settings that is safe to send to the browser.
+/**
+ * The form of the settings that is safe to send to the browser. It has a hint for each API key,
+ * not the key.
+ */
 export type PublicSettings = {
   mode: Mode;
   claudeCode: { model: string };
@@ -92,6 +116,13 @@ const hint = (key: string) => {
   return key.length >= HINT_MIN_LENGTH ? `…${key.slice(-HINT_LENGTH)}` : "…";
 };
 
+/**
+ * Make the settings safe to send to the browser. Each API key becomes a hint.
+ * @param settings The full settings, with the API keys.
+ * @returns The settings with no API keys.
+ * @example
+ * Response.json(toPublic(await readSettings()));
+ */
 export function toPublic(settings: Settings): PublicSettings {
   return {
     mode: settings.mode,

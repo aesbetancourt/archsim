@@ -18,9 +18,10 @@ const insightsOutput = z.object({
   review_questions: z.array(z.object({ question: z.string(), answer: z.string() })),
 });
 
+/** The insights that the model writes: the sections of the study document. */
 export type Insights = z.infer<typeof insightsOutput>;
 
-// The output of the model must match this schema, with each provider.
+/** The JSON Schema of the insights. The output of the model must match it, with each provider. */
 export const insightsSchema = object({
   title: text,
   big_picture: textList,
@@ -34,6 +35,14 @@ export const insightsSchema = object({
   review_questions: { type: "array", items: object({ question: text, answer: text }) },
 });
 
+/**
+ * Check the output of the model. A provider can return JSON that does not match the schema.
+ * @param output The structured output of the model.
+ * @returns The insights, with the correct types.
+ * @throws When the output does not match the schema of the insights.
+ * @example
+ * const insights = parseInsights(output);
+ */
 export function parseInsights(output: unknown): Insights {
   const result = insightsOutput.safeParse(output);
   if (!result.success) {
@@ -46,7 +55,14 @@ const paragraph = (value: string) => `<p>${escapeHtml(value)}</p>`;
 const list = (items: string[]) =>
   `<ul>${items.map((item) => `<li><p>${escapeHtml(item)}</p></li>`).join("")}</ul>`;
 
-// Draw the insights as HTML for the notes editor. A section with no content is left out.
+/**
+ * Draw the insights as HTML for the notes editor. A section with no content is left out.
+ * @param insights The insights from the model.
+ * @param byline The line at the top, for example who made the document and when.
+ * @returns The HTML of the document. All the text is escaped.
+ * @example
+ * const html = insightsHtml(insights, `Made on ${date} by ${model}.`);
+ */
 export function insightsHtml(insights: Insights, byline: string): string {
   const parts = [`<p><em>${escapeHtml(byline)}</em></p>`];
   const section = (title: string, body: string) => parts.push(`<h2>${title}</h2>${body}`);

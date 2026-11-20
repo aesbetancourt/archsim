@@ -18,12 +18,19 @@ type Value = {
 
 const BookmarksContext = createContext<Value | null>(null);
 
-// The bookmarks of the learning page, for the notebook sidebar.
+/**
+ * The bookmarks of the learning page, for the notebook sidebar.
+ * @returns The bookmarks of the page and the functions to find and toggle one, or null outside
+ * a BookmarksProvider.
+ */
 export function usePageBookmarks(): Value | null {
   return useContext(BookmarksContext);
 }
 
-// The bookmarks of one learning page. The headings of the page add and remove them.
+/**
+ * The bookmarks of one learning page. The headings of the page add and remove them.
+ * @returns The children, with the bookmarks of the page in the context.
+ */
 export function BookmarksProvider({
   page,
   getTitle,
@@ -94,8 +101,11 @@ function bookmarkLabel(on: boolean, anchor: string): string {
   return "Bookmark this page";
 }
 
-// The bookmark button of a heading. An empty anchor is the whole page.
-// Outside a learning page, for example in the help chat, it shows nothing.
+/**
+ * The bookmark button of a heading. An empty anchor is the whole page.
+ * Outside a learning page, for example in the help chat, it shows nothing.
+ * @returns A button that adds or removes the bookmark.
+ */
 export function BookmarkButton({ anchor, heading }: { anchor: string; heading: string }) {
   const bookmarks = usePageBookmarks();
   if (!bookmarks) return null;

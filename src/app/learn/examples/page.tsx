@@ -15,6 +15,10 @@ import { allExamples } from "@/lib/store/library";
 // Read the user's problems on each request.
 export const dynamic = "force-dynamic";
 
+/**
+ * The list of worked examples, built-in and from the user's problems.
+ * @returns A card for each example, with a link to it.
+ */
 export default async function ExamplesPage() {
   const examples = await allExamples();
 

@@ -17,10 +17,16 @@ import { tourTarget } from "@/lib/content/tours";
 import { pageAddress } from "@/lib/routes";
 
 type Item = { href: string; title: string; icon: React.ReactNode };
+/**
+ * A group of pages in the menu of a narrow window: a label and its pages.
+ */
 export type MenuGroup = { label: string; items: Item[] };
 
-// The menu of the top bar on a narrow window. It has all the pages of the top bar, in groups.
-// A wide window shows the same pages in the bar itself.
+/**
+ * The menu of the top bar on a narrow window. It has all the pages of the top bar, in groups.
+ * A wide window shows the same pages in the bar itself.
+ * @returns The menu button and its groups of pages.
+ */
 export default function SiteMenu({ groups }: { groups: MenuGroup[] }) {
   return (
     <DropdownMenu>

@@ -1,6 +1,11 @@
 import StudyLayout from "@/components/StudyLayout";
 import LessonSidebar from "@/components/LessonSidebar";
 
+/**
+ * The layout of the Learn section: the lesson sidebar on the left, and the page with the
+ * notebook on the right.
+ * @returns The page between the lesson sidebar and the notebook.
+ */
 export default function LearnLayout({ children }: LayoutProps<"/learn">) {
   return (
     <div className="flex flex-1">

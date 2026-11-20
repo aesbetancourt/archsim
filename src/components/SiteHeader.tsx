@@ -118,6 +118,11 @@ const narrowMenu: MenuGroup[] = [
   },
 ];
 
+/**
+ * The top bar of the app: the name, the menus, and the links to the main pages.
+ * A narrow window shows one menu in place of the bar.
+ * @returns The top bar.
+ */
 export default function SiteHeader() {
   return (
     // The spaces are smaller below 1024px, so the bar fits a narrow window without a side scroll.

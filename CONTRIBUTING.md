@@ -55,6 +55,7 @@ The README shows [where the code is](README.md#where-the-code-is). The lint and 
 - **No nested ternaries.** Use `if`, a small function, or a lookup table. A short ternary in JSX is fine.
 - **No magic numbers.** Give a number a name, except 0, 1, −1, and 2.
 - **Page links are checked.** Write an address in a `Link` as a literal. Use `route()` for an address in a list, and `pageAddress()` for an address from content or saved data.
+- **JSDoc on each export.** Each export in `src/` has a `/** */` block with `@param`, `@returns`, and `@throws` where they apply, and an `@example` for functions in `src/lib/` and `src/prompts/`. The lint checks the tags. [CLAUDE.md](CLAUDE.md) has the full rules, with the TypeScript conventions.
 
 ## Writing style
 

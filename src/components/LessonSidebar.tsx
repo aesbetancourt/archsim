@@ -125,8 +125,11 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-// The page list of the Learn area: numbered sections that open and close, with the pages indented
-// under each section, and sub-pages indented one more level.
+/**
+ * The page list of the Learn area: numbered sections that open and close, with the pages indented
+ * under each section, and sub-pages indented one more level.
+ * @returns The search field and the list of pages.
+ */
 export default function LessonSidebar() {
   const pathname = usePathname();
   const [query, setQuery] = useState("");

@@ -51,6 +51,11 @@ function BulletCard({ title, items }: { title: string; items: string[] }) {
   );
 }
 
+/**
+ * The worked example of one kata: the kata, the five steps of the method, the diagram, and
+ * the reasons for the decisions.
+ * @returns The example page, or the not-found page when the kata or its example does not exist.
+ */
 export default async function ExamplePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const example = await findExample(id);

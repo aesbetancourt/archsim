@@ -7,7 +7,7 @@ import { route } from "@/lib/routes";
 // The cases of the product drill: cost estimates, proof of value, business models, priorities,
 // and timing. The text is in content/product-drill.md. Each section of the file is a filter.
 
-// The lesson that teaches each section, for the link under the reference answer.
+/** The slug of the lesson that teaches each section, for the link under the reference answer. */
 export const productLessons: Record<string, string> = {
   Cost: "llm-cost-latency",
   "Value and proof": "product-thinking",
@@ -18,6 +18,14 @@ export const productLessons: Record<string, string> = {
 
 let cache: Promise<Question[]> | null = null;
 
+/**
+ * Read the cases of the product drill from content/product-drill.md.
+ * In production, the app reads the file one time and keeps the result.
+ * @returns The cases, each with a link to the lesson that teaches its section.
+ * @throws An error when the file cannot be read.
+ * @example
+ * const cases = await readProductCases();
+ */
 export function readProductCases(): Promise<Question[]> {
   // The file changes only when the app is built or the file is edited in development.
   if (process.env.NODE_ENV === "production" && cache) return cache;

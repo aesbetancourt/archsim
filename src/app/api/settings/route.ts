@@ -1,10 +1,19 @@
 import { readBody, settingsUpdate } from "@/lib/requests";
 import { readSettings, toPublic, writeSettings, type Settings } from "@/lib/store/settings";
 
+/**
+ * Get the settings. The API keys are replaced with a short hint.
+ * @returns The public settings.
+ */
 export async function GET() {
   return Response.json(toPublic(await readSettings()));
 }
 
+/**
+ * Save the settings. An empty key field keeps the saved key.
+ * @param request The request. Its body has the new settings.
+ * @returns The saved settings, with hints in place of the keys. 400 when the body is not valid.
+ */
 export async function PUT(request: Request) {
   const update = await readBody(request, settingsUpdate);
   if (update instanceof Response) return update;

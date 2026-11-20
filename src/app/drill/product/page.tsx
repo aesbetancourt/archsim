@@ -6,6 +6,10 @@ import { productLessons, readProductCases } from "@/lib/content/product-drill";
 // Read the cases on each request, so a new case in the file shows at once.
 export const dynamic = "force-dynamic";
 
+/**
+ * The product drill, to practice the product cases of interviews.
+ * @returns The drill page, with the cases and their sections.
+ */
 export default async function ProductDrillPage() {
   const cases = await readProductCases();
   const sections = Object.keys(productLessons).filter((section) =>

@@ -38,6 +38,11 @@ const dimensionIcons: Record<string, LucideIcon> = {
   risks: TriangleAlert,
 };
 
+/**
+ * The review of one attempt: the score, the top risk, the result for each dimension, the
+ * strengths, the questions of a review board, and the answers of the attempt.
+ * @returns The review page, or the not-found page when the attempt does not exist.
+ */
 export default async function AttemptPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const attempt = await getAttempt(id);

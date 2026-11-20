@@ -14,7 +14,10 @@ const filters: DrillFilter<GlossaryTerm>[] = [
   { label: "All", test: () => true },
 ];
 
-// The vocabulary drill: explain each glossary term in your own words.
+/**
+ * The vocabulary drill: explain each glossary term in your own words.
+ * @returns The drill of the glossary terms.
+ */
 export default function VocabularyDrill() {
   return (
     <Drill

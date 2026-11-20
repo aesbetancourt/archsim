@@ -1,4 +1,4 @@
-// The subset of an Excalidraw element that the review uses.
+/** The subset of an Excalidraw element that the review uses. */
 export type SceneElement = {
   id: string;
   type: string;
@@ -14,7 +14,13 @@ export type SceneElement = {
   groupIds?: readonly string[];
 };
 
-// Describe the diagram as text, so the reviewer gets exact labels and connections.
+/**
+ * Describe the diagram as text, so the reviewer gets exact labels and connections.
+ * @param elements The elements of the canvas.
+ * @returns The components, the connections, the boundaries, and the free text, as lists.
+ * @example
+ * const text = describeScene(attempt.elements);
+ */
 export function describeScene(elements: SceneElement[]): string {
   const labels = new Map<string, string>();
   const freeText: string[] = [];
@@ -80,7 +86,13 @@ export function describeScene(elements: SceneElement[]): string {
   ].join("\n\n");
 }
 
-// Keep only the fields of each canvas element that the text description uses.
+/**
+ * Keep only the fields of each canvas element that the text description uses.
+ * @param elements The elements of the Excalidraw canvas.
+ * @returns The elements with only the fields that describeScene uses.
+ * @example
+ * const elements = slimElements(api.getSceneElements());
+ */
 export function slimElements(elements: readonly object[]): SceneElement[] {
   return (elements as SceneElement[]).map(
     ({

@@ -34,6 +34,7 @@ type ModelCall = {
   imagePath?: string;
 };
 
+/** The structured answer of a model, and the name of the model that wrote it. */
 export type ModelResult = { output: unknown; model: string };
 
 const TIMEOUT_MS = MODEL_TIMEOUT_MS;
@@ -352,7 +353,17 @@ async function viaVertex(call: ModelCall, settings: Settings): Promise<ModelResu
   }
 }
 
-// Send a prompt to the model that is selected in Settings. Return its structured answer.
+/**
+ * Send a prompt to the model that is selected in Settings. Return its structured answer.
+ * It reads data/settings.json to find the provider.
+ * @param call The prompt, the system prompt, the schema of the answer, and an optional image.
+ * @returns The answer of the model, and the name of the model.
+ * @throws When the provider is not set up: no API key, no base URL, or no model.
+ * @throws When the provider refuses the key, does not know the model, or reaches a rate limit.
+ * @throws When the model declines, does not answer in time, or returns JSON that is not valid.
+ * @example
+ * const { output, model } = await runModel({ prompt, systemPrompt, schema: reviewSchema });
+ */
 export async function runModel(call: ModelCall): Promise<ModelResult> {
   const settings = await readSettings();
   if (settings.mode === "opencode") return viaOpenCode(call, settings);

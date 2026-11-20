@@ -6,10 +6,12 @@ import { diagramShapes } from "./diagram-shapes";
 // walkthrough in a code block with the language "walkthrough".
 
 const stepKinds = ["problem", "idea", "technique", "failure", "recap"] as const;
+/** The kind of a walkthrough step: a problem, an idea, a technique, a failure, or a recap. */
 export type StepKind = (typeof stepKinds)[number];
 
 const ids = z.array(z.string()).default([]);
 
+/** The schema of the diagram of a walkthrough: its nodes, groups, and arrows. */
 export const diagramSchema = z.object({
   nodes: z.array(
     z.object({
@@ -107,13 +109,19 @@ const walkthroughSchema = z
     });
   });
 
+/** A walkthrough after the schema checked it. */
 export type Walkthrough = z.infer<typeof walkthroughSchema>;
 
+/**
+ * One line of the change list of a step.
+ * The sign is "+" for a part that shows, "-" for a part that goes, "!" for a part that is down,
+ * and "~" for other changes.
+ */
 export type Change = { sign: "+" | "-" | "~" | "!"; text: string };
 
 type Flow = { edge: number; reverse: boolean };
 
-// The state of the diagram and the numbers in one step, ready to draw.
+/** The state of the diagram and the numbers in one step, ready to draw. */
 export type ResolvedStep = {
   visible: string[];
   edges: number[];
@@ -132,13 +140,29 @@ const label = (walkthrough: Walkthrough, id: string) =>
     id
   ).replace(/\n/g, " ");
 
+/**
+ * Make the text of a metric value, with its unit.
+ * @param value The value. A number gets thousands separators.
+ * @param unit The unit, or an empty string for no unit.
+ * @returns The text of the value, or "—" when there is no value.
+ * @example
+ * formatMetric(12000, "req/s"); // "12,000 req/s"
+ * formatMetric(undefined, "ms"); // "—"
+ */
 export function formatMetric(value: number | string | undefined, unit: string): string {
   if (value === undefined) return "—";
   const text = typeof value === "number" ? value.toLocaleString("en-US") : value;
   return unit ? `${text} ${unit}` : text;
 }
 
-// Compute the state of each step. The list of changes compares a step with the step before it.
+/**
+ * Compute the state of each step. The list of changes compares a step with the step before it.
+ * @param walkthrough The walkthrough, after the schema checked it.
+ * @returns The state of each step, in order.
+ * @example
+ * const steps = resolveSteps(walkthrough);
+ * steps[1].changes; // what changed after the first step
+ */
 export function resolveSteps(walkthrough: Walkthrough): ResolvedStep[] {
   const { diagram } = walkthrough;
   const resolved: ResolvedStep[] = [];
@@ -200,8 +224,15 @@ export function resolveSteps(walkthrough: Walkthrough): ResolvedStep[] {
   return resolved;
 }
 
-// Read the text of a walkthrough code block. Return a message that names the problem if it is
-// not valid, so the author sees it on the page.
+/**
+ * Read the text of a walkthrough code block. Return a message that names the problem if it is
+ * not valid, so the author sees it on the page.
+ * @param source The JSON text of the code block.
+ * @returns The walkthrough, or an error message when the text is not valid.
+ * @example
+ * const result = parseWalkthrough(code);
+ * if (!result.ok) console.error(result.error);
+ */
 export function parseWalkthrough(
   source: string,
 ): { ok: true; walkthrough: Walkthrough } | { ok: false; error: string } {

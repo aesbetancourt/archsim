@@ -29,6 +29,11 @@ const statusText: Record<Status, string> = {
   error: "The save failed. Change something to try again.",
 };
 
+/**
+ * The editor of a board: a title, a canvas, and a notepad.
+ * It saves each change after a short delay.
+ * @returns The title bar, the canvas or the notepad, and the save status.
+ */
 export default function BoardEditor({ board }: { board: Board }) {
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
   const [title, setTitle] = useState(board.title);

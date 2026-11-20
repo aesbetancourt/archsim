@@ -16,9 +16,10 @@ const gradeOutput = z.object({
   follow_up: z.string(),
 });
 
+/** The check of one explanation: the verdict, the score, and the feedback. */
 export type Grade = z.infer<typeof gradeOutput>;
 
-// The output of the model must match this schema, with each provider.
+/** The JSON Schema of a check. The output of the model must match it, with each provider. */
 export const gradeSchema = {
   type: "object",
   additionalProperties: false,
@@ -35,7 +36,14 @@ export const gradeSchema = {
   },
 };
 
-// Check the output of the model. A provider can return JSON that does not match the schema.
+/**
+ * Check the output of the model. A provider can return JSON that does not match the schema.
+ * @param output The structured output of the model.
+ * @returns The check, with the correct types.
+ * @throws When the output does not match the schema of a check.
+ * @example
+ * const grade = parseGrade(output);
+ */
 export function parseGrade(output: unknown): Grade {
   const result = gradeOutput.safeParse(output);
   if (!result.success) {
@@ -46,7 +54,13 @@ export function parseGrade(output: unknown): Grade {
   return result.data;
 }
 
-// The rating that the drill suggests for a verdict. The person confirms it.
+/**
+ * The rating that the drill suggests for a verdict. The person confirms it.
+ * @param grade The check of the explanation.
+ * @returns True when the verdict is "correct": the person knew the term. False for the other verdicts.
+ * @example
+ * suggestKnew(grade); // true for a correct verdict
+ */
 export function suggestKnew(grade: Grade): boolean {
   return grade.verdict === "correct";
 }

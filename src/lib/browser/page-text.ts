@@ -3,16 +3,21 @@ import { splitSentences, withoutAsides } from "@/lib/sentences";
 // The text of a page, for the read-aloud player and the highlighter: its sentences, its sections,
 // and positions in it. This code reads the page and can scroll it. It has no React.
 
-// The pause is the silence before the sentence, in milliseconds.
+/**
+ * One sentence to read aloud, with its place on the page. The pause is the silence before the
+ * sentence, in milliseconds.
+ */
 export type Sentence = { text: string; range: Range; pause: number };
+/** A section of the page: a level-2 heading and its title. */
 export type Section = { title: string; element: HTMLElement };
+/** A text position on the page: a node and an offset in it. */
 export type Point = { node: Node; offset: number };
 
-// The elements that hold text to read, and the elements to skip.
-// Tables are skipped: a table read cell by cell is hard to follow by ear.
+/** The elements that hold text to read. */
 export const BLOCKS = "h1,h2,h3,h4,p,li,dt,dd,blockquote,figcaption";
+/** The elements to skip. Tables are skipped: a table read cell by cell is hard to follow by ear. */
 export const SKIP = "pre,nav,table,button,svg,script,style,textarea,input,select,[data-read-skip]";
-// A click on these elements does its own action. It does not move the reading.
+/** The elements that do their own action on a click. A click on them does not move the reading. */
 export const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=button]";
 // The silence before a heading and before a list item, in milliseconds.
 // A new section and a new item then sound new.
@@ -29,7 +34,15 @@ function pauseBefore(block: Element): number {
 const TOP_MARGIN = 72;
 const BOTTOM_MARGIN = 120;
 
-// Make a DOM range for the characters from start to end of the root text.
+/**
+ * Make a DOM range for the characters from start to end of the root text.
+ * @param nodes The text nodes of the root, in order.
+ * @param start The position of the first character in the joined text.
+ * @param end The position after the last character in the joined text.
+ * @returns The range, or undefined when the positions are outside the text.
+ * @example
+ * const range = rangeFor(nodes, start, start + item.text.length);
+ */
 export function rangeFor(nodes: Text[], start: number, end: number): Range | undefined {
   const range = document.createRange();
   let position = 0;
@@ -49,7 +62,14 @@ export function rangeFor(nodes: Text[], start: number, end: number): Range | und
   return undefined;
 }
 
-// Find the sentences in the visible text of the root, in reading order.
+/**
+ * Find the sentences in the visible text of the root, in reading order. The asides in
+ * parentheses are not read.
+ * @param root The element that holds the text of the page.
+ * @returns The sentences to read.
+ * @example
+ * sentences.current = collectSentences(root.current);
+ */
 export function collectSentences(root: HTMLElement): Sentence[] {
   const groups: { block: Element; nodes: Text[] }[] = [];
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -83,8 +103,14 @@ export function collectSentences(root: HTMLElement): Sentence[] {
   return sentences;
 }
 
-// The middle of the first line of text in a block, in window pixels. The padding of a heading and a
-// tall line do not move it, so the "Read from here" button is level with the words.
+/**
+ * Get the middle of the first line of text in a block, in window pixels. The padding of a
+ * heading and a tall line do not move it, so the "Read from here" button is level with the words.
+ * @param block The element that holds the text.
+ * @returns The vertical position, in window pixels.
+ * @example
+ * setPlace({ left, top: firstLineMiddle(block) });
+ */
 export function firstLineMiddle(block: Element): number {
   const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -98,7 +124,13 @@ export function firstLineMiddle(block: Element): number {
   return rect.top + rect.height / 2;
 }
 
-// The sections of the page: each visible level-2 heading outside the skipped parts.
+/**
+ * Find the sections of the page: each visible level-2 heading outside the skipped parts.
+ * @param root The element that holds the text of the page, or null before it shows.
+ * @returns The sections, in page order. Empty when there is no root.
+ * @example
+ * sectionList.current = collectSections(root.current);
+ */
 export function collectSections(root: HTMLElement | null): Section[] {
   if (!root) return [];
   return [...root.querySelectorAll<HTMLElement>("h2")]
@@ -110,8 +142,15 @@ export function collectSections(root: HTMLElement | null): Section[] {
     .filter((section) => section.title);
 }
 
-// The section of a sentence: the last heading before it, or -1 before the first heading.
-// A heading that is no longer in the same page as the sentence cannot be compared. Skip it.
+/**
+ * Find the section of a sentence: the last heading before it. A heading that is no longer in
+ * the same page as the sentence cannot be compared, so it is skipped.
+ * @param sections The sections of the page.
+ * @param range The range of the sentence.
+ * @returns The index of the section, or -1 before the first heading.
+ * @example
+ * setSection(sectionOf(sectionList.current, range));
+ */
 export function sectionOf(sections: Section[], range: Range): number {
   let found = -1;
   sections.forEach((section, index) => {
@@ -124,11 +163,25 @@ export function sectionOf(sections: Section[], range: Range): number {
   return found;
 }
 
-// A sentence is gone when React replaced its text, for example after a new page or a new render.
+/**
+ * Find out if a sentence is gone. A sentence is gone when React replaced its text, for example
+ * after a new page or a new render.
+ * @param sentence The sentence to check.
+ * @returns True when the text of the sentence is no longer on the page.
+ * @example
+ * if (isGone(sentence)) sentences.current = collectSentences(root.current);
+ */
 export const isGone = (sentence: Sentence) =>
   !sentence.range.startContainer.isConnected || !sentence.range.endContainer.isConnected;
 
-// The text position under a point of the window.
+/**
+ * Find the text position under a point of the window.
+ * @param x The horizontal position, in window pixels.
+ * @param y The vertical position, in window pixels.
+ * @returns The text position, or null when there is no text under the point.
+ * @example
+ * const point = caretAt(event.clientX, event.clientY);
+ */
 export function caretAt(x: number, y: number): Point | null {
   if (document.caretPositionFromPoint) {
     const position = document.caretPositionFromPoint(x, y);
@@ -138,7 +191,14 @@ export function caretAt(x: number, y: number): Point | null {
   return range ? { node: range.startContainer, offset: range.startOffset } : null;
 }
 
-// The first sentence that contains the point or comes after it.
+/**
+ * Find the first sentence that contains the point or comes after it.
+ * @param sentences The sentences of the page.
+ * @param point The text position.
+ * @returns The index of the sentence. 0 when no sentence matches.
+ * @example
+ * void playAt(sentenceAt(sentences.current, point));
+ */
 export function sentenceAt(sentences: Sentence[], point: Point): number {
   const index = sentences.findIndex((sentence) => {
     try {
@@ -150,7 +210,14 @@ export function sentenceAt(sentences: Sentence[], point: Point): number {
   return Math.max(index, 0);
 }
 
-// The first sentence that is in the window now. Play starts there, so you can scroll to a place.
+/**
+ * Find the first sentence that is in the window now. Play starts there, so you can scroll to a
+ * place.
+ * @param sentences The sentences of the page.
+ * @returns The index of the sentence. 0 when no sentence is in the window.
+ * @example
+ * void playAt(firstVisible(sentences.current));
+ */
 export function firstVisible(sentences: Sentence[]): number {
   const index = sentences.findIndex((sentence) => {
     const rect = sentence.range.getBoundingClientRect();
@@ -159,7 +226,12 @@ export function firstVisible(sentences: Sentence[]): number {
   return Math.max(index, 0);
 }
 
-// Scroll to a sentence when it is outside the part of the window that the player leaves free.
+/**
+ * Scroll to a sentence when it is outside the part of the window that the player leaves free.
+ * @param range The range of the sentence.
+ * @example
+ * keepInView(range);
+ */
 export function keepInView(range: Range): void {
   const rect = range.getBoundingClientRect();
   if (rect.top < TOP_MARGIN || rect.bottom > window.innerHeight - BOTTOM_MARGIN) {

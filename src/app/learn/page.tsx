@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { lessons } from "@/lib/content/lesson-reader";
 import { lessonSections } from "@/lib/content/lessons";
 
+/**
+ * The start page of the Learn section, with the lessons of each section.
+ * @returns A card for each section, with links to its lessons.
+ */
 export default function LearnPage() {
   return (
     <main className="mx-auto w-full max-w-4xl space-y-10 px-6 py-10 text-sm leading-relaxed">

@@ -8,6 +8,7 @@ import { route } from "@/lib/routes";
 // "Interview questions" (or "What interviewers probe" in a system design case). In it, a question
 // is a bold line, and the points of a strong answer are the list below it.
 
+/** One interview question of a lesson, with the points of a strong answer. */
 export type Question = {
   // Stable while the text of the question does not change: the lesson slug and the question.
   id: string;
@@ -32,6 +33,14 @@ const MAX_SLUG_LENGTH = 80;
 // The start of a Markdown line with a section heading.
 const H2 = "## ";
 
+/**
+ * Make the ID part of a question from its text.
+ * @param text The text of the question.
+ * @returns Lowercase letters and digits, with a hyphen in place of each other run. The maximum
+ * length is 80 characters.
+ * @example
+ * slugify("What is a cache?"); // "what-is-a-cache"
+ */
 export const slugify = (text: string) =>
   text
     .toLowerCase()
@@ -39,8 +48,16 @@ export const slugify = (text: string) =>
     .replace(/^-|-$/g, "")
     .slice(0, MAX_SLUG_LENGTH);
 
-// Find the questions in the Markdown of one lesson. Only the sections that `accept` selects
-// count. The product drill accepts each section, because its sections are its filters.
+/**
+ * Find the questions in the Markdown of one lesson. Only the sections that `accept` selects
+ * count. The product drill accepts each section, because its sections are its filters.
+ * @param markdown The Markdown text of the lesson.
+ * @param accept Selects a section by its heading. Without it, only the interview sections count.
+ * @returns The questions that have points, each with its section heading.
+ * @example
+ * parseQuestions(markdown); // the questions of "Interview questions"
+ * parseQuestions(markdown, () => true); // the questions of all sections
+ */
 export function parseQuestions(
   markdown: string,
   accept: (heading: string) => boolean = (heading) => SECTIONS.includes(heading),
@@ -79,7 +96,14 @@ const sectionOf = new Map(
 
 let cache: Promise<Question[]> | null = null;
 
-// Read the questions of all lessons, in the reading order of the Learn area.
+/**
+ * Read the questions of all lessons, in the reading order of the Learn area.
+ * In production, the app reads the lessons one time and keeps the result.
+ * @returns The questions, each with a link to its section of the lesson.
+ * @throws An error when the folder content/learn or a lesson file cannot be read.
+ * @example
+ * const questions = await readQuestions();
+ */
 export function readQuestions(): Promise<Question[]> {
   // The lessons change only when the app is built or a file is edited in development.
   if (process.env.NODE_ENV === "production" && cache) return cache;

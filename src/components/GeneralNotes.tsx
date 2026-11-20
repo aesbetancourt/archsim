@@ -14,8 +14,11 @@ import { useInsightsJob } from "@/lib/browser/use-insights-job";
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 
-// The general notes of the notebook: a list of notes with titles. A click opens one note.
-// Without initial notes, the component gets them from the server.
+/**
+ * The general notes of the notebook: a list of notes with titles. A click opens one note.
+ * Without initial notes, the component gets them from the server.
+ * @returns The list of notes, or the open note.
+ */
 export default function GeneralNotes({
   initial,
   compact = false,
@@ -180,7 +183,10 @@ export default function GeneralNotes({
   );
 }
 
-// One general note: its title and its editor. The sidebar and the note page use it.
+/**
+ * One general note: its title and its editor. The sidebar and the note page use it.
+ * @returns The title field and the editor of the note.
+ */
 export function OpenNote({
   document,
   compact,

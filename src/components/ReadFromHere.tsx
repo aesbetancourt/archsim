@@ -7,8 +7,11 @@ import { BLOCKS, SKIP, firstLineMiddle } from "@/lib/browser/page-text";
 // The distance from the left edge of the text to the button.
 const GUTTER = 26;
 
-// The small play button next to the block of text under the pointer. A click starts the reading
-// at that block. It is a part of the read-aloud player.
+/**
+ * The small play button next to the block of text under the pointer. A click starts the reading
+ * at that block. It is a part of the read-aloud player.
+ * @returns The play button, or nothing when no block is under the pointer.
+ */
 export default function ReadFromHere({
   root,
   page,

@@ -5,6 +5,10 @@ import { readSettings, toPublic } from "@/lib/store/settings";
 // Read the settings file on each request.
 export const dynamic = "force-dynamic";
 
+/**
+ * The settings of the model that reviews attempts and writes worked answers.
+ * @returns The settings form, with the saved settings. The API keys show as a short hint.
+ */
 export default async function SettingsPage() {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 text-sm leading-relaxed">

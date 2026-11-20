@@ -4,7 +4,11 @@ import { HTTP } from "@/lib/http-status";
 
 type Context = { params: Promise<{ id: string }> };
 
-// Save all parts of one story.
+/**
+ * Save all parts of one story.
+ * @param request The request. Its body has all fields of the story.
+ * @returns The changed story. 400 when the body is not valid, 404 when the story is not known.
+ */
 export async function PUT(request: Request, { params }: Context) {
   const { id } = await params;
   const fields = await readBody(request, storyFields);
@@ -14,6 +18,11 @@ export async function PUT(request: Request, { params }: Context) {
   return Response.json(story);
 }
 
+/**
+ * Remove one story.
+ * @param _request The request. The handler does not read it.
+ * @returns `{ ok: true }`.
+ */
 export async function DELETE(_request: Request, { params }: Context) {
   const { id } = await params;
   await deleteStory(id);

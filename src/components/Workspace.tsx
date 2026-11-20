@@ -115,6 +115,11 @@ function StepHeading({ number, title, hint }: { number: number; title: string; h
   );
 }
 
+/**
+ * The kata page: the kata text, the notepad and the canvas, and the answer fields.
+ * The work in progress saves in this browser after each change. Submit sends the attempt to review.
+ * @returns The kata page.
+ */
 export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample: boolean }) {
   const router = useRouter();
   const api = useRef<ExcalidrawImperativeAPI | null>(null);

@@ -13,7 +13,10 @@ import {
 import { listStories } from "@/lib/browser/api";
 import { keys } from "@/lib/browser/query-keys";
 
-// For a behavioral question: start the answer from a story of the story bank.
+/**
+ * For a behavioral question: start the answer from a story of the story bank.
+ * @returns The list of stories to select, a tip when there is no story, or nothing while they load.
+ */
 export default function StoryPicker({ onPick }: { onPick: (text: string) => void }) {
   // The stories load again for each question. The stories of the last load show until then.
   const { data, isPending } = useQuery({ queryKey: keys.stories, queryFn: listStories });

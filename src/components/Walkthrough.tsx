@@ -65,8 +65,11 @@ function stepButtonClass(position: number, current: number): string {
   return "bg-card text-muted-foreground hover:bg-muted";
 }
 
-// A lesson in steps on one diagram. The reader moves with the buttons, the step list, or the
-// arrow keys when the walkthrough has the focus.
+/**
+ * A lesson in steps on one diagram. The reader moves with the buttons, the step list, or the
+ * arrow keys when the walkthrough has the focus.
+ * @returns The diagram, the text of the step, and the controls.
+ */
 export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughData }) {
   const steps = useMemo(() => resolveSteps(walkthrough), [walkthrough]);
   const [index, setIndex] = useState(0);

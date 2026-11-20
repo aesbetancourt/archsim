@@ -6,7 +6,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { createBoard } from "@/lib/browser/api";
 
-// Create a board, then open it.
+/**
+ * A button that creates a board, then opens it.
+ * @returns The button.
+ */
 export default function NewBoardButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);

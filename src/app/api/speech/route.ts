@@ -3,7 +3,12 @@ import { readSettings } from "@/lib/store/settings";
 import { synthesize } from "@/lib/ai/speech";
 import { HTTP } from "@/lib/http-status";
 
-// Return the spoken audio of one sentence with the Google voice in Settings.
+/**
+ * Return the spoken audio of one sentence with the Google voice in Settings.
+ * @param request The request. Its body has the text to speak.
+ * @returns The audio as MP3. 400 when the body is not valid, 409 when Settings do not select
+ * Google voices, 502 when the speech service fails.
+ */
 export async function POST(request: Request) {
   const body = await readBody(request, speechRequest);
   if (body instanceof Response) return body;

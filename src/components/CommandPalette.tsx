@@ -37,7 +37,10 @@ const suggestions: SearchItem[] = [
   { kind: "Page", title: "Guide", href: "/guide" },
 ];
 
-// The search of the app. ⌘K or Ctrl+K opens it from any page.
+/**
+ * The search of the app. ⌘K or Ctrl+K opens it from any page.
+ * @returns The search button and the search dialog.
+ */
 export default function CommandPalette() {
   const router = useRouter();
   const [open, setOpen] = useState(false);

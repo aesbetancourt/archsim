@@ -3,6 +3,7 @@ import { DAY_MS } from "@/lib/time";
 // A known term moves to the next box and comes back later. A missed term goes back to box 1.
 // The progress is saved in the browser, like the kata drafts.
 
+/** The place of one term in the drill. */
 export type CardState = {
   // 1 to 5. A higher box means the term is known better.
   box: number;
@@ -10,7 +11,7 @@ export type CardState = {
   due: string;
 };
 
-// The state of each term, by glossary ID.
+/** The state of each term, by glossary ID. */
 export type DrillProgress = Record<string, CardState>;
 
 const LAST_BOX = 5;
@@ -20,7 +21,15 @@ const WAIT_DAYS = [0, 1, 3, 7, 14];
 // The progress of the vocabulary drill. Other drills pass their own key.
 const STORAGE_KEY = "charrette:drill";
 
-// The new state of a term after the user says whether they knew it.
+/**
+ * Get the new state of a term after the user says whether they knew it.
+ * @param state The state before the review. Undefined for a new term.
+ * @param knew True when the user knew the term.
+ * @param now The time of the review.
+ * @returns The new box of the term, and when the term comes back.
+ * @example
+ * const next = { ...progress, [item.id]: review(progress[item.id], knew, new Date()) };
+ */
 export function review(state: CardState | undefined, knew: boolean, now: Date): CardState {
   let box = 1;
   if (knew) {
@@ -30,7 +39,17 @@ export function review(state: CardState | undefined, knew: boolean, now: Date): 
   return { box, due: due.toISOString() };
 }
 
-// The terms to practice now: due reviews first, the oldest first, then up to `newLimit` new terms.
+/**
+ * Get the terms to practice now: due reviews first, the oldest first, then up to `newLimit`
+ * new terms.
+ * @param terms All the terms of the drill.
+ * @param progress The state of each term.
+ * @param now The time now.
+ * @param newLimit The maximum number of new terms.
+ * @returns The terms to practice, in order.
+ * @example
+ * const queue = dueTerms(items, loadProgress(storageKey), new Date(), newPerSession);
+ */
 export function dueTerms<T extends { id: string }>(
   terms: T[],
   progress: DrillProgress,
@@ -44,7 +63,13 @@ export function dueTerms<T extends { id: string }>(
   return [...reviews, ...fresh];
 }
 
-// Count the terms in each box, for the progress summary.
+/**
+ * Count the terms in each box, for the progress summary.
+ * @param progress The state of each term.
+ * @returns The number of terms in each box, from box 1 to box 5.
+ * @example
+ * boxCounts(progress); // [3, 0, 2, 0, 1]
+ */
 export function boxCounts(progress: DrillProgress): number[] {
   const counts = Array.from({ length: LAST_BOX }, () => 0);
   for (const state of Object.values(progress)) {
@@ -53,6 +78,14 @@ export function boxCounts(progress: DrillProgress): number[] {
   return counts;
 }
 
+/**
+ * Read the saved progress of a drill. A saved term with a damaged state is left out.
+ * @param key The storage key of the drill. The vocabulary drill uses the default key.
+ * @returns The state of each term. Empty when the storage is not available or the saved text is
+ * damaged.
+ * @example
+ * const saved = loadProgress(storageKey);
+ */
 export function loadProgress(key = STORAGE_KEY): DrillProgress {
   try {
     const saved = JSON.parse(localStorage.getItem(key) ?? "{}");
@@ -68,7 +101,14 @@ export function loadProgress(key = STORAGE_KEY): DrillProgress {
   }
 }
 
-// Save the progress. Return false if the browser refuses.
+/**
+ * Save the progress of a drill.
+ * @param progress The state of each term.
+ * @param key The storage key of the drill. The vocabulary drill uses the default key.
+ * @returns True when the progress is saved. False when the browser refuses.
+ * @example
+ * saveProgress(next, storageKey);
+ */
 export function saveProgress(progress: DrillProgress, key = STORAGE_KEY): boolean {
   try {
     localStorage.setItem(key, JSON.stringify(progress));

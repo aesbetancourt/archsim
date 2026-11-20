@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { Highlight } from "@/lib/store/notebook";
 
-// One highlighted passage with its note. The note is saved when the text box loses focus.
+/**
+ * One highlighted passage with its note. The note is saved when the text box loses focus.
+ * @returns The passage and its note field.
+ */
 export default function HighlightItem({
   item,
   onShow,

@@ -6,8 +6,15 @@ import type { Onboarding } from "@/lib/store/onboarding";
 import { readOnboarding, setTourSeen } from "./api";
 import { keys } from "./query-keys";
 
-// The state of one tour. The tours load one time for each visit to the app. A change here is the
-// only thing that changes them.
+/**
+ * Get the state of one tour. The tours load one time for each visit to the app. A change here
+ * is the only thing that changes them.
+ * @param id The ID of the tour.
+ * @returns Whether the tour must run, and a function that marks the tour as seen or not seen. The
+ * page changes at once. If the save fails, the page changes back.
+ * @example
+ * const tour = useTour("welcome");
+ */
 export function useTour(id: TourId) {
   const client = useQueryClient();
   const state = useQuery({

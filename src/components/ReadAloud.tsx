@@ -46,13 +46,16 @@ function PlayIcon({ waiting, playing }: { waiting: boolean; playing: boolean }) 
   return <Play />;
 }
 
-// A player that reads the text of the root aloud and highlights the sentence that it reads.
-// Alt+R starts and pauses it. To start at a place, use the button next to a paragraph, the section
-// menu, or Alt+click on a sentence. While the player is open, a click on a sentence moves to it.
-//
-// The player decides which sentence comes next. Two other files do the rest:
-// lib/browser/page-text.ts finds the sentences and the sections of the page, and
-// lib/browser/speaker.ts makes the sound.
+/**
+ * A player that reads the text of the root aloud and highlights the sentence that it reads.
+ * Alt+R starts and pauses it. To start at a place, use the button next to a paragraph, the section
+ * menu, or Alt+click on a sentence. While the player is open, a click on a sentence moves to it.
+ *
+ * The player decides which sentence comes next. Two other files do the rest:
+ * lib/browser/page-text.ts finds the sentences and the sections of the page, and
+ * lib/browser/speaker.ts makes the sound.
+ * @returns The controls of the player.
+ */
 export default function ReadAloud({
   root,
   page,

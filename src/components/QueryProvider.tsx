@@ -35,6 +35,11 @@ function getClient(): QueryClient {
   return browserClient;
 }
 
+/**
+ * Gives the data cache to the components inside it.
+ * On the server, each render gets its own cache. The browser keeps one cache.
+ * @returns The children inside the cache provider.
+ */
 export default function QueryProvider({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={getClient()}>{children}</QueryClientProvider>;
 }

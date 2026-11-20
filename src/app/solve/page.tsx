@@ -18,6 +18,11 @@ function kataText(kata: Kata): string {
     .join("\n\n");
 }
 
+/**
+ * The page to paste a design problem and get a worked answer.
+ * Add `?kata=<id>` to fill the problem box with the text of a kata.
+ * @returns The solve form.
+ */
 export default async function SolvePage({
   searchParams,
 }: {

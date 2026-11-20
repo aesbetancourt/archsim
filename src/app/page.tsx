@@ -44,6 +44,11 @@ import { tourTarget } from "@/lib/content/tours";
 // Read the attempt history on each request.
 export const dynamic = "force-dynamic";
 
+/**
+ * The home page: the katas in groups, the link to the community collection, and the attempt
+ * history.
+ * @returns The home page.
+ */
 export default async function Home() {
   const [attempts, katas, examples, titles] = await Promise.all([
     listAttempts(),

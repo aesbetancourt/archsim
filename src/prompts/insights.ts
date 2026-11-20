@@ -5,6 +5,7 @@ import { headingId } from "@/lib/content/lessons";
 // The insights document. The model reads all the marks of the notebook and writes a study
 // document. The output must match insightsSchema in lib/ai/insights.ts.
 
+/** The system prompt that writes the insights document from the marks of the notebook. */
 export const insightsSystemPrompt = `You are a senior software architect and a patient teacher. A person studies software architecture for job interviews. While they read the lessons, they marked what matters to them: bookmarks on sections, highlights of passages with their own notes, notes on a page, and general notes. You read all of these marks and write one study document that helps them review, understand, and remember what they marked.
 
 Use only the marks and the lesson text that comes with them. Do not add topics that the marks do not touch. When the lesson text and a note of the person disagree, say so in the gaps, and say which one is correct.
@@ -28,7 +29,15 @@ const MAX_SECTIONS = 120_000;
 // The start of a Markdown line with a section heading.
 const H2 = "## ";
 
-// The text of one "## " section of a lesson, up to the next section.
+/**
+ * Get the text of one "## " section of a lesson, up to the next section.
+ * @param markdown The Markdown text of the lesson.
+ * @param anchor The ID of the section heading, as `headingId` makes it.
+ * @returns The text under the heading, or an empty string when no heading has that ID.
+ * @example
+ * sectionText("## Cache aside\nRead the cache first.\n## Next", "cache-aside");
+ * // "Read the cache first."
+ */
 export function sectionText(markdown: string, anchor: string): string {
   const lines = markdown.split("\n");
   const start = lines.findIndex(
@@ -48,10 +57,21 @@ type LessonMarks = {
   note: string;
 };
 
+/**
+ * The number of marks of each kind that the insights prompt contains. The notes count both
+ * the page notes and the general notes.
+ */
 export type InsightsCounts = { bookmarks: number; highlights: number; notes: number };
 
-// Write the prompt from the notebook. The articles are the Markdown texts of the lessons, by slug.
-// Return null when the notebook has nothing to read.
+/**
+ * Write the prompt for the insights document from the notebook. The text of each bookmarked
+ * section goes in the prompt too, up to a size limit.
+ * @param notebook The notebook, with its bookmarks, highlights, page notes, and documents.
+ * @param articles The Markdown texts of the lessons, by slug.
+ * @returns The prompt and the counts of the marks, or null when the notebook has nothing to read.
+ * @example
+ * const built = buildInsightsPrompt(notebook, articles);
+ */
 export function buildInsightsPrompt(
   notebook: Notebook,
   articles: Record<string, string>,

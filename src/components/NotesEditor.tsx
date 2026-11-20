@@ -74,7 +74,10 @@ function startHtml(kataId: string | undefined, initialHtml: string | undefined):
   return toNotesHtml(initialHtml ?? "");
 }
 
-// The notepad of a kata or a board: a text editor with basic formats and a highlighter.
+/**
+ * The notepad of a kata or a board: a text editor with basic formats and a highlighter.
+ * @returns The editor with its toolbar.
+ */
 export default function NotesEditor({
   kataId,
   initialHtml,

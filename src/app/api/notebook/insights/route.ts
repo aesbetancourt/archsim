@@ -7,13 +7,19 @@ import { readArticle } from "@/lib/content/lesson-reader";
 import { buildInsightsPrompt, insightsSystemPrompt } from "@/prompts/insights";
 import { HTTP } from "@/lib/http-status";
 
-// The state of the background job, so the notebook page can show it after a reload.
+/**
+ * Get the state of the background job, so the notebook page can show it after a reload.
+ * @returns The state of the insights job.
+ */
 export async function GET() {
   return Response.json(insightsStatus());
 }
 
-// Start to write an insights document from all the marks of the notebook. The work continues in
-// the background, and the document is saved as a general note when it is ready.
+/**
+ * Start to write an insights document from all the marks of the notebook. The work continues
+ * in the background, and the document is saved as a general note when it is ready.
+ * @returns 202 with the state of the job, or 400 when the notebook is empty.
+ */
 export async function POST() {
   const notebook = await readNotebook();
   // The bookmarked sections come with their lesson text.

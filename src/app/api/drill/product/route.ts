@@ -5,7 +5,12 @@ import { questionGradeRequest, readBody } from "@/lib/requests";
 import { buildQuestionPrompt, productGradeSystemPrompt } from "@/prompts/drill";
 import { HTTP } from "@/lib/http-status";
 
-// Compare one answer from the product drill with the points of a strong answer.
+/**
+ * Compare one answer from the product drill with the points of a strong answer.
+ * @param request The request. Its body has the case ID and the answer.
+ * @returns The `grade` and the `model` that gave it. 400 when the body is not valid, 404 when
+ * the case is not known, 502 when the model fails.
+ */
 export async function POST(request: Request) {
   const body = await readBody(request, questionGradeRequest);
   if (body instanceof Response) return body;
