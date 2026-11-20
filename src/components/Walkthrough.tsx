@@ -46,6 +46,24 @@ const signClass: Record<Change["sign"], string> = {
   "!": "text-[#e03131]",
 };
 
+// Whether a changed number got better. A metric without a better direction, or a value that is
+// text, gives no answer.
+function improved(
+  direction: "lower" | "higher" | undefined,
+  value: number | string | undefined,
+  before: number | string | undefined,
+): boolean | undefined {
+  if (!direction || typeof value !== "number" || typeof before !== "number") return undefined;
+  return (direction === "lower") === value < before;
+}
+
+// The colors of a button in the step list: the step on the screen, a step before it, or a later step.
+function stepButtonClass(position: number, current: number): string {
+  if (position === current) return "bg-main text-main-foreground";
+  if (position < current) return "bg-primary/15";
+  return "bg-card text-muted-foreground hover:bg-muted";
+}
+
 // A lesson in steps on one diagram. The reader moves with the buttons, the step list, or the
 // arrow keys when the walkthrough has the focus.
 export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughData }) {
@@ -125,10 +143,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
             const value = state.metrics[metric.id];
             const before = previous?.metrics[metric.id];
             const changed = previous !== undefined && before !== value;
-            const better =
-              changed && typeof value === "number" && typeof before === "number" && metric.better
-                ? (metric.better === "lower") === value < before
-                : undefined;
+            const better = changed ? improved(metric.better, value, before) : undefined;
             return (
               <div
                 key={metric.id}
@@ -222,11 +237,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
               onClick={() => go(position)}
               className={cn(
                 "flex size-7 items-center justify-center rounded-full border border-border text-xs font-semibold tabular-nums",
-                position === index
-                  ? "bg-main text-main-foreground"
-                  : position < index
-                    ? "bg-primary/15"
-                    : "bg-card text-muted-foreground hover:bg-muted",
+                stepButtonClass(position, index),
               )}
             >
               {position + 1}

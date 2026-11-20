@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import BlockIcon from "@/components/BlockIcon";
+import BlockIcon, { chipShapeClass } from "@/components/BlockIcon";
 import { BookmarkButton } from "@/components/Bookmarks";
 import { DoneBadge, LessonObjectives, MarkDone } from "@/components/LessonProgress";
 import Prose from "@/components/Prose";
@@ -241,13 +241,7 @@ function Blocks() {
                 <CardContent className="space-y-2 px-4">
                   <span
                     style={{ backgroundColor: group.color }}
-                    className={`inline-flex items-center gap-1 border border-border px-2 py-0.5 font-medium text-black ${
-                      block.shape === "actor" || block.shape === "person"
-                        ? "rounded-full"
-                        : block.shape === "module"
-                          ? "rounded-none"
-                          : "rounded-base"
-                    } ${block.shape === "external" || block.shape === "boundary" ? "border-dashed" : ""}`}
+                    className={`inline-flex items-center gap-1 border border-border px-2 py-0.5 font-medium text-black ${chipShapeClass(block.shape)}`}
                   >
                     <BlockIcon shape={block.shape} />
                     {block.name}

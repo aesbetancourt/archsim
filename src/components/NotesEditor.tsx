@@ -66,6 +66,14 @@ function Tool({
   );
 }
 
+// The text that the editor starts with. A kata keeps its notes in this browser.
+// On the server the text is empty, because the editor starts in the browser only.
+function startHtml(kataId: string | undefined, initialHtml: string | undefined): string {
+  if (typeof window === "undefined") return "";
+  if (kataId) return loadNotesHtml(kataId);
+  return toNotesHtml(initialHtml ?? "");
+}
+
 // The notepad of a kata or a board: a text editor with basic formats and a highlighter.
 export default function NotesEditor({
   kataId,
@@ -79,12 +87,7 @@ export default function NotesEditor({
   const space = compact ? "px-4 py-3" : "px-8 py-6";
   const editor = useEditor({
     extensions: [StarterKit, Highlight],
-    content:
-      typeof window === "undefined"
-        ? ""
-        : kataId
-          ? loadNotesHtml(kataId)
-          : toNotesHtml(initialHtml ?? ""),
+    content: startHtml(kataId, initialHtml),
     // The editor starts in the browser only. This prevents a mismatch with the server page.
     immediatelyRender: false,
     editorProps: {

@@ -77,13 +77,21 @@ export function BookmarksProvider({
   // Each mutation shows its own result, so a failure needs no more work here.
   async function toggle(anchor: string, heading: string) {
     const found = find(anchor);
-    const change = found
-      ? remove.mutateAsync(found)
-      : add.mutateAsync({ page, title: getTitle(), heading, anchor });
-    await change.catch(() => undefined);
+    if (found) {
+      await remove.mutateAsync(found).catch(() => undefined);
+      return;
+    }
+    await add.mutateAsync({ page, title: getTitle(), heading, anchor }).catch(() => undefined);
   }
 
   return <BookmarksContext value={{ items: mine, find, toggle }}>{children}</BookmarksContext>;
+}
+
+// What the bookmark button does. An empty anchor is the whole page.
+function bookmarkLabel(on: boolean, anchor: string): string {
+  if (on) return "Remove the bookmark";
+  if (anchor) return "Bookmark this section";
+  return "Bookmark this page";
 }
 
 // The bookmark button of a heading. An empty anchor is the whole page.
@@ -92,11 +100,7 @@ export function BookmarkButton({ anchor, heading }: { anchor: string; heading: s
   const bookmarks = usePageBookmarks();
   if (!bookmarks) return null;
   const on = Boolean(bookmarks.find(anchor));
-  const label = on
-    ? "Remove the bookmark"
-    : anchor
-      ? "Bookmark this section"
-      : "Bookmark this page";
+  const label = bookmarkLabel(on, anchor);
 
   return (
     <Button

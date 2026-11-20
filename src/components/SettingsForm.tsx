@@ -98,11 +98,8 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
     setMessage(null);
     if (await save()) {
       const body = await testConnection();
-      setMessage(
-        body.ok
-          ? { ok: true, text: `The connection works. Model: ${body.model}.` }
-          : { ok: false, text: body.error ?? "The model did not answer as expected." },
-      );
+      if (body.ok) setMessage({ ok: true, text: `The connection works. Model: ${body.model}.` });
+      else setMessage({ ok: false, text: body.error ?? "The model did not answer as expected." });
     }
     setBusy(null);
   }

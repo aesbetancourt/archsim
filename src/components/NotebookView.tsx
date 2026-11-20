@@ -133,7 +133,7 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
           )}
         </div>
         {error && <p role="alert">{error}</p>}
-        {all.length === 0 ? (
+        {all.length === 0 && (
           <Card className="px-4">
             <p className="flex items-center gap-2 text-muted-foreground">
               <Highlighter className="size-4 shrink-0" aria-hidden />
@@ -141,9 +141,11 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
               on the right.
             </p>
           </Card>
-        ) : groups.length === 0 ? (
+        )}
+        {all.length > 0 && groups.length === 0 && (
           <p className="text-muted-foreground">No lesson matches “{filter}”.</p>
-        ) : (
+        )}
+        {groups.length > 0 && (
           <Card className="gap-0 divide-y py-0">
             {groups.map((group) => (
               <details key={group.page} className="group">

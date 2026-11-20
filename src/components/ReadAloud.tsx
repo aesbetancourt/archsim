@@ -39,6 +39,13 @@ const HIGHLIGHT = "charrette-reading";
 // The number of sentences to load before they are necessary, so there is no pause between them.
 const PREFETCH = 3;
 
+// The icon of the play button. It turns while the Google voice loads a sentence.
+function PlayIcon({ waiting, playing }: { waiting: boolean; playing: boolean }) {
+  if (waiting) return <LoaderCircle className="animate-spin" />;
+  if (playing) return <Pause />;
+  return <Play />;
+}
+
 // A player that reads the text of the root aloud and highlights the sentence that it reads.
 // Alt+R starts and pauses it. To start at a place, use the button next to a paragraph, the section
 // menu, or Alt+click on a sentence. While the player is open, a click on a sentence moves to it.
@@ -367,13 +374,7 @@ export default function ReadAloud({
             aria-label={status === "playing" ? "Pause (Alt+R)" : "Play (Alt+R)"}
             onClick={toggle}
           >
-            {waiting ? (
-              <LoaderCircle className="animate-spin" />
-            ) : status === "playing" ? (
-              <Pause />
-            ) : (
-              <Play />
-            )}
+            <PlayIcon waiting={waiting} playing={status === "playing"} />
           </Button>
           <Button
             variant="ghost"

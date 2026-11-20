@@ -18,6 +18,23 @@ const dash: Partial<Record<BlockShape, string>> = {
   replication: "1.5 3",
 };
 
+// The corners of the chip of a piece, as on the canvas. The other forms have the usual corners.
+const chipCorners: Partial<Record<BlockShape, string>> = {
+  actor: "rounded-full",
+  person: "rounded-full",
+  module: "rounded-none",
+};
+
+// A dashed border shows a system outside this one, or a frame around parts.
+const dashedChips: ReadonlySet<BlockShape> = new Set(["external", "boundary"]);
+
+// The corner and border classes of the chip of a piece. The palette and the lesson use it.
+export function chipShapeClass(shape: BlockShape): string {
+  const corners = chipCorners[shape] ?? "rounded-base";
+  const border = dashedChips.has(shape) ? "border-dashed" : "";
+  return `${corners} ${border}`;
+}
+
 // A small icon that shows the form of a piece on the canvas.
 export default function BlockIcon({ shape }: { shape: BlockShape }) {
   const className = "size-3 shrink-0";

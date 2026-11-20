@@ -118,19 +118,20 @@ export default function Prose({
               </CodeBlock>
             );
           },
-          code: ({ className, children }) =>
-            className === "language-walkthrough" ? (
-              <WalkthroughBlock source={text(children)} />
-            ) : className === "language-diagram" ? (
-              <Diagram spec={JSON.parse(text(children))} />
-            ) : className?.includes("hljs") ? (
-              // A highlighted code block. Its spans have the classes of the code theme.
-              <code className={className}>{children}</code>
-            ) : (
+          code: ({ className, children }) => {
+            if (className === "language-walkthrough") {
+              return <WalkthroughBlock source={text(children)} />;
+            }
+            if (className === "language-diagram")
+              return <Diagram spec={JSON.parse(text(children))} />;
+            // A highlighted code block. Its spans have the classes of the code theme.
+            if (className?.includes("hljs")) return <code className={className}>{children}</code>;
+            return (
               <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">
                 {children}
               </code>
-            ),
+            );
+          },
           // A table compares options. An ink rule marks the header, the first column names the
           // row, and the rows have stripes, so the eye can follow one row across.
           // A wide table scrolls to the side, so each column keeps a readable width.

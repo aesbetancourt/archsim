@@ -27,6 +27,13 @@ export class ApiError extends Error {
 // keepalive lets a save finish when the person leaves the page.
 type Options = { body?: unknown; keepalive?: boolean };
 
+// The server gives the reason in the "error" field. A crash can answer with a page, not JSON.
+function serverReason(answer: unknown): string {
+  if (!answer || typeof answer !== "object" || !("error" in answer)) return "";
+  if (typeof answer.error !== "string") return "";
+  return answer.error;
+}
+
 async function send(method: string, url: string, options: Options = {}): Promise<Response> {
   const hasBody = options.body !== undefined;
   const response = await fetch(url, {
@@ -36,13 +43,8 @@ async function send(method: string, url: string, options: Options = {}): Promise
     keepalive: options.keepalive,
   });
   if (response.ok) return response;
-  // The server gives the reason in the "error" field. A crash can answer with a page, not JSON.
   const answer: unknown = await response.json().catch(() => null);
-  const reason =
-    answer && typeof answer === "object" && "error" in answer && typeof answer.error === "string"
-      ? answer.error
-      : "";
-  throw new ApiError(reason, response.status);
+  throw new ApiError(serverReason(answer), response.status);
 }
 
 async function json<Answer>(method: string, url: string, options?: Options): Promise<Answer> {

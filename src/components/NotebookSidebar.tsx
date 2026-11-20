@@ -179,9 +179,11 @@ export default function NotebookSidebar({
     return () => window.removeEventListener("keydown", onKey);
   }, [expanded]);
 
-  // The large panel shows all the parts of this page together.
-  const shows = (panel: Tab) =>
-    expanded ? (panel === "general") === (tab === "general") : tab === panel;
+  // The large panel shows all the parts of this page together, or the general notes.
+  function shows(panel: Tab): boolean {
+    if (expanded) return (panel === "general") === (tab === "general");
+    return tab === panel;
+  }
 
   function go(anchor: string) {
     setExpanded(false);
@@ -255,9 +257,7 @@ export default function NotebookSidebar({
                 // The large panel has one tab for this page and one for the general notes.
                 .filter((item) => !expanded || item.id === "notes" || item.id === "general")
                 .map((item) => {
-                  const selected = expanded
-                    ? (item.id === "general") === (tab === "general")
-                    : tab === item.id;
+                  const selected = shows(item.id);
                   const button = (
                     <Button
                       role="tab"

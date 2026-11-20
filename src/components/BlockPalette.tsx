@@ -8,7 +8,7 @@ import {
 import type { ExcalidrawImperativeAPI, LibraryItems } from "@excalidraw/excalidraw/types";
 import { Blocks, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import BlockIcon from "@/components/BlockIcon";
+import BlockIcon, { chipShapeClass } from "@/components/BlockIcon";
 import { elementsFor, HEIGHT, sizeOf, WIDTH } from "@/lib/content/block-elements";
 import { type Block, blockGroups, blocks } from "@/lib/content/blocks";
 
@@ -231,13 +231,7 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
                 onBlur={hideTip}
                 aria-describedby={tip?.block.id === block.id ? "block-tip" : undefined}
                 style={{ backgroundColor: colorOf(block) }}
-                className={`flex cursor-grab items-center gap-1 border border-border px-2 py-0.5 font-medium text-black active:cursor-grabbing ${
-                  block.shape === "actor" || block.shape === "person"
-                    ? "rounded-full"
-                    : block.shape === "module"
-                      ? "rounded-none"
-                      : "rounded-base"
-                } ${block.shape === "external" || block.shape === "boundary" ? "border-dashed" : ""}`}
+                className={`flex cursor-grab items-center gap-1 border border-border px-2 py-0.5 font-medium text-black active:cursor-grabbing ${chipShapeClass(block.shape)}`}
               >
                 <BlockIcon shape={block.shape} />
                 {block.name}

@@ -68,6 +68,13 @@ const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
 
 const styles = [...styleLessons.map((lesson) => lesson.name), "Other (explain in the rationale)"];
 
+// The kind of a kata, for the badge next to its title. A built-in kata shows its difficulty.
+function kataKind(kata: Kata): string {
+  if (kata.source) return "community kata";
+  if (kata.interview) return "interview question";
+  return kata.difficulty;
+}
+
 function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -258,13 +265,13 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
   // Select or remove a characteristic, up to the limit.
   function toggle(name: string) {
-    setSelected((current) =>
-      current.some((item) => item.name === name)
-        ? current.filter((item) => item.name !== name)
-        : current.length < MAX_CHARACTERISTICS
-          ? [...current, { name, why: "" }]
-          : current,
-    );
+    setSelected((current) => {
+      if (current.some((item) => item.name === name)) {
+        return current.filter((item) => item.name !== name);
+      }
+      if (current.length < MAX_CHARACTERISTICS) return [...current, { name, why: "" }];
+      return current;
+    });
   }
 
   function setWhy(name: string, why: string) {
@@ -321,13 +328,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h1 className="text-xl font-semibold tracking-tight">{kata.title}</h1>
-              <Badge variant={kata.interview || kata.source ? "neutral" : "neutral"}>
-                {kata.source
-                  ? "community kata"
-                  : kata.interview
-                    ? "interview question"
-                    : kata.difficulty}
-              </Badge>
+              <Badge variant="neutral">{kataKind(kata)}</Badge>
             </div>
             <ProblemText kata={kata} />
             {kata.note && (

@@ -48,24 +48,21 @@ function pieceNotes(elements: SceneElement[]): string {
   return `\nStandard pieces in the diagram, each with its cost and the question a reviewer would ask about it:\n${lines.join("\n")}`;
 }
 
-// The work of the person and the conversation, as the prompt for one answer.
-export function buildHelperPrompt(
-  context: HelperContext,
-  kata: Kata | undefined,
-  messages: ChatMessage[],
-): string {
-  const list = (items: string[]) =>
-    items.length ? items.map((item) => `- ${item}`).join("\n") : "(none stated)";
-  const work =
-    context.kind === "kata"
-      ? `<kata>
+// A list of items in the prompt, one item on each line.
+const bulletList = (items: string[]) =>
+  items.length ? items.map((item) => `- ${item}`).join("\n") : "(none stated)";
+
+// The work of the person: the kata and their answers so far, or the free board.
+function workText(context: HelperContext, kata: Kata | undefined): string {
+  if (context.kind === "kata") {
+    return `<kata>
 Title: ${kata?.title}
 ${[kata?.context, ...(kata?.details ?? [])].join("\n")}
 Users: ${kata?.users ?? "(not stated)"}
 Requirements:
-${list(kata?.requirements ?? [])}
+${bulletList(kata?.requirements ?? [])}
 Constraints:
-${list(kata?.constraints ?? [])}
+${bulletList(kata?.constraints ?? [])}
 </kata>
 
 <their_work_so_far>
@@ -80,14 +77,24 @@ Rationale they wrote:
 ${context.rationale || "(empty)"}
 Diagram:
 ${describeScene(context.elements)}${pieceNotes(context.elements)}
-</their_work_so_far>`
-      : `<board>
+</their_work_so_far>`;
+  }
+  return `<board>
 Title: ${context.title}
 Notes:
 ${context.notes || "(empty)"}
 Diagram:
 ${describeScene(context.elements)}${pieceNotes(context.elements)}
 </board>`;
+}
+
+// The work of the person and the conversation, as the prompt for one answer.
+export function buildHelperPrompt(
+  context: HelperContext,
+  kata: Kata | undefined,
+  messages: ChatMessage[],
+): string {
+  const work = workText(context, kata);
 
   const conversation = messages
     .map((message) => `${message.role === "user" ? "Person" : "You"}: ${message.text}`)

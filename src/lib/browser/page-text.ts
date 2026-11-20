@@ -18,6 +18,13 @@ export const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=b
 // A new section and a new item then sound new.
 const HEADING_PAUSE = 800;
 const ITEM_PAUSE = 400;
+
+// The silence before the first sentence of a block. A list item can hold its text in a paragraph.
+function pauseBefore(block: Element): number {
+  if (block.matches("h1,h2,h3,h4")) return HEADING_PAUSE;
+  if (block.matches("li, li > p:first-child")) return ITEM_PAUSE;
+  return 0;
+}
 // The space at the top and bottom of the window that the current sentence must not go into.
 const TOP_MARGIN = 72;
 const BOTTOM_MARGIN = 120;
@@ -62,12 +69,7 @@ export function collectSentences(root: HTMLElement): Sentence[] {
   for (const { block, nodes } of groups) {
     if (!block.checkVisibility()) continue;
     const text = nodes.map((node) => node.data).join("");
-    // Wait before a heading and before a list item. A list item can hold its text in a paragraph.
-    let pause = block.matches("h1,h2,h3,h4")
-      ? HEADING_PAUSE
-      : block.matches("li, li > p:first-child")
-        ? ITEM_PAUSE
-        : 0;
+    let pause = pauseBefore(block);
     for (const span of splitSentences(text)) {
       const range = rangeFor(nodes, span.start, span.end);
       // Do not read the asides in parentheses. Skip a sentence that is only an aside.

@@ -52,6 +52,10 @@ type Session<T> = { queue: T[]; knew: number; missed: number };
 type Check = { itemId: string; grade: Grade; model: string };
 
 function errorText(caught: unknown): string {
+  // A server crash can answer with an empty body or an HTML page. Then there is no reason.
+  if (caught instanceof ApiError && !caught.message) {
+    return `The server could not check the answer (HTTP ${caught.status}).`;
+  }
   if (caught instanceof Error && caught.message) return caught.message;
   return "The check did not finish.";
 }
@@ -124,12 +128,7 @@ export default function Drill<T extends { id: string }>({
       setCheck({ itemId, grade: body.grade, model: body.model });
       setRevealed(true);
     } catch (caught) {
-      // A server crash can answer with an empty body or an HTML page. Then there is no reason.
-      setCheckError(
-        caught instanceof ApiError && !caught.message
-          ? `The server could not check the answer (HTTP ${caught.status}).`
-          : errorText(caught),
-      );
+      setCheckError(errorText(caught));
     }
     setCheckingId("");
   }

@@ -124,7 +124,7 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
 
       {error && <p role="alert">{error}</p>}
 
-      {opened ? (
+      {opened && (
         <StoryEditor
           key={opened.id}
           story={opened}
@@ -137,12 +137,14 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
             setOpenId(null);
           }}
         />
-      ) : stories.length === 0 ? (
+      )}
+      {!opened && stories.length === 0 && (
         <p className="flex items-center gap-2 rounded-base border border-dashed px-4 py-3 text-muted-foreground">
           <BookUser className="size-4 shrink-0" aria-hidden /> No stories yet. Start with the
           project you are most proud of, and a decision that went wrong.
         </p>
-      ) : (
+      )}
+      {!opened && stories.length > 0 && (
         <ul className="grid gap-2 sm:grid-cols-2">
           {stories.map((story) => (
             <li key={story.id}>
@@ -164,6 +166,14 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
   );
 }
 
+type SaveStatus = "saved" | "changed" | "error";
+
+const statusText: Record<SaveStatus, string> = {
+  saved: "All changes saved",
+  changed: "Saves when you leave the field",
+  error: "The save failed. Change something to try again.",
+};
+
 function StoryEditor({
   story,
   onBack,
@@ -176,7 +186,7 @@ function StoryEditor({
   onDeleted: () => void;
 }) {
   const [fields, setFields] = useState(fieldsOf(story));
-  const [status, setStatus] = useState<"saved" | "changed" | "error">("saved");
+  const [status, setStatus] = useState<SaveStatus>("saved");
   const latest = useRef(fields);
   const url = `/api/notebook/stories/${story.id}`;
 
@@ -276,11 +286,7 @@ function StoryEditor({
       ))}
 
       <p className="text-xs text-muted-foreground" aria-live="polite">
-        {status === "saved"
-          ? "All changes saved"
-          : status === "changed"
-            ? "Saves when you leave the field"
-            : "The save failed. Change something to try again."}
+        {statusText[status]}
       </p>
     </div>
   );

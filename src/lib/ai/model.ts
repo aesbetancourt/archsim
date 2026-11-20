@@ -60,11 +60,15 @@ function parseJson(text: string): unknown {
   }
 }
 
+// The command-line tools read the image from their working folder. Without an image, they get an
+// empty folder. The caller deletes that folder.
+async function workingFolder(imagePath: string | undefined): Promise<string> {
+  if (imagePath) return path.dirname(imagePath);
+  return mkdtemp(path.join(os.tmpdir(), "charrette-"));
+}
+
 async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<ModelResult> {
-  // Claude Code reads the image from its working directory.
-  const cwd = call.imagePath
-    ? path.dirname(call.imagePath)
-    : await mkdtemp(path.join(os.tmpdir(), "charrette-"));
+  const cwd = await workingFolder(call.imagePath);
   const prompt = call.imagePath
     ? readImageFirst(path.basename(call.imagePath), call.prompt)
     : call.prompt;
@@ -84,10 +88,7 @@ async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<Model
 }
 
 async function viaOpenCode(call: ModelCall, settings: Settings): Promise<ModelResult> {
-  // OpenCode reads the image from its working directory.
-  const cwd = call.imagePath
-    ? path.dirname(call.imagePath)
-    : await mkdtemp(path.join(os.tmpdir(), "charrette-"));
+  const cwd = await workingFolder(call.imagePath);
   const model = settings.openCode.model;
   try {
     // OpenCode cannot force the answer to match the schema. A model sometimes writes JSON
@@ -323,11 +324,14 @@ async function viaVertex(call: ModelCall, settings: Settings): Promise<ModelResu
           `Vertex AI refused the request in project "${project}". Turn on the Vertex AI API in the project, and log in with: gcloud auth application-default login`,
         );
       }
+      if (error.statusCode === 404 && claude) {
+        throw new Error(
+          `Vertex AI has no model "${model}" in "${location}" for project "${project}". Enable the Claude model in the Model Garden of the project first.`,
+        );
+      }
       if (error.statusCode === 404) {
         throw new Error(
-          claude
-            ? `Vertex AI has no model "${model}" in "${location}" for project "${project}". Enable the Claude model in the Model Garden of the project first.`
-            : `Vertex AI has no model "${model}" in "${location}". Check the model and the location in Settings.`,
+          `Vertex AI has no model "${model}" in "${location}". Check the model and the location in Settings.`,
         );
       }
       if (error.statusCode === 429) {

@@ -50,6 +50,26 @@ function borderPoint(rect: Rect, dx: number, dy: number) {
 // The height of the round end of a cylinder, and the width of the round end of a pipe.
 const END = 8;
 
+// The move of the text of a node from the center. The text of a cylinder is below its top.
+// The text of a pipe is left of its round end. The text of a device is above its stand.
+const textOffset: Partial<Record<DiagramShape, { x: number; y: number }>> = {
+  pipe: { x: -END / 2, y: 0 },
+  store: { x: 0, y: END / 2 },
+  device: { x: 0, y: -3 },
+};
+const NO_OFFSET = { x: 0, y: 0 };
+
+// The corners of a form in the legend. The other forms have small round corners.
+const legendCorners: Partial<Record<DiagramShape, string>> = { actor: "rounded-full", module: "" };
+
+// An arrow that is not part of this step is hidden. An arrow to a part that failed is faint.
+const BROKEN_OPACITY = 0.3;
+function arrowOpacity(visible: boolean, broken: boolean): number {
+  if (!visible) return 0;
+  if (broken) return BROKEN_OPACITY;
+  return 1;
+}
+
 // Draw one node in its form. The forms are the same as the pieces of the canvas palette.
 function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
   const left = rect.cx - rect.hw;
@@ -254,7 +274,7 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
           return (
             <g
               key={index}
-              style={{ ...FADE, opacity: visible ? (broken ? 0.3 : 1) : 0 }}
+              style={{ ...FADE, opacity: arrowOpacity(visible, Boolean(broken)) }}
               aria-hidden={!visible}
             >
               <line
@@ -310,14 +330,12 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
           const rect = rects.get(node.id)!;
           const shape = shapeOf(node);
           const lines = node.label.split("\n");
-          // The text of a cylinder is below its top. The text of a pipe is left of its round end.
-          const dx = shape === "pipe" ? -END / 2 : 0;
-          const dy = shape === "store" ? END / 2 : shape === "device" ? -3 : 0;
+          const { x: dx, y: dy } = textOffset[shape] ?? NO_OFFSET;
           // The name of a person starts below the figure.
-          const lineY = (index: number) =>
-            shape === "person"
-              ? rect.cy - rect.hh + 52 + index * 15
-              : rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
+          const lineY = (index: number) => {
+            if (shape === "person") return rect.cy - rect.hh + 52 + index * 15;
+            return rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
+          };
           const down = view?.down.has(node.id);
           const note = view?.notes[node.id];
           return (
@@ -393,7 +411,7 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
             <span
               style={{ backgroundColor: shapeStyle[shape].color }}
               className={`flex h-4 w-5 items-center justify-center border border-foreground/70 text-black ${
-                shape === "actor" ? "rounded-full" : shape === "module" ? "" : "rounded-sm"
+                legendCorners[shape] ?? "rounded-sm"
               } ${shape === "external" ? "border-dashed" : ""}`}
             >
               <BlockIcon shape={shape} />
