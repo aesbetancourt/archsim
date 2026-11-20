@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { type Autosave, useAutosave } from "@/lib/browser/use-autosave";
 
 const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
 
@@ -38,37 +39,23 @@ export default function AutosaveNotes({
 }: Props) {
   const [status, setStatus] = useState<Status>("saved");
   const latest = useRef(initialHtml);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // The newest save function. A parent can give a new one at each render.
   const saveRef = useRef(save);
   useEffect(() => {
     saveRef.current = save;
   });
 
-  async function flush() {
-    timer.current = null;
+  // Save the newest notes. It reads the refs, so it stays the same function.
+  const saveNotes = useCallback(async (autosave: Autosave) => {
     try {
       await saveRef.current(latest.current);
-      setStatus(timer.current ? "pending" : "saved");
+      setStatus(autosave.isPlanned() ? "pending" : "saved");
     } catch {
       setStatus("error");
     }
-  }
-  const flushRef = useRef(flush);
-  useEffect(() => {
-    flushRef.current = flush;
-  });
-
-  // Save immediately when the editor closes with a planned save.
-  useEffect(
-    () => () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-        void flushRef.current();
-      }
-    },
-    [],
-  );
+  }, []);
+  // The editor saves at once when it closes with a planned save.
+  const autosave = useAutosave(saveNotes, SAVE_DELAY_MS);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -82,8 +69,7 @@ export default function AutosaveNotes({
             latest.current = html;
             onChange?.(html);
             setStatus("pending");
-            if (timer.current) clearTimeout(timer.current);
-            timer.current = setTimeout(() => flushRef.current(), SAVE_DELAY_MS);
+            autosave.schedule();
           }}
         />
       </div>

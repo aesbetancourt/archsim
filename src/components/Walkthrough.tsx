@@ -21,6 +21,7 @@ import {
   type StepKind,
   type Walkthrough as WalkthroughData,
 } from "@/lib/content/walkthrough";
+import { clamp } from "es-toolkit";
 
 const kindLabel: Record<StepKind, string> = {
   problem: "Problem",
@@ -78,7 +79,7 @@ export default function Walkthrough({ walkthrough }: { walkthrough: WalkthroughD
 
   const svg = () => figure.current?.querySelector("svg");
   function go(next: number) {
-    setIndex(Math.min(last, Math.max(0, next)));
+    setIndex(clamp(next, 0, last));
     setPaused(false);
     svg()?.unpauseAnimations();
   }

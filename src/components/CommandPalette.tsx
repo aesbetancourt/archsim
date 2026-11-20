@@ -13,6 +13,7 @@ import { listNotes, searchIndex } from "@/lib/browser/api";
 import { keys } from "@/lib/browser/query-keys";
 import type { NoteDoc } from "@/lib/store/notebook";
 import { pageAddress } from "@/lib/routes";
+import { clamp } from "es-toolkit";
 
 // A general note as an item of the search.
 function noteItem(note: NoteDoc): SearchItem {
@@ -70,7 +71,7 @@ export default function CommandPalette() {
   );
 
   const results = query.trim() ? search(items, query) : suggestions;
-  const selected = Math.min(active, Math.max(results.length - 1, 0));
+  const selected = clamp(active, 0, Math.max(results.length - 1, 0));
 
   // Keep the selected result in view when the arrow keys move it.
   useEffect(() => {

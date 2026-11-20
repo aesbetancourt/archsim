@@ -144,8 +144,9 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
 - **TanStack Query** for the data that the browser loads from the server: the lesson progress, the bookmarks, the highlights, the notes of a page, the stories, the search index, and the state of the insights job. Lists that only show stay in a cache. Text that you change loads again at each visit, so an editor never starts with an old copy. It sends each request also when the browser is offline, because the server is on your computer. All requests are in one file, `src/lib/browser/api.ts`, and a lint rule stops a `fetch` call in a component
+- **es-toolkit** for small helpers, such as the delay of the autosaves (`src/lib/browser/use-autosave.ts`)
 - **Google Cloud Text-to-Speech** (optional) for the read-aloud voices, with the browser Web Speech API as the default
-- **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`), and [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
+- **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`). The lint stops nested ternaries and numbers without a name, and the type check stops a link to a page that does not exist. Use [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
 - **No database.** Attempts, boards, the notebook, lesson progress, settings, your own problems, and the read-aloud audio are plain files in a `data/` folder that git ignores. Kata answers and notes in progress, and the drill progress, are in the browser.
 
 ```mermaid

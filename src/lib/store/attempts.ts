@@ -4,6 +4,7 @@ import type { Review } from "@/lib/ai/rubric";
 import { timeId } from "@/lib/random-id";
 import { SCORE_MAX, SCORE_MIN } from "@/lib/ai/score";
 import { PERCENT } from "@/lib/utils";
+import { mean } from "es-toolkit";
 
 const ROOT = path.join(process.cwd(), "data", "attempts");
 
@@ -77,6 +78,5 @@ export async function listAttempts(): Promise<Attempt[]> {
 export function overallScore(review: Review): number {
   const scores = review.dimensions.map((dimension) => dimension.score);
   if (scores.length === 0) return 0;
-  const mean = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-  return Math.round(((mean - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)) * PERCENT);
+  return Math.round(((mean(scores) - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)) * PERCENT);
 }

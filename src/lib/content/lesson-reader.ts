@@ -3,6 +3,7 @@ import path from "node:path";
 import { blockGroups, blocks } from "./blocks";
 import { characteristics, kataSteps, styleLessons } from "./kata-method";
 import { lessonSections, type Lesson } from "./lessons";
+import { sumBy } from "es-toolkit";
 
 // Find a lesson, and read its text. This file reads the Markdown files of content/learn, so it is
 // for the server. The list of the lessons is in lessons.ts.
@@ -42,7 +43,7 @@ const WORDS_PER_MINUTE = 200;
 // is close to the time a reader spends on the diagram.
 function wordsIn(value: unknown): number {
   if (typeof value === "string") return value.split(/\s+/).filter(Boolean).length;
-  if (Array.isArray(value)) return value.reduce((sum: number, item) => sum + wordsIn(item), 0);
+  if (Array.isArray(value)) return sumBy(value, (item) => wordsIn(item));
   if (value && typeof value === "object") return wordsIn(Object.values(value));
   return 0;
 }

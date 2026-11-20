@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { lessonSections, type Lesson } from "@/lib/content/lessons";
 import { sectionTree } from "@/lib/content/lesson-tree";
 import { pageAddress, route } from "@/lib/routes";
+import { sumBy } from "es-toolkit";
 
 const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
   { href: route("/learn/cheatsheets"), title: "Cheatsheets", icon: ScrollText },
@@ -132,10 +133,10 @@ export default function LessonSidebar() {
   const searching = query.trim() !== "";
   const opened = useSyncExternalStore(subscribe, readOpen, () => NONE);
   const done = useProgress();
-  const total = lessonSections.reduce((sum, section) => sum + section.pages.length, 0);
-  const doneTotal = lessonSections.reduce(
-    (sum, section) => sum + section.pages.filter((page) => done[page.slug]).length,
-    0,
+  const total = sumBy(lessonSections, (section) => section.pages.length);
+  const doneTotal = sumBy(
+    lessonSections,
+    (section) => section.pages.filter((page) => done[page.slug]).length,
   );
 
   const toggle = (key: string, open: boolean) =>

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import { listAttempts } from "@/lib/store/attempts";
 import { allExamples, allKatas, kataTitles } from "@/lib/store/library";
+import { partition } from "es-toolkit";
 
 // Read the attempt history on each request.
 export const dynamic = "force-dynamic";
@@ -47,18 +48,12 @@ export default async function Home() {
     kataTitles(),
   ]);
   const solved = new Set(examples.map(({ kata }) => kata.id));
+  const [custom, builtIn] = partition(katas, (kata) => Boolean(kata.custom));
+  const [interview, practice] = partition(builtIn, (kata) => Boolean(kata.interview));
   const groups = [
-    { title: "Your problems", icon: UserPen, katas: katas.filter((kata) => kata.custom) },
-    {
-      title: "Katas",
-      icon: Target,
-      katas: katas.filter((kata) => !kata.custom && !kata.interview),
-    },
-    {
-      title: "Interview questions",
-      icon: MessagesSquare,
-      katas: katas.filter((kata) => !kata.custom && kata.interview),
-    },
+    { title: "Your problems", icon: UserPen, katas: custom },
+    { title: "Katas", icon: Target, katas: practice },
+    { title: "Interview questions", icon: MessagesSquare, katas: interview },
   ].filter((group) => group.katas.length > 0);
 
   return (

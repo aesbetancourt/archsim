@@ -3,7 +3,7 @@
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { ArrowLeft, NotebookPen, PenTool } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import HelpChat from "@/components/HelpChat";
 import LinkButton from "@/components/LinkButton";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import type { Board } from "@/lib/store/boards";
 import { notesText } from "@/lib/notes-html";
 import { slimElements } from "@/lib/ai/scene";
 import { saveBoard } from "@/lib/browser/api";
+import { sceneVersion } from "@/lib/browser/scene-version";
+import { type Autosave, useAutosave } from "@/lib/browser/use-autosave";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
@@ -37,55 +39,47 @@ export default function BoardEditor({ board }: { board: Board }) {
   const [status, setStatus] = useState<Status>("saved");
   // The newest values, for a save that starts after a delay.
   const latest = useRef({ title: board.title, notes: board.notes });
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // A number that changes when the drawing changes.
-  const sceneVersion = useRef(-1);
+  // The version of the drawing at the last change. See sceneVersion.
+  const lastVersion = useRef(-1);
 
-  const save = useCallback(async () => {
-    timer.current = null;
-    setStatus("saving");
-    try {
-      await saveBoard(board.id, {
-        ...latest.current,
-        scene: {
-          elements: api.current?.getSceneElements() ?? board.scene.elements,
-          files: api.current?.getFiles() ?? board.scene.files,
-        },
-      });
-      // A newer change can arrive during the request. Then a save is already planned.
-      setStatus(timer.current ? "pending" : "saved");
-    } catch {
-      setStatus("error");
-    }
-  }, [board.id, board.scene]);
+  const save = useCallback(
+    async (autosave: Autosave) => {
+      setStatus("saving");
+      try {
+        await saveBoard(board.id, {
+          ...latest.current,
+          scene: {
+            elements: api.current?.getSceneElements() ?? board.scene.elements,
+            files: api.current?.getFiles() ?? board.scene.files,
+          },
+        });
+        // A newer change can arrive during the request. Then a save is already planned.
+        setStatus(autosave.isPlanned() ? "pending" : "saved");
+      } catch {
+        setStatus("error");
+      }
+    },
+    [board.id, board.scene],
+  );
+  // The board saves at once when the user leaves the page with a planned save.
+  const autosave = useAutosave(save, SAVE_DELAY_MS);
 
   // Plan a save a short time after the last change.
   const changed = useCallback(() => {
     setStatus("pending");
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(save, SAVE_DELAY_MS);
-  }, [save]);
-
-  // Save immediately when the user leaves the page with a planned save.
-  useEffect(() => {
-    return () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-        void save();
-      }
-    };
-  }, [save]);
+    autosave.schedule();
+  }, [autosave]);
 
   // Excalidraw reports each pointer move. Plan a save only when the drawing changed.
   const onSceneChange = useCallback(
     (elements: readonly { version: number }[]) => {
-      const version = elements.reduce((sum, element) => sum + element.version, elements.length);
-      if (sceneVersion.current === -1) {
-        sceneVersion.current = version;
+      const version = sceneVersion(elements);
+      if (lastVersion.current === -1) {
+        lastVersion.current = version;
         return;
       }
-      if (version !== sceneVersion.current) {
-        sceneVersion.current = version;
+      if (version !== lastVersion.current) {
+        lastVersion.current = version;
         changed();
       }
     },

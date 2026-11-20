@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Kata } from "./katas";
+import { upperFirst } from "es-toolkit";
 
 // The Architectural Katas collection of Ted Neward.
 // The app reads the katas from the public repository and keeps a local copy.
@@ -23,7 +24,7 @@ const split = (text: string) =>
     .split(";")
     .map((item) => item.trim())
     .filter(Boolean)
-    .map((item) => item.charAt(0).toUpperCase() + item.slice(1));
+    .map(upperFirst);
 
 // Convert one kata file to the kata shape of this app.
 function toKata(fileName: string, raw: RawKata): Kata {

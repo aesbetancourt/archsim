@@ -55,6 +55,8 @@ import {
   styleLessons,
 } from "@/lib/content/kata-method";
 import { reviewAttempt } from "@/lib/browser/api";
+import { sceneVersion } from "@/lib/browser/scene-version";
+import { useAutosave } from "@/lib/browser/use-autosave";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
@@ -130,9 +132,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   // A new number makes a new, empty canvas and notepad. "Start again" changes it.
   const [round, setRound] = useState(0);
   const [confirmClear, setConfirmClear] = useState(false);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // A number that changes when the drawing changes.
-  const sceneVersion = useRef(-1);
+  // The version of the drawing at the last change. See sceneVersion.
+  const lastVersion = useRef(-1);
   // The newest answers, for a save that starts after a delay.
   const latest = useRef({ scope, selected, style, rationale, notes });
   // The drawing from the saved work. A save uses it while the canvas is not open yet.
@@ -166,7 +167,6 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   }, [kata.id]);
 
   const save = useCallback(() => {
-    saveTimer.current = null;
     const { scope, selected, style, rationale } = latest.current;
     const ok = saveDraft(kata.id, {
       scope,
@@ -179,13 +179,14 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
     });
     setSaveState(ok ? "saved" : "error");
   }, [kata.id]);
+  // The work saves at once when the page closes with a planned save.
+  const autosave = useAutosave(save, SAVE_DELAY_MS);
 
   // Plan a save a short time after the last change.
   const changed = useCallback(() => {
     setSaveState("pending");
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(save, SAVE_DELAY_MS);
-  }, [save]);
+    autosave.schedule();
+  }, [autosave]);
 
   // Save when an answer changes. Do not save before the saved work is read.
   useEffect(() => {
@@ -205,31 +206,22 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
     }
   }, [scope, selected, style, rationale, notes, draft, changed]);
 
-  // Save immediately when the user leaves the page with a planned save.
+  // Save immediately when the user leaves the site, or closes the tab, with a planned save.
   useEffect(() => {
-    const flush = () => {
-      if (saveTimer.current) {
-        clearTimeout(saveTimer.current);
-        save();
-      }
-    };
-    window.addEventListener("pagehide", flush);
-    return () => {
-      window.removeEventListener("pagehide", flush);
-      flush();
-    };
-  }, [save]);
+    window.addEventListener("pagehide", autosave.flush);
+    return () => window.removeEventListener("pagehide", autosave.flush);
+  }, [autosave]);
 
   // Excalidraw reports each pointer move. Plan a save only when the drawing changed.
   const onSceneChange = useCallback(
     (elements: readonly { version: number }[]) => {
-      const version = elements.reduce((sum, element) => sum + element.version, elements.length);
-      if (sceneVersion.current === -1) {
-        sceneVersion.current = version;
+      const version = sceneVersion(elements);
+      if (lastVersion.current === -1) {
+        lastVersion.current = version;
         return;
       }
-      if (version !== sceneVersion.current) {
-        sceneVersion.current = version;
+      if (version !== lastVersion.current) {
+        lastVersion.current = version;
         changed();
       }
     },
@@ -238,8 +230,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
 
   // Remove all the work on this kata: the answers, the notes, and the drawing.
   function startAgain() {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = null;
+    autosave.cancel();
     clearDraft(kata.id);
     saveNotesHtml(kata.id, "");
     saveClock(kata.id, null);
@@ -252,7 +243,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
     setRationale("");
     setNotes("");
     setDraft(null);
-    sceneVersion.current = -1;
+    lastVersion.current = -1;
     setRound((current) => current + 1);
     setSaveState("saved");
     setError("");

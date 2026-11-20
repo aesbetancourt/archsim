@@ -1,3 +1,5 @@
+import { escapeRegExp } from "es-toolkit";
+
 // The search of the app (⌘K). This file has no server code, so the browser can rank the results.
 
 const searchKinds = [
@@ -64,8 +66,7 @@ function scoreItem(item: SearchItem, words: string[]): number {
   let score = 0;
   for (const word of words) {
     if (title.startsWith(word)) score += POINTS.titleStart;
-    else if (new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(title))
-      score += POINTS.titleWord;
+    else if (new RegExp(`\\b${escapeRegExp(word)}`).test(title)) score += POINTS.titleWord;
     else if (title.includes(word)) score += POINTS.inTitle;
     else if (keywords.includes(word)) score += POINTS.keyword;
     else if (subtitle.includes(word)) score += POINTS.subtitle;
