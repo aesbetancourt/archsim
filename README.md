@@ -14,7 +14,7 @@ Charrette closes that gap. You take a short business problem, draw a design, exp
 
 ### Why the name
 
-A charrette (said "sha-RET") is a short, intense design session that ends in a critique. The word is French for "cart". The best-known story comes from 19th-century Paris: architecture students at the École des Beaux-Arts worked on their drawings until a cart came to collect them at the deadline. Each kata here is the same ritual: draw a design against a problem, defend your trade-offs, and face the crit. The app was named ArchSim before.
+A charrette (said "sha-RET") is a short, intense design session that ends in a critique. The word is French for "cart". The best-known story comes from 19th-century Paris: architecture students at the École des Beaux-Arts worked on their drawings until a cart came to collect them at the deadline. Each kata here is the same ritual: draw a design against a problem, defend your trade-offs, and face the crit.
 
 ## What you do in it
 
