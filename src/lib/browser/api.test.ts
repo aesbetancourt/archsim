@@ -7,6 +7,7 @@ import {
   addHighlight,
   ApiError,
   askHelper,
+  changeHighlightNote,
   createBoard,
   createNote,
   createStory,
@@ -14,16 +15,22 @@ import {
   gradeAnswer,
   insightsStatus,
   listBookmarks,
+  listHighlights,
   listNotes,
+  listStories,
   listVertexModels,
+  readPageNote,
   readProgress,
+  readSettings,
   removeBookmark,
+  removeHighlight,
   reviewAttempt,
   saveBoard,
   saveNote,
   savePageNote,
   saveSettings,
   saveStory,
+  searchIndex,
   setLessonDone,
   solveProblem,
   speechClip,
@@ -175,6 +182,13 @@ describe("the requests for shared data", () => {
     await createNote("");
     await insightsStatus();
     await startInsights();
+    await listHighlights("/learn/a b");
+    await changeHighlightNote("h1", "A note.");
+    await removeHighlight("h1");
+    await readPageNote("/learn/a b");
+    await listStories();
+    await searchIndex();
+    await readSettings();
 
     expect(calls.map((call) => [call.method, call.url, call.body])).toEqual([
       ["GET", "/api/progress", undefined],
@@ -186,7 +200,19 @@ describe("the requests for shared data", () => {
       ["POST", "/api/notebook/notes", { title: "" }],
       ["GET", "/api/notebook/insights", undefined],
       ["POST", "/api/notebook/insights", undefined],
+      ["GET", "/api/notebook/highlights?page=%2Flearn%2Fa%20b", undefined],
+      ["PATCH", "/api/notebook/highlights/h1", { note: "A note." }],
+      ["DELETE", "/api/notebook/highlights/h1", undefined],
+      ["GET", "/api/notebook/pages?page=%2Flearn%2Fa%20b", undefined],
+      ["GET", "/api/notebook/stories", undefined],
+      ["GET", "/api/search", undefined],
+      ["GET", "/api/settings", undefined],
     ]);
+  });
+
+  it("refuses to load the notes of a page when the server fails, so no empty editor opens", async () => {
+    server(new Response("<html>Crash</html>", { status: 500 }));
+    await expect(readPageNote("/learn/caching")).rejects.toBeInstanceOf(ApiError);
   });
 
   it("refuses to start the insights job with the reason of the server", async () => {

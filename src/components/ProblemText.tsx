@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useHighlighter } from "@/components/useHighlighter";
 import type { Kata } from "@/lib/content/katas";
-import type { Highlight } from "@/lib/store/notebook";
 import { addHighlight } from "@/lib/browser/api";
 
 // Before the notebook, kata highlights were in the browser: [start, end] in each text block.

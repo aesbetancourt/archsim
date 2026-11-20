@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { storyAsAnswer } from "@/components/StoryBank";
 import {
   Select,
@@ -10,24 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Story } from "@/lib/store/stories";
+import { listStories } from "@/lib/browser/api";
+import { keys } from "@/lib/browser/query-keys";
 
 // For a behavioral question: start the answer from a story of the story bank.
 export default function StoryPicker({ onPick }: { onPick: (text: string) => void }) {
-  const [stories, setStories] = useState<Story[] | null>(null);
+  // The stories load again for each question. The stories of the last load show until then.
+  const { data, isPending } = useQuery({ queryKey: keys.stories, queryFn: listStories });
 
-  useEffect(() => {
-    let current = true;
-    fetch("/api/notebook/stories")
-      .then((response) => (response.ok ? response.json() : []))
-      .then((items: Story[]) => current && setStories(items))
-      .catch(() => current && setStories([]));
-    return () => {
-      current = false;
-    };
-  }, []);
-
-  if (stories === null) return null;
+  if (isPending) return null;
+  // Without an answer of the server, there are no stories to start from.
+  const stories = data ?? [];
   if (stories.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">

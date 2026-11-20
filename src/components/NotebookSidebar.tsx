@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { Fragment, useEffect, useState, useSyncExternalStore } from "react";
 import AutosaveNotes from "@/components/AutosaveNotes";
 import { usePageBookmarks } from "@/components/Bookmarks";
@@ -22,7 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/tooltip";
 import type { Highlight } from "@/lib/store/notebook";
 import { cn } from "@/lib/utils";
-import { savePageNote } from "@/lib/browser/api";
+import { readPageNote, savePageNote } from "@/lib/browser/api";
+import { keys } from "@/lib/browser/query-keys";
 
 // Whether the sidebar is open. This is a preference of this browser only.
 const OPEN_KEY = "charrette:notebook-open";
@@ -64,25 +66,38 @@ function PageNotes({
   getTitle: () => string;
   compact: boolean;
 }) {
-  const [html, setHtml] = useState<string | null>(null);
-  useEffect(() => {
-    let current = true;
-    fetch(`/api/notebook/pages?page=${encodeURIComponent(page)}`)
-      .then((response) => (response.ok ? response.json() : { html: "" }))
-      .then((body: { html: string }) => current && setHtml(body.html))
-      .catch(() => current && setHtml(""));
-    return () => {
-      current = false;
-    };
-  }, [page]);
+  // The notes load again at each visit to a page, and no copy stays for a later visit.
+  // The editor must not start with old notes, because its first save would replace newer notes.
+  const note = useQuery({
+    queryKey: keys.pageNote(page),
+    queryFn: () => readPageNote(page),
+    gcTime: 0,
+  });
 
-  if (html === null) return <p className="p-4 text-muted-foreground">Loading the notes.</p>;
+  if (note.isPending) return <p className="p-4 text-muted-foreground">Loading the notes.</p>;
+  // Without the saved notes, there is no editor. The first save of an empty editor would replace
+  // the saved notes.
+  if (note.isError) {
+    return (
+      <div className="space-y-2 p-4">
+        <p role="alert">The notes of this page did not load.</p>
+        <Button
+          size="sm"
+          variant="neutral"
+          disabled={note.isFetching}
+          onClick={() => void note.refetch()}
+        >
+          Try again
+        </Button>
+      </div>
+    );
+  }
   return (
     <AutosaveNotes
       compact={compact}
       label="Notes on this page"
       placeholder="Notes on this page: what it says in your own words, and what is not clear yet."
-      initialHtml={html}
+      initialHtml={note.data.html}
       save={(next) => savePageNote({ page, title: getTitle(), html: next })}
     />
   );

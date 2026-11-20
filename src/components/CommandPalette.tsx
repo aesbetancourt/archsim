@@ -2,39 +2,27 @@
 
 import { CornerDownLeft, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { notesText } from "@/lib/notes-html";
 import { search, type SearchItem } from "@/lib/content/search";
 import { cn } from "@/lib/utils";
+import { listNotes, searchIndex } from "@/lib/browser/api";
+import { keys } from "@/lib/browser/query-keys";
+import type { NoteDoc } from "@/lib/store/notebook";
 
-// The index loads one time, when the search opens for the first time.
-let index: Promise<SearchItem[]> | null = null;
-const loadIndex = () =>
-  (index ??= fetch("/api/search")
-    .then((response) => (response.ok ? response.json() : []))
-    .catch(() => {
-      index = null;
-      return [];
-    }));
-
-// The general notes change, so they load each time the search opens.
-async function loadNotes(): Promise<SearchItem[]> {
-  try {
-    const response = await fetch("/api/notebook/notes");
-    if (!response.ok) return [];
-    const notes = (await response.json()) as { title: string; html: string }[];
-    return notes.map((note) => ({
-      kind: "Note" as const,
-      title: note.title,
-      subtitle: notesText(note.html).split("\n")[0],
-      href: "/notebook",
-      keywords: notesText(note.html),
-    }));
-  } catch {
-    return [];
-  }
+// A general note as an item of the search.
+function noteItem(note: NoteDoc): SearchItem {
+  const text = notesText(note.html);
+  return {
+    kind: "Note",
+    title: note.title,
+    subtitle: text.split("\n")[0],
+    href: "/notebook",
+    keywords: text,
+  };
 }
 
 const suggestions: SearchItem[] = [
@@ -51,7 +39,6 @@ export default function CommandPalette() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState<SearchItem[]>([]);
   const [active, setActive] = useState(0);
   const list = useRef<HTMLDivElement>(null);
 
@@ -66,16 +53,20 @@ export default function CommandPalette() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    let current = true;
-    Promise.all([loadIndex(), loadNotes()]).then(([content, notes]) => {
-      if (current) setItems([...content, ...notes]);
-    });
-    return () => {
-      current = false;
-    };
-  }, [open]);
+  // The content of the app does not change, so its index loads one time, when the search opens
+  // for the first time. After a failure, it loads again at the next open.
+  const content = useQuery({
+    queryKey: keys.searchIndex,
+    queryFn: searchIndex,
+    enabled: open,
+    staleTime: Infinity,
+  });
+  // The general notes change, so they load each time the search opens.
+  const notes = useQuery({ queryKey: keys.searchNotes, queryFn: listNotes, enabled: open });
+  const items = useMemo(
+    () => [...(content.data ?? []), ...(notes.data ?? []).map(noteItem)],
+    [content.data, notes.data],
+  );
 
   const results = query.trim() ? search(items, query) : suggestions;
   const selected = Math.min(active, Math.max(results.length - 1, 0));

@@ -27,8 +27,9 @@ import {
   type Section,
   type Sentence,
 } from "@/lib/browser/page-text";
+import { readSettings } from "@/lib/browser/api";
 import { RATES, browserCanSpeak, createSpeaker, readRate, saveRate } from "@/lib/browser/speaker";
-import type { PublicSettings, SpeechEngine } from "@/lib/store/settings";
+import type { SpeechEngine } from "@/lib/store/settings";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "playing" | "paused";
@@ -164,8 +165,7 @@ export default function ReadAloud({
     setNotice(null);
     if (status === "idle") {
       try {
-        const settings = (await (await fetch("/api/settings")).json()) as PublicSettings;
-        engine.current = settings.readAloud.engine;
+        engine.current = (await readSettings()).readAloud.engine;
       } catch {
         engine.current = "browser";
       }

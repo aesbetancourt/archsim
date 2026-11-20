@@ -1,10 +1,18 @@
 "use client";
 
 import { Highlighter, NotebookPen, Trash2 } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  addHighlight,
+  changeHighlightNote,
+  listHighlights,
+  removeHighlight,
+} from "@/lib/browser/api";
 import { rangeFor } from "@/lib/browser/page-text";
+import { keys } from "@/lib/browser/query-keys";
 import type { Highlight as SavedHighlight } from "@/lib/store/notebook";
 import { findPassage } from "@/lib/text-anchor";
 
@@ -17,6 +25,10 @@ const FOCUS_MS = 1500;
 type Point = { x: number; y: number };
 
 const NONE: SavedHighlight[] = [];
+
+// The text for a change that the notebook did not save. The server gives the reason, if it has one.
+const reason = (thrown: unknown) =>
+  (thrown as Error).message || "The notebook did not save the change.";
 
 function textNodes(root: Node): Text[] {
   const nodes: Text[] = [];
@@ -34,27 +46,25 @@ function offsetIn(root: Node, node: Node, offset: number): number {
   return range.toString().length;
 }
 
-async function send(url: string, method: string, body?: unknown): Promise<unknown> {
-  const response = await fetch(url, {
-    method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error ?? "The notebook did not save the change.");
-  return result;
-}
-
 // Highlights and notes on the text inside one element, saved in the notebook for one page.
 // Put `root` and `handlers` on the element, and show `overlay` once on the page. The learning
 // pages and the kata text use it.
 export function useHighlighter({ page, getTitle }: { page: string; getTitle?: () => string }) {
   const root = useRef<HTMLDivElement>(null);
-  // The highlights and the page that they are for. After a change of page, the old ones do not show.
-  const [loaded, setLoaded] = useState({ page: "", items: NONE });
-  const highlights = loaded.page === page ? loaded.items : NONE;
+  const client = useQueryClient();
+  // The list of each page has its own key, so a new page starts with its own highlights.
+  // The highlights load again at each visit to a page, and no copy stays for a later visit.
+  // A note is text that the person changes, so an old copy must not show.
+  const list = useQuery({
+    queryKey: keys.highlights(page),
+    queryFn: () => listHighlights(page),
+    gcTime: 0,
+  });
+  const highlights = list.data ?? NONE;
+  // Change the list of the page that this render shows. A slow answer of the server cannot change
+  // the list of a different page.
   const setHighlights = (update: (items: SavedHighlight[]) => SavedHighlight[]) =>
-    setLoaded((current) => ({ page: current.page, items: update(current.items) }));
+    client.setQueryData<SavedHighlight[]>(keys.highlights(page), (items = NONE) => update(items));
   // The position of each highlight on the page now, after the last paint.
   const located = useRef(new Map<string, [number, number]>());
   const [selection, setSelection] = useState<Point | null>(null);
@@ -62,17 +72,10 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
   const dialog = useRef<HTMLDialogElement>(null);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    let current = true;
-    fetch(`/api/notebook/highlights?page=${encodeURIComponent(page)}`)
-      .then((response) => (response.ok ? response.json() : []))
-      .then((items: SavedHighlight[]) => current && setLoaded({ page, items }))
-      .catch(() => current && setError("Cannot load the highlights of this page."));
-    return () => {
-      current = false;
-    };
-  }, [page]);
+  // The time of the load failure that the person closed. A later failure shows again.
+  const [closedAt, setClosedAt] = useState(0);
+  const loadFailed = list.isError && list.errorUpdatedAt !== closedAt;
+  const message = error || (loadFailed ? "Cannot load the highlights of this page." : "");
 
   // Draw the highlights. They are not elements, so React does not see them.
   const paint = useCallback(() => {
@@ -196,20 +199,14 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
     setSelection(null);
     setError("");
     try {
-      const highlight = (await send("/api/notebook/highlights", "POST", {
-        page,
-        title,
-        text,
-        start,
-        note: "",
-      })) as SavedHighlight;
+      const highlight = await addHighlight({ page, title, text, start, note: "" });
       setHighlights((items) => [...items, highlight]);
       if (withNote) {
         setNote("");
         setOpen({ id: highlight.id, at: { x: box.left + box.width / 2, y: box.bottom } });
       }
     } catch (thrown) {
-      setError((thrown as Error).message);
+      setError(reason(thrown));
     }
   }
 
@@ -217,22 +214,20 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
     const saved = highlights.find((item) => item.id === id);
     if (!saved || saved.note === next) return;
     try {
-      const updated = (await send(`/api/notebook/highlights/${id}`, "PATCH", {
-        note: next,
-      })) as SavedHighlight;
+      const updated = await changeHighlightNote(id, next);
       setHighlights((items) => items.map((item) => (item.id === updated.id ? updated : item)));
     } catch (thrown) {
-      setError((thrown as Error).message);
+      setError(reason(thrown));
     }
   }
 
   async function remove(id: string) {
     if (open?.id === id) setOpen(null);
     try {
-      await send(`/api/notebook/highlights/${id}`, "DELETE");
+      await removeHighlight(id);
       setHighlights((items) => items.filter((item) => item.id !== id));
     } catch (thrown) {
-      setError((thrown as Error).message);
+      setError(reason(thrown));
     }
   }
 
@@ -312,13 +307,20 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
         </dialog>
       )}
 
-      {error && (
+      {message && (
         <div
           role="alert"
           className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-base border border-border bg-secondary-background px-3 py-2 text-sm shadow-float"
         >
-          {error}{" "}
-          <button type="button" className="underline" onClick={() => setError("")}>
+          {message}{" "}
+          <button
+            type="button"
+            className="underline"
+            onClick={() => {
+              setError("");
+              setClosedAt(list.errorUpdatedAt);
+            }}
+          >
             Close
           </button>
         </div>

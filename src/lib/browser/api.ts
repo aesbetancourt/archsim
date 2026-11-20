@@ -1,6 +1,7 @@
 import type { Grade } from "@/lib/ai/drill-grade";
 import type { InsightsStatus } from "@/lib/ai/insights-job";
 import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
+import type { SearchItem } from "@/lib/content/search";
 import type { ReviewRequest } from "@/lib/requests";
 import type { Bookmark, Highlight, NoteDoc } from "@/lib/store/notebook";
 import type { PublicSettings, Settings } from "@/lib/store/settings";
@@ -82,6 +83,11 @@ export function reviewAttempt(
 
 // ---- Settings, and the services that they select --------------------------------
 
+// The settings without the API keys. The keys stay on the server.
+export function readSettings(): Promise<PublicSettings> {
+  return json("GET", "/api/settings");
+}
+
 export function saveSettings(settings: Settings): Promise<PublicSettings> {
   return json("PUT", "/api/settings", { body: settings });
 }
@@ -103,6 +109,13 @@ export function listVertexModels(
 // The audio of a text, from the Google voice.
 export async function speechClip(text: string): Promise<Blob> {
   return (await send("POST", "/api/speech", { body: { text } })).blob();
+}
+
+// ---- The search ----------------------------------------------------------------------
+
+// The lessons, katas, terms, cheatsheets, and questions, as items for the search.
+export function searchIndex(): Promise<SearchItem[]> {
+  return json("GET", "/api/search");
 }
 
 // ---- Boards ------------------------------------------------------------------------
@@ -175,10 +188,32 @@ export async function savePageNote(note: {
   await send("PUT", "/api/notebook/pages", { body: note, keepalive: true });
 }
 
+// The notes of one page, as HTML. A page with no notes has an empty text.
+export function readPageNote(page: string): Promise<{ html: string }> {
+  return json("GET", `/api/notebook/pages?page=${encodeURIComponent(page)}`);
+}
+
+export function listHighlights(page: string): Promise<Highlight[]> {
+  return json("GET", `/api/notebook/highlights?page=${encodeURIComponent(page)}`);
+}
+
 export function addHighlight(
   highlight: Pick<Highlight, "page" | "title" | "text" | "start" | "note">,
 ): Promise<Highlight> {
   return json("POST", "/api/notebook/highlights", { body: highlight });
+}
+
+// Save the note of one highlight. The answer is the changed highlight.
+export function changeHighlightNote(id: string, note: string): Promise<Highlight> {
+  return json("PATCH", `/api/notebook/highlights/${id}`, { body: { note } });
+}
+
+export async function removeHighlight(id: string): Promise<void> {
+  await send("DELETE", `/api/notebook/highlights/${id}`);
+}
+
+export function listStories(): Promise<Story[]> {
+  return json("GET", "/api/notebook/stories");
 }
 
 export function createStory(fields: StoryFields): Promise<Story> {

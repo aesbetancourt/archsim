@@ -11,7 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import type { Bookmark, Highlight, Notebook, PageNote } from "@/lib/store/notebook";
-import { removeBookmark as removeBookmarkAt } from "@/lib/browser/api";
+import {
+  changeHighlightNote,
+  removeBookmark as removeBookmarkAt,
+  removeHighlight as removeHighlightAt,
+} from "@/lib/browser/api";
 import { keys } from "@/lib/browser/query-keys";
 import { notesText } from "@/lib/notes-html";
 import { plural } from "@/lib/text";
@@ -72,23 +76,21 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
 
   async function changeNote(id: string, note: string) {
     setError("");
-    const response = await fetch(`/api/notebook/highlights/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ note }),
-    });
-    if (!response.ok) {
+    let updated: Highlight;
+    try {
+      updated = await changeHighlightNote(id, note);
+    } catch {
       setError("The note was not saved. Try again.");
       return;
     }
-    const updated = (await response.json()) as Highlight;
     setHighlights((items) => items.map((item) => (item.id === id ? updated : item)));
   }
 
   async function removeHighlight(id: string) {
     setError("");
-    const response = await fetch(`/api/notebook/highlights/${id}`, { method: "DELETE" });
-    if (!response.ok) {
+    try {
+      await removeHighlightAt(id);
+    } catch {
       setError("The highlight was not removed. Try again.");
       return;
     }
