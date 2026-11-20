@@ -104,20 +104,20 @@ export default function SiteHeader() {
         <LinkButton
           variant="ghost"
           size="sm"
-          href="/scratchpad"
-          aria-label="Scratchpad"
-          title="Scratchpad"
-        >
-          <PencilRuler /> <span className="hidden md:inline">Scratchpad</span>
-        </LinkButton>
-        <LinkButton
-          variant="ghost"
-          size="sm"
           href="/notebook"
           aria-label="Notebook"
           title="Notebook"
         >
           <NotebookPen /> <span className="hidden md:inline">Notebook</span>
+        </LinkButton>
+        <LinkButton
+          variant="ghost"
+          size="sm"
+          href="/scratchpad"
+          aria-label="Scratchpad"
+          title="Scratchpad"
+        >
+          <PencilRuler /> <span className="hidden md:inline">Scratchpad</span>
         </LinkButton>
       </nav>
       <div className="ml-auto flex items-center gap-1">
