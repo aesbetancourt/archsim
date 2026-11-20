@@ -165,7 +165,8 @@ flowchart LR
 ```text
 content/        the lessons, cheatsheets, guide, and product cases, as Markdown and JSON
 src/app/        the pages, and the API routes in src/app/api
-src/components/ the parts of the screen. src/components/ui has the base controls
+src/components/ the parts of the screen. ui/ has the base controls, and settings/ has the
+                cards of the Settings page
 src/lib/        the logic, in four folders, with small shared helpers at its root
   content/      what the app teaches: katas, lessons, glossary, building blocks
   store/        your work, saved as files in data/
