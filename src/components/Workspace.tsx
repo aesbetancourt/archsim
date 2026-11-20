@@ -49,7 +49,11 @@ import type { Kata } from "@/lib/content/katas";
 import { loadNotesHtml, saveNotesHtml } from "@/lib/browser/kata-notes";
 import { notesText } from "@/lib/notes-html";
 import { slimElements } from "@/lib/ai/scene";
-import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/content/learn";
+import {
+  characteristics as glossary,
+  getStyleLesson,
+  styleLessons,
+} from "@/lib/content/kata-method";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 

@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { getWikiPage, headings, readArticle } from "./wiki";
-import { headingId, wikiSections } from "./wiki-pages";
+import { getLesson, headings, readArticle } from "./lesson-reader";
+import { headingId, lessonSections } from "./lessons";
 
 // A cheatsheet is a fast review of one section of the Learn area. Each section has a JSON file
 // in content/cheatsheets. Each entry links to the lesson where the fact is.
@@ -75,7 +75,7 @@ export type Cheatsheet = {
 // wrong reference fails the tests and the build, not the reader.
 async function linkTo(reference: string, file: string): Promise<LessonLink> {
   const [slug, heading] = reference.split("#");
-  const page = getWikiPage(slug);
+  const page = getLesson(slug);
   if (!page) throw new Error(`${file}: unknown lesson "${slug}"`);
   if (heading) {
     const markdown = await readArticle(slug);
@@ -124,7 +124,7 @@ async function resolveBlock(block: Block, file: string): Promise<SheetBlock> {
 // has no cheatsheet.
 export async function readCheatsheets(): Promise<Cheatsheet[]> {
   const sheets: Cheatsheet[] = [];
-  for (const section of wikiSections) {
+  for (const section of lessonSections) {
     const id = headingId(section.title);
     const file = `content/cheatsheets/${id}.json`;
     let raw: string;

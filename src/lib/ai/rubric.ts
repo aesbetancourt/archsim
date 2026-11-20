@@ -1,4 +1,4 @@
-import { wikiSections } from "@/lib/content/wiki-pages";
+import { lessonSections } from "@/lib/content/lessons";
 
 export const dimensions = [
   { id: "scope", label: "Scope and core functions" },
@@ -33,7 +33,7 @@ export type Review = {
 };
 
 // The Learn pages that a review can send the person to.
-export const studyPages = wikiSections
+export const studyPages = lessonSections
   .flatMap((section) => section.pages)
   .map((page) => ({ slug: page.slug, title: page.title }));
 

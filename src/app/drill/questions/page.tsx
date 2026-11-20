@@ -2,14 +2,14 @@ import { MessageCircleQuestion } from "lucide-react";
 import Link from "next/link";
 import QuestionDrill from "@/components/QuestionDrill";
 import { readQuestions } from "@/lib/content/questions";
-import { wikiSections } from "@/lib/content/wiki-pages";
+import { lessonSections } from "@/lib/content/lessons";
 
 // Read the questions on each request, so a new question in a lesson shows at once.
 export const dynamic = "force-dynamic";
 
 export default async function QuestionDrillPage() {
   const questions = await readQuestions();
-  const sections = wikiSections
+  const sections = lessonSections
     .map((section) => section.title)
     .filter((title) => questions.some((question) => question.section === title));
 

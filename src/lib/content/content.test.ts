@@ -3,8 +3,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { getKata } from "./katas";
 import { diagramSchema } from "./walkthrough";
-import { headings, wikiPages } from "./wiki";
-import { headingId } from "./wiki-pages";
+import { headings, lessons } from "./lesson-reader";
+import { headingId } from "./lessons";
 
 // Checks for the lesson files in content/learn. Each failure names the file, so an author can
 // find the problems in the files that they changed.
@@ -26,11 +26,11 @@ async function lessonFiles(): Promise<{ slug: string; markdown: string }[]> {
 describe("lesson content", () => {
   it("has a file for each article page, and a page for each file", async () => {
     const files = new Set((await lessonFiles()).map((file) => file.slug));
-    const articles = wikiPages.filter((page) => page.kind === "article").map((page) => page.slug);
+    const articles = lessons.filter((page) => page.kind === "article").map((page) => page.slug);
     expect(
       articles.filter((slug) => !files.has(slug)).map((slug) => `missing: ${slug}.md`),
     ).toEqual([]);
-    const known = new Set(wikiPages.map((page) => page.slug));
+    const known = new Set(lessons.map((page) => page.slug));
     expect(
       [...files].filter((slug) => !known.has(slug)).map((slug) => `no page: ${slug}.md`),
     ).toEqual([]);
@@ -41,7 +41,7 @@ describe("lesson content", () => {
     const headingsOf = new Map(
       files.map((file) => [file.slug, new Set(headings(file.markdown).map(headingId))]),
     );
-    const known = new Set(wikiPages.map((page) => page.slug));
+    const known = new Set(lessons.map((page) => page.slug));
     const problems: string[] = [];
     for (const { slug, markdown } of files) {
       for (const [, target] of markdown.matchAll(/\]\((\/[^)\s]*)\)/g)) {

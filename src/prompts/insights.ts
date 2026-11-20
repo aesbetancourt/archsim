@@ -1,6 +1,6 @@
 import type { Notebook } from "@/lib/store/notebook";
 import { notesText } from "@/lib/notes-html";
-import { headingId } from "@/lib/content/wiki-pages";
+import { headingId } from "@/lib/content/lessons";
 
 // The insights document. The model reads all the marks of the notebook and writes a study
 // document. The output must match insightsSchema in lib/ai/insights.ts.
@@ -37,7 +37,7 @@ export function sectionText(markdown: string, anchor: string): string {
   return (end < 0 ? rest : rest.slice(0, end)).join("\n").trim();
 }
 
-type Lesson = {
+type LessonMarks = {
   title: string;
   slug?: string;
   bookmarks: { heading: string; anchor: string }[];
@@ -53,7 +53,7 @@ export function buildInsightsPrompt(
   notebook: Notebook,
   articles: Record<string, string>,
 ): { prompt: string; counts: InsightsCounts } | null {
-  const lessons = new Map<string, Lesson>();
+  const lessons = new Map<string, LessonMarks>();
   const lesson = (page: string, title: string) => {
     const slug = page.match(/^\/learn\/([a-z0-9-]+)$/)?.[1];
     const found = lessons.get(page) ?? { title, slug, bookmarks: [], highlights: [], note: "" };

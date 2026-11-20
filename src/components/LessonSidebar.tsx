@@ -22,8 +22,8 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useProgress } from "@/lib/browser/use-progress";
 import { cn } from "@/lib/utils";
-import { wikiSections, type WikiPage } from "@/lib/content/wiki-pages";
-import { sectionTree } from "@/lib/content/wiki-tree";
+import { lessonSections, type Lesson } from "@/lib/content/lessons";
+import { sectionTree } from "@/lib/content/lesson-tree";
 
 const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
   { href: "/learn/cheatsheets", title: "Cheatsheets", icon: ScrollText },
@@ -125,21 +125,21 @@ function Chevron({ open }: { open: boolean }) {
 
 // The page list of the Learn area: numbered sections that open and close, with the pages indented
 // under each section, and sub-pages indented one more level.
-export default function WikiSidebar() {
+export default function LessonSidebar() {
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const searching = query.trim() !== "";
   const opened = useSyncExternalStore(subscribe, readOpen, () => NONE);
   const done = useProgress();
-  const total = wikiSections.reduce((sum, section) => sum + section.pages.length, 0);
-  const doneTotal = wikiSections.reduce(
+  const total = lessonSections.reduce((sum, section) => sum + section.pages.length, 0);
+  const doneTotal = lessonSections.reduce(
     (sum, section) => sum + section.pages.filter((page) => done[page.slug]).length,
     0,
   );
 
   const toggle = (key: string, open: boolean) =>
     writeOpen(open ? opened.filter((item) => item !== key) : [...opened, key]);
-  const hrefOf = (page: WikiPage) => `/learn/${page.slug}`;
+  const hrefOf = (page: Lesson) => `/learn/${page.slug}`;
 
   return (
     <nav aria-label="Learn" className="space-y-4 text-sm">
@@ -171,8 +171,8 @@ export default function WikiSidebar() {
             className="rounded-md p-1.5 hover:bg-muted hover:text-foreground"
             onClick={() =>
               writeOpen([
-                ...wikiSections.map((section) => sectionKey(section.title)),
-                ...wikiSections.flatMap((section) =>
+                ...lessonSections.map((section) => sectionKey(section.title)),
+                ...lessonSections.flatMap((section) =>
                   section.pages.filter((page) => !page.parent).map((page) => pageKey(page.slug)),
                 ),
               ])
@@ -208,7 +208,7 @@ export default function WikiSidebar() {
       </div>
 
       <ol className="space-y-1">
-        {wikiSections.map((section, index) => {
+        {lessonSections.map((section, index) => {
           const nodes = sectionTree(section.pages, query);
           if (nodes.length === 0) return null;
           const here = section.pages.some((page) => hrefOf(page) === pathname);
@@ -298,7 +298,7 @@ export default function WikiSidebar() {
       </ol>
 
       {searching &&
-        wikiSections.every((section) => sectionTree(section.pages, query).length === 0) && (
+        lessonSections.every((section) => sectionTree(section.pages, query).length === 0) && (
           <p className="px-2 text-muted-foreground">No page has this name.</p>
         )}
 

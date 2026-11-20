@@ -1,4 +1,4 @@
-import { characteristics, styleLessons } from "@/lib/content/learn";
+import { characteristics, styleLessons } from "@/lib/content/kata-method";
 
 // The solver. It writes one worked answer for a problem that the person pasted, with the five-step
 // method. The output must match solutionSchema in lib/ai/solver.ts.

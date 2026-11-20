@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { glossary, glossaryCategories } from "./glossary";
-import { getWikiPage } from "./wiki";
+import { getLesson } from "./lesson-reader";
 
 describe("glossary", () => {
   it("has unique IDs and terms", () => {
@@ -15,9 +15,7 @@ describe("glossary", () => {
       ...(glossaryCategories.includes(entry.category)
         ? []
         : [`${entry.id}: category ${entry.category}`]),
-      ...(entry.learn && !getWikiPage(entry.learn)
-        ? [`${entry.id}: no lesson ${entry.learn}`]
-        : []),
+      ...(entry.learn && !getLesson(entry.learn) ? [`${entry.id}: no lesson ${entry.learn}`] : []),
       ...entry.match
         .filter((word) => word !== word.toLowerCase())
         .map((word) => `${entry.id}: ${word}`),

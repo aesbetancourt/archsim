@@ -1,5 +1,8 @@
 import type { DiagramSpec } from "./examples";
 
+// The method of a kata, as data: the five steps, the architecture characteristics, and the
+// architecture styles. Three lessons show this data. The kata workspace and the solver use it too.
+
 type Level = "low" | "medium" | "high";
 
 export type StyleLesson = {

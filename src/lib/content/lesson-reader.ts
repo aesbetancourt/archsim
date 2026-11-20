@@ -1,21 +1,24 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { blockGroups, blocks } from "./blocks";
-import { characteristics, kataSteps, styleLessons } from "./learn";
-import { wikiSections, type WikiPage } from "./wiki-pages";
+import { characteristics, kataSteps, styleLessons } from "./kata-method";
+import { lessonSections, type Lesson } from "./lessons";
 
-export { headingId } from "./wiki-pages";
+// Find a lesson, and read its text. This file reads the Markdown files of content/learn, so it is
+// for the server. The list of the lessons is in lessons.ts.
 
-export const wikiPages: WikiPage[] = wikiSections.flatMap((section) => section.pages);
+export { headingId } from "./lessons";
 
-export function getWikiPage(slug: string): WikiPage | undefined {
-  return wikiPages.find((page) => page.slug === slug);
+export const lessons: Lesson[] = lessonSections.flatMap((section) => section.pages);
+
+export function getLesson(slug: string): Lesson | undefined {
+  return lessons.find((page) => page.slug === slug);
 }
 
-// Return the pages before and after a page, in reading order.
-export function neighbors(slug: string): { previous?: WikiPage; next?: WikiPage } {
-  const index = wikiPages.findIndex((page) => page.slug === slug);
-  return { previous: wikiPages[index - 1], next: wikiPages[index + 1] };
+// Return the lessons before and after a lesson, in reading order.
+export function neighbors(slug: string): { previous?: Lesson; next?: Lesson } {
+  const index = lessons.findIndex((page) => page.slug === slug);
+  return { previous: lessons[index - 1], next: lessons[index + 1] };
 }
 
 // Read the Markdown text of an article.
@@ -45,7 +48,7 @@ function wordsIn(value: unknown): number {
 }
 
 // The text of a custom page, from the data that the page shows.
-function customText(page: WikiPage): unknown {
+function customText(page: Lesson): unknown {
   if (page.kind === "method") return kataSteps;
   if (page.kind === "characteristics") return characteristics;
   if (page.kind === "styles") return styleLessons.map((lesson) => [lesson.name, lesson.idea]);
@@ -70,7 +73,7 @@ function readableMarkdown(markdown: string): string {
 }
 
 // The time to read a page, in whole minutes. Each page takes at least one minute.
-export function readingMinutes(page: WikiPage, markdown?: string): number {
+export function readingMinutes(page: Lesson, markdown?: string): number {
   // A custom page counts the text of its component and of its Markdown file, if it has one.
   const words = wordsIn(customText(page)) + wordsIn(markdown ? readableMarkdown(markdown) : "");
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));

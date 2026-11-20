@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseQuestions, readQuestions } from "./questions";
-import { wikiSections } from "./wiki-pages";
+import { lessonSections } from "./lessons";
 
 describe("parseQuestions", () => {
   it("reads both formats, and only in the question sections", () => {
@@ -53,14 +53,14 @@ describe("readQuestions", () => {
     expect(questions.length).toBeGreaterThan(300);
     const ids = questions.map((question) => question.id);
     expect(new Set(ids).size).toBe(ids.length);
-    const sections = new Set(wikiSections.map((section) => section.title));
+    const sections = new Set(lessonSections.map((section) => section.title));
     expect(questions.filter((question) => !sections.has(question.section))).toEqual([]);
   });
 
   it("finds questions in nearly each lesson", async () => {
     const questions = await readQuestions();
     const withQuestions = new Set(questions.map((question) => question.slug));
-    const pages = wikiSections.flatMap((section) => section.pages.map((page) => page.slug));
+    const pages = lessonSections.flatMap((section) => section.pages.map((page) => page.slug));
     // Some pages have no question section: the reading list, and pages without Markdown.
     const without = pages.filter((slug) => !withQuestions.has(slug));
     expect(without.length).toBeLessThan(8);

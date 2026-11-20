@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { termsIn } from "@/lib/content/glossary";
 import { findExample, findKata } from "@/lib/store/library";
-import { getStyleLesson } from "@/lib/content/learn";
+import { getStyleLesson } from "@/lib/content/kata-method";
 
 function Step({
   number,

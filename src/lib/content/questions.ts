@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { wikiPages } from "./wiki";
-import { headingId, wikiSections } from "./wiki-pages";
+import { lessons } from "./lesson-reader";
+import { headingId, lessonSections } from "./lessons";
 
 // The interview questions of the lessons, for the question drill. Each lesson has a section
 // "Interview questions" (or "What interviewers probe" in a system design case). In it, a question
@@ -65,7 +65,7 @@ export function parseQuestions(
 }
 
 const sectionOf = new Map(
-  wikiSections.flatMap((section) =>
+  lessonSections.flatMap((section) =>
     section.pages.map((page) => [page.slug, section.title] as const),
   ),
 );
@@ -84,7 +84,7 @@ async function load(): Promise<Question[]> {
   const folder = path.join(process.cwd(), "content", "learn");
   const files = new Set(await readdir(folder));
   const questions: Question[] = [];
-  for (const page of wikiPages) {
+  for (const page of lessons) {
     if (!files.has(`${page.slug}.md`)) continue;
     const markdown = await readFile(path.join(folder, `${page.slug}.md`), "utf8");
     const ids = new Set<string>();

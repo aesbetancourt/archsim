@@ -3,8 +3,8 @@ import { glossary } from "./glossary";
 import { katas } from "./katas";
 import { readQuestions } from "./questions";
 import type { SearchItem } from "./search";
-import { headings, readArticle, wikiPages } from "./wiki";
-import { headingId, wikiSections } from "./wiki-pages";
+import { headings, readArticle, lessons } from "./lesson-reader";
+import { headingId, lessonSections } from "./lessons";
 
 // The pages of the app that are not lessons.
 const appPages: SearchItem[] = [
@@ -94,7 +94,7 @@ const appPages: SearchItem[] = [
 const firstSentence = (text: string) => text.split(/(?<=[.!?])\s/)[0];
 
 const sectionOf = new Map(
-  wikiSections.flatMap((section) =>
+  lessonSections.flatMap((section) =>
     section.pages.map((page) => [page.slug, section.title] as const),
   ),
 );
@@ -103,7 +103,7 @@ const sectionOf = new Map(
 export async function buildSearchIndex(): Promise<SearchItem[]> {
   const items: SearchItem[] = [...appPages];
 
-  for (const page of wikiPages) {
+  for (const page of lessons) {
     const section = sectionOf.get(page.slug) ?? "";
     const isCase = section === "System design cases";
     items.push({

@@ -1,24 +1,23 @@
-import { styleLessons } from "./learn";
+import { styleLessons } from "./kata-method";
 
-export type WikiPage = {
+// The lessons of the Learn area: the list, in sections and in reading order.
+// This file has no server code, so the browser can use it too. lesson-reader.ts finds one lesson
+// and reads its text, and lesson-meta.ts has the level and the objectives of each lesson.
+
+export type Lesson = {
   slug: string;
   title: string;
   summary: string;
-  // A custom page is drawn by a component. An article is a Markdown file in content/learn.
+  // An article is a Markdown file in content/learn. A component draws each other kind.
   kind: "article" | "method" | "characteristics" | "styles" | "style" | "blocks";
   related?: string[];
-  // The slug of a page that this page belongs under in the sidebar. The reading order does not change.
+  // The slug of the lesson that this one belongs under in the sidebar. The reading order does not change.
   parent?: string;
 };
 
-export type WikiSection = { title: string; pages: WikiPage[] };
+export type LessonSection = { title: string; pages: Lesson[] };
 
-const article = (
-  slug: string,
-  title: string,
-  summary: string,
-  related: string[] = [],
-): WikiPage => ({
+const article = (slug: string, title: string, summary: string, related: string[] = []): Lesson => ({
   slug,
   title,
   summary,
@@ -26,8 +25,8 @@ const article = (
   related,
 });
 
-// The sections and pages of the Learn area, in reading order.
-export const wikiSections: WikiSection[] = [
+// The sections of the Learn area with their lessons, in reading order.
+export const lessonSections: LessonSection[] = [
   {
     title: "Start here",
     pages: [
@@ -140,7 +139,7 @@ export const wikiSections: WikiSection[] = [
         kind: "styles",
         related: ["distributed", "characteristics"],
       },
-      ...styleLessons.map((lesson): WikiPage => ({
+      ...styleLessons.map((lesson): Lesson => ({
         slug: lesson.id,
         title: lesson.name,
         summary: lesson.idea,

@@ -2,8 +2,8 @@ import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { sectionIcon } from "@/components/section-icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { wikiPages } from "@/lib/content/wiki";
-import { wikiSections } from "@/lib/content/wiki-pages";
+import { lessons } from "@/lib/content/lesson-reader";
+import { lessonSections } from "@/lib/content/lessons";
 
 export default function LearnPage() {
   return (
@@ -14,7 +14,7 @@ export default function LearnPage() {
           Learn
         </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
-          A reference for the knowledge areas of a senior software architect, in {wikiPages.length}{" "}
+          A reference for the knowledge areas of a senior software architect, in {lessons.length}{" "}
           pages. Read a section in order, or go directly to the page you need during a kata.
         </p>
         <p className="max-w-2xl text-muted-foreground">
@@ -24,7 +24,7 @@ export default function LearnPage() {
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {wikiSections.map((section) => {
+        {lessonSections.map((section) => {
           const Icon = sectionIcon(section.title);
           return (
             <Card key={section.title}>

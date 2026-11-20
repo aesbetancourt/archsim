@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { productLessons, readProductCases } from "./product-drill";
-import { getWikiPage } from "./wiki";
+import { getLesson } from "./lesson-reader";
 
 describe("readProductCases", () => {
   it("finds the cases, with unique IDs, a known section, and a real lesson", async () => {
@@ -13,6 +13,6 @@ describe("readProductCases", () => {
   });
 
   it("links each section to a lesson that exists", () => {
-    expect(Object.values(productLessons).filter((slug) => !getWikiPage(slug))).toEqual([]);
+    expect(Object.values(productLessons).filter((slug) => !getLesson(slug))).toEqual([]);
   });
 });

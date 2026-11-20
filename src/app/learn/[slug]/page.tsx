@@ -27,16 +27,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { blockGroups, blocksIn } from "@/lib/content/blocks";
-import { characteristics, kataSteps, styleLessons } from "@/lib/content/learn";
+import { characteristics, kataSteps, styleLessons } from "@/lib/content/kata-method";
 import { lessonMeta, levelLabel } from "@/lib/content/lesson-meta";
 import {
-  getWikiPage,
+  getLesson,
   headingId,
   headings,
   neighbors,
   readArticle,
   readingMinutes,
-} from "@/lib/content/wiki";
+} from "@/lib/content/lesson-reader";
 
 // For cost, a high level is bad. For the other columns, a high level is good.
 const ratingColumns = [
@@ -287,9 +287,9 @@ function Blocks() {
   );
 }
 
-export default async function WikiArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function LessonPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const page = getWikiPage(slug);
+  const page = getLesson(slug);
   if (!page) notFound();
 
   // An article is Markdown only. A custom page can also have a Markdown file, which shows after
@@ -298,7 +298,7 @@ export default async function WikiArticlePage({ params }: { params: Promise<{ sl
   if (page.kind === "article" && !markdown) notFound();
   const lesson = page.kind === "style" ? styleLessons.find((item) => item.id === slug) : undefined;
   const contents = markdown ? headings(markdown) : [];
-  const related = (page.related ?? []).map(getWikiPage).filter((item) => item !== undefined);
+  const related = (page.related ?? []).map(getLesson).filter((item) => item !== undefined);
   const { previous, next } = neighbors(slug);
   const meta = lessonMeta[slug];
   const walkthroughs = markdown?.match(/^```walkthrough$/gm)?.length ?? 0;

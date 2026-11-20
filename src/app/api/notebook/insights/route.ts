@@ -3,7 +3,7 @@ import { insightsStatus, startInsightsJob } from "@/lib/ai/insights-job";
 import { runModel } from "@/lib/ai/model";
 import { addInsightsDocument, readNotebook } from "@/lib/store/notebook";
 import { plural } from "@/lib/text";
-import { readArticle } from "@/lib/content/wiki";
+import { readArticle } from "@/lib/content/lesson-reader";
 import { buildInsightsPrompt, insightsSystemPrompt } from "@/prompts/insights";
 
 // The state of the background job, so the notebook page can show it after a reload.
