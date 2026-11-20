@@ -20,10 +20,10 @@ import { useState, useSyncExternalStore } from "react";
 import { sectionIcon } from "@/components/section-icons";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { useProgress } from "@/lib/use-progress";
+import { useProgress } from "@/lib/browser/use-progress";
 import { cn } from "@/lib/utils";
-import { wikiSections, type WikiPage } from "@/lib/wiki-pages";
-import { sectionTree } from "@/lib/wiki-tree";
+import { wikiSections, type WikiPage } from "@/lib/content/wiki-pages";
+import { sectionTree } from "@/lib/content/wiki-tree";
 
 const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
   { href: "/learn/cheatsheets", title: "Cheatsheets", icon: ScrollText },

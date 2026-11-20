@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Story } from "@/lib/stories";
+import type { Story } from "@/lib/store/stories";
 
 // For a behavioral question: start the answer from a story of the story bank.
 export default function StoryPicker({ onPick }: { onPick: (text: string) => void }) {

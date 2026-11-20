@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import NotePage from "@/components/NotePage";
-import { readNotebook } from "@/lib/notebook";
+import { readNotebook } from "@/lib/store/notebook";
 
 // Read the note on each request, so the page shows the saved text.
 export const dynamic = "force-dynamic";

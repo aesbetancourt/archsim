@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Drill, { type DrillFilter } from "@/components/Drill";
-import { glossary, glossaryCategories, type GlossaryTerm } from "@/lib/glossary";
+import { glossary, glossaryCategories, type GlossaryTerm } from "@/lib/content/glossary";
 
 // The interview gaps are in application design, so the drill starts there.
 const FIRST_CATEGORY = "Application design";

@@ -2,8 +2,8 @@ import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { sectionIcon } from "@/components/section-icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { wikiPages } from "@/lib/wiki";
-import { wikiSections } from "@/lib/wiki-pages";
+import { wikiPages } from "@/lib/content/wiki";
+import { wikiSections } from "@/lib/content/wiki-pages";
 
 export default function LearnPage() {
   return (

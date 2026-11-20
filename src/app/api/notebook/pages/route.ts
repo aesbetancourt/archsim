@@ -1,4 +1,4 @@
-import { readNotebook, savePageNote } from "@/lib/notebook";
+import { readNotebook, savePageNote } from "@/lib/store/notebook";
 import { pageNoteUpdate, readBody } from "@/lib/requests";
 
 // The notes of one page, as HTML. A page with no notes gets an empty text.

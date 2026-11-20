@@ -3,7 +3,7 @@
 import { BookOpen, CircleCheck } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { READING_FONT_KEY, type ReadingFont } from "@/lib/reading-font";
+import { READING_FONT_KEY, type ReadingFont } from "@/lib/browser/reading-font";
 import { cn } from "@/lib/utils";
 
 const options: { id: ReadingFont; title: string; sample: string; className: string }[] = [

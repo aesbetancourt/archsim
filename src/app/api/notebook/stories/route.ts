@@ -1,4 +1,4 @@
-import { createStory, readNotebook } from "@/lib/notebook";
+import { createStory, readNotebook } from "@/lib/store/notebook";
 import { readBody, storyFields } from "@/lib/requests";
 
 // The stories of the story bank.

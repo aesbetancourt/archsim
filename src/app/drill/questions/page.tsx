@@ -1,8 +1,8 @@
 import { MessageCircleQuestion } from "lucide-react";
 import Link from "next/link";
 import QuestionDrill from "@/components/QuestionDrill";
-import { readQuestions } from "@/lib/questions";
-import { wikiSections } from "@/lib/wiki-pages";
+import { readQuestions } from "@/lib/content/questions";
+import { wikiSections } from "@/lib/content/wiki-pages";
 
 // Read the questions on each request, so a new question in a lesson shows at once.
 export const dynamic = "force-dynamic";

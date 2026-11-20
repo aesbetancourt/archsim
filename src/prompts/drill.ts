@@ -1,7 +1,7 @@
-import type { GlossaryTerm } from "@/lib/glossary";
+import type { GlossaryTerm } from "@/lib/content/glossary";
 
 // The drills. Each one compares an answer with a reference, as an interview panel would.
-// All four use the same output, gradeSchema in lib/drill-grade.ts.
+// All four use the same output, gradeSchema in lib/ai/drill-grade.ts.
 //   - gradeSystemPrompt: one term of the vocabulary drill
 //   - questionGradeSystemPrompt: one design question of the question drill
 //   - behavioralGradeSystemPrompt: one behavioral question, graded as a story

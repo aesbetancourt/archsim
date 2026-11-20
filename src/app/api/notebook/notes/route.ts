@@ -1,4 +1,4 @@
-import { createDocument, readNotebook } from "@/lib/notebook";
+import { createDocument, readNotebook } from "@/lib/store/notebook";
 import { documentCreate, readBody } from "@/lib/requests";
 
 // All general notes, with their text.

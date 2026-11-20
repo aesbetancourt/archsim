@@ -1,7 +1,7 @@
-import { diagramShapes } from "./diagram-shapes";
-import type { DiagramSpec } from "./examples";
+import { diagramShapes } from "@/lib/content/diagram-shapes";
+import type { DiagramSpec } from "@/lib/content/examples";
 import { object, text, textList } from "./json-schema";
-import { styleLessons } from "./learn";
+import { styleLessons } from "@/lib/content/learn";
 
 // The output of the solver must match this schema, with each provider.
 export const solutionSchema = object({

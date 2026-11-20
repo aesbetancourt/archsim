@@ -1,6 +1,6 @@
-import { helperSchema } from "@/lib/helper";
-import { findKata } from "@/lib/library";
-import { runModel } from "@/lib/model";
+import { helperSchema } from "@/lib/ai/helper";
+import { findKata } from "@/lib/store/library";
+import { runModel } from "@/lib/ai/model";
 import { chatRequest, readBody } from "@/lib/requests";
 import { buildHelperPrompt, helperSystemPrompt } from "@/prompts/helper";
 

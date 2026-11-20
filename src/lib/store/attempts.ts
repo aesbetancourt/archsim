@@ -1,6 +1,6 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { Review } from "./rubric";
+import type { Review } from "@/lib/ai/rubric";
 
 const ROOT = path.join(process.cwd(), "data", "attempts");
 

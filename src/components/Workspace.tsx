@@ -43,12 +43,13 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { clearDraft, type Draft, loadDraft, saveDraft } from "@/lib/draft";
-import { saveClock } from "@/lib/kata-clock";
-import type { Kata } from "@/lib/katas";
-import { loadNotesHtml, notesText, saveNotesHtml } from "@/lib/notes";
-import { slimElements } from "@/lib/scene";
-import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/learn";
+import { clearDraft, type Draft, loadDraft, saveDraft } from "@/lib/browser/draft";
+import { saveClock } from "@/lib/browser/kata-clock";
+import type { Kata } from "@/lib/content/katas";
+import { loadNotesHtml, saveNotesHtml } from "@/lib/browser/kata-notes";
+import { notesText } from "@/lib/notes-html";
+import { slimElements } from "@/lib/ai/scene";
+import { characteristics as glossary, getStyleLesson, styleLessons } from "@/lib/content/learn";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 

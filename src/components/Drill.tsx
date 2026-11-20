@@ -12,8 +12,8 @@ import {
   review,
   saveProgress,
   type DrillProgress,
-} from "@/lib/drill";
-import { suggestKnew, type Grade } from "@/lib/drill-grade";
+} from "@/lib/browser/drill";
+import { suggestKnew, type Grade } from "@/lib/ai/drill-grade";
 
 // A drill with the Leitner system and an optional AI check. The vocabulary drill and the
 // question drill use it. Each drill gives its items, its filters, and how to show an item.

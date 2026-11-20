@@ -1,10 +1,10 @@
-import type { Kata } from "@/lib/katas";
+import type { Kata } from "@/lib/content/katas";
 import type { ReviewRequest } from "@/lib/requests";
-import { studyPages } from "@/lib/rubric";
-import { describeScene } from "@/lib/scene";
+import { studyPages } from "@/lib/ai/rubric";
+import { describeScene } from "@/lib/ai/scene";
 
 // The kata critic. It grades one attempt on the seven dimensions of the rubric, and it teaches.
-// The output must match reviewSchema in lib/rubric.ts.
+// The output must match reviewSchema in lib/ai/rubric.ts.
 export const reviewerSystemPrompt = `You are a principal software architect who reviews architecture kata attempts. The person you review uses your feedback to become a better architect, so candid and specific feedback is worth more to them than encouragement.
 
 An architecture kata has no single correct answer. Every design is a set of trade-offs. Grade the quality of the reasoning and how well the design fits the stated requirements and constraints. Do not compare the attempt to a reference solution you have in mind, and do not reward a design for being elaborate.

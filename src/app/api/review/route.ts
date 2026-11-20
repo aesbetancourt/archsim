@@ -1,9 +1,9 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-import { createAttemptDir, overallScore, saveAttempt } from "@/lib/attempts";
-import { runModel } from "@/lib/model";
-import { findKata } from "@/lib/library";
-import { reviewSchema, type Review } from "@/lib/rubric";
+import { createAttemptDir, overallScore, saveAttempt } from "@/lib/store/attempts";
+import { runModel } from "@/lib/ai/model";
+import { findKata } from "@/lib/store/library";
+import { reviewSchema, type Review } from "@/lib/ai/rubric";
 import { readBody, reviewRequest } from "@/lib/requests";
 import { buildReviewPrompt, reviewerSystemPrompt } from "@/prompts/review";
 

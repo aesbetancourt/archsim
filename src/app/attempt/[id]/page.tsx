@@ -21,9 +21,9 @@ import ConfirmButton from "@/components/ConfirmButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { getAttempt } from "@/lib/attempts";
-import { findKata } from "@/lib/library";
-import { dimensions, studyPages } from "@/lib/rubric";
+import { getAttempt } from "@/lib/store/attempts";
+import { findKata } from "@/lib/store/library";
+import { dimensions, studyPages } from "@/lib/ai/rubric";
 
 // One icon for each dimension of the review.
 const dimensionIcons: Record<string, LucideIcon> = {

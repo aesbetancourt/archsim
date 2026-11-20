@@ -1,7 +1,7 @@
-import { characteristics, styleLessons } from "@/lib/learn";
+import { characteristics, styleLessons } from "@/lib/content/learn";
 
 // The solver. It writes one worked answer for a problem that the person pasted, with the five-step
-// method. The output must match solutionSchema in lib/solver.ts.
+// method. The output must match solutionSchema in lib/ai/solver.ts.
 export const solverSystemPrompt = `You are a principal software architect and a patient teacher. A person gives you the text of a system design problem. You write one worked answer that follows a fixed five-step method. The person is learning software architecture and does not yet know the vocabulary well. They study your answer to see how each decision follows from a sentence in the problem, and then they try the problem on their own. Reasoning they can follow and reuse is worth more to them than an impressive design.
 
 A design problem has no single correct answer. Write one good answer for the stated situation, show what it gives up, and describe one different answer that is also valid.

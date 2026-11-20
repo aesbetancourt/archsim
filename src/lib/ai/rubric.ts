@@ -1,4 +1,4 @@
-import { wikiSections } from "./wiki-pages";
+import { wikiSections } from "@/lib/content/wiki-pages";
 
 export const dimensions = [
   { id: "scope", label: "Scope and core functions" },

@@ -1,6 +1,6 @@
-import { gradeSchema, parseGrade } from "@/lib/drill-grade";
-import { runModel } from "@/lib/model";
-import { readQuestions } from "@/lib/questions";
+import { gradeSchema, parseGrade } from "@/lib/ai/drill-grade";
+import { runModel } from "@/lib/ai/model";
+import { readQuestions } from "@/lib/content/questions";
 import { questionGradeRequest, readBody } from "@/lib/requests";
 import {
   behavioralGradeSystemPrompt,

@@ -1,4 +1,4 @@
-import { deleteAttempt } from "@/lib/attempts";
+import { deleteAttempt } from "@/lib/store/attempts";
 
 // Remove one attempt.
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {

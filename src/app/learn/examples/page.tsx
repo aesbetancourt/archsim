@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { allExamples } from "@/lib/library";
+import { allExamples } from "@/lib/store/library";
 
 // Read the user's problems on each request.
 export const dynamic = "force-dynamic";

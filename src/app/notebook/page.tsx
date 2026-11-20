@@ -1,6 +1,6 @@
 import { NotebookPen } from "lucide-react";
 import NotebookView from "@/components/NotebookView";
-import { readNotebook } from "@/lib/notebook";
+import { readNotebook } from "@/lib/store/notebook";
 
 // Read the notebook on each request.
 export const dynamic = "force-dynamic";

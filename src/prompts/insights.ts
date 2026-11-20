@@ -1,9 +1,9 @@
-import type { Notebook } from "@/lib/notebook";
-import { notesText } from "@/lib/notes";
-import { headingId } from "@/lib/wiki-pages";
+import type { Notebook } from "@/lib/store/notebook";
+import { notesText } from "@/lib/notes-html";
+import { headingId } from "@/lib/content/wiki-pages";
 
 // The insights document. The model reads all the marks of the notebook and writes a study
-// document. The output must match insightsSchema in lib/insights.ts.
+// document. The output must match insightsSchema in lib/ai/insights.ts.
 
 export const insightsSystemPrompt = `You are a senior software architect and a patient teacher. A person studies software architecture for job interviews. While they read the lessons, they marked what matters to them: bookmarks on sections, highlights of passages with their own notes, notes on a page, and general notes. You read all of these marks and write one study document that helps them review, understand, and remember what they marked.
 

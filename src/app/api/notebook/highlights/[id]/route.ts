@@ -1,4 +1,4 @@
-import { removeHighlight, updateHighlightNote } from "@/lib/notebook";
+import { removeHighlight, updateHighlightNote } from "@/lib/store/notebook";
 import { highlightUpdate, readBody } from "@/lib/requests";
 
 type Context = { params: Promise<{ id: string }> };

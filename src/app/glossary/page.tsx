@@ -2,7 +2,7 @@ import { BookA } from "lucide-react";
 import Link from "next/link";
 import GlossaryList from "@/components/GlossaryList";
 import StudyLayout from "@/components/StudyLayout";
-import { glossary } from "@/lib/glossary";
+import { glossary } from "@/lib/content/glossary";
 
 export default function GlossaryPage() {
   return (

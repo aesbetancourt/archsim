@@ -1,4 +1,4 @@
-import { addBookmark, readNotebook } from "@/lib/notebook";
+import { addBookmark, readNotebook } from "@/lib/store/notebook";
 import { bookmarkCreate, readBody } from "@/lib/requests";
 
 // The bookmarks of one page.

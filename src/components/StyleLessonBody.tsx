@@ -1,5 +1,5 @@
 import Diagram from "@/components/Diagram";
-import type { StyleLesson } from "@/lib/learn";
+import type { StyleLesson } from "@/lib/content/learn";
 
 // The full content of one style lesson. The Learn page and the kata page use it.
 export default function StyleLessonBody({ lesson }: { lesson: StyleLesson }) {

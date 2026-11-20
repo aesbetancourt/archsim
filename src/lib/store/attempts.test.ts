@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { attemptDir, overallScore } from "./attempts";
-import type { Review } from "./rubric";
+import type { Review } from "@/lib/ai/rubric";
 
 const withScores = (...scores: number[]) =>
   ({ dimensions: scores.map((score) => ({ score })) }) as unknown as Review;

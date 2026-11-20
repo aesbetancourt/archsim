@@ -33,8 +33,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { listAttempts } from "@/lib/attempts";
-import { allExamples, allKatas, kataTitles } from "@/lib/library";
+import { listAttempts } from "@/lib/store/attempts";
+import { allExamples, allKatas, kataTitles } from "@/lib/store/library";
 
 // Read the attempt history on each request.
 export const dynamic = "force-dynamic";

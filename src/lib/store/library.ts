@@ -1,8 +1,8 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { cachedCommunity, loadCommunity } from "./community";
-import { getWorkedExample, workedExamples, type WorkedExample } from "./examples";
-import { getKata, katas, type Kata } from "./katas";
+import { cachedCommunity, loadCommunity } from "@/lib/content/community";
+import { getWorkedExample, workedExamples, type WorkedExample } from "@/lib/content/examples";
+import { getKata, katas, type Kata } from "@/lib/content/katas";
 
 // A problem that the user added, with the answer that Claude wrote for it.
 export type CustomEntry = {

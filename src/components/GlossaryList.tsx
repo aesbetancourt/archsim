@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { glossary, glossaryCategories, wikiUrl } from "@/lib/glossary";
+import { glossary, glossaryCategories, wikiUrl } from "@/lib/content/glossary";
 
 export default function GlossaryList() {
   const [query, setQuery] = useState("");

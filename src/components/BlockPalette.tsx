@@ -9,8 +9,8 @@ import type { ExcalidrawImperativeAPI, LibraryItems } from "@excalidraw/excalidr
 import { Blocks, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import BlockIcon from "@/components/BlockIcon";
-import { elementsFor, HEIGHT, sizeOf, WIDTH } from "@/lib/block-elements";
-import { type Block, blockGroups, blocks } from "@/lib/blocks";
+import { elementsFor, HEIGHT, sizeOf, WIDTH } from "@/lib/content/block-elements";
+import { type Block, blockGroups, blocks } from "@/lib/content/blocks";
 
 const HIDDEN_KEY = "charrette:blocks-hidden";
 // The time the pointer must stay on a piece before its description shows.

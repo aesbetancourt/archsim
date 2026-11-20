@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Prose from "@/components/Prose";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import type { ChatMessage, HelperContext } from "@/lib/helper";
+import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
 
 type Props = {
   // Read the current work at the moment the person sends a question.

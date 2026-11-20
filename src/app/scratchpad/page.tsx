@@ -1,11 +1,11 @@
 import { ArrowRight, PencilRuler, Trash2 } from "lucide-react";
-import { notesText } from "@/lib/notes";
+import { notesText } from "@/lib/notes-html";
 import Link from "next/link";
 import ConfirmButton from "@/components/ConfirmButton";
 import NewBoardButton from "@/components/NewBoardButton";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import LinkButton from "@/components/LinkButton";
-import { listBoards } from "@/lib/boards";
+import { listBoards } from "@/lib/store/boards";
 
 // Read the boards on each request.
 export const dynamic = "force-dynamic";

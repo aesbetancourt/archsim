@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { GlossaryTerm } from "@/lib/glossary";
+import type { GlossaryTerm } from "@/lib/content/glossary";
 import { buildGradePrompt, buildQuestionPrompt } from "./drill";
 
 const term: GlossaryTerm = {

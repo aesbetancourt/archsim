@@ -8,9 +8,9 @@ import HelpChat from "@/components/HelpChat";
 import LinkButton from "@/components/LinkButton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { Board } from "@/lib/boards";
-import { notesText } from "@/lib/notes";
-import { slimElements } from "@/lib/scene";
+import type { Board } from "@/lib/store/boards";
+import { notesText } from "@/lib/notes-html";
+import { slimElements } from "@/lib/ai/scene";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });

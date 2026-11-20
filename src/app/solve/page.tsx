@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 import SolveForm from "@/components/SolveForm";
-import type { Kata } from "@/lib/katas";
-import { findKata } from "@/lib/library";
+import type { Kata } from "@/lib/content/katas";
+import { findKata } from "@/lib/store/library";
 
 // Write a kata as plain text for the problem box.
 function kataText(kata: Kata): string {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Notebook } from "@/lib/notebook";
+import type { Notebook } from "@/lib/store/notebook";
 import { buildInsightsPrompt, sectionText } from "./insights";
 
 const lesson = `Intro text.

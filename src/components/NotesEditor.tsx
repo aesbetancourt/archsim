@@ -16,7 +16,8 @@ import {
   Undo2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { loadNotesHtml, notesText, saveNotesHtml, toNotesHtml } from "@/lib/notes";
+import { loadNotesHtml, saveNotesHtml } from "@/lib/browser/kata-notes";
+import { notesText, toNotesHtml } from "@/lib/notes-html";
 
 type Props = {
   // With a kata ID, the editor reads and saves the notes of that kata in the browser.

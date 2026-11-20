@@ -8,7 +8,7 @@ import type {
 import { useTheme } from "next-themes";
 import { useCallback, useRef } from "react";
 import BlockPalette from "@/components/BlockPalette";
-import { CANVAS_PAPER, recolorElements } from "@/lib/block-colors";
+import { CANVAS_PAPER, recolorElements } from "@/lib/content/block-colors";
 import "@excalidraw/excalidraw/index.css";
 
 type Props = {

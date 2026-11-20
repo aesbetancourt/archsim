@@ -1,7 +1,6 @@
 import { escapeHtml } from "./text";
 
-// The notes of a kata are saved in the browser as HTML, for each kata.
-const notesKey = (kataId: string) => `charrette:notes:${kataId}`;
+// Notes are saved as HTML. These functions do not use the browser, so the server can call them too.
 
 // Notes are HTML. Older notes are plain text. Convert those to paragraphs.
 export function toNotesHtml(saved: string): string {
@@ -10,25 +9,6 @@ export function toNotesHtml(saved: string): string {
     .split("\n")
     .map((line) => `<p>${escapeHtml(line)}</p>`)
     .join("");
-}
-
-// Read the saved notes of a kata.
-export function loadNotesHtml(kataId: string): string {
-  let saved = "";
-  try {
-    saved = localStorage.getItem(notesKey(kataId)) ?? "";
-  } catch {
-    // Storage is not available. Start with empty notes.
-  }
-  return toNotesHtml(saved);
-}
-
-export function saveNotesHtml(kataId: string, html: string): void {
-  try {
-    localStorage.setItem(notesKey(kataId), html);
-  } catch {
-    // Storage is not available. The notes last for this page only.
-  }
 }
 
 const entities: Record<string, string> = {

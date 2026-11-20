@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { OpenNote } from "@/components/GeneralNotes";
 import { Card } from "@/components/ui/card";
-import type { NoteDoc } from "@/lib/notebook";
+import type { NoteDoc } from "@/lib/store/notebook";
 
 // One general note on its own page, with a full-size editor.
 // The back arrow and a delete go to the notebook. The notebook page reads the notes again.

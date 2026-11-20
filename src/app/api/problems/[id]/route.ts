@@ -1,4 +1,4 @@
-import { deleteCustom } from "@/lib/library";
+import { deleteCustom } from "@/lib/store/library";
 
 type Context = { params: Promise<{ id: string }> };
 

@@ -1,6 +1,6 @@
 import { Settings } from "lucide-react";
 import SettingsForm from "@/components/SettingsForm";
-import { readSettings, toPublic } from "@/lib/settings";
+import { readSettings, toPublic } from "@/lib/store/settings";
 
 // Read the settings file on each request.
 export const dynamic = "force-dynamic";

@@ -4,8 +4,8 @@ import Link from "next/link";
 import Drill, { type DrillFilter } from "@/components/Drill";
 import Prose from "@/components/Prose";
 import StoryPicker from "@/components/StoryPicker";
-import type { Question } from "@/lib/questions";
-import { useProgress } from "@/lib/use-progress";
+import type { Question } from "@/lib/content/questions";
+import { useProgress } from "@/lib/browser/use-progress";
 
 // The question drill: answer the interview questions of the lessons, as in an interview.
 export default function QuestionDrill({

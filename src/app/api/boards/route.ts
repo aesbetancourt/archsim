@@ -1,4 +1,4 @@
-import { createBoard } from "@/lib/boards";
+import { createBoard } from "@/lib/store/boards";
 
 // Create an empty board.
 export async function POST() {

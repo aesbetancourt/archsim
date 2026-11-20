@@ -1,4 +1,4 @@
-import { removeBookmark } from "@/lib/notebook";
+import { removeBookmark } from "@/lib/store/notebook";
 
 type Context = { params: Promise<{ id: string }> };
 

@@ -20,7 +20,7 @@ import {
   resolveSteps,
   type StepKind,
   type Walkthrough as WalkthroughData,
-} from "@/lib/walkthrough";
+} from "@/lib/content/walkthrough";
 
 const kindLabel: Record<StepKind, string> = {
   problem: "Problem",

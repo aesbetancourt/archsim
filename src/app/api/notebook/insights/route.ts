@@ -1,9 +1,9 @@
-import { insightsHtml, insightsSchema, parseInsights } from "@/lib/insights";
-import { insightsStatus, startInsightsJob } from "@/lib/insights-job";
-import { runModel } from "@/lib/model";
-import { addInsightsDocument, readNotebook } from "@/lib/notebook";
+import { insightsHtml, insightsSchema, parseInsights } from "@/lib/ai/insights";
+import { insightsStatus, startInsightsJob } from "@/lib/ai/insights-job";
+import { runModel } from "@/lib/ai/model";
+import { addInsightsDocument, readNotebook } from "@/lib/store/notebook";
 import { plural } from "@/lib/text";
-import { readArticle } from "@/lib/wiki";
+import { readArticle } from "@/lib/content/wiki";
 import { buildInsightsPrompt, insightsSystemPrompt } from "@/prompts/insights";
 
 // The state of the background job, so the notebook page can show it after a reload.

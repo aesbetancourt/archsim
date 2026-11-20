@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { object, text, textList } from "./json-schema";
-import { escapeHtml } from "./text";
+import { escapeHtml } from "@/lib/text";
 
 // An insights document: the AI reads all the marks of the notebook and writes a study document.
 // The marks are the bookmarks, the highlights with their notes, the page notes, and the general

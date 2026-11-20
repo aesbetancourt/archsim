@@ -1,6 +1,6 @@
-import { gradeSchema, parseGrade } from "@/lib/drill-grade";
-import { runModel } from "@/lib/model";
-import { readProductCases } from "@/lib/product-drill";
+import { gradeSchema, parseGrade } from "@/lib/ai/drill-grade";
+import { runModel } from "@/lib/ai/model";
+import { readProductCases } from "@/lib/content/product-drill";
 import { questionGradeRequest, readBody } from "@/lib/requests";
 import { buildQuestionPrompt, productGradeSystemPrompt } from "@/prompts/drill";
 

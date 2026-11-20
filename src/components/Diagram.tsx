@@ -1,6 +1,11 @@
 import BlockIcon from "@/components/BlockIcon";
-import { diagramShapes, type DiagramShape, shapeOf, shapeStyle } from "@/lib/diagram-shapes";
-import type { DiagramSpec } from "@/lib/examples";
+import {
+  diagramShapes,
+  type DiagramShape,
+  shapeOf,
+  shapeStyle,
+} from "@/lib/content/diagram-shapes";
+import type { DiagramSpec } from "@/lib/content/examples";
 
 // What a walkthrough step shows of a diagram. Without a view, the diagram shows all of it.
 export type DiagramView = {

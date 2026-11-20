@@ -29,9 +29,9 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import ReadingFontSetting from "@/components/ReadingFontSetting";
-import type { Mode, PublicSettings, SpeechEngine } from "@/lib/settings";
+import type { Mode, PublicSettings, SpeechEngine } from "@/lib/store/settings";
 import { cn } from "@/lib/utils";
-import { googleVoices } from "@/lib/voices";
+import { googleVoices } from "@/lib/ai/voices";
 
 const modes: { id: Mode; title: string; description: string; icon: LucideIcon }[] = [
   {

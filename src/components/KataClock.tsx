@@ -14,7 +14,7 @@ import {
   resumeClock,
   saveClock,
   startClock,
-} from "@/lib/kata-clock";
+} from "@/lib/browser/kata-clock";
 import { cn } from "@/lib/utils";
 
 const SOUND_KEY = "charrette:clock-sound";

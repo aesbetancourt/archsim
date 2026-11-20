@@ -1,7 +1,7 @@
 import { Calculator } from "lucide-react";
 import Link from "next/link";
 import ProductDrill from "@/components/ProductDrill";
-import { productLessons, readProductCases } from "@/lib/product-drill";
+import { productLessons, readProductCases } from "@/lib/content/product-drill";
 
 // Read the cases on each request, so a new case in the file shows at once.
 export const dynamic = "force-dynamic";

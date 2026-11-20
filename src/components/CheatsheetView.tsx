@@ -13,9 +13,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { sectionIcon } from "@/components/section-icons";
 import { Input } from "@/components/ui/input";
-import type { Cheatsheet, LessonLink, SheetBlock } from "@/lib/cheatsheets";
-import { stem } from "@/lib/search";
-import { useProgress } from "@/lib/use-progress";
+import type { Cheatsheet, LessonLink, SheetBlock } from "@/lib/content/cheatsheets";
+import { stem } from "@/lib/content/search";
+import { useProgress } from "@/lib/browser/use-progress";
 
 // Keep the parts of a block that match the search words. A table keeps the rows that match.
 function filterBlock(block: SheetBlock, words: string[]): SheetBlock | null {

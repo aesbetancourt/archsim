@@ -3,8 +3,8 @@ import { Geist, Geist_Mono, Literata } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import ThemeProvider from "@/components/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { readingFontScript } from "@/lib/reading-font";
-import { migrationScript } from "@/lib/storage-migration";
+import { readingFontScript } from "@/lib/browser/reading-font";
+import { migrationScript } from "@/lib/browser/storage-migration";
 import "./globals.css";
 
 const geistSans = Geist({

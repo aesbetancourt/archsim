@@ -1,6 +1,6 @@
-import { gradeSchema, parseGrade } from "@/lib/drill-grade";
-import { glossary } from "@/lib/glossary";
-import { runModel } from "@/lib/model";
+import { gradeSchema, parseGrade } from "@/lib/ai/drill-grade";
+import { glossary } from "@/lib/content/glossary";
+import { runModel } from "@/lib/ai/model";
 import { drillGradeRequest, readBody } from "@/lib/requests";
 import { buildGradePrompt, gradeSystemPrompt } from "@/prompts/drill";
 

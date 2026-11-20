@@ -5,9 +5,9 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { runModel } from "./model";
-import { readSettings, type Settings } from "./settings";
+import { readSettings, type Settings } from "@/lib/store/settings";
 
-vi.mock("./settings", () => ({ readSettings: vi.fn() }));
+vi.mock("@/lib/store/settings", () => ({ readSettings: vi.fn() }));
 
 // The fields of a provider request that the tests read.
 type Part = { type: string; image_url?: { url: string } };

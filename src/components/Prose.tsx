@@ -15,8 +15,8 @@ import CodeBlock from "@/components/CodeBlock";
 import Diagram from "@/components/Diagram";
 import TableFrame from "@/components/TableFrame";
 import Walkthrough from "@/components/Walkthrough";
-import { parseWalkthrough } from "@/lib/walkthrough";
-import { headingId } from "@/lib/wiki-pages";
+import { parseWalkthrough } from "@/lib/content/walkthrough";
+import { headingId } from "@/lib/content/wiki-pages";
 
 // Color the code of the languages that the lessons use. Only these grammars load, so the help
 // chat stays small. Diagram and walkthrough blocks are data for a component, not code.

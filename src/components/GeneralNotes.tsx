@@ -7,9 +7,9 @@ import AutosaveNotes, { putJson } from "@/components/AutosaveNotes";
 import ConfirmButton from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { InsightsStatus } from "@/lib/insights-job";
-import type { NoteDoc } from "@/lib/notebook";
-import { notesText } from "@/lib/notes";
+import type { InsightsStatus } from "@/lib/ai/insights-job";
+import type { NoteDoc } from "@/lib/store/notebook";
+import { notesText } from "@/lib/notes-html";
 
 // How often the page asks for the state of the insights job, in milliseconds.
 const POLL_MS = 3_000;

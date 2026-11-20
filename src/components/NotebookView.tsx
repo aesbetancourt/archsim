@@ -9,8 +9,8 @@ import StoryBank from "@/components/StoryBank";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import type { Bookmark, Highlight, Notebook, PageNote } from "@/lib/notebook";
-import { notesText } from "@/lib/notes";
+import type { Bookmark, Highlight, Notebook, PageNote } from "@/lib/store/notebook";
+import { notesText } from "@/lib/notes-html";
 import { plural } from "@/lib/text";
 
 type LessonGroup = {

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { notesText } from "@/lib/notes";
-import { search, type SearchItem } from "@/lib/search";
+import { notesText } from "@/lib/notes-html";
+import { search, type SearchItem } from "@/lib/content/search";
 import { cn } from "@/lib/utils";
 
 // The index loads one time, when the search opens for the first time.

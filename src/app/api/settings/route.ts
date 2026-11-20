@@ -1,5 +1,5 @@
 import { readBody, settingsUpdate } from "@/lib/requests";
-import { readSettings, toPublic, writeSettings, type Settings } from "@/lib/settings";
+import { readSettings, toPublic, writeSettings, type Settings } from "@/lib/store/settings";
 
 export async function GET() {
   return Response.json(toPublic(await readSettings()));

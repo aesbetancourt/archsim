@@ -1,9 +1,9 @@
-import { runModel } from "@/lib/model";
-import type { WorkedExample } from "@/lib/examples";
-import type { Kata } from "@/lib/katas";
-import { saveCustom } from "@/lib/library";
+import { runModel } from "@/lib/ai/model";
+import type { WorkedExample } from "@/lib/content/examples";
+import type { Kata } from "@/lib/content/katas";
+import { saveCustom } from "@/lib/store/library";
 import { readBody, solveRequest } from "@/lib/requests";
-import { cleanDiagram, solutionSchema } from "@/lib/solver";
+import { cleanDiagram, solutionSchema } from "@/lib/ai/solver";
 import { buildSolvePrompt, solverSystemPrompt } from "@/prompts/solve";
 
 type Solution = { kata: Omit<Kata, "id">; example: Omit<WorkedExample, "kataId"> };

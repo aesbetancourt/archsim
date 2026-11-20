@@ -1,6 +1,6 @@
 import { ScrollText } from "lucide-react";
 import CheatsheetView from "@/components/CheatsheetView";
-import { readCheatsheets } from "@/lib/cheatsheets";
+import { readCheatsheets } from "@/lib/content/cheatsheets";
 
 export default async function CheatsheetsPage() {
   const sheets = await readCheatsheets();

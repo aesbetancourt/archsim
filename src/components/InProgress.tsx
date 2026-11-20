@@ -13,9 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { clearDraft, type DraftSummary, listDrafts } from "@/lib/draft";
-import { saveClock } from "@/lib/kata-clock";
-import { saveNotesHtml } from "@/lib/notes";
+import { clearDraft, type DraftSummary, listDrafts } from "@/lib/browser/draft";
+import { saveClock } from "@/lib/browser/kata-clock";
+import { saveNotesHtml } from "@/lib/browser/kata-notes";
 
 // The katas with unfinished work in this browser. The home page shows them first.
 // Each one can be continued, or removed to start the kata again from nothing.

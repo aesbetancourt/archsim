@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Workspace from "@/components/Workspace";
-import { findExample, findKata } from "@/lib/library";
+import { findExample, findKata } from "@/lib/store/library";
 
 export default async function KataPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

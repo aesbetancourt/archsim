@@ -1,6 +1,6 @@
 import { vertexModelsQuery } from "@/lib/requests";
-import { readSettings } from "@/lib/settings";
-import { listVertexModels } from "@/lib/vertex-models";
+import { readSettings } from "@/lib/store/settings";
+import { listVertexModels } from "@/lib/ai/vertex-models";
 
 // List the models that Vertex AI offers for a project and a location, for the model menu in
 // Settings. The project and the location come from the form, which can be not saved yet.

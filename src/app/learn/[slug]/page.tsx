@@ -26,9 +26,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { blockGroups, blocksIn } from "@/lib/blocks";
-import { characteristics, kataSteps, styleLessons } from "@/lib/learn";
-import { lessonMeta, levelLabel } from "@/lib/lesson-meta";
+import { blockGroups, blocksIn } from "@/lib/content/blocks";
+import { characteristics, kataSteps, styleLessons } from "@/lib/content/learn";
+import { lessonMeta, levelLabel } from "@/lib/content/lesson-meta";
 import {
   getWikiPage,
   headingId,
@@ -36,7 +36,7 @@ import {
   neighbors,
   readArticle,
   readingMinutes,
-} from "@/lib/wiki";
+} from "@/lib/content/wiki";
 
 // For cost, a high level is bad. For the other columns, a high level is good.
 const ratingColumns = [

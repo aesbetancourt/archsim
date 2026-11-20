@@ -1,6 +1,6 @@
 import { readBody, speechRequest } from "@/lib/requests";
-import { readSettings } from "@/lib/settings";
-import { synthesize } from "@/lib/speech";
+import { readSettings } from "@/lib/store/settings";
+import { synthesize } from "@/lib/ai/speech";
 
 // Return the spoken audio of one sentence with the Google voice in Settings.
 export async function POST(request: Request) {

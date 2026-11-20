@@ -1,4 +1,4 @@
-import { deleteBoard, updateBoard } from "@/lib/boards";
+import { deleteBoard, updateBoard } from "@/lib/store/boards";
 import { boardUpdate, readBody } from "@/lib/requests";
 
 type Context = { params: Promise<{ id: string }> };

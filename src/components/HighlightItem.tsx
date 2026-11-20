@@ -4,7 +4,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import type { Highlight } from "@/lib/notebook";
+import type { Highlight } from "@/lib/store/notebook";
 
 // One highlighted passage with its note. The note is saved when the text box loses focus.
 export default function HighlightItem({

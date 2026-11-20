@@ -1,4 +1,4 @@
-import { addHighlight, readNotebook } from "@/lib/notebook";
+import { addHighlight, readNotebook } from "@/lib/store/notebook";
 import { highlightCreate, readBody } from "@/lib/requests";
 
 // The highlights of one page.

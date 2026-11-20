@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import BoardEditor from "@/components/BoardEditor";
-import { getBoard } from "@/lib/boards";
+import { getBoard } from "@/lib/store/boards";
 
 export default async function BoardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

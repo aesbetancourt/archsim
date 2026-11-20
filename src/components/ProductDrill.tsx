@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Drill, { type DrillFilter } from "@/components/Drill";
 import Prose from "@/components/Prose";
-import type { Question } from "@/lib/questions";
+import type { Question } from "@/lib/content/questions";
 
 // The product drill: cost estimates, proof of value, business models, priorities, and timing.
 export default function ProductDrill({

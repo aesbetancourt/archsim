@@ -4,7 +4,7 @@ import { Highlighter, NotebookPen, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import type { Highlight as SavedHighlight } from "@/lib/notebook";
+import type { Highlight as SavedHighlight } from "@/lib/store/notebook";
 import { findPassage } from "@/lib/text-anchor";
 
 // The names of the highlight styles in globals.css.

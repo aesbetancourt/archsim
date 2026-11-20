@@ -3,7 +3,7 @@
 import { Bookmark as BookmarkIcon } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { Bookmark } from "@/lib/notebook";
+import type { Bookmark } from "@/lib/store/notebook";
 import { cn } from "@/lib/utils";
 
 type Value = {

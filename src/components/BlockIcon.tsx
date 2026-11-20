@@ -10,7 +10,7 @@ import {
   SquareDashed,
   User,
 } from "lucide-react";
-import type { BlockShape } from "@/lib/blocks";
+import type { BlockShape } from "@/lib/content/blocks";
 
 const dash: Partial<Record<BlockShape, string>> = {
   call: "none",

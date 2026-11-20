@@ -20,7 +20,7 @@ import HighlightItem from "@/components/HighlightItem";
 import LinkButton from "@/components/LinkButton";
 import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/tooltip";
-import type { Highlight } from "@/lib/notebook";
+import type { Highlight } from "@/lib/store/notebook";
 import { cn } from "@/lib/utils";
 
 // Whether the sidebar is open. This is a preference of this browser only.

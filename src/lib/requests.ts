@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { modes, speechEngines } from "./settings";
+import { modes, speechEngines } from "@/lib/store/settings";
 
 // The limits keep one request to a sensible size.
 const MAX_TEXT = 20_000;

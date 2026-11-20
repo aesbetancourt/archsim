@@ -1,4 +1,4 @@
-import { runModel } from "@/lib/model";
+import { runModel } from "@/lib/ai/model";
 
 // Send a very small request with the saved settings.
 export async function POST() {

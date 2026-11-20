@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { GoogleAuth } from "google-auth-library";
-import type { ReadAloud } from "./settings";
+import type { ReadAloud } from "@/lib/store/settings";
 
 const ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
 

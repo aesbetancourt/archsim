@@ -7,7 +7,7 @@ import ConfirmButton from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { competencies, type Story, type StoryFields } from "@/lib/stories";
+import { competencies, type Story, type StoryFields } from "@/lib/store/stories";
 import { cn } from "@/lib/utils";
 
 const parts: { key: keyof StoryFields & string; label: string; hint: string }[] = [

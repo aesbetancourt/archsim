@@ -1,11 +1,11 @@
-import { blocksNamed } from "@/lib/blocks";
-import type { ChatMessage, HelperContext } from "@/lib/helper";
-import type { Kata } from "@/lib/katas";
-import { describeScene, type SceneElement } from "@/lib/scene";
-import { wikiPages } from "@/lib/wiki";
+import { blocksNamed } from "@/lib/content/blocks";
+import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
+import type { Kata } from "@/lib/content/katas";
+import { describeScene, type SceneElement } from "@/lib/ai/scene";
+import { wikiPages } from "@/lib/content/wiki";
 
 // The help chat next to the canvas. In a kata it is a tutor that does not give the design.
-// On a free board it answers directly. The output must match helperSchema in lib/helper.ts.
+// On a free board it answers directly. The output must match helperSchema in lib/ai/helper.ts.
 const shared = `You are the help chat inside Charrette, an app where one person practices software architecture. The person is learning. They know how to build software, but many architecture terms are new to them. They open this small chat panel next to their drawing canvas when they are stuck or curious.
 
 You see a text description of their current work in the prompt. You cannot see the picture of the diagram, only the list of its shapes and connections, and you cannot change anything in the app. If a question depends on the look of the diagram, say what you can and cannot see.

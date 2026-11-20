@@ -1,5 +1,5 @@
 // The words that a provider needs around a prompt. They belong to no single feature.
-// lib/model.ts and lib/opencode.ts add them.
+// lib/ai/model.ts and lib/ai/opencode.ts add them.
 
 // Claude Code reads the diagram from a file in its working directory.
 export function readImageFirst(fileName: string, prompt: string): string {

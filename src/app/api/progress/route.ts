@@ -1,6 +1,6 @@
-import { readProgress, setLessonDone } from "@/lib/progress";
+import { readProgress, setLessonDone } from "@/lib/store/progress";
 import { progressUpdate, readBody } from "@/lib/requests";
-import { getWikiPage } from "@/lib/wiki";
+import { getWikiPage } from "@/lib/content/wiki";
 
 export async function GET() {
   return Response.json(await readProgress());

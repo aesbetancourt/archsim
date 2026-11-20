@@ -22,7 +22,7 @@ import { GoogleAuth } from "google-auth-library";
 import { runClaude } from "./claude";
 import { readImageFirst, withJsonSchema } from "@/prompts/provider";
 import { runOpenCode } from "./opencode";
-import { readSettings, type Settings } from "./settings";
+import { readSettings, type Settings } from "@/lib/store/settings";
 
 type ModelCall = {
   prompt: string;

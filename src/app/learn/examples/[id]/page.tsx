@@ -8,9 +8,9 @@ import Diagram from "@/components/Diagram";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { termsIn } from "@/lib/glossary";
-import { findExample, findKata } from "@/lib/library";
-import { getStyleLesson } from "@/lib/learn";
+import { termsIn } from "@/lib/content/glossary";
+import { findExample, findKata } from "@/lib/store/library";
+import { getStyleLesson } from "@/lib/content/learn";
 
 function Step({
   number,

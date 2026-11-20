@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { rangeFor } from "@/components/useHighlighter";
 import { splitSentences, withoutAsides } from "@/lib/sentences";
-import type { PublicSettings, SpeechEngine } from "@/lib/settings";
+import type { PublicSettings, SpeechEngine } from "@/lib/store/settings";
 import { cn } from "@/lib/utils";
 
 // The pause is the silence before the sentence, in milliseconds.

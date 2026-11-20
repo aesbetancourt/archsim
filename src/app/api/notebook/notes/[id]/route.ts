@@ -1,4 +1,4 @@
-import { deleteDocument, updateDocument } from "@/lib/notebook";
+import { deleteDocument, updateDocument } from "@/lib/store/notebook";
 import { documentUpdate, readBody } from "@/lib/requests";
 
 type Context = { params: Promise<{ id: string }> };
