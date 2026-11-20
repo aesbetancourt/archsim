@@ -7,13 +7,10 @@ import AutosaveNotes from "@/components/AutosaveNotes";
 import ConfirmButton from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { InsightsStatus } from "@/lib/ai/insights-job";
 import type { NoteDoc } from "@/lib/store/notebook";
 import { notesText } from "@/lib/notes-html";
-import { saveNote } from "@/lib/browser/api";
-
-// How often the page asks for the state of the insights job, in milliseconds.
-const POLL_MS = 3_000;
+import { createNote, listNotes, saveNote } from "@/lib/browser/api";
+import { useInsightsJob } from "@/lib/browser/use-insights-job";
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 
@@ -36,72 +33,35 @@ export default function GeneralNotes({
   const [documents, setDocuments] = useState<NoteDoc[] | null>(initial ?? null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [writing, setWriting] = useState(false);
 
   const open = (id: string) => (openAsPage ? router.push(`/notebook/notes/${id}`) : setOpenId(id));
 
-  // The AI writes the insights in the background on the server. The page asks for the state when
-  // it opens, and again every few seconds while the job runs. Then the new note shows in the list.
-  const [check, setCheck] = useState(0);
-  const waiting = useRef(false);
-
-  useEffect(() => {
-    if (!insights) return;
-    let current = true;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    async function poll() {
-      try {
-        const state = (await (await fetch("/api/notebook/insights")).json()) as InsightsStatus;
-        if (!current) return;
-        if (state.status === "running") {
-          waiting.current = true;
-          setWriting(true);
-          timer = setTimeout(poll, POLL_MS);
-          return;
-        }
-        setWriting(false);
-        if (state.status === "failed") setError(state.error);
-        if (waiting.current) {
-          waiting.current = false;
-          const items = (await (await fetch("/api/notebook/notes")).json()) as NoteDoc[];
-          if (current) setDocuments(items);
-        }
-      } catch {
-        // The server did not answer. Ask again later.
-        if (current) timer = setTimeout(poll, POLL_MS);
-      }
-    }
-    void poll();
-    return () => {
-      current = false;
-      clearTimeout(timer);
-    };
-  }, [insights, check]);
+  // The AI writes the insights in the background. When the job ends, the new note is in the list.
+  const job = useInsightsJob({
+    enabled: insights,
+    onFailed: setError,
+    onDone: () => {
+      listNotes()
+        .then(setDocuments)
+        .catch(() => undefined);
+    },
+  });
+  const writing = job.writing;
 
   async function createInsights() {
     setError("");
     try {
-      const response = await fetch("/api/notebook/insights", { method: "POST" });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        setError(body.error ?? "The insights document was not started. Try again.");
-        return;
-      }
-      waiting.current = true;
-      setWriting(true);
-      // Start to ask for the state of the new job.
-      setCheck((value) => value + 1);
-    } catch {
-      setError("The insights document was not started. Try again.");
+      await job.start();
+    } catch (caught) {
+      setError((caught as Error).message || "The insights document was not started. Try again.");
     }
   }
 
   useEffect(() => {
     if (initial) return;
     let current = true;
-    fetch("/api/notebook/notes")
-      .then((response) => (response.ok ? response.json() : []))
-      .then((items: NoteDoc[]) => current && setDocuments(items))
+    listNotes()
+      .then((items) => current && setDocuments(items))
       .catch(() => current && setDocuments([]));
     return () => {
       current = false;
@@ -110,16 +70,13 @@ export default function GeneralNotes({
 
   async function create() {
     setError("");
-    const response = await fetch("/api/notebook/notes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "" }),
-    });
-    if (!response.ok) {
+    let created: NoteDoc;
+    try {
+      created = await createNote("");
+    } catch {
       setError("The note was not created. Try again.");
       return;
     }
-    const created = (await response.json()) as NoteDoc;
     setDocuments((items) => [...(items ?? []), created]);
     open(created.id);
   }

@@ -1,8 +1,11 @@
 "use client";
 
 import { Bookmark as BookmarkIcon } from "lucide-react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createContext, useContext } from "react";
 import { Button } from "@/components/ui/button";
+import { addBookmark, listBookmarks, removeBookmark } from "@/lib/browser/api";
+import { keys } from "@/lib/browser/query-keys";
 import type { Bookmark } from "@/lib/store/notebook";
 import { cn } from "@/lib/utils";
 
@@ -30,42 +33,54 @@ export function BookmarksProvider({
   getTitle: () => string;
   children: React.ReactNode;
 }) {
-  const [items, setItems] = useState<Bookmark[]>([]);
-
-  useEffect(() => {
-    let current = true;
-    fetch(`/api/notebook/bookmarks?page=${encodeURIComponent(page)}`)
-      .then((response) => (response.ok ? response.json() : []))
-      .then((list: Bookmark[]) => current && setItems(list))
-      .catch(() => undefined);
-    return () => {
-      current = false;
-    };
-  }, [page]);
-
-  // Only the bookmarks of this page count, also while the list of a new page loads.
-  const mine = items
-    .filter((item) => item.page === page)
-    .sort((a, b) => Number(Boolean(a.anchor)) - Number(Boolean(b.anchor)));
+  const client = useQueryClient();
+  // The list of each page has its own key, so a new page starts with its own bookmarks.
+  const { data } = useQuery({
+    queryKey: keys.bookmarks(page),
+    queryFn: () => listBookmarks(page),
+  });
+  // The bookmark of the whole page is first.
+  const mine = [...(data ?? [])].sort(
+    (a, b) => Number(Boolean(a.anchor)) - Number(Boolean(b.anchor)),
+  );
   const find = (anchor: string) => mine.find((item) => item.anchor === anchor);
 
+  // A new bookmark shows when the server saved it.
+  const add = useMutation({
+    mutationFn: addBookmark,
+    onSuccess: (added) => {
+      client.setQueryData<Bookmark[]>(keys.bookmarks(added.page), (list = []) => [
+        ...list.filter((item) => item.id !== added.id),
+        added,
+      ]);
+    },
+  });
+
+  // A removed bookmark goes away at once. If the server did not remove it, it comes back.
+  const remove = useMutation({
+    mutationFn: (bookmark: Bookmark) => removeBookmark(bookmark.id),
+    onMutate: async (bookmark) => {
+      // An answer that is on its way must not put the bookmark back.
+      await client.cancelQueries({ queryKey: keys.bookmarks(bookmark.page) });
+      client.setQueryData<Bookmark[]>(keys.bookmarks(bookmark.page), (list = []) =>
+        list.filter((item) => item.id !== bookmark.id),
+      );
+    },
+    onError: (_error, bookmark) => {
+      client.setQueryData<Bookmark[]>(keys.bookmarks(bookmark.page), (list = []) => [
+        ...list,
+        bookmark,
+      ]);
+    },
+  });
+
+  // Each mutation shows its own result, so a failure needs no more work here.
   async function toggle(anchor: string, heading: string) {
     const found = find(anchor);
-    if (found) {
-      setItems((list) => list.filter((item) => item.id !== found.id));
-      const response = await fetch(`/api/notebook/bookmarks/${found.id}`, { method: "DELETE" });
-      // The bookmark was not removed. Show it again.
-      if (!response.ok) setItems((list) => [...list, found]);
-      return;
-    }
-    const response = await fetch("/api/notebook/bookmarks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ page, title: getTitle(), heading, anchor }),
-    });
-    if (!response.ok) return;
-    const added = (await response.json()) as Bookmark;
-    setItems((list) => [...list.filter((item) => item.id !== added.id), added]);
+    const change = found
+      ? remove.mutateAsync(found)
+      : add.mutateAsync({ page, title: getTitle(), heading, anchor });
+    await change.catch(() => undefined);
   }
 
   return <BookmarksContext value={{ items: mine, find, toggle }}>{children}</BookmarksContext>;

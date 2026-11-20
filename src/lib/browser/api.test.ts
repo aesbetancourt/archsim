@@ -3,22 +3,31 @@ import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
 import type { ReviewRequest } from "@/lib/requests";
 import type { Settings } from "@/lib/store/settings";
 import {
+  addBookmark,
   addHighlight,
   ApiError,
   askHelper,
   createBoard,
+  createNote,
   createStory,
   deleteAt,
   gradeAnswer,
+  insightsStatus,
+  listBookmarks,
+  listNotes,
   listVertexModels,
+  readProgress,
+  removeBookmark,
   reviewAttempt,
   saveBoard,
   saveNote,
   savePageNote,
   saveSettings,
   saveStory,
+  setLessonDone,
   solveProblem,
   speechClip,
+  startInsights,
   testConnection,
 } from "./api";
 
@@ -148,6 +157,43 @@ describe("the requests", () => {
       url: "/api/speech",
       method: "POST",
       body: { text: "Read this." },
+    });
+  });
+});
+
+describe("the requests for shared data", () => {
+  it("uses the address, the method, and the body of each endpoint", async () => {
+    const calls = server(ok({ done: {}, status: "idle" }));
+    const bookmark = { page: "/learn/a b", title: "T", heading: "H", anchor: "h" };
+
+    await readProgress();
+    await setLessonDone("caching", true);
+    await listBookmarks("/learn/a b");
+    await addBookmark(bookmark);
+    await removeBookmark("b1");
+    await listNotes();
+    await createNote("");
+    await insightsStatus();
+    await startInsights();
+
+    expect(calls.map((call) => [call.method, call.url, call.body])).toEqual([
+      ["GET", "/api/progress", undefined],
+      ["PUT", "/api/progress", { slug: "caching", done: true }],
+      ["GET", "/api/notebook/bookmarks?page=%2Flearn%2Fa%20b", undefined],
+      ["POST", "/api/notebook/bookmarks", bookmark],
+      ["DELETE", "/api/notebook/bookmarks/b1", undefined],
+      ["GET", "/api/notebook/notes", undefined],
+      ["POST", "/api/notebook/notes", { title: "" }],
+      ["GET", "/api/notebook/insights", undefined],
+      ["POST", "/api/notebook/insights", undefined],
+    ]);
+  });
+
+  it("refuses to start the insights job with the reason of the server", async () => {
+    server(Response.json({ error: "The notebook is empty." }, { status: 400 }));
+    await expect(startInsights()).rejects.toMatchObject({
+      message: "The notebook is empty.",
+      status: 400,
     });
   });
 });

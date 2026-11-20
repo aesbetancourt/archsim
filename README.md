@@ -143,6 +143,7 @@ This project uses pnpm only. An install with npm, Yarn, or Bun stops with an err
 - **Next.js** (App Router) and **TypeScript**
 - **Tailwind CSS** with the [neobrutalism](https://www.neobrutalism.dev) component set, on Base UI
 - **Excalidraw** for the canvas and **Tiptap** for the notes
+- **TanStack Query** for the data that parts of a page share: the lesson progress, the bookmarks, and the state of the insights job. It sends each request also when the browser is offline, because the server is on your computer
 - **Google Cloud Text-to-Speech** (optional) for the read-aloud voices, with the browser Web Speech API as the default
 - **Oxlint** and **Oxfmt** from [Oxc](https://oxc.rs) for lint and format (`pnpm lint`, `pnpm fmt`), and [Knip](https://knip.dev) for unused files, exports, and dependencies (`pnpm knip`)
 - **No database.** Attempts, boards, the notebook, lesson progress, settings, your own problems, and the read-aloud audio are plain files in a `data/` folder that git ignores. Kata answers and notes in progress, and the drill progress, are in the browser.

@@ -4,7 +4,7 @@ import { Circle, CircleCheck, Target, Undo2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { setDone, useProgress } from "@/lib/browser/use-progress";
+import { useProgress, useSetDone } from "@/lib/browser/use-progress";
 
 // A badge in the lesson header when the lesson is done.
 export function DoneBadge({ slug }: { slug: string }) {
@@ -51,6 +51,7 @@ export function LessonObjectives({ slug, objectives }: { slug: string; objective
 // The button at the end of a lesson that marks it as done, or not done again.
 export function MarkDone({ slug }: { slug: string }) {
   const finished = Boolean(useProgress()[slug]);
+  const setDone = useSetDone();
   const [error, setError] = useState("");
 
   async function toggle() {

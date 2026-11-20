@@ -1,7 +1,8 @@
 import type { Grade } from "@/lib/ai/drill-grade";
+import type { InsightsStatus } from "@/lib/ai/insights-job";
 import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
 import type { ReviewRequest } from "@/lib/requests";
-import type { Highlight } from "@/lib/store/notebook";
+import type { Bookmark, Highlight, NoteDoc } from "@/lib/store/notebook";
 import type { PublicSettings, Settings } from "@/lib/store/settings";
 import type { Story, StoryFields } from "@/lib/store/stories";
 
@@ -117,7 +118,50 @@ export async function saveBoard(
   await send("PUT", `/api/boards/${id}`, { body: board, keepalive: true });
 }
 
+// ---- The lesson progress -------------------------------------------------------------
+
+// The lessons marked as done, each with the time of the mark.
+export function readProgress(): Promise<{ done: Record<string, string> }> {
+  return json("GET", "/api/progress");
+}
+
+export async function setLessonDone(slug: string, done: boolean): Promise<void> {
+  await send("PUT", "/api/progress", { body: { slug, done } });
+}
+
 // ---- The notebook --------------------------------------------------------------------
+
+export function listBookmarks(page: string): Promise<Bookmark[]> {
+  return json("GET", `/api/notebook/bookmarks?page=${encodeURIComponent(page)}`);
+}
+
+export function addBookmark(
+  bookmark: Pick<Bookmark, "page" | "title" | "heading" | "anchor">,
+): Promise<Bookmark> {
+  return json("POST", "/api/notebook/bookmarks", { body: bookmark });
+}
+
+export async function removeBookmark(id: string): Promise<void> {
+  await send("DELETE", `/api/notebook/bookmarks/${id}`);
+}
+
+export function listNotes(): Promise<NoteDoc[]> {
+  return json("GET", "/api/notebook/notes");
+}
+
+export function createNote(title: string): Promise<NoteDoc> {
+  return json("POST", "/api/notebook/notes", { body: { title } });
+}
+
+// The state of the job that writes an insights document.
+export function insightsStatus(): Promise<InsightsStatus> {
+  return json("GET", "/api/notebook/insights");
+}
+
+// Start the job. The answer is its state. The server refuses when the notebook is empty.
+export function startInsights(): Promise<InsightsStatus> {
+  return json("POST", "/api/notebook/insights");
+}
 
 export async function saveNote(id: string, note: { title: string; html: string }): Promise<void> {
   await send("PUT", `/api/notebook/notes/${id}`, { body: note, keepalive: true });

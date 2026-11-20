@@ -2,6 +2,7 @@
 
 import { ArrowRight, Bookmark as BookmarkIcon, ChevronRight, Highlighter, X } from "lucide-react";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import GeneralNotes from "@/components/GeneralNotes";
 import HighlightItem from "@/components/HighlightItem";
@@ -10,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import type { Bookmark, Highlight, Notebook, PageNote } from "@/lib/store/notebook";
+import { removeBookmark as removeBookmarkAt } from "@/lib/browser/api";
+import { keys } from "@/lib/browser/query-keys";
 import { notesText } from "@/lib/notes-html";
 import { plural } from "@/lib/text";
 
@@ -61,6 +64,7 @@ const subheading = "text-xs font-medium uppercase text-muted-foreground";
 // All of the notebook: the lessons with their bookmarks, notes, and highlights, the general notes,
 // and the story bank. Each lesson is closed at first, so the page stays short.
 export default function NotebookView({ notebook }: { notebook: Notebook }) {
+  const client = useQueryClient();
   const [highlights, setHighlights] = useState(notebook.highlights);
   const [bookmarks, setBookmarks] = useState(notebook.bookmarks);
   const [filter, setFilter] = useState("");
@@ -93,12 +97,15 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
 
   async function removeBookmark(id: string) {
     setError("");
-    const response = await fetch(`/api/notebook/bookmarks/${id}`, { method: "DELETE" });
-    if (!response.ok) {
+    try {
+      await removeBookmarkAt(id);
+    } catch {
       setError("The bookmark was not removed. Try again.");
       return;
     }
     setBookmarks((items) => items.filter((item) => item.id !== id));
+    // A lesson page must not show its old list. It loads the list again.
+    client.removeQueries({ queryKey: keys.allBookmarks });
   }
 
   const all = byLesson(notebook.pages, highlights, bookmarks);
