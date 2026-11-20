@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SCORE_MAX, SCORE_MIN, SCORES } from "@/lib/ai/score";
 
 // An AI check of one explanation in the vocabulary drill.
 // The server sends the reference definition from the glossary, so the browser cannot change it.
@@ -7,7 +8,7 @@ const verdicts = ["correct", "partly", "wrong"] as const;
 
 const gradeOutput = z.object({
   verdict: z.enum(verdicts),
-  score: z.number().int().min(1).max(5),
+  score: z.number().int().min(SCORE_MIN).max(SCORE_MAX),
   covered: z.array(z.string()),
   missing: z.array(z.string()),
   mistakes: z.array(z.string()),
@@ -25,7 +26,7 @@ export const gradeSchema = {
   properties: {
     verdict: { type: "string", enum: [...verdicts] },
     // An enum works with each provider. Some reject "minimum" and "maximum".
-    score: { type: "integer", enum: [1, 2, 3, 4, 5] },
+    score: { type: "integer", enum: SCORES },
     covered: { type: "array", items: { type: "string" } },
     missing: { type: "array", items: { type: "string" } },
     mistakes: { type: "array", items: { type: "string" } },

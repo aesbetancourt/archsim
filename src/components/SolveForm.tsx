@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { solveProblem } from "@/lib/browser/api";
+import { MIN_PROBLEM_LENGTH } from "@/lib/limits";
 
 export default function SolveForm({ initialText }: { initialText: string }) {
   const router = useRouter();
@@ -47,14 +48,17 @@ export default function SolveForm({ initialText }: { initialText: string }) {
         </Alert>
       )}
       <div className="flex flex-wrap items-center gap-2">
-        <Button onClick={() => submit("study")} disabled={busy !== null || text.trim().length < 40}>
+        <Button
+          onClick={() => submit("study")}
+          disabled={busy !== null || text.trim().length < MIN_PROBLEM_LENGTH}
+        >
           {busy === "study" ? <LoaderCircle className="animate-spin" /> : <Sparkles />}
           Solve it and show me the answer
         </Button>
         <Button
           variant="neutral"
           onClick={() => submit("practice")}
-          disabled={busy !== null || text.trim().length < 40}
+          disabled={busy !== null || text.trim().length < MIN_PROBLEM_LENGTH}
         >
           {busy === "practice" ? <LoaderCircle className="animate-spin" /> : <PencilRuler />}
           Solve it, but let me try first

@@ -31,6 +31,9 @@ const parts: { key: keyof StoryFields & string; label: string; hint: string }[] 
   },
 ];
 
+// The height of the text boxes. The action is the longest part of a story.
+const ROWS = { long: 5, short: 3 };
+
 const empty: StoryFields = {
   title: "",
   situation: "",
@@ -277,7 +280,7 @@ function StoryEditor({
           <span className="font-medium">{part.label}</span>
           <span className="block text-xs text-muted-foreground">{part.hint}</span>
           <Textarea
-            rows={part.key === "action" ? 5 : 3}
+            rows={part.key === "action" ? ROWS.long : ROWS.short}
             value={fields[part.key] as string}
             onChange={(event) => change({ ...fields, [part.key]: event.target.value })}
             onBlur={save}

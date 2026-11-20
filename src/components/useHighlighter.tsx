@@ -21,6 +21,9 @@ const PLAIN = "charrette-highlight";
 const NOTED = "charrette-highlight-note";
 const FOCUS = "charrette-highlight-focus";
 const FOCUS_MS = 1500;
+// The note box of a highlight: the left edge of its center, so it stays on the screen, and its
+// space below the click.
+const NOTE_BOX = { minLeft: 150, below: 12 };
 
 type Point = { x: number; y: number };
 
@@ -284,7 +287,7 @@ export function useHighlighter({ page, getTitle }: { page: string; getTitle?: ()
           ref={dialog}
           aria-label="Highlight"
           className="fixed z-50 m-0 w-72 text-foreground -translate-x-1/2 space-y-2 rounded-base border border-border bg-secondary-background p-3 text-sm shadow-float"
-          style={{ left: Math.max(150, open.at.x), top: open.at.y + 12 }}
+          style={{ left: Math.max(NOTE_BOX.minLeft, open.at.x), top: open.at.y + NOTE_BOX.below }}
         >
           <Textarea
             aria-label="Note for this highlight"

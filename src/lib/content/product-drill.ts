@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseQuestions, slugify, type Question } from "./questions";
 import { getLesson } from "./lesson-reader";
+import { route } from "@/lib/routes";
 
 // The cases of the product drill: cost estimates, proof of value, business models, priorities,
 // and timing. The text is in content/product-drill.md. Each section of the file is a filter.
@@ -40,7 +41,7 @@ async function load(): Promise<Question[]> {
       section: item.heading,
       question: item.question,
       points: item.points,
-      href: `/learn/${slug}`,
+      href: route(`/learn/${slug}`),
     };
   });
 }

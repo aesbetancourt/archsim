@@ -1,6 +1,9 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Review } from "@/lib/ai/rubric";
+import { timeId } from "@/lib/random-id";
+import { SCORE_MAX, SCORE_MIN } from "@/lib/ai/score";
+import { PERCENT } from "@/lib/utils";
 
 const ROOT = path.join(process.cwd(), "data", "attempts");
 
@@ -30,7 +33,7 @@ export function attemptDir(id: string): string {
 }
 
 export async function createAttemptDir(): Promise<{ id: string; dir: string }> {
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const id = timeId();
   const dir = attemptDir(id);
   await mkdir(dir, { recursive: true });
   return { id, dir };
@@ -75,5 +78,5 @@ export function overallScore(review: Review): number {
   const scores = review.dimensions.map((dimension) => dimension.score);
   if (scores.length === 0) return 0;
   const mean = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-  return Math.round(((mean - 1) / 4) * 100);
+  return Math.round(((mean - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)) * PERCENT);
 }

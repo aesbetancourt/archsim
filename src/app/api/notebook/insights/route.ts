@@ -5,6 +5,7 @@ import { addInsightsDocument, readNotebook } from "@/lib/store/notebook";
 import { plural } from "@/lib/text";
 import { readArticle } from "@/lib/content/lesson-reader";
 import { buildInsightsPrompt, insightsSystemPrompt } from "@/prompts/insights";
+import { HTTP } from "@/lib/http-status";
 
 // The state of the background job, so the notebook page can show it after a reload.
 export async function GET() {
@@ -28,7 +29,7 @@ export async function POST() {
       {
         error: "The notebook is empty. Bookmark a heading, highlight text, or write a note first.",
       },
-      { status: 400 },
+      { status: HTTP.badRequest },
     );
   }
 
@@ -45,5 +46,5 @@ export async function POST() {
     const byline = `Made on ${date} by ${model}, from ${plural(bookmarks, "bookmark")}, ${plural(highlights, "highlight")}, and ${plural(notes, "note")}.`;
     await addInsightsDocument(`Insights · ${insights.title}`, insightsHtml(insights, byline));
   });
-  return Response.json(insightsStatus(), { status: 202 });
+  return Response.json(insightsStatus(), { status: HTTP.accepted });
 }

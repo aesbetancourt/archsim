@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { pageAddress } from "@/lib/routes";
 
 type Item = { href: string; title: string; description: string; icon: React.ReactNode };
 
@@ -34,7 +35,7 @@ export default function NavMenu({
         {items.map((item) => (
           <DropdownMenuItem
             key={item.href}
-            render={<Link href={item.href} />}
+            render={<Link href={pageAddress(item.href)} />}
             className="items-start gap-3"
           >
             <span className="mt-0.5 [&>svg]:size-4">{item.icon}</span>

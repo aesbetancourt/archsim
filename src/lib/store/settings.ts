@@ -86,9 +86,10 @@ export type PublicSettings = {
 // The last four characters of a key, so the person can tell which key is saved.
 // A short key shows no characters, because four are then most of it.
 const HINT_MIN_LENGTH = 12;
+const HINT_LENGTH = 4;
 const hint = (key: string) => {
   if (!key) return "";
-  return key.length >= HINT_MIN_LENGTH ? `…${key.slice(-4)}` : "…";
+  return key.length >= HINT_MIN_LENGTH ? `…${key.slice(-HINT_LENGTH)}` : "…";
 };
 
 export function toPublic(settings: Settings): PublicSettings {

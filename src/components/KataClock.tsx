@@ -8,6 +8,7 @@ import {
   clockState,
   DURATIONS,
   formatClock,
+  INTERVIEW_MINUTES,
   loadClock,
   pauseClock,
   phases,
@@ -15,9 +16,14 @@ import {
   saveClock,
   startClock,
 } from "@/lib/browser/kata-clock";
-import { cn } from "@/lib/utils";
+import { MINUTE_MS, SECOND_MS } from "@/lib/time";
+import { cn, cssPercent } from "@/lib/utils";
 
 const SOUND_KEY = "charrette:clock-sound";
+
+// The chime: its pitch in hertz, and its volume over time in seconds. The volume rises fast from
+// almost zero, then falls slowly. An exponential ramp cannot start or end at zero.
+const CHIME = { pitch: 660, silent: 0.0001, peak: 0.2, rise: 0.02, fall: 0.9, length: 1 };
 
 // A short, soft tone when a phase ends. The browser plays it only after a click on the page.
 function chime() {
@@ -25,13 +31,13 @@ function chime() {
     const context = new AudioContext();
     const tone = context.createOscillator();
     const gain = context.createGain();
-    tone.frequency.value = 660;
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.2, context.currentTime + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.9);
+    tone.frequency.value = CHIME.pitch;
+    gain.gain.setValueAtTime(CHIME.silent, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(CHIME.peak, context.currentTime + CHIME.rise);
+    gain.gain.exponentialRampToValueAtTime(CHIME.silent, context.currentTime + CHIME.fall);
     tone.connect(gain).connect(context.destination);
     tone.start();
-    tone.stop(context.currentTime + 1);
+    tone.stop(context.currentTime + CHIME.length);
     tone.onended = () => void context.close();
   } catch {
     // No audio in this browser. The clock still shows the phase.
@@ -63,7 +69,7 @@ export default function KataClock({ kataId, interview }: { kataId: string; inter
   const running = clock !== null && clock.pausedAt === null;
   useEffect(() => {
     if (!running) return;
-    const timer = setInterval(() => setNow(Date.now()), 1000);
+    const timer = setInterval(() => setNow(Date.now()), SECOND_MS);
     return () => clearInterval(timer);
   }, [running]);
 
@@ -109,15 +115,16 @@ export default function KataClock({ kataId, interview }: { kataId: string; inter
     return (
       <div className="space-y-2 rounded-base border bg-background p-3">
         <p className="text-xs text-muted-foreground">
-          Select the time box. {interview ? "An interview gives you about 45 minutes." : ""} The
-          clock shows when to move on, as an interviewer expects.
+          Select the time box.{" "}
+          {interview ? `An interview gives you about ${INTERVIEW_MINUTES} minutes.` : ""} The clock
+          shows when to move on, as an interviewer expects.
         </p>
         <div className="flex flex-wrap items-center gap-1.5">
           {DURATIONS.map((minutes) => (
             <Button
               key={minutes}
               size="xs"
-              variant={minutes === 45 ? "default" : "neutral"}
+              variant={minutes === INTERVIEW_MINUTES ? "default" : "neutral"}
               onClick={() => {
                 setChoosing(false);
                 update(startClock(minutes, Date.now()));
@@ -135,7 +142,7 @@ export default function KataClock({ kataId, interview }: { kataId: string; inter
   }
 
   const phase = phases[state.phase];
-  const totalMs = clock.minutes * 60_000;
+  const totalMs = clock.minutes * MINUTE_MS;
   const done = Math.min(1, state.elapsedMs / totalMs);
 
   return (
@@ -199,13 +206,13 @@ export default function KataClock({ kataId, interview }: { kataId: string; inter
       <div className="relative h-2 rounded-full bg-muted" aria-hidden>
         <div
           className={cn("h-full rounded-full", state.overtime ? "bg-destructive" : "bg-primary")}
-          style={{ width: `${done * 100}%` }}
+          style={{ width: cssPercent(done) }}
         />
         {phases.slice(0, -1).map((item) => (
           <span
             key={item.label}
             className="absolute top-1/2 h-3.5 w-px -translate-y-1/2 bg-foreground/60"
-            style={{ left: `${item.end * 100}%` }}
+            style={{ left: cssPercent(item.end) }}
           />
         ))}
       </div>

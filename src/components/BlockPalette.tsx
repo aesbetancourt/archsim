@@ -16,6 +16,13 @@ const HIDDEN_KEY = "charrette:blocks-hidden";
 // The time the pointer must stay on a piece before its description shows.
 const TIP_DELAY_MS = 1000;
 const TIP_WIDTH = 320;
+// The space between the tip and the window edge, and between the tip and the piece.
+const TIP_MARGIN = 8;
+const TIP_GAP = 6;
+// Single pieces go in a grid of three by three around the center, with this space between them.
+const DROP_COLUMNS = 3;
+const DROP_SPOTS = DROP_COLUMNS * DROP_COLUMNS;
+const DROP_SPACE = { x: 40, y: 50 };
 
 type Tip = { block: Block; left: number; top: number };
 
@@ -53,8 +60,11 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
     hideTip();
     tipTimer.current = setTimeout(() => {
       const box = target.getBoundingClientRect();
-      const left = Math.max(8, Math.min(box.left, window.innerWidth - TIP_WIDTH - 8));
-      setTip({ block, left, top: box.bottom + 6 });
+      const left = Math.max(
+        TIP_MARGIN,
+        Math.min(box.left, window.innerWidth - TIP_WIDTH - TIP_MARGIN),
+      );
+      setTip({ block, left, top: box.bottom + TIP_GAP });
     }, TIP_DELAY_MS);
   };
 
@@ -104,10 +114,11 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
     const size = sizeOf(block);
     const single = size.width === WIDTH && size.height === HEIGHT;
     // Put single pieces in rows of three, so a new piece does not cover the last one.
-    const index = single ? clicks.current++ % 9 : 0;
-    const x = center.x - size.width / 2 + (single ? ((index % 3) - 1) * (WIDTH + 40) : 0);
-    const y =
-      center.y - size.height / 2 + (single ? (Math.floor(index / 3) - 1) * (HEIGHT + 50) : 0);
+    const index = single ? clicks.current++ % DROP_SPOTS : 0;
+    const column = (index % DROP_COLUMNS) - 1;
+    const row = Math.floor(index / DROP_COLUMNS) - 1;
+    const x = center.x - size.width / 2 + (single ? column * (WIDTH + DROP_SPACE.x) : 0);
+    const y = center.y - size.height / 2 + (single ? row * (HEIGHT + DROP_SPACE.y) : 0);
     const elements = elementsFor(block, x, y);
     const current = api.getSceneElements();
     // A boundary goes below the other shapes, so the pieces in it stay easy to select.

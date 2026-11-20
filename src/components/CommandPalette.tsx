@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { listNotes, searchIndex } from "@/lib/browser/api";
 import { keys } from "@/lib/browser/query-keys";
 import type { NoteDoc } from "@/lib/store/notebook";
+import { pageAddress } from "@/lib/routes";
 
 // A general note as an item of the search.
 function noteItem(note: NoteDoc): SearchItem {
@@ -80,7 +81,7 @@ export default function CommandPalette() {
     if (!item) return;
     setOpen(false);
     setQuery("");
-    router.push(item.href);
+    router.push(pageAddress(item.href));
   }
 
   function onKeyDown(event: React.KeyboardEvent) {

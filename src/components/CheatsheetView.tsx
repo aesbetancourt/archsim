@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import type { Cheatsheet, LessonLink, SheetBlock } from "@/lib/content/cheatsheets";
 import { stem } from "@/lib/content/search";
 import { useProgress } from "@/lib/browser/use-progress";
+import { pageAddress } from "@/lib/routes";
 
 // Keep the parts of a block that match the search words. A table keeps the rows that match.
 function filterBlock(block: SheetBlock, words: string[]): SheetBlock | null {
@@ -47,7 +48,7 @@ function filterBlock(block: SheetBlock, words: string[]): SheetBlock | null {
 function Source({ link }: { link: LessonLink }) {
   return (
     <Link
-      href={link.href}
+      href={pageAddress(link.href)}
       title={`Read more: ${link.title}`}
       aria-label={`Read more: ${link.title}`}
       className="inline-flex shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-primary"

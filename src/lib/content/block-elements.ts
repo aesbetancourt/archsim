@@ -1,6 +1,7 @@
 // Make the canvas elements of a palette piece. This file uses Excalidraw, so it runs only in the browser.
 import { convertToExcalidrawElements } from "@excalidraw/excalidraw";
 import { type Block, blockGroups, getBlock, type LinkKind } from "./blocks";
+import { randomText } from "@/lib/random-id";
 
 export const WIDTH = 180;
 export const HEIGHT = 70;
@@ -9,12 +10,32 @@ const END = 22;
 const FRAME_WIDTH = 460;
 const FRAME_HEIGHT = 300;
 const ARROW_LENGTH = 220;
-// The distance between the pieces of a pattern.
-const COLUMN = WIDTH + 110;
-const ROW = HEIGHT + 80;
+// The distance between the pieces of a pattern: a piece and the space after it.
+const COLUMN_SPACE = 110;
+const ROW_SPACE = 80;
+const COLUMN = WIDTH + COLUMN_SPACE;
+const ROW = HEIGHT + ROW_SPACE;
 // The space between a piece and the end of an arrow.
 const GAP = 16;
 const TEXT_COLOR = "#1e1e1e";
+// The figure of a person, measured from the top of the piece: the head, the neck, the arms, the
+// hips, and the feet. The name is in a box below the figure.
+const FIGURE = {
+  head: 18,
+  hipsAt: 36,
+  armsAt: 25,
+  armHalf: 14,
+  feetAt: 50,
+  footX: 11,
+  nameAt: 52,
+  nameHeight: 30,
+};
+// The base line of a device, below the box: half its width, and the space to the box.
+const STAND = { half: 26, below: 8 };
+// A diagonal arrow starts to the side of the middle of the piece.
+const DIAGONAL_SHIFT = 40;
+// The random part of the IDs of one drop.
+const DROP_ID_RANDOM_LENGTH = 8;
 
 type Skeleton = NonNullable<Parameters<typeof convertToExcalidrawElements>[0]>[number];
 type Element = ReturnType<typeof convertToExcalidrawElements>[number];
@@ -47,7 +68,7 @@ function normalize(element: Element): Element {
 
 // Collects the parts of one drop. Each part gets an ID that starts with the same random text.
 class Builder {
-  private uid = Math.random().toString(36).slice(2, 10);
+  private uid = randomText(DROP_ID_RANDOM_LENGTH);
   private count = 0;
   parts: Skeleton[] = [];
   extra = new Map<string, Extra>();
@@ -134,18 +155,19 @@ class Builder {
     } else if (block.shape === "person") {
       // A figure of a person, with the name in a box with no outline below it.
       const middle = x + WIDTH / 2;
-      this.add({ type: "ellipse", x: middle - 9, y, width: 18, height: 18, ...fill }, decor);
-      line(middle, y + 18, middle, y + 36);
-      line(middle - 14, y + 25, middle + 14, y + 25);
-      line(middle, y + 36, middle - 11, y + 50);
-      line(middle, y + 36, middle + 11, y + 50);
+      const head = { width: FIGURE.head, height: FIGURE.head, ...fill };
+      this.add({ type: "ellipse", x: middle - FIGURE.head / 2, y, ...head }, decor);
+      line(middle, y + FIGURE.head, middle, y + FIGURE.hipsAt);
+      line(middle - FIGURE.armHalf, y + FIGURE.armsAt, middle + FIGURE.armHalf, y + FIGURE.armsAt);
+      line(middle, y + FIGURE.hipsAt, middle - FIGURE.footX, y + FIGURE.feetAt);
+      line(middle, y + FIGURE.hipsAt, middle + FIGURE.footX, y + FIGURE.feetAt);
       this.add(
         {
           type: "rectangle",
           x,
-          y: y + 52,
+          y: y + FIGURE.nameAt,
           width: WIDTH,
-          height: 30,
+          height: FIGURE.nameHeight,
           backgroundColor: "transparent",
           strokeColor: "transparent",
           roundness: null,
@@ -170,7 +192,8 @@ class Builder {
         group,
         mainId,
       );
-      line(x + WIDTH / 2 - 26, y + HEIGHT + 8, x + WIDTH / 2 + 26, y + HEIGHT + 8);
+      const standY = y + HEIGHT + STAND.below;
+      line(x + WIDTH / 2 - STAND.half, standY, x + WIDTH / 2 + STAND.half, standY);
     } else if (block.shape === "module") {
       // A module has square corners. A part that is deployed alone has round corners.
       this.add(
@@ -267,7 +290,7 @@ function ends(
     const down = to.row > from.row;
     return {
       start: [
-        left(from) + WIDTH / 2 + (right ? 40 : -40),
+        left(from) + WIDTH / 2 + (right ? DIAGONAL_SHIFT : -DIAGONAL_SHIFT),
         down ? top(from) + HEIGHT + GAP : top(from) - GAP,
       ] as [number, number],
       end: [right ? left(to) - GAP : left(to) + WIDTH + GAP, top(to) + HEIGHT / 2] as [

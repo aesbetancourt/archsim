@@ -1,4 +1,5 @@
 import { deleteCustom } from "@/lib/store/library";
+import { HTTP } from "@/lib/http-status";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -6,7 +7,7 @@ type Context = { params: Promise<{ id: string }> };
 export async function DELETE(_request: Request, { params }: Context) {
   const { id } = await params;
   if (!(await deleteCustom(id))) {
-    return Response.json({ error: "Unknown problem." }, { status: 404 });
+    return Response.json({ error: "Unknown problem." }, { status: HTTP.notFound });
   }
   return Response.json({ ok: true });
 }

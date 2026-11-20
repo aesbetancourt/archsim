@@ -1,5 +1,6 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { timeId } from "@/lib/random-id";
 
 // The changes to each file run one after the other, so two changes at the same time do not lose
 // one of them. The queues are on globalThis: in development, a code reload can load this module
@@ -28,7 +29,7 @@ export function jsonFile<T>(name: string, normalize: (saved: unknown) => T) {
       const result = apply(value);
       await mkdir(path.dirname(target), { recursive: true });
       // Write a new file, then replace the old one. A stop during the write does not damage it.
-      const temporary = `${target}.${Date.now()}-${Math.random().toString(36).slice(2, 8)}.tmp`;
+      const temporary = `${target}.${timeId()}.tmp`;
       await writeFile(temporary, JSON.stringify(value, null, 2));
       await rename(temporary, target);
       return result;

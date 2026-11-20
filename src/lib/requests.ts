@@ -1,15 +1,45 @@
 import { z } from "zod";
 import { modes, speechEngines } from "@/lib/store/settings";
+import { HTTP } from "@/lib/http-status";
 
-// The limits keep one request to a sensible size.
+// The limits keep one request to a sensible size. Each limit is a number of characters, except
+// where the comment says otherwise.
 const MAX_TEXT = 20_000;
 const MAX_NOTES = 500_000;
+// The number of canvas elements in one drawing.
 const MAX_ELEMENTS = 10_000;
 // The length of the diagram as a base64 data URL. This is about 15 MB of PNG.
 const MAX_PNG = 20_000_000;
+// An ID, a name, a title, or a model name.
+const MAX_NAME = 200;
+// A short ID or label from the content, such as a lesson slug, a term ID, or a competency.
+const MAX_SLUG = 100;
+// A page address, the title of a page, or a heading.
+const MAX_PAGE_FIELD = 500;
+// The number of messages in one help chat.
+const MAX_MESSAGES = 200;
+// The text of a problem for "Solve a problem".
+const MAX_PROBLEM = 100_000;
+// An explanation in the vocabulary drill, and an answer in the question drill.
+const MAX_EXPLANATION = 4_000;
+const MAX_ANSWER = 8_000;
+// A highlighted passage.
+const MAX_PASSAGE = 5_000;
+// One part of a story, and the number of competencies of a story.
+const MAX_STORY_PART = 6_000;
+const MAX_COMPETENCIES = 20;
+// An API key.
+const MAX_KEY = 1_000;
+// One sentence for the read-aloud player. Google accepts at most 5,000 bytes in one request.
+const MAX_SENTENCE = 1_000;
 
 const text = z.string().max(MAX_TEXT);
 const notes = z.string().max(MAX_NOTES);
+const name = z.string().max(MAX_NAME);
+const id = z.string().min(1).max(MAX_NAME);
+const slugId = z.string().min(1).max(MAX_SLUG);
+const pageField = z.string().max(MAX_PAGE_FIELD);
+const pageAddress = z.string().startsWith("/").max(MAX_PAGE_FIELD);
 
 // The part of an Excalidraw element that the server reads. Other fields are kept as they are.
 const binding = z.looseObject({ elementId: z.string() }).nullish();
@@ -29,7 +59,7 @@ const sceneElement = z.looseObject({
 const elements = z.array(sceneElement).max(MAX_ELEMENTS);
 
 export const reviewRequest = z.object({
-  kataId: z.string().min(1).max(200),
+  kataId: id,
   scope: text,
   notes: notes.optional(),
   characteristics: text,
@@ -44,7 +74,7 @@ export const chatRequest = z.object({
   context: z.discriminatedUnion("kind", [
     z.object({
       kind: z.literal("kata"),
-      kataId: z.string().min(1).max(200),
+      kataId: id,
       scope: text,
       notes,
       characteristics: text,
@@ -57,25 +87,25 @@ export const chatRequest = z.object({
   messages: z
     .array(z.object({ role: z.enum(["user", "helper"]), text }))
     .min(1)
-    .max(200),
+    .max(MAX_MESSAGES),
 });
 
-export const solveRequest = z.object({ text: z.string().max(100_000) });
+export const solveRequest = z.object({ text: z.string().max(MAX_PROBLEM) });
 
 // One explanation in the vocabulary drill. The server looks up the reference by the term ID.
 export const drillGradeRequest = z.object({
-  termId: z.string().min(1).max(100),
-  answer: z.string().trim().min(1, "Write an explanation first.").max(4_000),
+  termId: slugId,
+  answer: z.string().trim().min(1, "Write an explanation first.").max(MAX_EXPLANATION),
 });
 
 // One answer in the question drill. The server looks up the reference by the question ID.
 export const questionGradeRequest = z.object({
-  questionId: z.string().min(1).max(200),
-  answer: z.string().trim().min(1, "Write an answer first.").max(8_000),
+  questionId: id,
+  answer: z.string().trim().min(1, "Write an answer first.").max(MAX_ANSWER),
 });
 
 export const boardUpdate = z.object({
-  title: z.string().max(200),
+  title: name,
   notes,
   scene: z.object({
     elements: z.array(z.unknown()).max(MAX_ELEMENTS),
@@ -84,12 +114,12 @@ export const boardUpdate = z.object({
 });
 
 export const highlightCreate = z.object({
-  page: z.string().startsWith("/").max(500),
-  title: z.string().max(500),
+  page: pageAddress,
+  title: pageField,
   // Do not trim the text here. The start position is for the text as it is.
   text: z
     .string()
-    .max(5_000)
+    .max(MAX_PASSAGE)
     .refine((value) => value.trim().length > 0, "Select some text first."),
   start: z.number().int().min(0),
   note: z.string().max(MAX_TEXT).default(""),
@@ -98,18 +128,18 @@ export const highlightCreate = z.object({
 export const highlightUpdate = z.object({ note: z.string().max(MAX_TEXT) });
 
 export const bookmarkCreate = z.object({
-  page: z.string().startsWith("/").max(500),
-  title: z.string().max(500),
-  heading: z.string().max(500),
+  page: pageAddress,
+  title: pageField,
+  heading: pageField,
   anchor: z
     .string()
     .regex(/^[a-z0-9-]*$/)
-    .max(200),
+    .max(MAX_NAME),
 });
 
 export const pageNoteUpdate = z.object({
-  page: z.string().startsWith("/").max(500),
-  title: z.string().max(500),
+  page: pageAddress,
+  title: pageField,
   html: notes,
 });
 
@@ -117,24 +147,24 @@ export const progressUpdate = z.object({
   slug: z
     .string()
     .regex(/^[a-z0-9-]+$/)
-    .max(100),
+    .max(MAX_SLUG),
   done: z.boolean(),
 });
 
-const storyText = z.string().max(6_000);
+const storyText = z.string().max(MAX_STORY_PART);
 export const storyFields = z.object({
-  title: z.string().max(200),
+  title: name,
   situation: storyText,
   task: storyText,
   action: storyText,
   result: storyText,
   reflection: storyText,
-  competencies: z.array(z.string().max(100)).max(20),
+  competencies: z.array(z.string().max(MAX_SLUG)).max(MAX_COMPETENCIES),
 });
 
-export const documentCreate = z.object({ title: z.string().max(200).default("") });
+export const documentCreate = z.object({ title: name.default("") });
 
-export const documentUpdate = z.object({ title: z.string().max(200), html: notes });
+export const documentUpdate = z.object({ title: name, html: notes });
 
 const httpUrl = z.url({ protocol: /^https?$/ });
 // An empty project ID means: use a default project. See the settings file.
@@ -142,8 +172,8 @@ const googleProjectId = z
   .string()
   .trim()
   .regex(/^([a-z][a-z0-9-]{4,28}[a-z0-9])?$/, "This is not a Google Cloud project ID.");
-const model = z.string().max(200);
-const key = z.string().max(1_000);
+const model = name;
+const key = z.string().max(MAX_KEY);
 
 export const settingsUpdate = z.object({
   mode: z.enum(modes),
@@ -192,8 +222,8 @@ export const vertexModelsQuery = z.object({
     .default("global"),
 });
 
-// One sentence for the read-aloud player. Google accepts at most 5,000 bytes in one request.
-export const speechRequest = z.object({ text: z.string().trim().min(1).max(1_000) });
+// One sentence for the read-aloud player.
+export const speechRequest = z.object({ text: z.string().trim().min(1).max(MAX_SENTENCE) });
 
 // Read the JSON body of a request and check it against a schema.
 // If the body is not valid, return a 400 response that names the first problem.
@@ -205,7 +235,10 @@ export async function readBody<T extends z.ZodType>(
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: "The request body is not valid JSON." }, { status: 400 });
+    return Response.json(
+      { error: "The request body is not valid JSON." },
+      { status: HTTP.badRequest },
+    );
   }
   const result = schema.safeParse(body);
   if (result.success) return result.data;
@@ -213,6 +246,6 @@ export async function readBody<T extends z.ZodType>(
   const where = issue.path.length > 0 ? `${issue.path.join(".")}: ` : "";
   return Response.json(
     { error: `The request is not valid. ${where}${issue.message}` },
-    { status: 400 },
+    { status: HTTP.badRequest },
   );
 }

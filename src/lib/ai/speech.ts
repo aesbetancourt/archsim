@@ -3,6 +3,10 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { GoogleAuth } from "google-auth-library";
 import type { ReadAloud } from "@/lib/store/settings";
+import { randomText } from "@/lib/random-id";
+
+// The random part of the name of a temporary audio file.
+const TEMP_RANDOM_LENGTH = 6;
 
 const ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
 
@@ -70,7 +74,7 @@ export async function synthesize(
   const audio = Buffer.from(body.audioContent, "base64");
   await mkdir(path.dirname(file), { recursive: true });
   // Write a new file, then replace. Two requests for the same sentence do not damage the file.
-  const temporary = `${file}.${process.pid}-${Math.random().toString(36).slice(2, 8)}.tmp`;
+  const temporary = `${file}.${process.pid}-${randomText(TEMP_RANDOM_LENGTH)}.tmp`;
   await writeFile(temporary, audio);
   await rename(temporary, file);
   return audio;

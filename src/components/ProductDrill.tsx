@@ -4,6 +4,7 @@ import Link from "next/link";
 import Drill, { type DrillFilter } from "@/components/Drill";
 import Prose from "@/components/Prose";
 import type { Question } from "@/lib/content/questions";
+import { pageAddress } from "@/lib/routes";
 
 // The product drill: cost estimates, proof of value, business models, priorities, and timing.
 export default function ProductDrill({
@@ -40,7 +41,11 @@ export default function ProductDrill({
         <>
           <h3 className="font-medium">The points of a strong answer</h3>
           <Prose compact markdown={item.points.map((point) => `- ${point}`).join("\n")} />
-          <Link href={item.href} className="text-primary hover:underline" target="_blank">
+          <Link
+            href={pageAddress(item.href)}
+            className="text-primary hover:underline"
+            target="_blank"
+          >
             Read the lesson: {item.lesson}
           </Link>
         </>

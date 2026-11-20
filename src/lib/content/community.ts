@@ -10,7 +10,7 @@ export const COMMUNITY_SOURCE = {
   owner: "Ted Neward",
   url: "https://github.com/tedneward/ArchKatas",
   site: "http://www.architecturalkatas.com",
-};
+} as const;
 
 const LIST_URL = "https://api.github.com/repos/tedneward/ArchKatas/contents/";
 const CACHE = path.join(process.cwd(), "data", "community.json");

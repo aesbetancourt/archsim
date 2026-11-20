@@ -1,4 +1,5 @@
 import { deleteAttempt } from "@/lib/store/attempts";
+import { HTTP } from "@/lib/http-status";
 
 // Remove one attempt.
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -7,6 +8,6 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     await deleteAttempt(id);
     return Response.json({ ok: true });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 400 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badRequest });
   }
 }

@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { lessons } from "./lesson-reader";
 import { headingId, lessonSections } from "./lessons";
+import { route } from "@/lib/routes";
 
 // The interview questions of the lessons, for the question drill. Each lesson has a section
 // "Interview questions" (or "What interviewers probe" in a system design case). In it, a question
@@ -26,12 +27,17 @@ const SECTIONS = ["Interview questions", "What interviewers probe"];
 const QUESTION = /^(?:\d+\.\s+)?\*\*(.+?)\*\*\s*$/;
 const POINT = /^\s*[-*]\s+(.+)$/;
 
+// The longest ID of a question, in characters.
+const MAX_SLUG_LENGTH = 80;
+// The start of a Markdown line with a section heading.
+const H2 = "## ";
+
 export const slugify = (text: string) =>
   text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
-    .slice(0, 80);
+    .slice(0, MAX_SLUG_LENGTH);
 
 // Find the questions in the Markdown of one lesson. Only the sections that `accept` selects
 // count. The product drill accepts each section, because its sections are its filters.
@@ -43,8 +49,9 @@ export function parseQuestions(
   let heading = "";
   let current: { heading: string; question: string; points: string[] } | null = null;
   for (const line of markdown.split("\n")) {
-    if (line.startsWith("## ")) {
-      heading = accept(line.slice(3).trim()) ? line.slice(3).trim() : "";
+    if (line.startsWith(H2)) {
+      const title = line.slice(H2.length).trim();
+      heading = accept(title) ? title : "";
       current = null;
       continue;
     }
@@ -100,7 +107,7 @@ async function load(): Promise<Question[]> {
         section: sectionOf.get(page.slug) ?? "",
         question: item.question,
         points: item.points,
-        href: `/learn/${page.slug}#${headingId(item.heading)}`,
+        href: route(`/learn/${page.slug}#${headingId(item.heading)}`),
       });
     }
   }

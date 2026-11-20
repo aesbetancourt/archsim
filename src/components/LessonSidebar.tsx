@@ -24,14 +24,15 @@ import { useProgress } from "@/lib/browser/use-progress";
 import { cn } from "@/lib/utils";
 import { lessonSections, type Lesson } from "@/lib/content/lessons";
 import { sectionTree } from "@/lib/content/lesson-tree";
+import { pageAddress, route } from "@/lib/routes";
 
 const moreLinks: { href: string; title: string; icon: LucideIcon }[] = [
-  { href: "/learn/cheatsheets", title: "Cheatsheets", icon: ScrollText },
-  { href: "/learn/examples", title: "Worked examples", icon: Lightbulb },
-  { href: "/glossary", title: "Glossary", icon: BookA },
-  { href: "/drill/questions", title: "Question drill", icon: MessageCircleQuestion },
-  { href: "/drill/product", title: "Product drill", icon: Calculator },
-  { href: "/notebook", title: "Notebook", icon: NotebookPen },
+  { href: route("/learn/cheatsheets"), title: "Cheatsheets", icon: ScrollText },
+  { href: route("/learn/examples"), title: "Worked examples", icon: Lightbulb },
+  { href: route("/glossary"), title: "Glossary", icon: BookA },
+  { href: route("/drill/questions"), title: "Question drill", icon: MessageCircleQuestion },
+  { href: route("/drill/product"), title: "Product drill", icon: Calculator },
+  { href: route("/notebook"), title: "Notebook", icon: NotebookPen },
 ];
 
 // The groups that the user opened: sections by title, and pages with sub-pages by slug.
@@ -94,7 +95,7 @@ function PageLink({
 }) {
   return (
     <Link
-      href={href}
+      href={pageAddress(href)}
       aria-current={current ? "page" : undefined}
       className={cn(
         "relative block flex-1 rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -313,7 +314,7 @@ export default function LessonSidebar() {
             return (
               <li key={item.href}>
                 <Link
-                  href={item.href}
+                  href={pageAddress(item.href)}
                   aria-current={here ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-2 rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground",

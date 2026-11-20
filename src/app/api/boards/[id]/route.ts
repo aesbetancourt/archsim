@@ -1,5 +1,6 @@
 import { deleteBoard, updateBoard } from "@/lib/store/boards";
 import { boardUpdate, readBody } from "@/lib/requests";
+import { HTTP } from "@/lib/http-status";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -10,10 +11,10 @@ export async function PUT(request: Request, { params }: Context) {
   if (change instanceof Response) return change;
   try {
     const board = await updateBoard(id, change);
-    if (!board) return Response.json({ error: "Unknown board." }, { status: 404 });
+    if (!board) return Response.json({ error: "Unknown board." }, { status: HTTP.notFound });
     return Response.json({ updatedAt: board.updatedAt });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 400 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badRequest });
   }
 }
 
@@ -23,6 +24,6 @@ export async function DELETE(_request: Request, { params }: Context) {
     await deleteBoard(id);
     return Response.json({ ok: true });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 400 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badRequest });
   }
 }

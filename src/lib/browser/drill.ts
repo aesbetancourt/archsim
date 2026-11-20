@@ -1,3 +1,4 @@
+import { DAY_MS } from "@/lib/time";
 // A vocabulary drill with the Leitner system: each term moves through five boxes.
 // A known term moves to the next box and comes back later. A missed term goes back to box 1.
 // The progress is saved in the browser, like the kata drafts.
@@ -14,8 +15,8 @@ export type DrillProgress = Record<string, CardState>;
 
 const LAST_BOX = 5;
 // Days to wait before a term in each box comes back. Box 1 comes back in the same session.
+// oxlint-disable-next-line no-magic-numbers -- A named list: the days to wait in each box.
 const WAIT_DAYS = [0, 1, 3, 7, 14];
-const DAY_MS = 24 * 60 * 60 * 1000;
 // The progress of the vocabulary drill. Other drills pass their own key.
 const STORAGE_KEY = "charrette:drill";
 

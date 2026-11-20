@@ -3,6 +3,7 @@ import { findKata } from "@/lib/store/library";
 import { runModel } from "@/lib/ai/model";
 import { chatRequest, readBody } from "@/lib/requests";
 import { buildHelperPrompt, helperSystemPrompt } from "@/prompts/helper";
+import { HTTP } from "@/lib/http-status";
 
 // The chat sends only the last messages. Older ones are dropped.
 const MAX_MESSAGES = 12;
@@ -12,11 +13,11 @@ export async function POST(request: Request) {
   if (body instanceof Response) return body;
   const { context, messages } = body;
   if (messages[messages.length - 1].role !== "user") {
-    return Response.json({ error: "There is no question to answer." }, { status: 400 });
+    return Response.json({ error: "There is no question to answer." }, { status: HTTP.badRequest });
   }
   const kata = context.kind === "kata" ? await findKata(context.kataId) : undefined;
   if (context.kind === "kata" && !kata) {
-    return Response.json({ error: "Unknown kata." }, { status: 404 });
+    return Response.json({ error: "Unknown kata." }, { status: HTTP.notFound });
   }
 
   try {
@@ -27,6 +28,6 @@ export async function POST(request: Request) {
     });
     return Response.json({ reply: (output as { reply: string }).reply });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 502 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badGateway });
   }
 }

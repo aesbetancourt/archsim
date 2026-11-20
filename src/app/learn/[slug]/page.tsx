@@ -70,7 +70,8 @@ function Rating({
   goodWhenHigh: boolean;
 }) {
   const value = levelValue[level];
-  const quality = goodWhenHigh ? value : 4 - value;
+  // A high level that is bad has the quality of a low level that is good.
+  const quality = goodWhenHigh ? value : levelValue.high + 1 - value;
   return (
     <span className={`inline-flex items-center gap-1.5 font-medium ${qualityColor[quality]}`}>
       <span className="flex h-3.5 items-end gap-0.5" aria-hidden>

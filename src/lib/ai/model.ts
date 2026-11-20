@@ -23,6 +23,8 @@ import { runClaude } from "./claude";
 import { readImageFirst, withJsonSchema } from "@/prompts/provider";
 import { runOpenCode } from "./opencode";
 import { readSettings, type Settings } from "@/lib/store/settings";
+import { HTTP } from "@/lib/http-status";
+import { MODEL_TIMEOUT_MS } from "@/lib/ai/limits";
 
 type ModelCall = {
   prompt: string;
@@ -34,7 +36,9 @@ type ModelCall = {
 
 export type ModelResult = { output: unknown; model: string };
 
-const TIMEOUT_MS = 5 * 60 * 1000;
+const TIMEOUT_MS = MODEL_TIMEOUT_MS;
+// The most of a failed response that the error message shows.
+const ERROR_DETAIL_LENGTH = 300;
 
 // These models decline some requests. The API can then continue on a different model.
 const FALLBACK_MODELS = [
@@ -173,15 +177,15 @@ async function viaAnthropic(call: ModelCall, settings: Settings): Promise<ModelR
     const noObject = noObjectError(error);
     if (noObject) throw noObject;
     if (APICallError.isInstance(error)) {
-      if (error.statusCode === 401) {
+      if (error.statusCode === HTTP.unauthorized) {
         throw new Error("Anthropic rejected the API key. Check the key in Settings.");
       }
-      if (error.statusCode === 404) {
+      if (error.statusCode === HTTP.notFound) {
         throw new Error(
           `Anthropic does not know the model "${model}". Check the model in Settings.`,
         );
       }
-      if (error.statusCode === 429) {
+      if (error.statusCode === HTTP.tooManyRequests) {
         throw new Error("Anthropic rate limit reached. Wait a moment, then try again.");
       }
       throw new Error(`Anthropic API error ${error.statusCode ?? ""}: ${error.message}`);
@@ -228,7 +232,7 @@ async function viaChatCompletions(call: ModelCall, endpoint: ChatEndpoint): Prom
     } catch (thrown) {
       // Some providers reject a JSON Schema in the request. Then put the schema in the prompt.
       const error = unwrap(thrown);
-      if (!APICallError.isInstance(error) || error.statusCode !== 400) throw thrown;
+      if (!APICallError.isInstance(error) || error.statusCode !== HTTP.badRequest) throw thrown;
     }
     const result = await generateText({
       ...common,
@@ -243,10 +247,10 @@ async function viaChatCompletions(call: ModelCall, endpoint: ChatEndpoint): Prom
     const noObject = noObjectError(error);
     if (noObject) throw noObject;
     if (APICallError.isInstance(error)) {
-      if (error.statusCode === 401 || error.statusCode === 403) {
+      if (error.statusCode === HTTP.unauthorized || error.statusCode === HTTP.forbidden) {
         throw new Error(`${label} rejected the API key. Check the key in Settings.`);
       }
-      const detail = (error.responseBody ?? error.message).slice(0, 300);
+      const detail = (error.responseBody ?? error.message).slice(0, ERROR_DETAIL_LENGTH);
       throw new Error(`${label} answered ${error.statusCode ?? "with an error"}: ${detail}`);
     }
     throw error;
@@ -319,22 +323,22 @@ async function viaVertex(call: ModelCall, settings: Settings): Promise<ModelResu
     const noObject = noObjectError(error);
     if (noObject) throw noObject;
     if (APICallError.isInstance(error)) {
-      if (error.statusCode === 401 || error.statusCode === 403) {
+      if (error.statusCode === HTTP.unauthorized || error.statusCode === HTTP.forbidden) {
         throw new Error(
           `Vertex AI refused the request in project "${project}". Turn on the Vertex AI API in the project, and log in with: gcloud auth application-default login`,
         );
       }
-      if (error.statusCode === 404 && claude) {
+      if (error.statusCode === HTTP.notFound && claude) {
         throw new Error(
           `Vertex AI has no model "${model}" in "${location}" for project "${project}". Enable the Claude model in the Model Garden of the project first.`,
         );
       }
-      if (error.statusCode === 404) {
+      if (error.statusCode === HTTP.notFound) {
         throw new Error(
           `Vertex AI has no model "${model}" in "${location}". Check the model and the location in Settings.`,
         );
       }
-      if (error.statusCode === 429) {
+      if (error.statusCode === HTTP.tooManyRequests) {
         throw new Error("Vertex AI quota reached. Wait a moment, then try again.");
       }
       throw new Error(`Vertex AI error ${error.statusCode ?? ""}: ${error.message}`);

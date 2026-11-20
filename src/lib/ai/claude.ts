@@ -1,6 +1,9 @@
 import { spawn } from "node:child_process";
+import { MODEL_TIMEOUT_MS } from "@/lib/ai/limits";
 
-const TIMEOUT_MS = 5 * 60 * 1000;
+const TIMEOUT_MS = MODEL_TIMEOUT_MS;
+// The most output of a failed run that the error message shows.
+const ERROR_DETAIL_LENGTH = 500;
 
 type ClaudeCall = {
   cwd: string;
@@ -65,7 +68,11 @@ export function runClaude({
         resolve(result.structured_output);
       } catch (error) {
         const detail = error instanceof SyntaxError ? stderr || stdout : (error as Error).message;
-        reject(new Error(`Claude Code failed (exit code ${code}): ${detail.slice(0, 500)}`));
+        reject(
+          new Error(
+            `Claude Code failed (exit code ${code}): ${detail.slice(0, ERROR_DETAIL_LENGTH)}`,
+          ),
+        );
       }
     });
   });

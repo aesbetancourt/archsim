@@ -5,6 +5,7 @@ import { readQuestions } from "./questions";
 import type { SearchItem } from "./search";
 import { headings, readArticle, lessons } from "./lesson-reader";
 import { headingId, lessonSections } from "./lessons";
+import { route } from "@/lib/routes";
 
 // The pages of the app that are not lessons.
 const appPages: SearchItem[] = [
@@ -12,81 +13,81 @@ const appPages: SearchItem[] = [
     kind: "Page",
     title: "Katas",
     subtitle: "Katas and interview questions, with a review",
-    href: "/",
+    href: route("/"),
   },
-  { kind: "Page", title: "All lessons", subtitle: "The Learn area", href: "/learn" },
+  { kind: "Page", title: "All lessons", subtitle: "The Learn area", href: route("/learn") },
   {
     kind: "Page",
     title: "Cheatsheets",
     subtitle: "The key facts of each section",
-    href: "/learn/cheatsheets",
+    href: route("/learn/cheatsheets"),
   },
   {
     kind: "Page",
     title: "Worked examples",
     subtitle: "Finished katas, step by step",
-    href: "/learn/examples",
+    href: route("/learn/examples"),
   },
-  { kind: "Page", title: "Glossary", subtitle: "Terms in plain words", href: "/glossary" },
+  { kind: "Page", title: "Glossary", subtitle: "Terms in plain words", href: route("/glossary") },
   {
     kind: "Page",
     title: "Vocabulary drill",
     subtitle: "Explain the terms",
-    href: "/drill",
+    href: route("/drill"),
     keywords: "practice flashcards",
   },
   {
     kind: "Page",
     title: "Question drill",
     subtitle: "Answer the interview questions",
-    href: "/drill/questions",
+    href: route("/drill/questions"),
     keywords: "practice",
   },
   {
     kind: "Page",
     title: "Product drill",
     subtitle: "Estimate cost, prove value, set priorities",
-    href: "/drill/product",
+    href: route("/drill/product"),
     keywords: "practice cost roi pricing rice business",
   },
   {
     kind: "Page",
     title: "Notebook",
     subtitle: "Notes, highlights, and the story bank",
-    href: "/notebook",
+    href: route("/notebook"),
     keywords: "notes highlights stories",
   },
   {
     kind: "Page",
     title: "Scratchpad",
     subtitle: "Free boards to draw and write",
-    href: "/scratchpad",
+    href: route("/scratchpad"),
     keywords: "board diagram",
   },
   {
     kind: "Page",
     title: "Solve a problem",
     subtitle: "Paste a problem and get a worked answer",
-    href: "/solve",
+    href: route("/solve"),
   },
   {
     kind: "Page",
     title: "Architectural Katas",
     subtitle: "The collection of Ted Neward",
-    href: "/community",
+    href: route("/community"),
   },
   {
     kind: "Page",
     title: "Guide",
     subtitle: "How to practice and study with Charrette",
-    href: "/guide",
+    href: route("/guide"),
     keywords: "help how to use start study plan shortcuts",
   },
   {
     kind: "Page",
     title: "Settings",
     subtitle: "The model connection",
-    href: "/settings",
+    href: route("/settings"),
     keywords: "model provider api key",
   },
 ];
@@ -110,7 +111,7 @@ export async function buildSearchIndex(): Promise<SearchItem[]> {
       kind: isCase ? "Case" : "Lesson",
       title: page.title,
       subtitle: page.summary,
-      href: `/learn/${page.slug}`,
+      href: route(`/learn/${page.slug}`),
       keywords: section,
     });
     const markdown = await readArticle(page.slug);
@@ -119,7 +120,7 @@ export async function buildSearchIndex(): Promise<SearchItem[]> {
         kind: "Section",
         title: heading,
         subtitle: page.title,
-        href: `/learn/${page.slug}#${headingId(heading)}`,
+        href: route(`/learn/${page.slug}#${headingId(heading)}`),
       });
     }
   }
@@ -129,7 +130,7 @@ export async function buildSearchIndex(): Promise<SearchItem[]> {
       kind: "Kata",
       title: kata.title,
       subtitle: firstSentence(kata.context),
-      href: `/kata/${kata.id}`,
+      href: route(`/kata/${kata.id}`),
       keywords: kata.interview ? "interview" : "kata",
     });
   }
@@ -139,7 +140,7 @@ export async function buildSearchIndex(): Promise<SearchItem[]> {
       kind: "Term",
       title: term.term,
       subtitle: term.definition,
-      href: `/glossary#${term.id}`,
+      href: route(`/glossary#${term.id}`),
       keywords: term.category,
     });
   }
@@ -149,7 +150,7 @@ export async function buildSearchIndex(): Promise<SearchItem[]> {
       kind: "Cheatsheet",
       title: `${sheet.section} cheatsheet`,
       subtitle: sheet.summary,
-      href: `/learn/cheatsheets#${sheet.id}`,
+      href: route(`/learn/cheatsheets#${sheet.id}`),
       keywords: sheet.blocks.map((block) => block.title).join(" "),
     });
   }

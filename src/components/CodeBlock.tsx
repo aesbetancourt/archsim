@@ -4,6 +4,9 @@ import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 
 // The names of the languages, as a reader knows them.
+// How long the button says "Copied" after a click.
+const COPIED_MS = 1500;
+
 const names: Record<string, string> = {
   sql: "SQL",
   ts: "TypeScript",
@@ -35,7 +38,7 @@ export default function CodeBlock({
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setTimeout(() => setCopied(false), COPIED_MS);
     } catch {
       // The browser does not allow the clipboard here. The reader can still select the text.
     }

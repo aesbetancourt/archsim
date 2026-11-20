@@ -1,4 +1,5 @@
 import { lessonSections } from "@/lib/content/lessons";
+import { SCORES } from "@/lib/ai/score";
 
 export const dimensions = [
   { id: "scope", label: "Scope and core functions" },
@@ -52,8 +53,7 @@ export const reviewSchema = {
         required: ["id", "score", "evidence", "concept", "improvement", "example", "study"],
         properties: {
           id: { type: "string", enum: dimensions.map((dimension) => dimension.id) },
-          // An enum works with each provider. Some reject "minimum" and "maximum".
-          score: { type: "integer", enum: [1, 2, 3, 4, 5] },
+          score: { type: "integer", enum: SCORES },
           evidence: { type: "string" },
           concept: { type: "string" },
           improvement: { type: "string" },

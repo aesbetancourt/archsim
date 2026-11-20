@@ -1,5 +1,6 @@
 import { jsonFile } from "./json-file";
 import { competencies, type Story, type StoryFields } from "./stories";
+import { timeId } from "@/lib/random-id";
 
 export type { Story, StoryFields } from "./stories";
 
@@ -56,7 +57,6 @@ export type Notebook = {
 
 const UNTITLED = "Untitled note";
 
-const newId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 const list = <T>(value: unknown): T[] => (Array.isArray(value) ? value : []);
 
 function normalize(value: unknown): Notebook {
@@ -72,7 +72,7 @@ function normalize(value: unknown): Notebook {
   if (typeof saved.notes === "string" && saved.notes.trim()) {
     const now = new Date().toISOString();
     notebook.documents.unshift({
-      id: newId(),
+      id: timeId(),
       title: "General notes",
       html: saved.notes,
       createdAt: now,
@@ -90,7 +90,7 @@ export function addHighlight(
   input: Pick<Highlight, "page" | "title" | "text" | "start" | "note">,
 ): Promise<Highlight> {
   return change((notebook) => {
-    const highlight: Highlight = { ...input, id: newId(), createdAt: new Date().toISOString() };
+    const highlight: Highlight = { ...input, id: timeId(), createdAt: new Date().toISOString() };
     notebook.highlights.push(highlight);
     return highlight;
   });
@@ -119,7 +119,7 @@ export function addBookmark(
       (item) => item.page === input.page && item.anchor === input.anchor,
     );
     if (found) return found;
-    const bookmark: Bookmark = { ...input, id: newId(), createdAt: new Date().toISOString() };
+    const bookmark: Bookmark = { ...input, id: timeId(), createdAt: new Date().toISOString() };
     notebook.bookmarks.push(bookmark);
     return bookmark;
   });
@@ -143,7 +143,7 @@ export function createDocument(title: string): Promise<NoteDoc> {
   return change((notebook) => {
     const now = new Date().toISOString();
     const document: NoteDoc = {
-      id: newId(),
+      id: timeId(),
       title: title.trim() || UNTITLED,
       html: "",
       createdAt: now,
@@ -159,7 +159,7 @@ export function addInsightsDocument(title: string, html: string): Promise<NoteDo
   return change((notebook) => {
     const now = new Date().toISOString();
     const document: NoteDoc = {
-      id: newId(),
+      id: timeId(),
       title,
       html,
       createdAt: now,
@@ -202,7 +202,7 @@ const cleanStory = (fields: StoryFields): StoryFields => ({
 export function createStory(fields: StoryFields): Promise<Story> {
   return change((notebook) => {
     const now = new Date().toISOString();
-    const story: Story = { ...cleanStory(fields), id: newId(), createdAt: now, updatedAt: now };
+    const story: Story = { ...cleanStory(fields), id: timeId(), createdAt: now, updatedAt: now };
     notebook.stories.push(story);
     return story;
   });

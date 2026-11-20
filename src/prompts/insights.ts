@@ -25,11 +25,14 @@ Fill each field:
 const MAX_SECTION = 4_000;
 const MAX_SECTIONS = 120_000;
 
+// The start of a Markdown line with a section heading.
+const H2 = "## ";
+
 // The text of one "## " section of a lesson, up to the next section.
 export function sectionText(markdown: string, anchor: string): string {
   const lines = markdown.split("\n");
   const start = lines.findIndex(
-    (line) => line.startsWith("## ") && headingId(line.slice(3).trim()) === anchor,
+    (line) => line.startsWith(H2) && headingId(line.slice(H2.length).trim()) === anchor,
   );
   if (start < 0) return "";
   const rest = lines.slice(start + 1);

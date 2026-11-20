@@ -97,6 +97,24 @@
   },
   "overrides": [
     {
+      "files": ["src/**"],
+      "rules": {
+        "no-magic-numbers": [
+          "error",
+          {
+            "ignore": [-1, 0, 1, 2],
+            "ignoreArrayIndexes": true,
+            "ignoreDefaultValues": true,
+            "ignoreClassFieldInitialValues": true,
+            "ignoreEnums": true,
+            "ignoreNumericLiteralTypes": true,
+            "ignoreReadonlyClassProperties": true,
+            "ignoreTypeIndexes": true
+          }
+        ]
+      }
+    },
+    {
       "files": ["src/components/**"],
       "rules": {
         "no-restricted-globals": [

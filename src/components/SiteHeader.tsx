@@ -22,22 +22,23 @@ import CommandPalette from "@/components/CommandPalette";
 import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
 import ThemeToggle from "@/components/ThemeToggle";
+import { route } from "@/lib/routes";
 
 const practice = [
   {
-    href: "/",
+    href: route("/"),
     title: "Katas",
     description: "Katas and interview questions, with a review.",
     icon: <Target />,
   },
   {
-    href: "/solve",
+    href: route("/solve"),
     title: "Solve a problem",
     description: "Paste a problem and get a worked answer.",
     icon: <Sparkles />,
   },
   {
-    href: "/community",
+    href: route("/community"),
     title: "Architectural Katas",
     description: "The collection of Ted Neward.",
     icon: <Library />,
@@ -46,44 +47,49 @@ const practice = [
 
 const learn = [
   {
-    href: "/learn",
+    href: route("/learn"),
     title: "Lessons",
     description: "The knowledge areas of an architect.",
     icon: <BookOpen />,
   },
   {
-    href: "/learn/building-blocks",
+    href: route("/learn/building-blocks"),
     title: "Building blocks",
     description: "The standard pieces and what each one costs.",
     icon: <Blocks />,
   },
   {
-    href: "/learn/cheatsheets",
+    href: route("/learn/cheatsheets"),
     title: "Cheatsheets",
     description: "The key facts of each section, on one page.",
     icon: <ScrollText />,
   },
   {
-    href: "/learn/examples",
+    href: route("/learn/examples"),
     title: "Worked examples",
     description: "Finished katas, step by step.",
     icon: <Lightbulb />,
   },
-  { href: "/glossary", title: "Glossary", description: "Terms in plain words.", icon: <BookA /> },
   {
-    href: "/drill",
+    href: route("/glossary"),
+    title: "Glossary",
+    description: "Terms in plain words.",
+    icon: <BookA />,
+  },
+  {
+    href: route("/drill"),
     title: "Vocabulary drill",
     description: "Explain the terms, with spaced repetition.",
     icon: <Repeat />,
   },
   {
-    href: "/drill/questions",
+    href: route("/drill/questions"),
     title: "Question drill",
     description: "Answer the interview questions, with an AI check.",
     icon: <MessageCircleQuestion />,
   },
   {
-    href: "/drill/product",
+    href: route("/drill/product"),
     title: "Product drill",
     description: "Estimate cost, prove value, and set priorities.",
     icon: <Calculator />,

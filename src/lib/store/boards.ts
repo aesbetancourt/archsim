@@ -1,5 +1,6 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { timeId } from "@/lib/random-id";
 
 // A board is a free workspace: one diagram and notes. It is not tied to a kata.
 export type Board = {
@@ -45,7 +46,7 @@ async function write(board: Board): Promise<void> {
 export async function createBoard(): Promise<Board> {
   const now = new Date().toISOString();
   const board: Board = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id: timeId(),
     title: "Untitled board",
     notes: "",
     scene: { elements: [], files: {} },

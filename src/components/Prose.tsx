@@ -17,9 +17,13 @@ import TableFrame from "@/components/TableFrame";
 import Walkthrough from "@/components/Walkthrough";
 import { parseWalkthrough } from "@/lib/content/walkthrough";
 import { headingId } from "@/lib/content/lessons";
+import { pageAddress } from "@/lib/routes";
 
 // Color the code of the languages that the lessons use. Only these grammars load, so the help
 // chat stays small. Diagram and walkthrough blocks are data for a component, not code.
+// A table cell with this many characters or fewer is short, so its column can stay narrow.
+const SHORT_CELL = 12;
+
 const highlight: [typeof rehypeHighlight, HighlightOptions] = [
   rehypeHighlight,
   {
@@ -88,7 +92,10 @@ export default function Prose({
           ol: ({ children }) => <ol className="list-decimal space-y-1.5 pl-6">{children}</ol>,
           a: ({ href = "", children }) =>
             href.startsWith("/") && !compact ? (
-              <Link href={href} className="text-primary underline-offset-4 hover:underline">
+              <Link
+                href={pageAddress(href)}
+                className="text-primary underline-offset-4 hover:underline"
+              >
                 {children}
               </Link>
             ) : (
@@ -152,7 +159,7 @@ export default function Prose({
           // matrix or "Yes", does not, so a column of short values stays narrow.
           td: ({ children }) => {
             const length = text(children).trim().length;
-            const short = length > 0 && length <= 12;
+            const short = length > 0 && length <= SHORT_CELL;
             return (
               <td
                 className={`border-t border-foreground/10 px-3 py-2.5 align-top transition-colors first:min-w-40 first:font-semibold [&+td]:border-l [&+td]:border-foreground/10 ${short ? "" : "min-w-36"}`}

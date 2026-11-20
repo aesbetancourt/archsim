@@ -3,6 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { getLesson, headings, readArticle } from "./lesson-reader";
 import { headingId, lessonSections } from "./lessons";
+import { route } from "@/lib/routes";
 
 // A cheatsheet is a fast review of one section of the Learn area. Each section has a JSON file
 // in content/cheatsheets. Each entry links to the lesson where the fact is.
@@ -81,9 +82,9 @@ async function linkTo(reference: string, file: string): Promise<LessonLink> {
     const markdown = await readArticle(slug);
     const found = markdown && headings(markdown).find((text) => headingId(text) === heading);
     if (!found) throw new Error(`${file}: lesson "${slug}" has no heading "${heading}"`);
-    return { href: `/learn/${slug}#${heading}`, title: `${page.title}: ${found}` };
+    return { href: route(`/learn/${slug}#${heading}`), title: `${page.title}: ${found}` };
   }
-  return { href: `/learn/${slug}`, title: page.title };
+  return { href: route(`/learn/${slug}`), title: page.title };
 }
 
 async function resolveBlock(block: Block, file: string): Promise<SheetBlock> {

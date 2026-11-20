@@ -23,10 +23,13 @@ export type SearchItem = {
   keywords?: string;
 };
 
+// A word of this length or shorter is not stemmed.
+const SHORT_WORD = 4;
+
 // Remove a plural or "-y" end from a search word, so "retry" also finds "retries", and
 // "caches" also finds "cache". Short words stay as they are.
 export function stem(word: string): string {
-  if (word.length <= 4) return word;
+  if (word.length <= SHORT_WORD) return word;
   return word.replace(/(ies|es|s|y)$/, "");
 }
 
@@ -45,6 +48,13 @@ const kindBonus: Record<SearchKind, number> = {
   Question: 0,
 };
 
+// The points for one search word, by where the item has it. A larger number ranks higher.
+const POINTS = { titleStart: 10, titleWord: 8, inTitle: 6, keyword: 3, subtitle: 2 };
+// A short title ranks a little higher. Each step of this many characters takes away one point, up
+// to two points.
+const TITLE_STEP = 40;
+const MAX_TITLE_PENALTY = 2;
+
 // The score of an item for the search words, or 0 when a word is not in the item.
 function scoreItem(item: SearchItem, words: string[]): number {
   if (words.length === 0) return 0;
@@ -53,16 +63,16 @@ function scoreItem(item: SearchItem, words: string[]): number {
   const keywords = (item.keywords ?? "").toLowerCase();
   let score = 0;
   for (const word of words) {
-    if (title.startsWith(word)) score += 10;
+    if (title.startsWith(word)) score += POINTS.titleStart;
     else if (new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(title))
-      score += 8;
-    else if (title.includes(word)) score += 6;
-    else if (keywords.includes(word)) score += 3;
-    else if (subtitle.includes(word)) score += 2;
+      score += POINTS.titleWord;
+    else if (title.includes(word)) score += POINTS.inTitle;
+    else if (keywords.includes(word)) score += POINTS.keyword;
+    else if (subtitle.includes(word)) score += POINTS.subtitle;
     else return 0;
   }
   // A short title that matches is closer to what the person typed.
-  return score + kindBonus[item.kind] - Math.min(title.length / 40, 2);
+  return score + kindBonus[item.kind] - Math.min(title.length / TITLE_STEP, MAX_TITLE_PENALTY);
 }
 
 // The best results, in order. Items with the same score keep the order of the index.

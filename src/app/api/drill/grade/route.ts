@@ -3,6 +3,7 @@ import { glossary } from "@/lib/content/glossary";
 import { runModel } from "@/lib/ai/model";
 import { drillGradeRequest, readBody } from "@/lib/requests";
 import { buildGradePrompt, gradeSystemPrompt } from "@/prompts/drill";
+import { HTTP } from "@/lib/http-status";
 
 // Compare one explanation from the vocabulary drill with the glossary definition.
 export async function POST(request: Request) {
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
   if (body instanceof Response) return body;
   const term = glossary.find((entry) => entry.id === body.termId);
   if (!term) {
-    return Response.json({ error: "Unknown term." }, { status: 404 });
+    return Response.json({ error: "Unknown term." }, { status: HTTP.notFound });
   }
 
   try {
@@ -21,6 +22,6 @@ export async function POST(request: Request) {
     });
     return Response.json({ grade: parseGrade(output), model });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 502 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badGateway });
   }
 }

@@ -19,6 +19,7 @@ import {
 import { keys } from "@/lib/browser/query-keys";
 import { notesText } from "@/lib/notes-html";
 import { plural } from "@/lib/text";
+import { pageAddress } from "@/lib/routes";
 
 type LessonGroup = {
   page: string;
@@ -159,7 +160,7 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
                 </summary>
                 <div className="space-y-4 px-4 pt-1 pb-4 sm:pl-10">
                   <Link
-                    href={group.page}
+                    href={pageAddress(group.page)}
                     className="inline-flex items-center gap-1 text-primary hover:underline"
                   >
                     Open the lesson <ArrowRight className="size-3.5" aria-hidden />
@@ -171,7 +172,9 @@ export default function NotebookView({ notebook }: { notebook: Notebook }) {
                         {group.bookmarks.map((item) => (
                           <li key={item.id} className="flex items-center gap-1">
                             <Link
-                              href={item.anchor ? `${item.page}#${item.anchor}` : item.page}
+                              href={pageAddress(
+                                item.anchor ? `${item.page}#${item.anchor}` : item.page,
+                              )}
                               className="flex min-w-0 flex-1 items-center gap-2 rounded-base px-1.5 py-1 hover:bg-muted"
                             >
                               <BookmarkIcon

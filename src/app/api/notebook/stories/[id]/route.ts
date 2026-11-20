@@ -1,5 +1,6 @@
 import { deleteStory, updateStory } from "@/lib/store/notebook";
 import { readBody, storyFields } from "@/lib/requests";
+import { HTTP } from "@/lib/http-status";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -9,7 +10,7 @@ export async function PUT(request: Request, { params }: Context) {
   const fields = await readBody(request, storyFields);
   if (fields instanceof Response) return fields;
   const story = await updateStory(id, fields);
-  if (!story) return Response.json({ error: "Unknown story." }, { status: 404 });
+  if (!story) return Response.json({ error: "Unknown story." }, { status: HTTP.notFound });
   return Response.json(story);
 }
 

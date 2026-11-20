@@ -3,6 +3,7 @@ import { runModel } from "@/lib/ai/model";
 import { readProductCases } from "@/lib/content/product-drill";
 import { questionGradeRequest, readBody } from "@/lib/requests";
 import { buildQuestionPrompt, productGradeSystemPrompt } from "@/prompts/drill";
+import { HTTP } from "@/lib/http-status";
 
 // Compare one answer from the product drill with the points of a strong answer.
 export async function POST(request: Request) {
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
   if (body instanceof Response) return body;
   const item = (await readProductCases()).find((entry) => entry.id === body.questionId);
   if (!item) {
-    return Response.json({ error: "Unknown case." }, { status: 404 });
+    return Response.json({ error: "Unknown case." }, { status: HTTP.notFound });
   }
 
   try {
@@ -21,6 +22,6 @@ export async function POST(request: Request) {
     });
     return Response.json({ grade: parseGrade(output), model });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 502 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badGateway });
   }
 }

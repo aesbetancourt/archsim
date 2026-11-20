@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { deleteAt } from "@/lib/browser/api";
+import type { Route } from "next";
 
 type Props = {
   label: React.ReactNode;
@@ -23,7 +24,7 @@ type Props = {
   // The address that gets a DELETE request after the user confirms.
   endpoint: string;
   // The page to open after the request. Without it, the current page loads again.
-  redirectTo?: string;
+  redirectTo?: Route;
   size?: React.ComponentProps<typeof Button>["size"];
   variant?: React.ComponentProps<typeof Button>["variant"];
   ariaLabel?: string;

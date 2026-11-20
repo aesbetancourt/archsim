@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Check each page address in a link at type-check time.
+  typedRoutes: true,
   turbopack: {
     rules: {
       "*.css": {

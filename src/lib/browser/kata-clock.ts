@@ -1,5 +1,6 @@
 // The countdown clock of a kata. It copies the time box of a system design interview, with the
 // points where an interviewer expects you to move on. This file has no server code.
+import { MINUTE_MS, SECOND_MS, SECONDS_PER_MINUTE } from "@/lib/time";
 
 export type Clock = {
   // The length of the time box, in minutes.
@@ -12,23 +13,27 @@ export type Clock = {
   pausedAt: number | null;
 };
 
+// The time box of an interview, in minutes. The phases are planned for it. A clock of a different
+// length keeps the same fractions.
+export const INTERVIEW_MINUTES = 45;
+// The minute of the plan at which each phase ends. The wrap-up is in the last 5 minutes.
+const PHASE_ENDS = { clarify: 5, firstDesign: 15, deepDives: 40 };
+
 // The phases of the time box, as the fraction of the time at which each one ends.
-// For 45 minutes: clarify to minute 5, a first design end to end by minute 15, deep dives to
-// minute 40, and a wrap-up in the last 5 minutes.
 export const phases = [
   {
     label: "Clarify and scope",
-    end: 5 / 45,
+    end: PHASE_ENDS.clarify / INTERVIEW_MINUTES,
     hint: "Ask your questions. Write the core functions and the characteristics (steps 1 and 2).",
   },
   {
     label: "First design, end to end",
-    end: 15 / 45,
+    end: PHASE_ENDS.firstDesign / INTERVIEW_MINUTES,
     hint: "Select a style and draw the happy path from start to end (steps 3 and 4). Do not go deep yet.",
   },
   {
     label: "Deep dives",
-    end: 40 / 45,
+    end: PHASE_ENDS.deepDives / INTERVIEW_MINUTES,
     hint: "Go deep on the hard parts: data, failure, scale, and how you know it works.",
   },
   {
@@ -38,7 +43,9 @@ export const phases = [
   },
 ] as const;
 
-export const DURATIONS = [20, 30, 45, 60] as const;
+// The lengths of the time box that the person can select, in minutes.
+// oxlint-disable-next-line no-magic-numbers -- A named list of choices.
+export const DURATIONS = [20, 30, INTERVIEW_MINUTES, 60] as const;
 
 export function startClock(minutes: number, now: number): Clock {
   return { minutes, startedAt: now, pausedMs: 0, pausedAt: null };
@@ -68,7 +75,7 @@ export type ClockState = {
 export function clockState(clock: Clock, now: number): ClockState {
   const until = clock.pausedAt ?? now;
   const elapsedMs = Math.max(0, until - clock.startedAt - clock.pausedMs);
-  const totalMs = clock.minutes * 60_000;
+  const totalMs = clock.minutes * MINUTE_MS;
   const fraction = elapsedMs / totalMs;
   const found = phases.findIndex((phase) => fraction < phase.end);
   const phase = found === -1 ? phases.length - 1 : found;
@@ -86,8 +93,9 @@ export function clockState(clock: Clock, now: number): ClockState {
 export function formatClock(remainingMs: number): string {
   const over = remainingMs < 0;
   // Count down in whole seconds that are not finished yet, as a kitchen timer does.
-  const seconds = over ? Math.floor(-remainingMs / 1000) : Math.ceil(remainingMs / 1000);
-  const text = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  const seconds = over ? Math.floor(-remainingMs / SECOND_MS) : Math.ceil(remainingMs / SECOND_MS);
+  const minutes = Math.floor(seconds / SECONDS_PER_MINUTE);
+  const text = `${minutes}:${String(seconds % SECONDS_PER_MINUTE).padStart(2, "0")}`;
   return over ? `+${text}` : text;
 }
 

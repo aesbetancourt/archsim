@@ -3,6 +3,7 @@ import { speechClip } from "./api";
 // The sound of the read-aloud player. It says one sentence, with the Google voice or with the voice
 // of the browser. It does not know the page, and it does not decide which sentence comes next.
 
+// oxlint-disable-next-line no-magic-numbers -- A named list of the speeds that the person can select.
 export const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
 const RATE_KEY = "charrette-read-rate";
 

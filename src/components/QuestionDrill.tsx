@@ -6,6 +6,7 @@ import Prose from "@/components/Prose";
 import StoryPicker from "@/components/StoryPicker";
 import type { Question } from "@/lib/content/questions";
 import { useProgress } from "@/lib/browser/use-progress";
+import { pageAddress } from "@/lib/routes";
 
 // The question drill: answer the interview questions of the lessons, as in an interview.
 export default function QuestionDrill({
@@ -58,7 +59,11 @@ export default function QuestionDrill({
         <>
           <h3 className="font-medium">The points of a strong answer</h3>
           <Prose compact markdown={question.points.map((point) => `- ${point}`).join("\n")} />
-          <Link href={question.href} className="text-primary hover:underline" target="_blank">
+          <Link
+            href={pageAddress(question.href)}
+            className="text-primary hover:underline"
+            target="_blank"
+          >
             Read the lesson: {question.lesson}
           </Link>
         </>

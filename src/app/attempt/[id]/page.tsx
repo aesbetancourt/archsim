@@ -24,6 +24,8 @@ import { Progress } from "@/components/ui/progress";
 import { getAttempt } from "@/lib/store/attempts";
 import { findKata } from "@/lib/store/library";
 import { dimensions, studyPages } from "@/lib/ai/rubric";
+import { SCORE_MAX } from "@/lib/ai/score";
+import { PERCENT } from "@/lib/utils";
 
 // One icon for each dimension of the review.
 const dimensionIcons: Record<string, LucideIcon> = {
@@ -82,7 +84,7 @@ export default async function AttemptPage({ params }: { params: Promise<{ id: st
                   </CardTitle>
                   <span className="tabular-nums text-muted-foreground">{result.score} / 5</span>
                 </div>
-                <Progress value={result.score * 20} />
+                <Progress value={result.score * (PERCENT / SCORE_MAX)} />
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>{result.evidence}</p>

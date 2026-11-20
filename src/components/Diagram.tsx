@@ -31,6 +31,40 @@ const PERSON_H = 76;
 const PAD = 40;
 const GROUP_PAD = 18;
 const GROUP_HEADER = 22;
+// The label of a group, from the top left corner of its frame.
+const GROUP_LABEL = { x: 12, y: 18 };
+
+// The figure of a person, measured from the top of its node: the head, the neck, the arms, the
+// hips, and the two legs.
+const FIGURE = {
+  headCenter: 7,
+  headRadius: 6,
+  armsAt: 12,
+  armHalf: 10,
+  hipsAt: 20,
+  legX: 8,
+  legY: 10,
+};
+// The first line of the name of a person, below the figure.
+const PERSON_NAME_TOP = 52;
+// The height of one line of text in a node, and the move from the middle to the text baseline.
+const LINE_HEIGHT = 15;
+const BASELINE = 4;
+const BOX_CORNER = 6;
+// The line in a device box, above its lower edge.
+const DEVICE_LINE = 7;
+// A note above a node: the width of one character, the space at the two ends, the height, the
+// text baseline above the bottom, and the space to the node.
+const NOTE = { charWidth: 6.4, padding: 16, height: 20, baseline: 6, gap: 10 };
+const FONT_WEIGHT = { bold: 600, normal: 400 };
+// An arrow that carries the flow of this step is wider.
+const ARROW_WIDTH = { flow: 3, normal: 2 };
+// The ring around a part in focus: the space between the ring and the part.
+const FOCUS_GAP = 6;
+// A part that failed is faint, and has a badge with a cross: the start of the cross from the
+// corner, and its size.
+const DOWN_OPACITY = 0.45;
+const CROSS = { x: 7, y: 3, size: 10 };
 
 type Rect = { cx: number; cy: number; hw: number; hh: number };
 
@@ -110,12 +144,12 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
     return <ellipse cx={rect.cx} cy={rect.cy} rx={rect.hw} ry={rect.hh} {...paint} />;
   if (shape === "person") {
     // A figure of a person. The name is below it.
-    const head = top + 7;
+    const head = top + FIGURE.headCenter;
     return (
       <g className="stroke-foreground/70" strokeWidth={2} strokeLinecap="round">
-        <circle cx={rect.cx} cy={head} r={6} fill={shapeStyle.person.color} />
+        <circle cx={rect.cx} cy={head} r={FIGURE.headRadius} fill={shapeStyle.person.color} />
         <path
-          d={`M ${rect.cx} ${head + 6} V ${head + 20} M ${rect.cx - 10} ${head + 12} H ${rect.cx + 10} M ${rect.cx} ${head + 20} l -8 10 M ${rect.cx} ${head + 20} l 8 10`}
+          d={`M ${rect.cx} ${head + FIGURE.headRadius} V ${head + FIGURE.hipsAt} M ${rect.cx - FIGURE.armHalf} ${head + FIGURE.armsAt} H ${rect.cx + FIGURE.armHalf} M ${rect.cx} ${head + FIGURE.hipsAt} l ${-FIGURE.legX} ${FIGURE.legY} M ${rect.cx} ${head + FIGURE.hipsAt} l ${FIGURE.legX} ${FIGURE.legY}`}
           fill="none"
         />
       </g>
@@ -128,7 +162,7 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
         y={top}
         width={rect.hw * 2}
         height={rect.hh * 2}
-        rx={shape === "module" ? 0 : 6}
+        rx={shape === "module" ? 0 : BOX_CORNER}
         strokeDasharray={shape === "external" ? "5 4" : undefined}
         {...paint}
       />
@@ -136,9 +170,9 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
         // A line in the box, like the lower edge of a screen.
         <line
           x1={left}
-          y1={bottom - 7}
+          y1={bottom - DEVICE_LINE}
           x2={right}
-          y2={bottom - 7}
+          y2={bottom - DEVICE_LINE}
           className="stroke-foreground/70"
           strokeWidth={2}
         />
@@ -149,21 +183,21 @@ function NodeShape({ shape, rect }: { shape: DiagramShape; rect: Rect }) {
 
 // A short note above a node, in a rounded label.
 function Note({ x, y, text }: { x: number; y: number; text: string }) {
-  const width = text.length * 6.4 + 16;
+  const width = text.length * NOTE.charWidth + NOTE.padding;
   return (
     <g>
       <rect
         x={x - width / 2}
-        y={y - 20}
+        y={y - NOTE.height}
         width={width}
-        height={20}
+        height={NOTE.height}
         rx={10}
         className="fill-card stroke-primary"
         strokeWidth={1.5}
       />
       <text
         x={x}
-        y={y - 6}
+        y={y - NOTE.baseline}
         fontSize={11}
         fontWeight={600}
         textAnchor="middle"
@@ -247,8 +281,8 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
               strokeWidth={2}
             />
             <text
-              x={group.left + 12}
-              y={group.top + 18}
+              x={group.left + GROUP_LABEL.x}
+              y={group.top + GROUP_LABEL.y}
               fontSize={12}
               fontWeight={600}
               className="fill-primary"
@@ -283,7 +317,7 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
                 x2={end.x}
                 y2={end.y}
                 className={flow ? "stroke-primary" : "stroke-foreground/70"}
-                strokeWidth={flow ? 3 : 2}
+                strokeWidth={flow ? ARROW_WIDTH.flow : ARROW_WIDTH.normal}
                 strokeDasharray={edge.async ? "6 4" : undefined}
                 markerEnd="url(#arrow)"
                 markerStart={edge.both ? "url(#arrow)" : undefined}
@@ -333,8 +367,9 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
           const { x: dx, y: dy } = textOffset[shape] ?? NO_OFFSET;
           // The name of a person starts below the figure.
           const lineY = (index: number) => {
-            if (shape === "person") return rect.cy - rect.hh + 52 + index * 15;
-            return rect.cy + dy + (index - (lines.length - 1) / 2) * 15 + 4;
+            if (shape === "person")
+              return rect.cy - rect.hh + PERSON_NAME_TOP + index * LINE_HEIGHT;
+            return rect.cy + dy + (index - (lines.length - 1) / 2) * LINE_HEIGHT + BASELINE;
           };
           const down = view?.down.has(node.id);
           const note = view?.notes[node.id];
@@ -346,17 +381,17 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
             >
               {view?.focus.has(node.id) && (
                 <rect
-                  x={rect.cx - rect.hw - 6}
-                  y={rect.cy - rect.hh - 6}
-                  width={rect.hw * 2 + 12}
-                  height={rect.hh * 2 + 12}
+                  x={rect.cx - rect.hw - FOCUS_GAP}
+                  y={rect.cy - rect.hh - FOCUS_GAP}
+                  width={(rect.hw + FOCUS_GAP) * 2}
+                  height={(rect.hh + FOCUS_GAP) * 2}
                   rx={10}
                   fill="none"
                   className="stroke-primary"
                   strokeWidth={3}
                 />
               )}
-              <g opacity={down ? 0.45 : 1}>
+              <g opacity={down ? DOWN_OPACITY : 1}>
                 <NodeShape shape={shape} rect={rect} />
                 <text
                   fontSize={12}
@@ -369,7 +404,7 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
                       key={index}
                       x={rect.cx + dx}
                       y={lineY(index)}
-                      fontWeight={index === 0 ? 600 : 400}
+                      fontWeight={index === 0 ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
                     >
                       {line}
                     </tspan>
@@ -389,14 +424,14 @@ export default function Diagram({ spec, view }: { spec: DiagramSpec; view?: Diag
                     strokeWidth={2}
                   />
                   <path
-                    d={`M ${rect.cx + rect.hw - 7} ${rect.cy - rect.hh - 3} l 10 10 m 0 -10 l -10 10`}
+                    d={`M ${rect.cx + rect.hw - CROSS.x} ${rect.cy - rect.hh - CROSS.y} l ${CROSS.size} ${CROSS.size} m 0 ${-CROSS.size} l ${-CROSS.size} ${CROSS.size}`}
                     stroke="#fff"
                     strokeWidth={2.5}
                     strokeLinecap="round"
                   />
                 </g>
               )}
-              {note && <Note x={rect.cx} y={rect.cy - rect.hh - 10} text={note} />}
+              {note && <Note x={rect.cx} y={rect.cy - rect.hh - NOTE.gap} text={note} />}
             </g>
           );
         })}

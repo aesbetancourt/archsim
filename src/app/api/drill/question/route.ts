@@ -7,6 +7,7 @@ import {
   buildQuestionPrompt,
   questionGradeSystemPrompt,
 } from "@/prompts/drill";
+import { HTTP } from "@/lib/http-status";
 
 // Compare one answer from the question drill with the points of a strong answer in the lesson.
 export async function POST(request: Request) {
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
   if (body instanceof Response) return body;
   const question = (await readQuestions()).find((item) => item.id === body.questionId);
   if (!question) {
-    return Response.json({ error: "Unknown question." }, { status: 404 });
+    return Response.json({ error: "Unknown question." }, { status: HTTP.notFound });
   }
 
   try {
@@ -29,6 +30,6 @@ export async function POST(request: Request) {
     });
     return Response.json({ grade: parseGrade(output), model });
   } catch (error) {
-    return Response.json({ error: (error as Error).message }, { status: 502 });
+    return Response.json({ error: (error as Error).message }, { status: HTTP.badGateway });
   }
 }

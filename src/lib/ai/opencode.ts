@@ -2,8 +2,11 @@ import { spawn } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { openCodeMessage } from "@/prompts/provider";
+import { MODEL_TIMEOUT_MS } from "@/lib/ai/limits";
 
-const TIMEOUT_MS = 5 * 60 * 1000;
+const TIMEOUT_MS = MODEL_TIMEOUT_MS;
+// The most output of a failed run that the error message shows.
+const ERROR_DETAIL_LENGTH = 400;
 
 type OpenCodeCall = {
   cwd: string;
@@ -90,7 +93,7 @@ export async function runOpenCode({
       }
       reject(
         new Error(
-          `OpenCode failed (exit code ${code}): ${(failure || stderr || stdout || "no output").slice(0, 400)}`,
+          `OpenCode failed (exit code ${code}): ${(failure || stderr || stdout || "no output").slice(0, ERROR_DETAIL_LENGTH)}`,
         ),
       );
     });
