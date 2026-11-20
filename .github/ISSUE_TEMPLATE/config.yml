@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Website and guide
+    url: https://aesbetancourt.dev/charrette/
+    about: What Charrette does, and how to run it.
+  - name: How to contribute
+    url: https://github.com/aesbetancourt/charrette/blob/main/CONTRIBUTING.md
+    about: Read this before you open a pull request.

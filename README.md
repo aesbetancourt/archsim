@@ -197,6 +197,10 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 - **The method** is inspired by the book _Fundamentals of Software Architecture_ by Mark Richards and Neal Ford: architecture characteristics, architecture styles, and the rule that every decision is a trade-off.
 - **The engraving** on the website is by Alexis Lemaistre, 1889, from _L'École des Beaux-Arts dessinée et racontée par un élève_. It comes from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Charrette,_%C3%89cole_nationale_sup%C3%A9rieure_des_beaux-arts,_by_Alexis_Lemaistre.png) under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The copy in `docs/images` is converted to JPEG and made smaller, and it stays under CC BY-SA 4.0. The license of this repository does not apply to it.
 
+## Contributing
+
+Corrections to the lessons, bug reports, and small fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+
 ## License
 
 [PolyForm Noncommercial 1.0.0](LICENSE). Charrette is source available, not open source:
@@ -204,8 +208,6 @@ The reviewer has read-only access. In the two command-line modes, the app starts
 - **You can** use, copy, and change it for any noncommercial purpose: personal study, interview preparation, hobby projects, research, and teaching. Schools, charities, public research, and government can use it too.
 - **You cannot** use it for a commercial purpose without a separate license. For example, you cannot sell it, offer it as a paid service, or use it inside a company for its business.
 - **Keep the notice.** A copy that you give to someone must include the license and the line that starts with `Required Notice:`.
-
-For a commercial license, open an issue on GitHub.
 
 Versions published before 2026-11-19 are under the MIT license. That license still applies to those copies.
 

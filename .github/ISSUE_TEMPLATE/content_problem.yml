@@ -1,0 +1,46 @@
+name: Problem in a lesson or kata
+description: A wrong fact, an unclear explanation, a broken diagram, or a missing source.
+labels: ["content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The lessons and worked examples are written with AI and are not reviewed by an expert. Each correction makes them better for the next person.
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The address of the page in the app, and the section if you know it.
+      placeholder: /learn/caching, section "Cache invalidation"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Wrong fact
+        - Unclear or confusing text
+        - Broken or wrong diagram
+        - Missing or wrong source
+        - Wrong answer in a drill or a worked example
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the text, and tell why it is wrong or unclear.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Your correction
+      description: What the page must say, in your own words.
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: A book, an article, or documentation that supports the correction. Give the title and the author, not a long quote.

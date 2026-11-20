@@ -1,0 +1,70 @@
+name: Bug report
+description: Something in the app does not work as it must.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the report. Remove API keys, project IDs, and personal data before you send it.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Tell what you saw. Copy the error message, if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see the problem
+      placeholder: |
+        1. Open a kata.
+        2. Click Submit for review.
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: AI provider
+      description: The connection in Settings. Select "Not related" when the problem is not about the AI.
+      options:
+        - Not related
+        - Claude Code
+        - OpenCode
+        - OpenCode Go
+        - Anthropic API
+        - OpenAI-compatible API or a local model
+        - Google Vertex AI
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and system
+      placeholder: Chrome 140 on macOS 26
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of git rev-parse --short HEAD in your copy.
+      placeholder: 0a0c8e8
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: The output of the terminal or the browser console, if you have it.
+      render: text
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed API keys, project IDs, and personal data from this report.
+          required: true

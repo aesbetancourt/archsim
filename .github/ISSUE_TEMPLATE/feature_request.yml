@@ -1,0 +1,26 @@
+name: Idea or feature
+description: Suggest a change that helps you practice or learn.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Charrette is a personal learning tool with a narrow scope. An idea can stay on the list for a long time, but each one is read.
+  - type: textarea
+    id: need
+    attributes:
+      label: What you want to do
+      description: Describe the need, not only the solution. For example, "I want to practice the same kata under less time."
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: How the app can help. A sketch or a screenshot is welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Other ways you thought about
