@@ -6,6 +6,7 @@ import Prose from "@/components/Prose";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { ChatMessage, HelperContext } from "@/lib/ai/helper";
+import { askHelper } from "@/lib/browser/api";
 
 type Props = {
   // Read the current work at the moment the person sends a question.
@@ -36,13 +37,7 @@ export default function HelpChat({ getContext, intro }: Props) {
     setBusy(true);
     setError("");
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context: getContext(), messages: next }),
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error);
+      const body = await askHelper(getContext(), next);
       setMessages([...next, { role: "helper", text: body.reply }]);
     } catch (caught) {
       setError((caught as Error).message || "The helper did not answer.");

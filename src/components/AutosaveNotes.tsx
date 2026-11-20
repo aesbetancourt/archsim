@@ -93,15 +93,3 @@ export default function AutosaveNotes({
     </div>
   );
 }
-
-// Send a JSON request. Throw if the server does not accept it. keepalive lets a save finish
-// when the user leaves the page.
-export async function putJson(url: string, body: unknown): Promise<void> {
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    keepalive: true,
-    body: JSON.stringify(body),
-  });
-  if (!response.ok) throw new Error("The save failed.");
-}

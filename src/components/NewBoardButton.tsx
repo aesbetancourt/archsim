@@ -4,6 +4,7 @@ import { LoaderCircle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { createBoard } from "@/lib/browser/api";
 
 // Create a board, then open it.
 export default function NewBoardButton() {
@@ -12,8 +13,7 @@ export default function NewBoardButton() {
 
   async function create() {
     setBusy(true);
-    const response = await fetch("/api/boards", { method: "POST" });
-    const body = await response.json();
+    const body = await createBoard();
     router.push(`/scratchpad/${body.id}`);
   }
 

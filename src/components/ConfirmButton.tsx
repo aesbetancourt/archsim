@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { deleteAt } from "@/lib/browser/api";
 
 type Props = {
   label: React.ReactNode;
@@ -51,8 +52,9 @@ export default function ConfirmButton({
   async function run() {
     setBusy(true);
     setError("");
-    const response = await fetch(endpoint, { method: "DELETE" });
-    if (!response.ok) {
+    try {
+      await deleteAt(endpoint);
+    } catch {
       setError("The request failed. Try again.");
       setBusy(false);
       return;

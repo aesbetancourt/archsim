@@ -1,3 +1,5 @@
+import { speechClip } from "./api";
+
 // The sound of the read-aloud player. It says one sentence, with the Google voice or with the voice
 // of the browser. It does not know the page, and it does not decide which sentence comes next.
 
@@ -46,17 +48,12 @@ export function createSpeaker() {
   function clip(text: string): Promise<string> {
     let request = clips.get(text);
     if (!request) {
-      request = fetch("/api/speech", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      }).then(async (response) => {
-        if (!response.ok) {
-          const body = await response.json().catch(() => ({}));
-          throw new Error(body.error ?? "The Google voice did not load.");
-        }
-        return URL.createObjectURL(await response.blob());
-      });
+      request = speechClip(text).then(
+        (audio) => URL.createObjectURL(audio),
+        (error: unknown) => {
+          throw new Error((error as Error).message || "The Google voice did not load.");
+        },
+      );
       // A failed request can run again later.
       request.catch(() => clips.delete(text));
       clips.set(text, request);

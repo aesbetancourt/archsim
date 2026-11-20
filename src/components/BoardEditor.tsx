@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import type { Board } from "@/lib/store/boards";
 import { notesText } from "@/lib/notes-html";
 import { slimElements } from "@/lib/ai/scene";
+import { saveBoard } from "@/lib/browser/api";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 const NotesEditor = dynamic(() => import("./NotesEditor"), { ssr: false });
@@ -44,19 +45,13 @@ export default function BoardEditor({ board }: { board: Board }) {
     timer.current = null;
     setStatus("saving");
     try {
-      const response = await fetch(`/api/boards/${board.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        keepalive: true,
-        body: JSON.stringify({
-          ...latest.current,
-          scene: {
-            elements: api.current?.getSceneElements() ?? board.scene.elements,
-            files: api.current?.getFiles() ?? board.scene.files,
-          },
-        }),
+      await saveBoard(board.id, {
+        ...latest.current,
+        scene: {
+          elements: api.current?.getSceneElements() ?? board.scene.elements,
+          files: api.current?.getFiles() ?? board.scene.files,
+        },
       });
-      if (!response.ok) throw new Error();
       // A newer change can arrive during the request. Then a save is already planned.
       setStatus(timer.current ? "pending" : "saved");
     } catch {

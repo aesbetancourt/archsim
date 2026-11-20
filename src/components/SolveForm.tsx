@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { solveProblem } from "@/lib/browser/api";
 
 export default function SolveForm({ initialText }: { initialText: string }) {
   const router = useRouter();
@@ -19,13 +20,7 @@ export default function SolveForm({ initialText }: { initialText: string }) {
     setBusy(mode);
     setError("");
     try {
-      const response = await fetch("/api/solve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error);
+      const body = await solveProblem(text);
       router.push(mode === "study" ? `/learn/examples/${body.id}` : `/kata/${body.id}`);
     } catch (caught) {
       setError((caught as Error).message || "The request failed.");

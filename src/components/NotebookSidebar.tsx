@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useEffect, useState, useSyncExternalStore } from "react";
-import AutosaveNotes, { putJson } from "@/components/AutosaveNotes";
+import AutosaveNotes from "@/components/AutosaveNotes";
 import { usePageBookmarks } from "@/components/Bookmarks";
 import GeneralNotes from "@/components/GeneralNotes";
 import HighlightItem from "@/components/HighlightItem";
@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/tooltip";
 import type { Highlight } from "@/lib/store/notebook";
 import { cn } from "@/lib/utils";
+import { savePageNote } from "@/lib/browser/api";
 
 // Whether the sidebar is open. This is a preference of this browser only.
 const OPEN_KEY = "charrette:notebook-open";
@@ -82,7 +83,7 @@ function PageNotes({
       label="Notes on this page"
       placeholder="Notes on this page: what it says in your own words, and what is not clear yet."
       initialHtml={html}
-      save={(next) => putJson("/api/notebook/pages", { page, title: getTitle(), html: next })}
+      save={(next) => savePageNote({ page, title: getTitle(), html: next })}
     />
   );
 }

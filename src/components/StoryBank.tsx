@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { competencies, type Story, type StoryFields } from "@/lib/store/stories";
 import { cn } from "@/lib/utils";
+import { createStory, saveStory } from "@/lib/browser/api";
 
 const parts: { key: keyof StoryFields & string; label: string; hint: string }[] = [
   {
@@ -58,16 +59,6 @@ export function storyAsAnswer(story: Story): string {
     .join("\n\n");
 }
 
-async function send(url: string, method: string, body?: unknown): Promise<Story | null> {
-  const response = await fetch(url, {
-    method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!response.ok) throw new Error("The story was not saved. Try again.");
-  return method === "DELETE" ? null : ((await response.json()) as Story);
-}
-
 // The story bank: true stories for the behavioral interview, in STAR form.
 export default function StoryBank({ initial }: { initial: Story[] }) {
   const [stories, setStories] = useState(initial);
@@ -77,11 +68,11 @@ export default function StoryBank({ initial }: { initial: Story[] }) {
   async function create() {
     setError("");
     try {
-      const story = (await send("/api/notebook/stories", "POST", empty))!;
+      const story = await createStory(empty);
       setStories((items) => [...items, story]);
       setOpenId(story.id);
-    } catch (thrown) {
-      setError((thrown as Error).message);
+    } catch {
+      setError("The story was not saved. Try again.");
     }
   }
 
@@ -191,8 +182,7 @@ function StoryEditor({
 
   async function save() {
     try {
-      const saved = await send(url, "PUT", latest.current);
-      if (saved) onSaved(saved);
+      onSaved(await saveStory(story.id, latest.current));
       setStatus("saved");
     } catch {
       setStatus("error");

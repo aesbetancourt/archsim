@@ -14,6 +14,7 @@ import VertexCard, { useVertexModels } from "@/components/settings/VertexCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import type { PublicSettings, Settings } from "@/lib/store/settings";
+import { saveSettings, speechClip, testConnection } from "@/lib/browser/api";
 
 const SAMPLE =
   "Every architecture decision is a trade-off. This is the voice that reads your lessons.";
@@ -68,17 +69,12 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
       setDraft((current) => ({ ...current, [key]: value }));
 
   async function save(): Promise<boolean> {
-    const response = await fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draft),
-    });
-    const body = await response.json();
-    if (!response.ok) {
-      setMessage({ ok: false, text: body.error });
+    try {
+      setSaved(await saveSettings(draft));
+    } catch (error) {
+      setMessage({ ok: false, text: (error as Error).message });
       return false;
     }
-    setSaved(body);
     // The keys are saved now. Empty the key fields.
     setDraft((current) => ({
       ...current,
@@ -101,8 +97,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
     setBusy("test");
     setMessage(null);
     if (await save()) {
-      const response = await fetch("/api/settings/test", { method: "POST" });
-      const body = await response.json();
+      const body = await testConnection();
       setMessage(
         body.ok
           ? { ok: true, text: `The connection works. Model: ${body.model}.` }
@@ -119,13 +114,7 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
     if (await save()) {
       try {
         if (draft.readAloud.engine === "google") {
-          const response = await fetch("/api/speech", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: SAMPLE }),
-          });
-          if (!response.ok) throw new Error((await response.json()).error);
-          const url = URL.createObjectURL(await response.blob());
+          const url = URL.createObjectURL(await speechClip(SAMPLE));
           const audio = new Audio(url);
           audio.onended = () => URL.revokeObjectURL(url);
           await audio.play();

@@ -14,6 +14,7 @@ import {
   type DrillProgress,
 } from "@/lib/browser/drill";
 import { suggestKnew, type Grade } from "@/lib/ai/drill-grade";
+import { ApiError, gradeAnswer } from "@/lib/browser/api";
 
 // A drill with the Leitner system and an optional AI check. The vocabulary drill and the
 // question drill use it. Each drill gives its items, its filters, and how to show an item.
@@ -119,22 +120,16 @@ export default function Drill<T extends { id: string }>({
     setCheckingId(itemId);
     setCheckError("");
     try {
-      const response = await fetch(gradeUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(gradeBody(current, answer)),
-      });
-      // A server crash can answer with an empty body or an HTML page, not JSON.
-      const body = await response.json().catch(() => null);
-      if (!response.ok || !body) {
-        throw new Error(
-          body?.error || `The server could not check the answer (HTTP ${response.status}).`,
-        );
-      }
+      const body = await gradeAnswer(gradeUrl, gradeBody(current, answer));
       setCheck({ itemId, grade: body.grade, model: body.model });
       setRevealed(true);
     } catch (caught) {
-      setCheckError(errorText(caught));
+      // A server crash can answer with an empty body or an HTML page. Then there is no reason.
+      setCheckError(
+        caught instanceof ApiError && !caught.message
+          ? `The server could not check the answer (HTTP ${caught.status}).`
+          : errorText(caught),
+      );
     }
     setCheckingId("");
   }

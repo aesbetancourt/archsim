@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { useHighlighter } from "@/components/useHighlighter";
 import type { Kata } from "@/lib/content/katas";
 import type { Highlight } from "@/lib/store/notebook";
+import { addHighlight } from "@/lib/browser/api";
 
 // Before the notebook, kata highlights were in the browser: [start, end] in each text block.
 const oldKey = (kataId: string) => `charrette:highlights:${kataId}`;
@@ -54,19 +55,13 @@ export default function ProblemText({ kata }: { kata: Kata }) {
     }
     Promise.allSettled(
       items.map(async (item) => {
-        const response = await fetch("/api/notebook/highlights", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            page,
-            title: `${kata.title} (kata)`,
-            text: item.text,
-            start: item.start,
-            note: "",
-          }),
+        return addHighlight({
+          page,
+          title: `${kata.title} (kata)`,
+          text: item.text,
+          start: item.start,
+          note: "",
         });
-        if (!response.ok) throw new Error();
-        return (await response.json()) as Highlight;
       }),
     ).then((results) => {
       addHighlights(

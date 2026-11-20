@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Settings } from "@/lib/store/settings";
+import { listVertexModels } from "@/lib/browser/api";
 
 type VertexModels = ReturnType<typeof useVertexModels>;
 
@@ -32,14 +33,10 @@ export function useVertexModels(open: boolean, projectId: string, location: stri
   async function load() {
     setLoading(true);
     setError("");
-    const query = new URLSearchParams({ project: projectId, location });
     try {
-      const response = await fetch(`/api/vertex/models?${query}`);
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "Vertex AI did not list the models.");
-      setList(body);
+      setList(await listVertexModels(projectId, location));
     } catch (error) {
-      setError((error as Error).message);
+      setError((error as Error).message || "Vertex AI did not list the models.");
       setList(null);
     }
     setLoading(false);

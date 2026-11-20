@@ -54,6 +54,7 @@ import {
   getStyleLesson,
   styleLessons,
 } from "@/lib/content/kata-method";
+import { reviewAttempt } from "@/lib/browser/api";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
 
@@ -291,24 +292,18 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
         files: api.current!.getFiles(),
         mimeType: "image/png",
       });
-      const response = await fetch("/api/review", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kataId: kata.id,
-          scope,
-          notes,
-          characteristics: selected
-            .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
-            .join("\n"),
-          style,
-          rationale,
-          diagramPng: await blobToDataUrl(blob),
-          elements,
-        }),
+      const body = await reviewAttempt({
+        kataId: kata.id,
+        scope,
+        notes,
+        characteristics: selected
+          .map((item) => `${item.name}: ${item.why.trim() || "(no reason given)"}`)
+          .join("\n"),
+        style,
+        rationale,
+        diagramPng: await blobToDataUrl(blob),
+        elements,
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error);
       // The attempt is done, so the clock of this kata stops.
       saveClock(kata.id, null);
       router.push(`/attempt/${body.id}`);

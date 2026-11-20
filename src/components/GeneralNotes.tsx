@@ -3,13 +3,14 @@
 import { ArrowLeft, FileText, Plus, Sparkles, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import AutosaveNotes, { putJson } from "@/components/AutosaveNotes";
+import AutosaveNotes from "@/components/AutosaveNotes";
 import ConfirmButton from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { InsightsStatus } from "@/lib/ai/insights-job";
 import type { NoteDoc } from "@/lib/store/notebook";
 import { notesText } from "@/lib/notes-html";
+import { saveNote } from "@/lib/browser/api";
 
 // How often the page asks for the state of the insights job, in milliseconds.
 const POLL_MS = 3_000;
@@ -266,7 +267,7 @@ export function OpenNote({
           onBlur={() => {
             if (title === document.title) return;
             onChange({ title: title.trim() || "Untitled note" });
-            void putJson(url, latest.current).catch(() => undefined);
+            void saveNote(document.id, latest.current).catch(() => undefined);
           }}
         />
         <ConfirmButton
@@ -291,7 +292,7 @@ export function OpenNote({
             latest.current.html = html;
             onChange({ html, updatedAt: new Date().toISOString() });
           }}
-          save={(html) => putJson(url, { ...latest.current, html })}
+          save={(html) => saveNote(document.id, { ...latest.current, html })}
         />
       </div>
     </div>
