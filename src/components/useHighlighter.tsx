@@ -4,6 +4,7 @@ import { Highlighter, NotebookPen, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { rangeFor } from "@/lib/browser/page-text";
 import type { Highlight as SavedHighlight } from "@/lib/store/notebook";
 import { findPassage } from "@/lib/text-anchor";
 
@@ -31,26 +32,6 @@ function offsetIn(root: Node, node: Node, offset: number): number {
   range.selectNodeContents(root);
   range.setEnd(node, offset);
   return range.toString().length;
-}
-
-// Make a DOM range for the characters from start to end of the root text.
-export function rangeFor(nodes: Text[], start: number, end: number): Range | undefined {
-  const range = document.createRange();
-  let position = 0;
-  let started = false;
-  for (const node of nodes) {
-    const next = position + node.data.length;
-    if (!started && start < next) {
-      range.setStart(node, start - position);
-      started = true;
-    }
-    if (started && end <= next) {
-      range.setEnd(node, end - position);
-      return range;
-    }
-    position = next;
-  }
-  return undefined;
 }
 
 async function send(url: string, method: string, body?: unknown): Promise<unknown> {

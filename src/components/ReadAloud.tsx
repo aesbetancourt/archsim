@@ -2,6 +2,7 @@
 
 import { LoaderCircle, Pause, Play, SkipBack, SkipForward, Square, Volume2 } from "lucide-react";
 import { type RefObject, useEffect, useEffectEvent, useRef, useState } from "react";
+import ReadFromHere from "@/components/ReadFromHere";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,176 +11,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { rangeFor } from "@/components/useHighlighter";
-import { splitSentences, withoutAsides } from "@/lib/sentences";
+import {
+  BLOCKS,
+  INTERACTIVE,
+  SKIP,
+  caretAt,
+  collectSections,
+  collectSentences,
+  firstVisible,
+  isGone,
+  keepInView,
+  sectionOf,
+  sentenceAt,
+  type Point,
+  type Section,
+  type Sentence,
+} from "@/lib/browser/page-text";
+import { RATES, browserCanSpeak, createSpeaker, readRate, saveRate } from "@/lib/browser/speaker";
 import type { PublicSettings, SpeechEngine } from "@/lib/store/settings";
 import { cn } from "@/lib/utils";
 
-// The pause is the silence before the sentence, in milliseconds.
-type Sentence = { text: string; range: Range; pause: number };
 type Status = "idle" | "playing" | "paused";
-type Point = { node: Node; offset: number };
-type Section = { title: string; element: HTMLElement };
 
-// The elements that hold text to read, and the elements to skip.
-// Tables are skipped: a table read cell by cell is hard to follow by ear.
-const BLOCKS = "h1,h2,h3,h4,p,li,dt,dd,blockquote,figcaption";
-const SKIP = "pre,nav,table,button,svg,script,style,textarea,input,select,[data-read-skip]";
-// A click on these elements does its own action. It does not move the reading.
-const INTERACTIVE = "a,button,input,textarea,select,label,summary,[role=button]";
-// The distance from the left edge of the text to the "Read from here" button.
-const GUTTER = 26;
 // The name of the highlight style in globals.css.
 const HIGHLIGHT = "charrette-reading";
-const RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
-const RATE_KEY = "charrette-read-rate";
 // The number of sentences to load before they are necessary, so there is no pause between them.
 const PREFETCH = 3;
-// The silence before a heading and before a list item, in milliseconds.
-// A new section and a new item then sound new.
-const HEADING_PAUSE = 800;
-const ITEM_PAUSE = 400;
-// The space at the top and bottom of the window that the current sentence must not go into.
-const TOP_MARGIN = 72;
-const BOTTOM_MARGIN = 120;
-
-// Find the sentences in the visible text of the root, in reading order.
-function collectSentences(root: HTMLElement): Sentence[] {
-  const groups: { block: Element; nodes: Text[] }[] = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    const parent = node.parentElement;
-    if (!parent) continue;
-    const skip = parent.closest(SKIP);
-    if (skip && root.contains(skip)) continue;
-    const block = parent.closest(BLOCKS);
-    if (!block || !root.contains(block)) continue;
-    const last = groups.at(-1);
-    if (last?.block === block) last.nodes.push(node as Text);
-    else groups.push({ block, nodes: [node as Text] });
-  }
-
-  const sentences: Sentence[] = [];
-  for (const { block, nodes } of groups) {
-    if (!block.checkVisibility()) continue;
-    const text = nodes.map((node) => node.data).join("");
-    // Wait before a heading and before a list item. A list item can hold its text in a paragraph.
-    let pause = block.matches("h1,h2,h3,h4")
-      ? HEADING_PAUSE
-      : block.matches("li, li > p:first-child")
-        ? ITEM_PAUSE
-        : 0;
-    for (const span of splitSentences(text)) {
-      const range = rangeFor(nodes, span.start, span.end);
-      // Do not read the asides in parentheses. Skip a sentence that is only an aside.
-      const spoken = withoutAsides(text.slice(span.start, span.end));
-      if (!range || !/[\p{L}\p{N}]/u.test(spoken)) continue;
-      sentences.push({ text: spoken, range, pause });
-      // Only the first sentence of the block waits.
-      pause = 0;
-    }
-  }
-  return sentences;
-}
-
-// The middle of the first line of text in a block, in window pixels. The padding of a heading and a
-// tall line do not move it, so the "Read from here" button is level with the words.
-function firstLineMiddle(block: Element): number {
-  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
-  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    if (!node.textContent?.trim()) continue;
-    const range = document.createRange();
-    range.selectNodeContents(node);
-    const line = [...range.getClientRects()].find((rect) => rect.height > 0);
-    if (line) return line.top + line.height / 2;
-  }
-  const rect = block.getBoundingClientRect();
-  return rect.top + rect.height / 2;
-}
-
-// The sections of the page: each visible level-2 heading outside the skipped parts.
-function collectSections(root: HTMLElement | null): Section[] {
-  if (!root) return [];
-  return [...root.querySelectorAll<HTMLElement>("h2")]
-    .filter((heading) => {
-      const skip = heading.closest(SKIP);
-      return !(skip && root.contains(skip)) && heading.checkVisibility();
-    })
-    .map((element) => ({ title: element.textContent?.trim() ?? "", element }))
-    .filter((section) => section.title);
-}
-
-// The section of a sentence: the last heading before it, or -1 before the first heading.
-// A heading that is no longer in the same page as the sentence cannot be compared. Skip it.
-function sectionOf(sections: Section[], range: Range): number {
-  let found = -1;
-  sections.forEach((section, index) => {
-    try {
-      if (range.comparePoint(section.element, 0) <= 0) found = index;
-    } catch {
-      // The page changed under the sentence or the heading.
-    }
-  });
-  return found;
-}
-
-// A sentence is gone when React replaced its text, for example after a new page or a new render.
-const isGone = (sentence: Sentence) =>
-  !sentence.range.startContainer.isConnected || !sentence.range.endContainer.isConnected;
-
-// The text position under a point of the window.
-function caretAt(x: number, y: number): Point | null {
-  if (document.caretPositionFromPoint) {
-    const position = document.caretPositionFromPoint(x, y);
-    return position ? { node: position.offsetNode, offset: position.offset } : null;
-  }
-  const range = document.caretRangeFromPoint?.(x, y);
-  return range ? { node: range.startContainer, offset: range.startOffset } : null;
-}
-
-// The first sentence that contains the point or comes after it.
-function sentenceAt(sentences: Sentence[], point: Point): number {
-  const index = sentences.findIndex((sentence) => {
-    try {
-      return sentence.range.comparePoint(point.node, point.offset) <= 0;
-    } catch {
-      return false;
-    }
-  });
-  return Math.max(index, 0);
-}
-
-// The first sentence that is in the window now. Play starts there, so you can scroll to a place.
-function firstVisible(sentences: Sentence[]): number {
-  const index = sentences.findIndex((sentence) => {
-    const rect = sentence.range.getBoundingClientRect();
-    return rect.bottom > TOP_MARGIN && rect.top < window.innerHeight;
-  });
-  return Math.max(index, 0);
-}
-
-// A natural English voice of the browser. macOS has Premium and Enhanced voices.
-function browserVoice(): SpeechSynthesisVoice | undefined {
-  const voices = speechSynthesis.getVoices().filter((voice) => voice.lang.startsWith("en"));
-  return (
-    voices.find((voice) => voice.lang === "en-US" && /premium|enhanced/i.test(voice.name)) ??
-    voices.find((voice) => voice.lang === "en-US" && voice.localService) ??
-    voices[0]
-  );
-}
-
-function readRate(): number {
-  try {
-    const saved = Number(localStorage.getItem(RATE_KEY));
-    return RATES.includes(saved) ? saved : 1;
-  } catch {
-    return 1;
-  }
-}
 
 // A player that reads the text of the root aloud and highlights the sentence that it reads.
 // Alt+R starts and pauses it. To start at a place, use the button next to a paragraph, the section
 // menu, or Alt+click on a sentence. While the player is open, a click on a sentence moves to it.
+//
+// The player decides which sentence comes next. Two other files do the rest:
+// lib/browser/page-text.ts finds the sentences and the sections of the page, and
+// lib/browser/speaker.ts makes the sound.
 export default function ReadAloud({
   root,
   page,
@@ -194,8 +59,6 @@ export default function ReadAloud({
   const [notice, setNotice] = useState<string | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [section, setSection] = useState(-1);
-  // The position of the "Read from here" button, next to the block under the pointer.
-  const [gutter, setGutter] = useState<{ top: number; left: number } | null>(null);
 
   const sentences = useRef<Sentence[]>([]);
   const current = useRef(0);
@@ -203,31 +66,22 @@ export default function ReadAloud({
   const run = useRef(0);
   // The engine from Settings. It loads again at each new start, so a change in Settings applies.
   const engine = useRef<SpeechEngine | null>(null);
-  const audio = useRef<HTMLAudioElement | null>(null);
-  // The sentence that the audio element holds now.
-  const loaded = useRef(-1);
-  // The audio of each sentence, as a blob URL, by the sentence text.
-  const clips = useRef(new Map<string, Promise<string>>());
-  const rateNow = useRef(1);
   const sectionList = useRef<Section[]>([]);
-  // The block under the pointer, where the "Read from here" button starts the reading.
-  const hovered = useRef<Element | null>(null);
-  const gutterButton = useRef<HTMLButtonElement>(null);
+  // The sound. One speaker lives as long as the player.
+  const [speaker] = useState(createSpeaker);
 
   function refreshSections() {
     sectionList.current = collectSections(root.current);
     setSections(sectionList.current);
   }
 
+  // The saved speed is in the browser, so it loads after the first render.
   useEffect(() => {
-    rateNow.current = readRate();
-    setRate(rateNow.current);
-  }, []);
-
-  function silence() {
-    audio.current?.pause();
-    if ("speechSynthesis" in window) speechSynthesis.cancel();
-  }
+    const saved = readRate();
+    speaker.setRate(saved);
+    // oxlint-disable-next-line react/set-state-in-effect
+    setRate(saved);
+  }, [speaker]);
 
   function show(index: number) {
     const { range } = sentences.current[index];
@@ -237,41 +91,12 @@ export default function ReadAloud({
     CSS.highlights.set(HIGHLIGHT, highlight);
     setPosition({ index, total: sentences.current.length });
     setSection(sectionOf(sectionList.current, range));
-
-    const rect = range.getBoundingClientRect();
-    if (rect.top < TOP_MARGIN || rect.bottom > window.innerHeight - BOTTOM_MARGIN) {
-      const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      range.startContainer.parentElement?.scrollIntoView({
-        block: "center",
-        behavior: still ? "auto" : "smooth",
-      });
-    }
-  }
-
-  function clip(text: string): Promise<string> {
-    let request = clips.current.get(text);
-    if (!request) {
-      request = fetch("/api/speech", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      }).then(async (response) => {
-        if (!response.ok) {
-          const body = await response.json().catch(() => ({}));
-          throw new Error(body.error ?? "The Google voice did not load.");
-        }
-        return URL.createObjectURL(await response.blob());
-      });
-      // A failed request can run again later.
-      request.catch(() => clips.current.delete(text));
-      clips.current.set(text, request);
-    }
-    return request;
+    keepInView(range);
   }
 
   function stop() {
     run.current += 1;
-    silence();
+    speaker.silence();
     CSS.highlights.delete(HIGHLIGHT);
     setStatus("idle");
     setWaiting(false);
@@ -288,7 +113,7 @@ export default function ReadAloud({
 
   async function playAt(index: number) {
     const id = ++run.current;
-    silence();
+    speaker.silence();
     // The text changed while the player waited. Find the sentences again and continue.
     const sentence = sentences.current[index];
     if (sentence && isGone(sentence) && root.current) {
@@ -306,20 +131,14 @@ export default function ReadAloud({
     const next = () => playNext(id, at);
 
     if (engine.current === "google") {
-      for (const later of sentences.current.slice(at + 1, at + 1 + PREFETCH)) {
-        clip(later.text).catch(() => undefined);
-      }
+      speaker.prefetch(
+        sentences.current.slice(at + 1, at + 1 + PREFETCH).map((later) => later.text),
+      );
       setWaiting(true);
       try {
-        const url = await clip(sentences.current[at].text);
+        const url = await speaker.clip(sentences.current[at].text);
         if (id !== run.current) return;
-        const player = (audio.current ??= new Audio());
-        player.src = url;
-        loaded.current = at;
-        player.defaultPlaybackRate = rateNow.current;
-        player.playbackRate = rateNow.current;
-        player.onended = next;
-        await player.play();
+        await speaker.playClip(url, at, next);
       } catch (error) {
         if (id !== run.current) return;
         // Without the Google voice, continue with the voice of the browser.
@@ -332,17 +151,11 @@ export default function ReadAloud({
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(sentences.current[at].text);
-    utterance.lang = "en-US";
-    utterance.voice = browserVoice() ?? null;
-    utterance.rate = rateNow.current;
-    utterance.onend = next;
-    utterance.onerror = (event) => {
-      if (id !== run.current || event.error === "interrupted" || event.error === "canceled") return;
-      setNotice(`The browser voice stopped (${event.error}).`);
+    speaker.speak(sentences.current[at].text, next, (error) => {
+      if (id !== run.current || error === "interrupted" || error === "canceled") return;
+      setNotice(`The browser voice stopped (${error}).`);
       stop();
-    };
-    speechSynthesis.speak(utterance);
+    });
   }
 
   async function start(point?: Point | null) {
@@ -357,7 +170,7 @@ export default function ReadAloud({
         engine.current = "browser";
       }
     }
-    if (engine.current === "browser" && !("speechSynthesis" in window)) {
+    if (engine.current === "browser" && !browserCanSpeak()) {
       setNotice("This browser cannot read aloud.");
       return;
     }
@@ -375,26 +188,18 @@ export default function ReadAloud({
 
   function pause() {
     run.current += 1;
-    silence();
+    speaker.silence();
     setWaiting(false);
     setStatus("paused");
   }
 
   function resume() {
-    const player = audio.current;
     // The Google voice continues from the pause. The browser voice starts the sentence again.
-    if (
-      engine.current === "google" &&
-      player &&
-      loaded.current === current.current &&
-      player.currentTime > 0 &&
-      !player.ended
-    ) {
+    if (engine.current === "google" && speaker.canContinue(current.current)) {
       const id = ++run.current;
       const at = current.current;
-      player.onended = () => playNext(id, at);
       setStatus("playing");
-      player.play().catch(() => void playAt(at));
+      speaker.continueClip(() => playNext(id, at)).catch(() => void playAt(at));
       return;
     }
     void playAt(current.current);
@@ -407,14 +212,9 @@ export default function ReadAloud({
   }
 
   function changeRate(value: number) {
-    rateNow.current = value;
+    speaker.setRate(value);
     setRate(value);
-    try {
-      localStorage.setItem(RATE_KEY, String(value));
-    } catch {
-      // The speed is not saved for the next visit. It still applies now.
-    }
-    if (audio.current) audio.current.playbackRate = value;
+    saveRate(value);
     // The browser voice reads the sentence again at the new speed.
     if (status === "playing" && engine.current === "browser") void playAt(current.current);
   }
@@ -450,37 +250,8 @@ export default function ReadAloud({
     if (point) void start(point);
   });
 
-  // Show the "Read from here" button next to the block under the pointer.
-  const onMove = useEffectEvent((event: MouseEvent) => {
-    const element = root.current;
-    const block = event.target instanceof Element ? event.target.closest(BLOCKS) : null;
-    if (!element || !block || block === hovered.current || !element.contains(block)) return;
-    const skip = block.closest(SKIP);
-    if ((skip && element.contains(skip)) || !block.textContent?.trim()) return;
-    hovered.current = block;
-    // Put the button in the margin to the left of the text column, level with the first line.
-    const column = block.closest("main") ?? element;
-    const left =
-      column.getBoundingClientRect().left +
-      parseFloat(getComputedStyle(column).paddingLeft) -
-      GUTTER;
-    setGutter({ left, top: firstLineMiddle(block) });
-  });
-
-  function clearGutter() {
-    hovered.current = null;
-    setGutter(null);
-  }
-
-  const hideGutter = useEffectEvent((event?: Event) => {
-    // The pointer can move from the text to the button. Keep the button then.
-    if (event instanceof MouseEvent && event.relatedTarget === gutterButton.current) return;
-    clearGutter();
-  });
-
   const reset = useEffectEvent(() => {
     stop();
-    hideGutter();
     refreshSections();
   });
 
@@ -491,18 +262,8 @@ export default function ReadAloud({
 
   useEffect(() => {
     const element = root.current;
-    const hide = () => hideGutter();
     element?.addEventListener("click", onClick, true);
-    element?.addEventListener("mousemove", onMove, { passive: true });
-    element?.addEventListener("mouseleave", hideGutter);
-    // The button has a fixed place on the screen, so it goes away when the page scrolls.
-    window.addEventListener("scroll", hide, { capture: true, passive: true });
-    return () => {
-      element?.removeEventListener("click", onClick, true);
-      element?.removeEventListener("mousemove", onMove);
-      element?.removeEventListener("mouseleave", hideGutter);
-      window.removeEventListener("scroll", hide, { capture: true });
-    };
+    return () => element?.removeEventListener("click", onClick, true);
   }, [root]);
 
   // A new page stops the reading and loads the sections of the new page.
@@ -512,37 +273,14 @@ export default function ReadAloud({
   }, [page]);
 
   // Release the audio when the player closes.
-  useEffect(() => {
-    const saved = clips.current;
-    return () => {
-      for (const request of saved.values()) {
-        request.then(URL.revokeObjectURL, () => undefined);
-      }
-      saved.clear();
-    };
-  }, []);
+  useEffect(() => () => speaker.release(), [speaker]);
 
-  const fromHere = gutter && (
-    <button
-      ref={gutterButton}
-      type="button"
-      // The section menu and Alt+R do the same for the keyboard.
-      tabIndex={-1}
-      aria-label="Read from here"
-      title="Read from here"
-      onMouseLeave={(event) => {
-        // The pointer can go to something that is not a node, for example the window.
-        const next = event.relatedTarget;
-        if (!(next instanceof Node) || !root.current?.contains(next)) clearGutter();
-      }}
-      onClick={() => {
-        if (hovered.current) void start({ node: hovered.current, offset: 0 });
-      }}
-      style={{ top: gutter.top, left: gutter.left }}
-      className="fixed z-30 flex size-6 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-main text-main-foreground opacity-70 transition-opacity hover:opacity-100 shadow-float"
-    >
-      <Play className="size-3" aria-hidden />
-    </button>
+  const fromHere = (
+    <ReadFromHere
+      root={root}
+      page={page}
+      onRead={(block) => void start({ node: block, offset: 0 })}
+    />
   );
 
   const menu = "h-9 w-auto gap-1.5 border-border bg-secondary-background px-2.5";

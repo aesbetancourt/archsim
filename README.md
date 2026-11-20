@@ -170,7 +170,8 @@ src/lib/        the logic, in four folders, with small shared helpers at its roo
   content/      what the app teaches: katas, lessons, glossary, building blocks
   store/        your work, saved as files in data/
   ai/           the connection to the model, and the form of each answer
-  browser/      state that lives in the browser: drafts, drill progress, the clock
+  browser/      code that needs the browser: saved drafts, drill progress, the clock,
+                the text of the page, and the voice of the read-aloud player
 src/prompts/    every word that the app sends to a model. See src/prompts/README.md
 data/           your work on this computer. Git ignores it
 docs/           the website
