@@ -83,7 +83,13 @@ export type PublicSettings = {
   readAloud: ReadAloud;
 };
 
-const hint = (key: string) => (key ? `…${key.slice(-4)}` : "");
+// The last four characters of a key, so the person can tell which key is saved.
+// A short key shows no characters, because four are then most of it.
+const HINT_MIN_LENGTH = 12;
+const hint = (key: string) => {
+  if (!key) return "";
+  return key.length >= HINT_MIN_LENGTH ? `…${key.slice(-4)}` : "…";
+};
 
 export function toPublic(settings: Settings): PublicSettings {
   return {
