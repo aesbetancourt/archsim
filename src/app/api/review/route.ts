@@ -2,44 +2,10 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createAttemptDir, overallScore, saveAttempt } from "@/lib/attempts";
 import { runModel } from "@/lib/model";
-import type { Kata } from "@/lib/katas";
 import { findKata } from "@/lib/library";
-import { reviewSchema, reviewerSystemPrompt, type Review } from "@/lib/rubric";
-import { readBody, reviewRequest, type ReviewRequest } from "@/lib/requests";
-import { describeScene } from "@/lib/scene";
-
-function buildPrompt(kata: Kata, submission: ReviewRequest): string {
-  const list = (items: string[]) => items.map((item) => `- ${item}`).join("\n");
-  return `Review this architecture kata attempt.
-
-<kata>
-Title: ${kata.title}
-Context: ${[kata.context, ...(kata.details ?? [])].join("\n")}
-Users: ${kata.users || "(not stated)"}
-Requirements:
-${list(kata.requirements) || "(not stated)"}
-Constraints:
-${list(kata.constraints) || "(not stated)"}
-</kata>
-
-<attempt>
-<scope>
-${submission.scope || "(empty)"}
-</scope>
-<characteristics>
-${submission.characteristics || "(empty)"}
-</characteristics>
-<style>
-${submission.style || "(empty)"}
-</style>
-<diagram_elements>
-${describeScene(submission.elements)}
-</diagram_elements>
-<rationale>
-${submission.rationale || "(empty)"}
-</rationale>
-</attempt>`;
-}
+import { reviewSchema, type Review } from "@/lib/rubric";
+import { readBody, reviewRequest } from "@/lib/requests";
+import { buildReviewPrompt, reviewerSystemPrompt } from "@/prompts/review";
 
 export async function POST(request: Request) {
   const submission = await readBody(request, reviewRequest);
@@ -59,7 +25,7 @@ export async function POST(request: Request) {
 
   try {
     const { output, model } = await runModel({
-      prompt: buildPrompt(kata, submission),
+      prompt: buildReviewPrompt(kata, submission),
       systemPrompt: reviewerSystemPrompt,
       schema: reviewSchema,
       imagePath: path.join(dir, "diagram.png"),

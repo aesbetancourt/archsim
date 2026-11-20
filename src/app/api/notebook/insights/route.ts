@@ -1,16 +1,10 @@
-import {
-  buildInsightsPrompt,
-  insightsHtml,
-  insightsSchema,
-  insightsSystemPrompt,
-  parseInsights,
-} from "@/lib/insights";
+import { insightsHtml, insightsSchema, parseInsights } from "@/lib/insights";
 import { insightsStatus, startInsightsJob } from "@/lib/insights-job";
 import { runModel } from "@/lib/model";
 import { addInsightsDocument, readNotebook } from "@/lib/notebook";
+import { plural } from "@/lib/text";
 import { readArticle } from "@/lib/wiki";
-
-const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+import { buildInsightsPrompt, insightsSystemPrompt } from "@/prompts/insights";
 
 // The state of the background job, so the notebook page can show it after a reload.
 export async function GET() {

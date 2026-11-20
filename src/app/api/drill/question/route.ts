@@ -1,13 +1,12 @@
-import {
-  behavioralGradeSystemPrompt,
-  buildQuestionPrompt,
-  parseGrade,
-  questionGradeSystemPrompt,
-  gradeSchema,
-} from "@/lib/drill-grade";
+import { gradeSchema, parseGrade } from "@/lib/drill-grade";
 import { runModel } from "@/lib/model";
 import { readQuestions } from "@/lib/questions";
 import { questionGradeRequest, readBody } from "@/lib/requests";
+import {
+  behavioralGradeSystemPrompt,
+  buildQuestionPrompt,
+  questionGradeSystemPrompt,
+} from "@/prompts/drill";
 
 // Compare one answer from the question drill with the points of a strong answer in the lesson.
 export async function POST(request: Request) {

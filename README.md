@@ -160,6 +160,20 @@ flowchart LR
   D & E & I & F & G & V -->|scores and feedback as JSON| H[Review page<br/>and history]
 ```
 
+### Where the code is
+
+```text
+content/        the lessons, cheatsheets, guide, and product cases, as Markdown and JSON
+src/app/        the pages, and the API routes in src/app/api
+src/components/ the parts of the screen. src/components/ui has the base controls
+src/lib/        the katas and the glossary, the files in data/, and the connection to the model
+src/prompts/    every word that the app sends to a model. See src/prompts/README.md
+data/           your work on this computer. Git ignores it
+docs/           the website
+```
+
+To change how the model reviews, grades, or answers, change a file in `src/prompts/`. The form of each answer is a schema in `src/lib/`, next to the code that reads it.
+
 The reviewer has read-only access. In the two command-line modes, the app starts the tool in the folder of one attempt, with file edits and shell commands turned off.
 
 ## Things to know

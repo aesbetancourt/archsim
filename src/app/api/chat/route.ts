@@ -1,7 +1,8 @@
-import { helperPrompt, helperSchema, helperSystemPrompt } from "@/lib/helper";
+import { helperSchema } from "@/lib/helper";
 import { findKata } from "@/lib/library";
 import { runModel } from "@/lib/model";
 import { chatRequest, readBody } from "@/lib/requests";
+import { buildHelperPrompt, helperSystemPrompt } from "@/prompts/helper";
 
 // The chat sends only the last messages. Older ones are dropped.
 const MAX_MESSAGES = 12;
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
 
   try {
     const { output } = await runModel({
-      prompt: helperPrompt(context, kata, messages.slice(-MAX_MESSAGES)),
+      prompt: buildHelperPrompt(context, kata, messages.slice(-MAX_MESSAGES)),
       systemPrompt: helperSystemPrompt(context.kind),
       schema: helperSchema,
     });

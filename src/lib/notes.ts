@@ -1,14 +1,14 @@
+import { escapeHtml } from "./text";
+
 // The notes of a kata are saved in the browser as HTML, for each kata.
 const notesKey = (kataId: string) => `charrette:notes:${kataId}`;
 
 // Notes are HTML. Older notes are plain text. Convert those to paragraphs.
 export function toNotesHtml(saved: string): string {
   if (!saved || saved.trimStart().startsWith("<")) return saved;
-  const escape = (line: string) =>
-    line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return saved
     .split("\n")
-    .map((line) => `<p>${escape(line)}</p>`)
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
     .join("");
 }
 

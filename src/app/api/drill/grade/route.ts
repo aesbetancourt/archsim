@@ -1,7 +1,8 @@
-import { buildGradePrompt, gradeSchema, gradeSystemPrompt, parseGrade } from "@/lib/drill-grade";
+import { gradeSchema, parseGrade } from "@/lib/drill-grade";
 import { glossary } from "@/lib/glossary";
 import { runModel } from "@/lib/model";
 import { drillGradeRequest, readBody } from "@/lib/requests";
+import { buildGradePrompt, gradeSystemPrompt } from "@/prompts/drill";
 
 // Compare one explanation from the vocabulary drill with the glossary definition.
 export async function POST(request: Request) {

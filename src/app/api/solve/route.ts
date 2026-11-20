@@ -3,7 +3,8 @@ import type { WorkedExample } from "@/lib/examples";
 import type { Kata } from "@/lib/katas";
 import { saveCustom } from "@/lib/library";
 import { readBody, solveRequest } from "@/lib/requests";
-import { cleanDiagram, solutionSchema, solverSystemPrompt } from "@/lib/solver";
+import { cleanDiagram, solutionSchema } from "@/lib/solver";
+import { buildSolvePrompt, solverSystemPrompt } from "@/prompts/solve";
 
 type Solution = { kata: Omit<Kata, "id">; example: Omit<WorkedExample, "kataId"> };
 
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
 
   try {
     const { output, model } = await runModel({
-      prompt: `Write the worked answer for this problem.\n\n<problem>\n${problem}\n</problem>`,
+      prompt: buildSolvePrompt(problem),
       systemPrompt: solverSystemPrompt,
       schema: solutionSchema,
     });

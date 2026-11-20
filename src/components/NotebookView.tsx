@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import type { Bookmark, Highlight, Notebook, PageNote } from "@/lib/notebook";
 import { notesText } from "@/lib/notes";
+import { plural } from "@/lib/text";
 
 type LessonGroup = {
   page: string;
@@ -45,8 +46,6 @@ function byLesson(pages: PageNote[], highlights: Highlight[], bookmarks: Bookmar
   }
   return [...groups.values()].sort((a, b) => b.last.localeCompare(a.last));
 }
-
-const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
 // A short summary of a lesson, for example "2 bookmarks · 5 highlights · notes".
 function summary(group: LessonGroup): string {

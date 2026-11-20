@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+import { openCodeMessage } from "@/prompts/provider";
 
 const TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -33,13 +34,7 @@ export async function runOpenCode({
 }: OpenCodeCall): Promise<string> {
   await writeFile(path.join(cwd, "opencode.json"), JSON.stringify(projectConfig, null, 2));
 
-  // OpenCode has no option for a system prompt or a JSON Schema. Put both in the message.
-  const message = `${systemPrompt}
-
-Answer with one JSON object and no other text. Do not use tools other than reading the attached file. The JSON must be valid: when you quote words inside a text value, use single quotes, and do not put a line break inside a text value. The object must match this JSON Schema:
-${JSON.stringify(schema)}
-
-${prompt}`;
+  const message = openCodeMessage(systemPrompt, schema, prompt);
 
   const args = ["run", "--agent", "plan", "--format", "json"];
   if (model) args.push("--model", model);

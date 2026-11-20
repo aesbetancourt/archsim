@@ -20,6 +20,7 @@ import {
 } from "ai";
 import { GoogleAuth } from "google-auth-library";
 import { runClaude } from "./claude";
+import { readImageFirst, withJsonSchema } from "@/prompts/provider";
 import { runOpenCode } from "./opencode";
 import { readSettings, type Settings } from "./settings";
 
@@ -65,7 +66,7 @@ async function viaClaudeCode(call: ModelCall, settings: Settings): Promise<Model
     ? path.dirname(call.imagePath)
     : await mkdtemp(path.join(os.tmpdir(), "charrette-"));
   const prompt = call.imagePath
-    ? `Read the file ${path.basename(call.imagePath)} in the current directory before you answer.\n\n${call.prompt}`
+    ? readImageFirst(path.basename(call.imagePath), call.prompt)
     : call.prompt;
   const model = settings.claudeCode.model || process.env.CHARRETTE_MODEL || "";
   try {
@@ -230,7 +231,7 @@ async function viaChatCompletions(call: ModelCall, endpoint: ChatEndpoint): Prom
     }
     const result = await generateText({
       ...common,
-      system: `${call.systemPrompt}\n\nAnswer with one JSON object and no other text. It must match this JSON Schema:\n${JSON.stringify(call.schema)}`,
+      system: withJsonSchema(call.systemPrompt, call.schema),
     });
     const stopped = finishError(result.finishReason);
     if (stopped) throw stopped;

@@ -1,12 +1,8 @@
-import {
-  buildQuestionPrompt,
-  gradeSchema,
-  parseGrade,
-  productGradeSystemPrompt,
-} from "@/lib/drill-grade";
+import { gradeSchema, parseGrade } from "@/lib/drill-grade";
 import { runModel } from "@/lib/model";
 import { readProductCases } from "@/lib/product-drill";
 import { questionGradeRequest, readBody } from "@/lib/requests";
+import { buildQuestionPrompt, productGradeSystemPrompt } from "@/prompts/drill";
 
 // Compare one answer from the product drill with the points of a strong answer.
 export async function POST(request: Request) {
