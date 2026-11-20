@@ -70,16 +70,13 @@ export default async function Home() {
           Each kata is a short business problem. Draw a design, explain your decisions, and get a
           review from an AI model. If the concepts are new to you, start with a finished example.
         </p>
-        <div className="flex max-w-2xl flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
-          <p>
-            New here? Read the{" "}
-            <Link href="/guide" className="text-primary hover:underline">
-              guide
-            </Link>{" "}
-            for a first session and a study plan, or
-          </p>
-          <StartTourButton />
-        </div>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          New here? Read the{" "}
+          <Link href="/guide" className="text-primary hover:underline">
+            guide
+          </Link>{" "}
+          for a first session and a study plan, or <StartTourButton />.
+        </p>
         <div className="flex flex-wrap gap-2">
           <LinkButton href="/learn/examples">
             <BookOpen /> Study a finished kata

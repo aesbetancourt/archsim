@@ -5,6 +5,7 @@ import {
   BookOpen,
   ChevronDown,
   ExternalLink,
+  FileText,
   LoaderCircle,
   NotebookPen,
   PenTool,
@@ -58,6 +59,7 @@ import { reviewAttempt } from "@/lib/browser/api";
 import { sceneVersion } from "@/lib/browser/scene-version";
 import { useAutosave } from "@/lib/browser/use-autosave";
 import { tourTarget } from "@/lib/content/tours";
+import { cn } from "@/lib/utils";
 import Tour from "@/components/Tour";
 
 const Canvas = dynamic(() => import("./Canvas"), { ssr: false });
@@ -121,6 +123,8 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   const [selected, setSelected] = useState<{ name: string; why: string }[]>([]);
   // The large area shows the notepad or the canvas. A kata starts on the notepad.
   const [view, setView] = useState<"notes" | "diagram">("notes");
+  // On a phone, the page shows one pane at a time: the kata, or the work area.
+  const [pane, setPane] = useState<"kata" | "work">("kata");
   const [notes, setNotes] = useState("");
   const [scope, setScope] = useState("");
 
@@ -255,6 +259,11 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   const lesson = getStyleLesson(style);
   // The canvas must measure its position again after the panel opens or closes.
   const refreshCanvas = useCallback(() => api.current?.refresh(), []);
+  // The canvas measures its position again when its pane shows on a phone.
+  useEffect(() => {
+    const frame = requestAnimationFrame(refreshCanvas);
+    return () => cancelAnimationFrame(frame);
+  }, [pane, refreshCanvas]);
 
   // Select or remove a characteristic, up to the limit.
   function toggle(name: string) {
@@ -314,8 +323,55 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
   }
 
   return (
-    <main className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
-      <SidePanel widthClass="w-[27rem]" onToggle={refreshCanvas}>
+    <main className="flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden md:flex-row">
+      {/* On a phone, one row of tabs selects the kata, the notes, or the diagram. A wider window
+          shows the kata and the work area side by side, with the Notes and Diagram tabs. */}
+      <div
+        role="tablist"
+        aria-label="Kata, notes, or diagram"
+        className="flex shrink-0 gap-2 border-b bg-card px-3 py-2 md:hidden"
+      >
+        <Button
+          role="tab"
+          aria-selected={pane === "kata"}
+          variant="tab"
+          size="sm"
+          onClick={() => setPane("kata")}
+        >
+          <FileText /> The kata
+        </Button>
+        <Button
+          role="tab"
+          aria-selected={pane === "work" && view === "notes"}
+          variant="tab"
+          size="sm"
+          onClick={() => {
+            setPane("work");
+            setView("notes");
+          }}
+          {...tourTarget("notes-pane")}
+        >
+          <NotebookPen /> Notes
+        </Button>
+        <Button
+          role="tab"
+          aria-selected={pane === "work" && view === "diagram"}
+          variant="tab"
+          size="sm"
+          onClick={() => {
+            setPane("work");
+            setView("diagram");
+          }}
+          {...tourTarget("diagram-pane")}
+        >
+          <PenTool /> Diagram
+        </Button>
+      </div>
+      <SidePanel
+        widthClass="w-full md:w-[27rem]"
+        className={cn("max-md:min-h-0 max-md:flex-1", pane === "work" && "max-md:hidden")}
+        onToggle={refreshCanvas}
+      >
         {/* "relative" keeps hidden labels inside this scroll area. Without it, they make the page scroll. */}
         <div className="relative flex-1 space-y-6 overflow-y-auto p-6">
           <section className="space-y-3">
@@ -560,11 +616,17 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           </div>
         </div>
       </SidePanel>
-      <div className="flex min-w-0 flex-1 flex-col bg-card">
+      <div
+        className={cn(
+          "flex min-h-0 min-w-0 flex-1 flex-col bg-card",
+          pane === "kata" && "max-md:hidden",
+        )}
+      >
         <div
           role="tablist"
           aria-label="Work area"
-          className="flex items-center gap-2 border-b px-3 py-2"
+          // On a phone, the row of tabs at the top of the page has these two tabs.
+          className="flex items-center gap-2 border-b px-3 py-2 max-md:hidden"
           {...tourTarget("work-area")}
         >
           <Button
@@ -586,7 +648,7 @@ export default function Workspace({ kata, hasExample }: { kata: Kata; hasExample
           >
             <PenTool /> Diagram
           </Button>
-          <span className="ml-auto text-xs text-muted-foreground">
+          <span className="ml-auto hidden text-xs text-muted-foreground lg:inline">
             {view === "notes"
               ? "Your notes are private. The review does not read them."
               : "The review reads this diagram."}

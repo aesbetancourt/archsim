@@ -25,8 +25,8 @@ export default async function GuidePage() {
           The tours
         </h2>
         <p className="text-muted-foreground">
-          A tour shows the parts of a kata. Start it again here. To see the welcome tour again, use
-          Take the tour on the home page.
+          A tour shows the parts of a kata. Start it again here. To see the welcome tour again,
+          click &ldquo;take the tour&rdquo; on the home page.
         </p>
         <TourReplays />
       </section>

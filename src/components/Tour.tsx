@@ -1,11 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Compass } from "lucide-react";
 import { useState } from "react";
 import type { EventData, Controls, Step, TooltipRenderProps } from "react-joyride";
 import { Button } from "@/components/ui/button";
-import { TOUR_ATTRIBUTE, type TourId, type TourStep, tours } from "@/lib/content/tours";
+import {
+  TOUR_ATTRIBUTE,
+  type TourId,
+  type TourStep,
+  type TourTarget,
+  tours,
+} from "@/lib/content/tours";
 import { useTour } from "@/lib/browser/use-tour";
 
 // The tour library uses the window, so it loads in the browser only.
@@ -20,13 +25,31 @@ const SPOTLIGHT = { padding: 6, radius: 8 };
 // not take the newer rgb(0 0 0 / 0.4) form in each browser.
 const OVERLAY_COLOR = "rgba(0, 0, 0, 0.45)";
 
-// The element of a step. A part can show two times, for example a wide and a narrow form of a
-// button. The tour uses the one that shows.
+// The element of a part that shows now. A part can show two times, for example a wide and a
+// narrow form of a button.
+function visible(name: string): HTMLElement | null {
+  const all = document.querySelectorAll<HTMLElement>(`[${TOUR_ATTRIBUTE}="${name}"]`);
+  return [...all].find((element) => element.checkVisibility()) ?? null;
+}
+
+// On a narrow window, some parts are inside a menu or a tab. A step then points at that menu or
+// tab.
+const narrowTarget: Partial<Record<TourStep["target"], TourTarget>> = {
+  practice: "menu",
+  learn: "menu",
+  notebook: "menu",
+  scratchpad: "menu",
+  guide: "menu",
+  settings: "menu",
+  "work-area": "notes-pane",
+  "diagram-tab": "diagram-pane",
+};
+
 function findTarget(name: TourStep["target"]): () => HTMLElement | null {
-  return () =>
-    [...document.querySelectorAll<HTMLElement>(`[${TOUR_ATTRIBUTE}="${name}"]`)].find((element) =>
-      element.checkVisibility(),
-    ) ?? null;
+  return () => {
+    const fallback = narrowTarget[name];
+    return visible(name) ?? (fallback ? visible(fallback) : null);
+  };
 }
 
 function toStep(step: TourStep): Step {
@@ -136,18 +159,17 @@ function ReplayTour({ id, onReplay }: { id: TourId; onReplay?: () => void }) {
   );
 }
 
-// The button on the home page that starts the welcome tour again, from its first step.
+// The link in the text of the home page that starts the welcome tour again, from its first step.
 export function StartTourButton() {
   const tour = useTour("welcome");
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="sm"
+      className="cursor-pointer text-primary hover:underline"
       onClick={() => void tour.setSeen(false).catch(() => undefined)}
     >
-      <Compass /> Take the tour
-    </Button>
+      take the tour
+    </button>
   );
 }
 

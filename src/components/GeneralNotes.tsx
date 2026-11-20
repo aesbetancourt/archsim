@@ -108,12 +108,13 @@ export default function GeneralNotes({
   // The most recently changed note is first.
   const sorted = [...documents].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
+    <div className="@container flex h-full min-h-0 flex-col">
+      {/* A narrow box, such as the sidebar or a phone, shows the buttons below the text. */}
+      <div className="flex flex-col items-start gap-2 border-b px-3 py-2 @lg:flex-row @lg:items-center @lg:justify-between">
         <p className="text-muted-foreground">
           Notes for each topic, not for one page. For example: questions, or a summary.
         </p>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 flex-wrap gap-2">
           {insights && (
             <Button
               size="sm"

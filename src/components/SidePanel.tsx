@@ -10,6 +10,8 @@ const STORAGE_KEY = "charrette:side-panel-hidden";
 type Props = {
   // The Tailwind width class of the open panel.
   widthClass: string;
+  // Classes for the outer box, for example to hide the panel on a phone.
+  className?: string;
   // Called after the panel opens or closes. The canvas must measure its position again.
   onToggle?: () => void;
   children: React.ReactNode;
@@ -17,7 +19,7 @@ type Props = {
 
 // The left panel of a canvas page. The user can hide it to get more room to draw.
 // The content stays loaded while the panel is hidden, so no input is lost.
-export default function SidePanel({ widthClass, onToggle, children }: Props) {
+export default function SidePanel({ widthClass, className, onToggle, children }: Props) {
   const [hidden, setHidden] = useState(false);
 
   // Remember the choice in this browser.
@@ -47,18 +49,19 @@ export default function SidePanel({ widthClass, onToggle, children }: Props) {
   }
 
   return (
-    <div className="relative z-30 shrink-0">
+    <div className={cn("relative z-30 shrink-0", className)}>
       <aside
         className={cn(
           "flex h-full flex-col border-r bg-card text-sm leading-relaxed",
           widthClass,
-          hidden && "hidden",
+          // On a phone, the page shows one pane at a time, so the toggle does not apply.
+          hidden && "md:hidden",
         )}
       >
         {children}
       </aside>
       {/* The wrapper sets the position. The button does not move on hover, so it is easy to click. */}
-      <div className="absolute top-1/2 -right-10 -translate-y-1/2">
+      <div className="absolute top-1/2 -right-10 hidden -translate-y-1/2 md:block">
         <Button
           variant="noShadow"
           size="icon-xs"

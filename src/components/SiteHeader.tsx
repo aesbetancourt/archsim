@@ -21,6 +21,7 @@ import CartWheel from "@/components/CartWheel";
 import CommandPalette from "@/components/CommandPalette";
 import LinkButton from "@/components/LinkButton";
 import NavMenu from "@/components/NavMenu";
+import SiteMenu, { type MenuGroup } from "@/components/SiteMenu";
 import ThemeToggle from "@/components/ThemeToggle";
 import { route } from "@/lib/routes";
 import { tourTarget } from "@/lib/content/tours";
@@ -97,6 +98,26 @@ const learn = [
   },
 ];
 
+// The pages of the top bar, for the menu of a narrow window.
+const narrowMenu: MenuGroup[] = [
+  { label: "Practice", items: practice },
+  { label: "Learn", items: learn },
+  {
+    label: "Your work",
+    items: [
+      { href: route("/notebook"), title: "Notebook", icon: <NotebookPen /> },
+      { href: route("/scratchpad"), title: "Scratchpad", icon: <PencilRuler /> },
+    ],
+  },
+  {
+    label: "Help",
+    items: [
+      { href: route("/guide"), title: "Guide", icon: <CircleHelp /> },
+      { href: route("/settings"), title: "Settings", icon: <Settings /> },
+    ],
+  },
+];
+
 export default function SiteHeader() {
   return (
     // The spaces are smaller below 1024px, so the bar fits a narrow window without a side scroll.
@@ -105,7 +126,8 @@ export default function SiteHeader() {
         <CartWheel className="size-5" />
         Charrette
       </Link>
-      <nav className="flex min-w-0 items-center gap-1">
+      {/* A narrow window has no space for the bar. The menu on the right has the same pages. */}
+      <nav className="hidden min-w-0 items-center gap-1 lg:flex">
         <NavMenu label="Practice" icon={<Target />} items={practice} tour="practice" />
         <NavMenu label="Learn" icon={<GraduationCap />} items={learn} tour="learn" />
         <LinkButton
@@ -137,6 +159,7 @@ export default function SiteHeader() {
           href="/guide"
           aria-label="Guide"
           title="Guide"
+          className="hidden lg:inline-flex"
           {...tourTarget("guide")}
         >
           <CircleHelp />
@@ -146,11 +169,13 @@ export default function SiteHeader() {
           size="icon"
           href="/settings"
           aria-label="Settings"
+          className="hidden lg:inline-flex"
           {...tourTarget("settings")}
         >
           <Settings />
         </LinkButton>
         <ThemeToggle />
+        <SiteMenu groups={narrowMenu} />
       </div>
     </header>
   );

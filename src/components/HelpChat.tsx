@@ -50,7 +50,8 @@ export default function HelpChat({ getContext, intro }: Props) {
     return (
       <Button
         size="icon-lg"
-        className="fixed right-5 bottom-20 z-40 rounded-full shadow-float"
+        // On a phone, the button is higher, so it does not cover the Submit button of a kata.
+        className="fixed right-5 bottom-44 z-40 rounded-full shadow-float md:bottom-20"
         aria-label="Open the help chat"
         {...tourTarget("help-chat")}
         onClick={() => setOpen(true)}

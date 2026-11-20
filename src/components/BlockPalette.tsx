@@ -154,7 +154,8 @@ export default function BlockPalette({ getApi, onToggle }: Props) {
       className="border-b border-border bg-secondary-background text-xs"
       onPointerEnter={loadCanvasFont}
     >
-      <div className="flex items-center gap-3 px-3 py-1.5">
+      {/* The row wraps on a narrow window, so the link at its end stays visible. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
         <button
           type="button"
           onClick={toggle}

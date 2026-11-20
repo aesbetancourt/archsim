@@ -14,6 +14,9 @@ export type TourTarget =
   | "search"
   | "settings"
   | "guide"
+  | "menu"
+  | "notes-pane"
+  | "diagram-pane"
   | "problem"
   | "steps"
   | "work-area"
@@ -83,7 +86,7 @@ export const tours: Record<TourId, { label: string; steps: TourStep[] }> = {
         target: "guide",
         title: "Guide",
         content:
-          "The guide explains how to practice. To see this tour again, use Take the tour on the home page.",
+          'The guide explains how to practice. To see this tour again, click "take the tour" on the home page.',
       },
     ],
   },
