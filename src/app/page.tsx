@@ -134,6 +134,20 @@ export default async function Home() {
                       <Lightbulb /> See a finished answer
                     </LinkButton>
                   )}
+                  {kata.custom && (
+                    <span className="ml-auto">
+                      <ConfirmButton
+                        label={<Trash2 />}
+                        ariaLabel={`Delete the problem ${kata.title}`}
+                        size="icon-sm"
+                        variant="ghost"
+                        title="Delete this problem?"
+                        description={`"${kata.title}" and its worked answer are removed. Your reviewed attempts stay in the history. You cannot undo this.`}
+                        confirmLabel="Delete"
+                        endpoint={`/api/problems/${kata.id}`}
+                      />
+                    </span>
+                  )}
                 </CardFooter>
               </Card>
             ))}

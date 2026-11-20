@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cachedCommunity, loadCommunity } from "./community";
 import { getWorkedExample, workedExamples, type WorkedExample } from "./examples";
@@ -35,6 +35,14 @@ async function listCustom(): Promise<CustomEntry[]> {
 export async function saveCustom(entry: CustomEntry): Promise<void> {
   await mkdir(ROOT, { recursive: true });
   await writeFile(path.join(ROOT, `${entry.kata.id}.json`), JSON.stringify(entry, null, 2));
+}
+
+// Delete a problem that the user added, with its answer. Return false when it does not exist.
+// The reviewed attempts of the problem stay in the history.
+export async function deleteCustom(id: string): Promise<boolean> {
+  if (!(await readCustom(id))) return false;
+  await rm(path.join(ROOT, `${id}.json`));
+  return true;
 }
 
 export async function findKata(id: string): Promise<Kata | undefined> {

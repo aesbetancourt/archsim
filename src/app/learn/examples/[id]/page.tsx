@@ -1,5 +1,6 @@
-import { ArrowRight, Lightbulb } from "lucide-react";
+import { ArrowRight, Lightbulb, Trash2 } from "lucide-react";
 import { BookmarkButton } from "@/components/Bookmarks";
+import ConfirmButton from "@/components/ConfirmButton";
 import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -69,6 +70,24 @@ export default async function ExamplePage({ params }: { params: Promise<{ id: st
             <Badge variant="neutral">
               your problem · answer written by {example.author ?? "an AI model"}
             </Badge>
+          )}
+          {kata.custom && (
+            <span className="ml-auto">
+              <ConfirmButton
+                label={
+                  <>
+                    <Trash2 /> Delete this problem
+                  </>
+                }
+                size="xs"
+                variant="ghost"
+                title="Delete this problem?"
+                description={`"${kata.title}" and this worked answer are removed. Your reviewed attempts stay in the history. You cannot undo this.`}
+                confirmLabel="Delete"
+                endpoint={`/api/problems/${kata.id}`}
+                redirectTo="/"
+              />
+            </span>
           )}
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">
