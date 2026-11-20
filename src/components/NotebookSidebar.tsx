@@ -12,13 +12,14 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useState, useSyncExternalStore } from "react";
 import AutosaveNotes, { putJson } from "@/components/AutosaveNotes";
 import { usePageBookmarks } from "@/components/Bookmarks";
 import GeneralNotes from "@/components/GeneralNotes";
 import HighlightItem from "@/components/HighlightItem";
 import LinkButton from "@/components/LinkButton";
 import { Button } from "@/components/ui/button";
+import { Tip } from "@/components/ui/tooltip";
 import type { Highlight } from "@/lib/notebook";
 import { cn } from "@/lib/utils";
 
@@ -241,13 +242,11 @@ export default function NotebookSidebar({
                   const selected = expanded
                     ? (item.id === "general") === (tab === "general")
                     : tab === item.id;
-                  return (
+                  const button = (
                     <Button
-                      key={item.id}
                       role="tab"
                       aria-selected={selected}
                       aria-label={expanded ? undefined : item.label}
-                      title={item.label}
                       variant="tab"
                       size="sm"
                       onClick={() => setTab(item.id)}
@@ -258,6 +257,14 @@ export default function NotebookSidebar({
                         <span className="text-xs tabular-nums">{item.count}</span>
                       )}
                     </Button>
+                  );
+                  // A small tab shows only its icon, so a tooltip gives its name.
+                  return expanded ? (
+                    <Fragment key={item.id}>{button}</Fragment>
+                  ) : (
+                    <Tip key={item.id} label={item.label}>
+                      {button}
+                    </Tip>
                   );
                 })}
             </div>

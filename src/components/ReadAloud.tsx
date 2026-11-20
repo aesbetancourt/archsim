@@ -3,9 +3,17 @@
 import { LoaderCircle, Pause, Play, SkipBack, SkipForward, Square, Volume2 } from "lucide-react";
 import { type RefObject, useEffect, useEffectEvent, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { rangeFor } from "@/components/useHighlighter";
 import { splitSentences, withoutAsides } from "@/lib/sentences";
 import type { PublicSettings, SpeechEngine } from "@/lib/settings";
+import { cn } from "@/lib/utils";
 
 // The pause is the silence before the sentence, in milliseconds.
 type Sentence = { text: string; range: Range; pause: number };
@@ -537,7 +545,13 @@ export default function ReadAloud({
     </button>
   );
 
-  const menu = "h-9 rounded-base border border-border bg-secondary-background px-1.5 text-sm";
+  const menu = "h-9 w-auto gap-1.5 border-border bg-secondary-background px-2.5";
+  // The choices of the section menus, with the start of the page first.
+  const sectionItems = [
+    { value: "-1", label: "Start of the page" },
+    ...sections.map((item, index) => ({ value: String(index), label: item.title })),
+  ];
+  const rateItems = RATES.map((value) => ({ value: String(value), label: `${value}×` }));
 
   if (status === "idle") {
     return (
@@ -556,22 +570,26 @@ export default function ReadAloud({
               <Volume2 /> Read aloud
             </Button>
             {sections.length > 0 && (
-              <select
-                aria-label="Read from a section"
-                value=""
-                onChange={(event) => startSection(Number(event.target.value))}
-                className={`${menu} max-w-48 shadow-float`}
+              // A menu of places to start. It shows no value, so each choice starts the reading.
+              <Select
+                items={sectionItems}
+                value={null}
+                onValueChange={(value) => value !== null && startSection(Number(value))}
               >
-                <option value="" disabled>
-                  From a section…
-                </option>
-                <option value={-1}>Start of the page</option>
-                {sections.map((item, index) => (
-                  <option key={`${index}-${item.title}`} value={index}>
-                    {item.title}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  aria-label="Read from a section"
+                  className={cn(menu, "max-w-48 shadow-float")}
+                >
+                  <SelectValue placeholder="From a section…" />
+                </SelectTrigger>
+                <SelectContent side="top" align="start">
+                  {sectionItems.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
         </div>
@@ -624,32 +642,39 @@ export default function ReadAloud({
             {position.index + 1}/{position.total}
           </span>
           {sections.length > 0 && (
-            <select
-              aria-label="Section"
-              value={section}
-              onChange={(event) => startSection(Number(event.target.value))}
-              className={`${menu} max-w-48`}
+            <Select
+              items={sectionItems}
+              value={String(section)}
+              onValueChange={(value) => value !== null && startSection(Number(value))}
             >
-              <option value={-1}>Start of the page</option>
-              {sections.map((item, index) => (
-                <option key={`${index}-${item.title}`} value={index}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger aria-label="Section" className={cn(menu, "max-w-48")}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent side="top" align="start">
+                {sectionItems.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-          <select
-            aria-label="Reading speed"
-            value={rate}
-            onChange={(event) => changeRate(Number(event.target.value))}
-            className={menu}
+          <Select
+            items={rateItems}
+            value={String(rate)}
+            onValueChange={(value) => value !== null && changeRate(Number(value))}
           >
-            {RATES.map((value) => (
-              <option key={value} value={value}>
-                {value}×
-              </option>
-            ))}
-          </select>
+            <SelectTrigger aria-label="Reading speed" className={menu}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {rateItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Button variant="ghost" size="icon-sm" aria-label="Stop reading" onClick={stop}>
             <Square />
           </Button>

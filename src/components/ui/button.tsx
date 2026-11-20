@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import * as React from "react";
 
+import { Tip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -47,15 +48,22 @@ function Button({
   className,
   variant,
   size,
+  title,
   ...props
 }: React.ComponentProps<typeof ButtonPrimitive> & VariantProps<typeof buttonVariants>) {
-  return (
+  // A button with only an icon shows its title in the app's tooltip, not the browser's.
+  // The title is then also its name for a screen reader, if it has no aria-label.
+  const iconOnly = typeof size === "string" && size.startsWith("icon") && Boolean(title);
+  const button = (
     <ButtonPrimitive
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
       {...props}
+      className={cn(buttonVariants({ variant, size, className }))}
+      title={iconOnly ? undefined : title}
+      aria-label={props["aria-label"] ?? (iconOnly ? title : undefined)}
     />
   );
+  return iconOnly ? <Tip label={title}>{button}</Tip> : button;
 }
 
 export { Button, buttonVariants };

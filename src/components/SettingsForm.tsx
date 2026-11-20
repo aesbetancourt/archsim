@@ -18,6 +18,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import ReadingFontSetting from "@/components/ReadingFontSetting";
 import type { Mode, PublicSettings, SpeechEngine } from "@/lib/settings";
@@ -162,6 +171,14 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
 
   const listed = vertexModels ? [...vertexModels.gemini, ...vertexModels.claude] : [];
   const showOther = vertexOther || (vertexModels !== null && !listed.includes(vertexModel));
+  // The labels that the model menu shows for each value.
+  const vertexItems = [
+    ...(vertexModels === null && !showOther
+      ? [{ value: vertexModel, label: vertexLoading ? "Loading the models…" : vertexModel }]
+      : []),
+    ...listed.map((id) => ({ value: id, label: id })),
+    { value: "__other", label: "Other model…" },
+  ];
   const [speechEngine, setSpeechEngine] = useState(initial.readAloud.engine);
   const [projectId, setProjectId] = useState(initial.readAloud.googleProjectId);
   const [voice, setVoice] = useState(initial.readAloud.googleVoice);
@@ -525,45 +542,54 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
               }
             >
               <div className="flex gap-2">
-                <select
-                  id="vertex-model"
+                <Select
+                  items={vertexItems}
                   value={showOther ? "__other" : vertexModel}
-                  onChange={(event) => {
-                    if (event.target.value === "__other") {
+                  onValueChange={(value) => {
+                    if (value === null) return;
+                    if (value === "__other") {
                       setVertexOther(true);
                     } else {
                       setVertexOther(false);
-                      setVertexModel(event.target.value);
+                      setVertexModel(value);
                     }
                   }}
                   disabled={vertexLoading}
-                  className="flex h-10 w-full rounded-base border border-edge bg-card px-3 text-sm"
                 >
-                  {vertexModels === null && !showOther && (
-                    <option value={vertexModel}>
-                      {vertexLoading ? "Loading the models…" : vertexModel}
-                    </option>
-                  )}
-                  {vertexModels && vertexModels.gemini.length > 0 && (
-                    <optgroup label="Gemini">
-                      {vertexModels.gemini.map((id) => (
-                        <option key={id} value={id}>
-                          {id}
-                        </option>
-                      ))}
-                    </optgroup>
-                  )}
-                  {vertexModels && vertexModels.claude.length > 0 && (
-                    <optgroup label="Claude (enable in the Model Garden first)">
-                      {vertexModels.claude.map((id) => (
-                        <option key={id} value={id}>
-                          {id}
-                        </option>
-                      ))}
-                    </optgroup>
-                  )}
-                  <option value="__other">Other model…</option>
-                </select>
+                  <SelectTrigger id="vertex-model">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="start">
+                    {vertexModels === null && !showOther && (
+                      <SelectItem value={vertexModel}>
+                        {vertexLoading ? "Loading the models…" : vertexModel}
+                      </SelectItem>
+                    )}
+                    {vertexModels && vertexModels.gemini.length > 0 && (
+                      <SelectGroup>
+                        <SelectLabel className="text-muted-foreground">Gemini</SelectLabel>
+                        {vertexModels.gemini.map((id) => (
+                          <SelectItem key={id} value={id}>
+                            {id}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    )}
+                    {vertexModels && vertexModels.claude.length > 0 && (
+                      <SelectGroup>
+                        <SelectLabel className="text-muted-foreground">
+                          Claude (enable in the Model Garden first)
+                        </SelectLabel>
+                        {vertexModels.claude.map((id) => (
+                          <SelectItem key={id} value={id}>
+                            {id}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    )}
+                    <SelectItem value="__other">Other model…</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Button
                   type="button"
                   variant="neutral"
@@ -648,18 +674,22 @@ export default function SettingsForm({ initial }: { initial: PublicSettings }) {
                 />
               </Field>
               <Field id="gcp-voice" label="Voice">
-                <select
-                  id="gcp-voice"
+                <Select
+                  items={googleVoices.map((item) => ({ value: item.id, label: item.label }))}
                   value={voice}
-                  onChange={(event) => setVoice(event.target.value)}
-                  className="flex h-10 w-full rounded-base border border-border bg-secondary-background px-3 text-sm"
+                  onValueChange={(value) => value !== null && setVoice(value)}
                 >
-                  {googleVoices.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="gcp-voice">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="start">
+                    {googleVoices.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </Field>
             </>
           )}

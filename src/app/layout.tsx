@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Literata } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import ThemeProvider from "@/components/ThemeProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { readingFontScript } from "@/lib/reading-font";
 import { migrationScript } from "@/lib/storage-migration";
 import "./globals.css";
@@ -46,8 +47,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* oxlint-disable-next-line react/no-danger */}
         <script dangerouslySetInnerHTML={{ __html: readingFontScript }} />
         <ThemeProvider>
-          <SiteHeader />
-          {children}
+          <TooltipProvider>
+            <SiteHeader />
+            {children}
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
